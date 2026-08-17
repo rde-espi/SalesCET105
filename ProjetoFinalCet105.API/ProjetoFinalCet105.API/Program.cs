@@ -30,6 +30,21 @@ var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddScoped<SeedDb>();
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<ICompetenciaRepository, CompetenciaRepository>();
+builder.Services.AddScoped<IConversaRepository, ConversaRepository>();
+builder.Services.AddScoped<IEstadoMarcacaoRepository, EstadoMarcacaoRepository>();
+builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+builder.Services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
+builder.Services.AddScoped<IFuncionarioCompetenciaRepository, FuncionarioCompetenciaRepository>();
+builder.Services.AddScoped<IFuncionarioServicoRepository, FuncionarioServicoRepository>();
+builder.Services.AddScoped<IHistoricoMarcacaoRepository, HistoricoMarcacaoRepository>();
+builder.Services.AddScoped<IHorarioFuncionarioRepository, HorarioFuncionarioRepository>();
+builder.Services.AddScoped<IIndisponibilidadeRepository, IndisponibilidadeRepository>();
+builder.Services.AddScoped<IMarcacaoRepository, MarcacaoRepository>();
+builder.Services.AddScoped<IMensagemRepository, MensagemRepository>();
+builder.Services.AddScoped<INotificacaoRepository,NotificacaoRepository>();
+builder.Services.AddScoped<IPromoCodeRepository, PromoCodeRepository>();
+builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
 
             var app = builder.Build();
 

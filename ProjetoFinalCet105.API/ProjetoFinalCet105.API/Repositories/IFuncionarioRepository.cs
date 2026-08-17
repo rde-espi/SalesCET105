@@ -2,7 +2,7 @@
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public interface INotificaçãoRepository:IGenericRepository<Notificacao>
+    public interface IFuncionarioRepository: IGenericRepository<Funcionario>
     {
     }
 }

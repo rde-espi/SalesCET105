@@ -1,10 +1,12 @@
-﻿namespace ProjetoFinalCet105.API.Repositories
+﻿using ProjetoFinalCet105.API.Entities;
+
+namespace ProjetoFinalCet105.API.Repositories
 {
-    public interface IGenericRepository<T> where T : class
+    public interface IGenericRepository<T> where T : class,IEntity
     {
         IQueryable<T> GetAll();
 
-        Task<T> GetByIdAsync(int id);
+        Task<T?> GetByIdAsync(int id);
 
         Task CreateAsync(T entity);
 
