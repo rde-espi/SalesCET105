@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.Data;
 using ProjetoFinalCet105.API.Entities;
+using ProjetoFinalCet105.API.Repositories;
 
 
-            var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
 
@@ -28,6 +29,7 @@ using ProjetoFinalCet105.API.Entities;
             builder.Services.AddOpenApi();
 
             builder.Services.AddScoped<SeedDb>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 
             var app = builder.Build();
 
