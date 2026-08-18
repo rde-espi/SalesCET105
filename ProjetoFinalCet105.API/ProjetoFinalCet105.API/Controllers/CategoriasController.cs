@@ -24,7 +24,7 @@ namespace ProjetoFinalCet105.API.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<Categoria>> GetCategoria(int id)
+        public async Task<ActionResult<Categoria>> GetCategoriaById(int id)
         {
             var categoria = await _categoriaRepository.GetByIdAsync(id);
             if(categoria == null)
@@ -41,7 +41,7 @@ namespace ProjetoFinalCet105.API.Controllers
             {
                 await _categoriaRepository.CreateAsync(categoria);
 
-                return CreatedAtAction(nameof(GetCategoria), new { id = categoria.Id }, categoria);
+                return CreatedAtAction(nameof(GetCategoriaById), new { id = categoria.Id }, categoria);
             }
             catch (Exception) 
             {

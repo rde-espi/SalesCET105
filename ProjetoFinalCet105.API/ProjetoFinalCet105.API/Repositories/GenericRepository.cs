@@ -6,7 +6,7 @@ namespace ProjetoFinalCet105.API.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class, IEntity
     {
-        private readonly DataContext _context;
+        protected readonly DataContext _context;
 
         public GenericRepository(DataContext context)
         {
