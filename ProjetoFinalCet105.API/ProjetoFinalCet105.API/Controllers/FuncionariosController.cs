@@ -160,5 +160,95 @@ namespace ProjetoFinalCet105.API.Controllers
                 new { id = funcionario.Id },
                 funcionarioDto);
         }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult>UpdateFuncionario(int id,FuncionarioDTO dto)
+        {
+            if(id != dto.Id)
+            {
+                return BadRequest();
+            }
+            var funcionario = await _funcionarioRepository.GetByIdAsync(id);
+
+            if(funcionario == null)
+            {
+                return NotFound();
+            }
+            var user = await _userManager.FindByIdAsync(funcionario.UserId);
+            if(user == null)
+            {
+                return NotFound("Utilizador associado ao funcionário não encontrado");
+            }
+            try
+            {
+                user.NomeCompleto = dto.NomeCompleto;
+                user.UserName = dto.Email;
+                user.Email = dto.Email;
+                user.PhoneNumber = dto.Telefone;
+                user.FotografiaUrl = dto.FotografiaUrl;
+                user.DataAtualizacao = DateTime.Now;
+
+                var resultadoUser = await _userManager.UpdateAsync(user);
+
+                if (!resultadoUser.Succeeded)
+                {
+                    return BadRequest(resultadoUser.Errors);
+                }
+
+                funcionario.Biografia = dto.Biografia;
+                funcionario.DataAdmissao = dto.DataAdmissao;
+                funcionario.Disponivel = dto.Disponivel;
+                funcionario.Ativo = dto.Ativo;
+
+                await _funcionarioRepository.UpdateAsync(funcionario);
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteFuncionario(int id)
+        {
+            var funcionario = await _funcionarioRepository.GetByIdAsync(id);
+            if (funcionario == null)
+            {
+                return NotFound();
+            }
+            var user = await _userManager.FindByIdAsync(funcionario.UserId);
+
+            if (user == null)
+            {
+                return NotFound("Utilizador associado ao funcionário não encontrado");
+            }
+
+            try
+            {
+                funcionario.Ativo = false;
+                funcionario.Disponivel = false;
+                user.Ativo = false;
+                user.DataAtualizacao = DateTime.Now;
+
+                var resultadoUser = await _userManager.UpdateAsync(user);
+
+                if (!resultadoUser.Succeeded)
+                {
+                    return BadRequest(resultadoUser.Errors);
+                }
+
+                await _funcionarioRepository.UpdateAsync(funcionario);
+
+                return NoContent();
+            }
+            catch(Exception)
+            {
+                return BadRequest();
+            }
+
+
+        }
     }
 }
