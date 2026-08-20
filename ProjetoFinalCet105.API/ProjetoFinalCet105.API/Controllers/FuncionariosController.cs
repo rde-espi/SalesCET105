@@ -15,11 +15,15 @@ namespace ProjetoFinalCet105.API.Controllers
     {
         private readonly IFuncionarioRepository _funcionarioRepository;
         private readonly UserManager<User> _userManager;
+        private readonly IServicoRepository _servicoRepository;
+        private readonly IFuncionarioServicoRepository _funcionarioServicoRepository;
 
-        public FuncionariosController(IFuncionarioRepository funcionarioRepository,UserManager<User> userManager)
+        public FuncionariosController(IFuncionarioRepository funcionarioRepository,UserManager<User> userManager, IServicoRepository servicoRepository,IFuncionarioServicoRepository funcionarioServicoRepository)
         {
             _funcionarioRepository = funcionarioRepository;
             _userManager = userManager;
+            _servicoRepository = servicoRepository;
+            _funcionarioServicoRepository = funcionarioServicoRepository;
         }
 
         [HttpGet]
@@ -248,7 +252,40 @@ namespace ProjetoFinalCet105.API.Controllers
                 return BadRequest();
             }
 
+        }
 
+        [HttpGet("servico/{servicoId:int}")]
+        public async Task<ActionResult<IEnumerable<FuncionarioDTO>>>GetFuncionariosByServico(int servicoId)
+        {
+            var servico = await _servicoRepository.GetByIdAsync(servicoId);
+
+            if (servico == null)
+            {
+                return NotFound("Serviço não encontrado.");
+            }
+
+            var funcionarios = await _funcionarioServicoRepository
+                .GetAllWithDetails()
+                .Where(fs =>
+                fs.ServicoId == servicoId &&
+                fs.Ativo &&
+                fs.Funcionario.Ativo &&
+                fs.Funcionario.Disponivel)
+                .Select(fs => new FuncionarioDTO
+                {
+                    Id = fs.Funcionario.Id,
+                    UserId = fs.Funcionario.UserId,
+                    NomeCompleto = fs.Funcionario.User.NomeCompleto,
+                    Email = fs.Funcionario.User.Email,
+                    Telefone = fs.Funcionario.User.PhoneNumber,
+                    FotografiaUrl = fs.Funcionario.User.FotografiaUrl,
+                    Biografia = fs.Funcionario.Biografia,
+                    DataAdmissao = fs.Funcionario.DataAdmissao,
+                    Disponivel = fs.Funcionario.Disponivel,
+                    Ativo = fs.Funcionario.Ativo
+                })
+                .ToListAsync();
+            return Ok(funcionarios);
         }
     }
 }
