@@ -21,6 +21,7 @@ namespace ProjetoFinalCet105.API.Controllers
         private readonly IHorarioFuncionarioRepository _horarioFuncionarioRepository;
         private readonly IIndisponibilidadeRepository _indisponibilidadeRepository;
         private readonly IEstadoMarcacaoRepository _estadoMarcacaoRepository;
+        private readonly IHistoricoMarcacaoRepository _historicoMarcacaoRepository;
         private readonly UserManager<User> _userManager;
 
         public MarcacoesController(IMarcacaoRepository marcacaoRepository,
@@ -30,6 +31,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 IHorarioFuncionarioRepository horarioFuncionarioRepository,
                 IIndisponibilidadeRepository indisponibilidadeRepository,
                 IEstadoMarcacaoRepository estadoMarcacaoRepository,
+                IHistoricoMarcacaoRepository historicoMarcacaoRepository,
                 UserManager<User> userManager)
         {
             _marcacaoRepository = marcacaoRepository;
@@ -39,6 +41,7 @@ namespace ProjetoFinalCet105.API.Controllers
             _horarioFuncionarioRepository = horarioFuncionarioRepository;
             _indisponibilidadeRepository = indisponibilidadeRepository;
             _estadoMarcacaoRepository = estadoMarcacaoRepository;
+            _historicoMarcacaoRepository = historicoMarcacaoRepository;
             _userManager = userManager;
         }
 
@@ -360,6 +363,18 @@ namespace ProjetoFinalCet105.API.Controllers
 
                     DataCriacao = marcacao.DataCriacao
                 };
+
+                var historico = new HistoricoMarcacao
+                {
+                    MarcacaoId = marcacao.Id,
+                    UserId = userId,
+                    Acao = "Criação",
+                    Descricao = "Marcação criada.",
+                    DataAlteracao = DateTime.Now
+                };
+
+                await _historicoMarcacaoRepository.CreateAsync(historico);
+
                 return CreatedAtAction(nameof(GetMarcacaoById), new { id = marcacao.Id }, resposta);
             }
             catch (Exception)
@@ -412,6 +427,11 @@ namespace ProjetoFinalCet105.API.Controllers
                 }
 
             }
+
+            var funcionarioAnteriorId = marcacaoAtual.FuncionarioId;
+            var servicoAnteriorId = marcacaoAtual.ServicoId;
+            var dataInicioAnterior = marcacaoAtual.DataHoraInicio;
+            var dataFimAnterior = marcacaoAtual.DataHoraFim;
 
             var estadoMarcacao = await _estadoMarcacaoRepository.GetByIdAsync(marcacaoAtual.EstadoMarcacaoId);
             if(estadoMarcacao == null)
@@ -518,6 +538,19 @@ namespace ProjetoFinalCet105.API.Controllers
 
                 await _marcacaoRepository.UpdateAsync(marcacaoAtual);
 
+                var historico = new HistoricoMarcacao
+                {
+                    MarcacaoId = marcacaoAtual.Id,
+                    UserId = userId,
+                    Acao = "Alteração da marcação",
+                    Descricao = $"Funcionário: {funcionarioAnteriorId} -> {marcacaoAtual.FuncionarioId}; " +
+                    $"Serviço: {servicoAnteriorId} -> {marcacaoAtual.ServicoId}; " +
+                    $"Data/Hora: {dataInicioAnterior} -> {marcacaoAtual.DataHoraInicio}.",
+                    DataAlteracao = DateTime.Now
+                };
+
+                await _historicoMarcacaoRepository.CreateAsync(historico);
+
                 return NoContent();
             }
             catch (Exception)
@@ -617,6 +650,17 @@ namespace ProjetoFinalCet105.API.Controllers
 
                 await _marcacaoRepository.UpdateAsync(marcacao);
 
+                var historico = new HistoricoMarcacao
+                {
+                    MarcacaoId = marcacao.Id,
+                    UserId = userId,
+                    Acao = "Alteração de estado",
+                    Descricao =$"Estado alterado de '{estadoAtual.Nome}' para '{novoEstado.Nome}'.",
+                    DataAlteracao = DateTime.Now
+                };
+
+                await _historicoMarcacaoRepository.CreateAsync(historico);
+
                 return NoContent();
             }
             catch (Exception)
@@ -702,6 +746,18 @@ namespace ProjetoFinalCet105.API.Controllers
                 marcacao.DataAtualizacao = DateTime.Now;
 
                 await _marcacaoRepository.UpdateAsync(marcacao);
+
+                var historico = new HistoricoMarcacao
+                {
+                    MarcacaoId = marcacao.Id,
+                    UserId = userId,
+                    Acao = "Cancelamento",
+                    Descricao =
+                        $"Marcação cancelada. Estado anterior: '{estadoAtual.Nome}'.",
+                    DataAlteracao = DateTime.Now
+                };
+
+                await _historicoMarcacaoRepository.CreateAsync(historico);
 
                 return NoContent();
             }
@@ -1033,5 +1089,69 @@ namespace ProjetoFinalCet105.API.Controllers
                 .Distinct()
                 .OrderBy(h => h));
         }
+
+        [Authorize(Policy = "ConsultarMarcacoes")]
+        [HttpGet("{id:int}/historico")]
+        public async Task<ActionResult<IEnumerable<HistoricoMarcacaoDTO>>> GetHistoricoMarcacao(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var marcacao = await _marcacaoRepository.GetByIdAsync(id);
+
+            if (marcacao == null)
+            {
+                return NotFound("Marcação não encontrada.");
+            }
+
+            if (User.IsInRole("Cliente") && !User.IsInRole("Admin"))
+            {
+                if (marcacao.ClienteId != userId)
+                {
+                    return Forbid();
+                }
+            }
+
+            if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
+            {
+                var funcionarioAutenticado =
+                    await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+
+                if (funcionarioAutenticado == null)
+                {
+                    return Forbid();
+                }
+
+                if (marcacao.FuncionarioId != funcionarioAutenticado.Id)
+                {
+                    return Forbid();
+                }
+            }
+
+            var historico = await _historicoMarcacaoRepository
+                .GetAllWithDetails()
+                .Where(h => h.MarcacaoId == id)
+                .OrderBy(h => h.DataAlteracao)
+                .Select(h => new HistoricoMarcacaoDTO
+                {
+                    Id = h.Id,
+                    MarcacaoId = h.MarcacaoId,
+                    
+                    UserId = h.UserId,
+                    UserNome = h.User.NomeCompleto,
+                    
+                    Acao = h.Acao,
+                    Descricao = h.Descricao,
+                    DataAlteracao = h.DataAlteracao
+                })
+                .ToListAsync();
+            
+            return Ok(historico);
+        }
+
     }
 }
