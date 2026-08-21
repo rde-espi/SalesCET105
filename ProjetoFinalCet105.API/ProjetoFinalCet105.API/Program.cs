@@ -8,6 +8,7 @@ using ProjetoFinalCet105.API.Data;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.Services.MarcacaoService;
+using ProjetoFinalCet105.API.UseCases.Feedbacks;
 using ProjetoFinalCet105.API.UseCases.Marcacoes;
 using System.Text;
 
@@ -77,6 +78,9 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("CancelarMarcacao", policy =>
     policy.RequireRole("Cliente", "Funcionario", "Admin"));
+
+    options.AddPolicy("FeedbackMarcação", policy =>
+    policy.RequireRole("Cliente", "Admin"));
 });
 
 builder.Services.AddSwaggerGen(options =>
@@ -108,6 +112,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<SeedDb>();
+
+//Repositories
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<ICompetenciaRepository, CompetenciaRepository>();
 builder.Services.AddScoped<IConversaRepository, ConversaRepository>();
@@ -124,12 +130,22 @@ builder.Services.AddScoped<IMensagemRepository, MensagemRepository>();
 builder.Services.AddScoped<INotificacaoRepository, NotificacaoRepository>();
 builder.Services.AddScoped<IPromoCodeRepository, PromoCodeRepository>();
 builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
+
+//Services
 builder.Services.AddScoped<IMarcacaoService, MarcacaoService>();
+
+//UseCases
+builder.Services.AddScoped<CreateFeedbackUseCase>();
 builder.Services.AddScoped<CreateMarcacaoUseCase>();
 builder.Services.AddScoped<UpdateMarcacaoUseCase>();
 builder.Services.AddScoped<CancelarMarcacaoUseCase>();
 builder.Services.AddScoped<UpdateEstadoMarcacaoUseCase>();
 builder.Services.AddScoped<GetDisponibilidadeUseCase>();
+builder.Services.AddScoped<GetFeedbackByIdUseCase>();
+builder.Services.AddScoped<GetFeedbacksByFuncionarioUseCase>();
+builder.Services.AddScoped<GetFeedbackResumoFuncionarioUseCase>();
+builder.Services.AddScoped<UpdateFeedbackUseCase>();
+builder.Services.AddScoped<DeleteFeedbackUseCase>();
 
 var app = builder.Build();
 

@@ -14,7 +14,7 @@ namespace ProjetoFinalCet105.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MarcacoesController : ControllerBase
+    public class MarcacoesController : BaseApiController
     {
         private readonly IMarcacaoRepository _marcacaoRepository;
         private readonly IFuncionarioRepository _funcionarioRepository;
@@ -574,42 +574,6 @@ namespace ProjetoFinalCet105.API.Controllers
                 .ToListAsync();
             
             return Ok(historico);
-        }
-
-        private IActionResult TratarErro<T>(UseCaseResult<T> resultado)
-        {
-            return resultado.TipoErro switch
-            {
-                TipoErro.NaoEncontrado =>
-                    NotFound(resultado.Erro),
-
-                TipoErro.Proibido =>
-                    StatusCode(StatusCodes.Status403Forbidden, resultado.Erro),
-
-                TipoErro.Conflito =>
-                    Conflict(resultado.Erro),
-
-                _ =>
-                    BadRequest(resultado.Erro)
-            };
-        }
-        private ActionResult<T> TratarErroComDados<T>(UseCaseResult<T> resultado)
-        {
-            return resultado.TipoErro switch
-            {
-                TipoErro.NaoEncontrado =>
-                    NotFound(resultado.Erro),
-
-                TipoErro.Proibido =>
-                    StatusCode(StatusCodes.Status403Forbidden, resultado.Erro),
-
-                TipoErro.Conflito =>
-                    Conflict(resultado.Erro),
-
-                _ =>
-                    BadRequest(resultado.Erro)
-            };
-        }
-
+        }      
     }
 }
