@@ -53,6 +53,30 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("GerirMarcacoes", policy =>
+        policy.RequireRole("Funcionario", "Admin"));
+
+    options.AddPolicy("CriarMarcacao", policy =>
+        policy.RequireRole("Cliente", "Funcionario", "Admin"));
+
+    options.AddPolicy("ConsultarAgenda", policy =>
+        policy.RequireRole("Funcionario", "Admin"));
+
+    options.AddPolicy("AlterarMarcacao", policy =>
+    policy.RequireRole("Cliente", "Funcionario", "Admin"));
+
+    options.AddPolicy("ConsultarMarcacoes", policy =>
+    policy.RequireRole("Cliente", "Funcionario", "Admin"));
+
+    options.AddPolicy("AdminOnly", policy =>
+    policy.RequireRole("Admin"));
+
+    options.AddPolicy("CancelarMarcacao", policy =>
+    policy.RequireRole("Cliente", "Funcionario", "Admin"));
+});
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo

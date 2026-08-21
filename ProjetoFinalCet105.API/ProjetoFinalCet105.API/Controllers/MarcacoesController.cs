@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using System.Security.Claims;
 
 namespace ProjetoFinalCet105.API.Controllers
 {
@@ -40,11 +42,36 @@ namespace ProjetoFinalCet105.API.Controllers
             _userManager = userManager;
         }
 
+        [Authorize(Policy ="ConsultarMarcacoes")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MarcacaoDTO>>> GetAllMarcacoes()
         {
-            var marcacoes = await _marcacaoRepository
-                .GetAllWithDetails()
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var query = _marcacaoRepository.GetAllWithDetails();
+
+            if(User.IsInRole("Cliente") && !User.IsInRole("Admin"))
+            {
+                query = query.Where(m=> m.ClienteId == userId);
+            }
+            else if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
+            {
+                var funcionario = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+
+                if(funcionario == null)
+                {
+                    return Forbid();
+                }
+
+                query = query.Where(m => m.FuncionarioId == funcionario.Id);
+            }
+
+            var marcacoes = await query
+                .OrderBy(m=> m.DataHoraInicio)
                 .Select(m => new MarcacaoDTO
                 {
                     Id = m.Id,
@@ -75,9 +102,17 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(marcacoes);
         }
 
+        [Authorize(Policy ="ConsultarMarcacoes")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<MarcacaoDTO>> GetMarcacaoById(int id)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
             var marcacao = await _marcacaoRepository
                 .GetByIdWithDetailsAsync(id);
 
@@ -85,6 +120,31 @@ namespace ProjetoFinalCet105.API.Controllers
             {
                 return NotFound();
             }
+
+            if (User.IsInRole("Cliente") && !User.IsInRole("Admin"))
+            {
+                if (marcacao.ClienteId != userId)
+                {
+                    return Forbid();
+                }
+            }
+
+            if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
+            {
+                var funcionario = await _funcionarioRepository
+                    .GetFuncionarioByUserIdAsync(userId);
+
+                if (funcionario == null)
+                {
+                    return Forbid();
+                }
+
+                if (marcacao.FuncionarioId != funcionario.Id)
+                {
+                    return Forbid();
+                }
+            }
+
 
             return Ok(new MarcacaoDTO
             {
@@ -113,19 +173,57 @@ namespace ProjetoFinalCet105.API.Controllers
             });
         }
 
-        [HttpPost]
+        [Authorize(Policy = "CriarMarcacao")]
+        [HttpPost]        
         public async Task<ActionResult<MarcacaoDTO>> CreateMarcacao(NovaMarcacaoDTO dto)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string clienteId;
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
 
-            var cliente = await _userManager.FindByIdAsync(dto.ClienteId);
+            if (User.IsInRole("Cliente"))
+            {
+                clienteId = userId;
+            }
+            else if(User.IsInRole("Funcionario") || User.IsInRole("Admin"))
+            {
+                if (string.IsNullOrEmpty(dto.ClienteId))
+                {
+                    return BadRequest("É necessário indicar o cliente da marcação");
+                }
+                clienteId = dto.ClienteId;
+            }
+            else
+            {
+                return Forbid();
+            }            
+
+            var cliente = await _userManager.FindByIdAsync(clienteId);
             if (cliente == null)
             {
                 return BadRequest("O cliente indicado não existe");
+            }        
+            
+            if(!await _userManager.IsInRoleAsync(cliente, "Cliente"))
+            {
+                return BadRequest("O utilizador indicado não é um cliente");
             }
 
-            if (!await _userManager.IsInRoleAsync(cliente, "Cliente"))
+            if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
             {
-                return BadRequest("O utilizador indicado não é um cliente.");
+                var funcionarioAutenticado = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+                if (funcionarioAutenticado == null)
+                {
+                    return Forbid();
+                }
+
+                if (dto.FuncionarioId != funcionarioAutenticado.Id)
+                {
+                    return Forbid("Marcações que não sejam na propria agenda requer Admin access");
+                }
             }
 
             var funcionario = await _funcionarioRepository.GetFuncionarioByIdAsync(dto.FuncionarioId);
@@ -137,7 +235,7 @@ namespace ProjetoFinalCet105.API.Controllers
             if (!funcionario.Ativo || !funcionario.Disponivel)
             {
                 return BadRequest("O funcionário indicado não está disponível");
-            }
+            }            
 
             var servico = await _servicoRepository.GetByIdAsync(dto.ServicoId);
             if(servico == null)
@@ -221,7 +319,7 @@ namespace ProjetoFinalCet105.API.Controllers
             {
                 var marcacao = new Marcacao
                 {
-                    ClienteId = dto.ClienteId,
+                    ClienteId = clienteId,
                     FuncionarioId = dto.FuncionarioId,
                     ServicoId = dto.ServicoId,
                     EstadoMarcacaoId = estadoPendente.Id,
@@ -270,19 +368,62 @@ namespace ProjetoFinalCet105.API.Controllers
             }
         }
 
+        [Authorize(Policy = "AlterarMarcacao")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateMarcacao(int id,UpdateMarcacaoDTO dto)
         {
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
             var marcacaoAtual = await _marcacaoRepository.GetByIdAsync(id);
             if(marcacaoAtual == null)
             {
                 return NotFound();
             }
 
-            var estadoMarcacao = await _estadoMarcacaoRepository.GetByIdAsync(marcacaoAtual.EstadoMarcacaoId);
-            if(estadoMarcacao!.Nome == "Cancelada")
+            if(User.IsInRole("Cliente") && !User.IsInRole("Admin"))
             {
-                return BadRequest("Não é possivel alterar uma marcação ja cancelada");
+                if(marcacaoAtual.ClienteId != userId)
+                {
+                    return Forbid();
+                }
+            }
+
+            if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
+            {
+                var funcionarioAutenticado = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+                if (funcionarioAutenticado == null)
+                {
+                    return Forbid();
+                }
+
+                if(marcacaoAtual.FuncionarioId != funcionarioAutenticado.Id)
+                {
+                    return Forbid();
+                }
+
+                if(dto.FuncionarioId != funcionarioAutenticado.Id)
+                {
+                    return Forbid();
+                }
+
+            }
+
+            var estadoMarcacao = await _estadoMarcacaoRepository.GetByIdAsync(marcacaoAtual.EstadoMarcacaoId);
+            if(estadoMarcacao == null)
+            {
+                return NotFound();
+            }
+            if (estadoMarcacao.Nome == "Cancelada" ||
+                estadoMarcacao.Nome == "Concluida" ||
+                estadoMarcacao.Nome == "Não Compareceu")
+            {
+                return BadRequest(
+                    $"Não é possível alterar uma marcação com o estado '{estadoMarcacao.Nome}'.");
             }
 
             var funcionario = await _funcionarioRepository.GetByIdAsync(dto.FuncionarioId);
@@ -324,6 +465,10 @@ namespace ProjetoFinalCet105.API.Controllers
             var duracaoMinutos = funcionarioServico.DuracaoPersonalizadaMinutos ?? servico.DuracaoMinutos;
 
             var dataHoraFim = dto.DataHoraInicio.AddMinutes(duracaoMinutos);
+            if (dataHoraFim.Date != dto.DataHoraInicio.Date)
+            {
+                return BadRequest("A duração do serviço ultrapassa o horário do mesmo dia");
+            }
 
             var preco = funcionarioServico.PrecoPersonalizado ?? servico.Preco;
 
@@ -393,47 +538,77 @@ namespace ProjetoFinalCet105.API.Controllers
         //    });
         //}
 
-        [HttpPut("{id:int}/estado")]
-        public async Task<IActionResult> UpdateEstadoMarcacao(int id,EstadoMarcacaoDTO dto)
+        [Authorize(Policy = "GerirMarcacoes")]
+        [HttpPatch("{id:int}/estado")]
+        public async Task<IActionResult> UpdateEstadoMarcacao(int id,UpdateEstadoMarcacaoDTO dto)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
             var marcacao = await _marcacaoRepository.GetByIdAsync(id);
 
             if (marcacao == null)
             {
                 return NotFound();
             }
+            if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
+            {
+                var funcionarioAutenticado =
+                    await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
 
-            var estadoAtual = await _estadoMarcacaoRepository
-                .GetByIdAsync(marcacao.EstadoMarcacaoId);
+                if (funcionarioAutenticado == null)
+                {
+                    return Forbid();
+                }
+
+                if (marcacao.FuncionarioId != funcionarioAutenticado.Id)
+                {
+                    return Forbid();
+                }
+            }
+
+            var estadoAtual = await _estadoMarcacaoRepository.GetByIdAsync(marcacao.EstadoMarcacaoId);
 
             if (estadoAtual == null)
             {
                 return BadRequest("O estado atual da marcação não foi encontrado.");
             }
 
-            var novoEstado = await _estadoMarcacaoRepository
-                .GetByIdAsync(dto.EstadoMarcacaoId);
+            var novoEstado = await _estadoMarcacaoRepository.GetByIdAsync(dto.EstadoMarcacaoId);
 
             if (novoEstado == null)
             {
                 return BadRequest("O estado indicado não existe.");
             }
 
+            if (estadoAtual.Nome == "Cancelada" ||
+                estadoAtual.Nome == "Concluida" ||
+                estadoAtual.Nome == "Não Compareceu")
+            {
+                return BadRequest($"A marcação encontra-se no estado '{estadoAtual.Nome}' e já não pode ser alterada.");
+            }
+
+            if (novoEstado.Nome == "Cancelada")
+            {
+                return BadRequest("Para cancelar uma marcação deve utilizar o endpoint de cancelamento.");
+            }
+
             var transicaoValida =
                 (estadoAtual.Nome == "Pendente" &&
-                    (novoEstado.Nome == "Confirmada" ||
-                     novoEstado.Nome == "Cancelada"))
+                novoEstado.Nome == "Confirmada")
                 ||
                 (estadoAtual.Nome == "Confirmada" &&
-                    (novoEstado.Nome == "Concluida" ||
-                     novoEstado.Nome == "Cancelada" ||
-                     novoEstado.Nome == "Não Compareceu"));
+                (novoEstado.Nome == "Concluida" ||
+                novoEstado.Nome == "Não Compareceu"));
 
             if (!transicaoValida)
             {
-                return BadRequest(
-                    $"Não é possível alterar o estado de '{estadoAtual.Nome}' para '{novoEstado.Nome}'.");
-            }
+                return BadRequest($"Não é possível alterar o estado de '{estadoAtual.Nome}' para '{novoEstado.Nome}'.");
+            }            
 
             try
             {
@@ -450,15 +625,46 @@ namespace ProjetoFinalCet105.API.Controllers
             }
         }
 
-
+        [Authorize(Policy = "CancelarMarcacao")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteMarcacao(int id)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
             var marcacao = await _marcacaoRepository.GetByIdAsync(id);
 
             if (marcacao == null)
             {
                 return NotFound();
+            }
+
+            if (User.IsInRole("Cliente") && !User.IsInRole("Admin"))
+            {
+                if (marcacao.ClienteId != userId)
+                {
+                    return Forbid();
+                }
+            }
+
+            if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
+            {
+                var funcionarioAutenticado =
+                    await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+
+                if (funcionarioAutenticado == null)
+                {
+                    return Forbid();
+                }
+
+                if (marcacao.FuncionarioId != funcionarioAutenticado.Id)
+                {
+                    return Forbid();
+                }
             }
 
             var estadoCancelada = await _estadoMarcacaoRepository
@@ -505,6 +711,7 @@ namespace ProjetoFinalCet105.API.Controllers
             }
         }
 
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet("cliente/{clienteId}")]
         public async Task<ActionResult<IEnumerable<MarcacaoDTO>>> GetMarcacoesByCliente(string clienteId)
         {
@@ -550,14 +757,38 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(marcacoes);
         }
 
+        [Authorize(Policy = "ConsultarAgenda")]
         [HttpGet("funcionario/{funcionarioId:int}")]
-        public async Task<ActionResult<IEnumerable<MarcacaoDTO>>> GetMarcacoesByFuncionario(
-    int funcionarioId)
+        public async Task<ActionResult<IEnumerable<MarcacaoDTO>>> GetMarcacoesByFuncionario(int funcionarioId)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
+            {
+                var funcionarioAutenticado =
+                    await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+
+                if (funcionarioAutenticado == null)
+                {
+                    return Forbid();
+                }
+
+                if (funcionarioAutenticado.Id != funcionarioId)
+                {
+                    return Forbid();
+                }
+            }
+
             if (!await _funcionarioRepository.ExistAsync(funcionarioId))
             {
                 return NotFound("Funcionário não encontrado.");
             }
+
 
             var marcacoes = await _marcacaoRepository
                 .GetAllWithDetails()
@@ -592,11 +823,34 @@ namespace ProjetoFinalCet105.API.Controllers
 
             return Ok(marcacoes);
         }
+
+        [Authorize(Policy = "ConsultarAgenda")]
         [HttpGet("funcionario/{funcionarioId:int}/data/{data:datetime}")]
-        public async Task<ActionResult<IEnumerable<MarcacaoDTO>>> GetMarcacoesByFuncionarioData(
-    int funcionarioId,
-    DateTime data)
+        public async Task<ActionResult<IEnumerable<MarcacaoDTO>>> GetMarcacoesByFuncionarioData(int funcionarioId, DateTime data)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
+            {
+                var funcionarioAutenticado =
+                    await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+
+                if (funcionarioAutenticado == null)
+                {
+                    return Forbid();
+                }
+
+                if (funcionarioAutenticado.Id != funcionarioId)
+                {
+                    return Forbid();
+                }
+            }
+
             if (!await _funcionarioRepository.ExistAsync(funcionarioId))
             {
                 return NotFound("Funcionário não encontrado.");

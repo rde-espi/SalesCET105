@@ -2,7 +2,7 @@
 {
     public class NovaMarcacaoDTO
     {
-        public string ClienteId { get; set; }
+        public string? ClienteId { get; set; }
 
         public int FuncionarioId { get; set; }
 
