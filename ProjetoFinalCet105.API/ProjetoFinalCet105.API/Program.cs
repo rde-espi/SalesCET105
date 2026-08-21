@@ -7,6 +7,8 @@ using Microsoft.OpenApi;
 using ProjetoFinalCet105.API.Data;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using ProjetoFinalCet105.API.Services.MarcacaoService;
+using ProjetoFinalCet105.API.UseCases.Marcacoes;
 using System.Text;
 
 
@@ -122,6 +124,12 @@ builder.Services.AddScoped<IMensagemRepository, MensagemRepository>();
 builder.Services.AddScoped<INotificacaoRepository, NotificacaoRepository>();
 builder.Services.AddScoped<IPromoCodeRepository, PromoCodeRepository>();
 builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
+builder.Services.AddScoped<IMarcacaoService, MarcacaoService>();
+builder.Services.AddScoped<CreateMarcacaoUseCase>();
+builder.Services.AddScoped<UpdateMarcacaoUseCase>();
+builder.Services.AddScoped<CancelarMarcacaoUseCase>();
+builder.Services.AddScoped<UpdateEstadoMarcacaoUseCase>();
+builder.Services.AddScoped<GetDisponibilidadeUseCase>();
 
 var app = builder.Build();
 
