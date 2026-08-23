@@ -13,5 +13,6 @@
         public string? Motivo { get; set; }
 
         public bool DiaCompleto { get; set; }
+        public bool RestoDoDia { get; set; }
     }
 }

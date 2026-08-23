@@ -7,8 +7,10 @@ using Microsoft.OpenApi;
 using ProjetoFinalCet105.API.Data;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using ProjetoFinalCet105.API.Services.IndisponibilidadeService;
 using ProjetoFinalCet105.API.Services.MarcacaoService;
 using ProjetoFinalCet105.API.UseCases.Feedbacks;
+using ProjetoFinalCet105.API.UseCases.Indisponibilidades;
 using ProjetoFinalCet105.API.UseCases.Marcacoes;
 using System.Text;
 
@@ -81,6 +83,12 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("FeedbackMarcação", policy =>
     policy.RequireRole("Cliente", "Admin"));
+
+    options.AddPolicy("ConsultarIndisponibilidades", policy =>
+    policy.RequireRole("Funcionario", "Admin"));
+
+    options.AddPolicy("GerirIndisponibilidades", policy =>
+        policy.RequireRole("Funcionario", "Admin"));
 });
 
 builder.Services.AddSwaggerGen(options =>
@@ -130,6 +138,7 @@ builder.Services.AddScoped<IMensagemRepository, MensagemRepository>();
 builder.Services.AddScoped<INotificacaoRepository, NotificacaoRepository>();
 builder.Services.AddScoped<IPromoCodeRepository, PromoCodeRepository>();
 builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
+builder.Services.AddScoped<IIndisponibilidadeService,IndisponibilidadeService>();
 
 //Services
 builder.Services.AddScoped<IMarcacaoService, MarcacaoService>();
@@ -146,6 +155,10 @@ builder.Services.AddScoped<GetFeedbacksByFuncionarioUseCase>();
 builder.Services.AddScoped<GetFeedbackResumoFuncionarioUseCase>();
 builder.Services.AddScoped<UpdateFeedbackUseCase>();
 builder.Services.AddScoped<DeleteFeedbackUseCase>();
+builder.Services.AddScoped<CreateIndisponibilidadeUseCase>();
+builder.Services.AddScoped<UpdateIndisponibilidadeUseCase>();
+builder.Services.AddScoped<DeleteIndisponibilidadeUseCase>();
+
 
 var app = builder.Build();
 

@@ -1,30 +1,69 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using ProjetoFinalCet105.API.UseCases.Indisponibilidades;
+using System.Security.Claims;
 
 namespace ProjetoFinalCet105.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class IndisponibilidadesController : ControllerBase
+    public class IndisponibilidadesController : BaseApiController
     {
         private readonly IIndisponibilidadeRepository _indisponibilidadeRepository;
         private readonly IFuncionarioRepository _funcionarioRepository;
+        private readonly CreateIndisponibilidadeUseCase _createIndisponibilidadeUseCase;
+        private readonly UpdateIndisponibilidadeUseCase _updateIndisponibilidadeUseCase;
+        private readonly DeleteIndisponibilidadeUseCase _deleteIndisponibilidadeUseCase;
 
-        public IndisponibilidadesController(IIndisponibilidadeRepository indisponibilidadeRepository,IFuncionarioRepository funcionarioRepository)
+        public IndisponibilidadesController(IIndisponibilidadeRepository indisponibilidadeRepository,IFuncionarioRepository funcionarioRepository,
+            CreateIndisponibilidadeUseCase createIndisponibilidadeUseCase, UpdateIndisponibilidadeUseCase updateIndisponibilidadeUseCase, DeleteIndisponibilidadeUseCase deleteIndisponibilidadeUseCase)
         {
             _indisponibilidadeRepository = indisponibilidadeRepository;
             _funcionarioRepository = funcionarioRepository;
+            _createIndisponibilidadeUseCase = createIndisponibilidadeUseCase;
+            _updateIndisponibilidadeUseCase = updateIndisponibilidadeUseCase;
+            _deleteIndisponibilidadeUseCase = deleteIndisponibilidadeUseCase;
         }
 
+        [Authorize(Policy = "ConsultarIndisponibilidades")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<IndisponibilidadeDTO>>> GetAllIndisponibilidadesWithFuncionario()
+        public async Task<ActionResult<IEnumerable<IndisponibilidadeDTO>>>
+    GetAllIndisponibilidadesWithFuncionario()
         {
-            var indisponibilidades = await _indisponibilidadeRepository.GetAllIndisponibilidadesWithFuncionario()
-                .Select(i=> new IndisponibilidadeDTO
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var query = _indisponibilidadeRepository
+                .GetAllIndisponibilidadesWithFuncionario();
+
+            if (User.IsInRole("Funcionario") &&
+                !User.IsInRole("Admin"))
+            {
+                var funcionarioAutenticado =
+                    await _funcionarioRepository
+                        .GetFuncionarioByUserIdAsync(userId);
+
+                if (funcionarioAutenticado == null)
+                {
+                    return Forbid();
+                }
+
+                query = query.Where(i =>
+                    i.FuncionarioId == funcionarioAutenticado.Id);
+            }
+
+            var indisponibilidades = await query
+                .OrderBy(i => i.DataHoraInicio)
+                .Select(i => new IndisponibilidadeDTO
                 {
                     Id = i.Id,
                     FuncionarioId = i.FuncionarioId,
@@ -32,12 +71,15 @@ namespace ProjetoFinalCet105.API.Controllers
                     DataHoraInicio = i.DataHoraInicio,
                     DataHoraFim = i.DataHoraFim,
                     Motivo = i.Motivo,
-                    DiaCompleto = i.DiaCompleto
+                    DiaCompleto = i.DiaCompleto,
+                    RestoDoDia = i.RestoDoDia
                 })
                 .ToListAsync();
+
             return Ok(indisponibilidades);
         }
 
+        [Authorize(Policy = "ConsultarIndisponibilidades")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<IndisponibilidadeDTO>>GetIndisponibilidadeWithFuncionarioById(int id)
         {
@@ -54,122 +96,93 @@ namespace ProjetoFinalCet105.API.Controllers
                 DataHoraInicio = indisponibilidade.DataHoraInicio,
                 DataHoraFim = indisponibilidade.DataHoraFim,
                 Motivo = indisponibilidade.Motivo,
-                DiaCompleto = indisponibilidade.DiaCompleto
+                DiaCompleto = indisponibilidade.DiaCompleto,
+                RestoDoDia= indisponibilidade.RestoDoDia
             });
         }
 
+        [Authorize(Policy = "GerirIndisponibilidades")]
         [HttpPost]
-        public async Task<ActionResult<IndisponibilidadeDTO>>CreateIndisponibilidade(IndisponibilidadeDTO dto)
+        public async Task<ActionResult<IndisponibilidadeDTO>> CreateIndisponibilidade(NovaIndisponibilidadeDTO dto)
         {
-            if (!await _funcionarioRepository.ExistAsync(dto.FuncionarioId))
+            var userId =
+                User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
             {
-                return BadRequest("O funcionário indicado não existe.");
+                return Unauthorized();
             }
 
-            if (dto.DataHoraFim <= dto.DataHoraInicio)
+            var resultado =
+                await _createIndisponibilidadeUseCase.ExecuteAsync(
+                    userId,
+                    User.IsInRole("Funcionario"),
+                    User.IsInRole("Admin"),
+                    dto);
+
+            if (!resultado.Sucesso)
             {
-                return BadRequest(
-                    "A data/hora de fim deve ser posterior à data/hora de início.");
+                return TratarErroComDados(resultado);
             }
 
-            if (await _indisponibilidadeRepository.ExisteSobreposiçãoAsync(dto.FuncionarioId,dto.DataHoraInicio,dto.DataHoraFim))
-            {
-                return BadRequest(
-                    "Já existe uma indisponibilidade sobreposta para este funcionário.");
-            }
-
-            try
-            {
-                var indisponibilidade = new Indisponibilidade
-                {
-                    FuncionarioId = dto.FuncionarioId,
-                    DataHoraInicio = dto.DataHoraInicio,
-                    DataHoraFim = dto.DataHoraFim,
-                    Motivo = dto.Motivo,
-                    DiaCompleto = dto.DiaCompleto,
-                };
-
-                await _indisponibilidadeRepository.CreateAsync(indisponibilidade);
-
-                dto.Id = indisponibilidade.Id;
-
-                var funcionario = await _funcionarioRepository.GetFuncionarioByIdAsync(dto.FuncionarioId);
-
-                dto.FuncionarioNome = funcionario!.User.NomeCompleto;
-
-                return CreatedAtAction(nameof(GetIndisponibilidadeWithFuncionarioById),new { id = indisponibilidade.Id },dto);
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
+            return CreatedAtAction(nameof(GetIndisponibilidadeWithFuncionarioById),
+                new { id = resultado.Dados!.Id },
+                resultado.Dados);
         }
 
+        [Authorize(Policy = "GerirIndisponibilidades")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateIndisponibilidade(int id, IndisponibilidadeDTO dto)
+        public async Task<IActionResult> UpdateIndisponibilidade( int id, UpdateIndisponibilidadeDTO dto)
         {
-            if (!await _funcionarioRepository.ExistAsync(dto.FuncionarioId))
+            var userId =
+                User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
             {
-                return BadRequest("O funcionário indicado não existe.");
-            }
-            if (id != dto.Id)
-            {
-                return BadRequest();
+                return Unauthorized();
             }
 
-            if(!await _indisponibilidadeRepository.ExistAsync(id))
+            var resultado =
+                await _updateIndisponibilidadeUseCase.ExecuteAsync(
+                    id,
+                    userId,
+                    User.IsInRole("Funcionario"),
+                    User.IsInRole("Admin"),
+                    dto);
+
+            if (!resultado.Sucesso)
             {
-                return NotFound();
-            }
-            if(dto.DataHoraFim <= dto.DataHoraInicio)
-            {
-                return BadRequest("A data/hora de fim deve ser posterior à data/hora de ínicio");
-            }
-            if(await _indisponibilidadeRepository.ExisteSobreposiçãoAsync(dto.FuncionarioId, dto.DataHoraInicio, dto.DataHoraFim, id))
-            {
-                return BadRequest("Já existe uma indisponibilidade sobreposta para este funcionário");
+                return TratarErro(resultado);
             }
 
-            try
-            {
-                var indisponibilidade = new Indisponibilidade
-                {
-                    Id = id,
-                    FuncionarioId = dto.FuncionarioId,
-                    DataHoraInicio = dto.DataHoraInicio,
-                    DataHoraFim = dto.DataHoraFim,
-                    Motivo = dto.Motivo,
-                    DiaCompleto = dto.DiaCompleto
-                };
-
-                await _indisponibilidadeRepository.UpdateAsync(indisponibilidade);
-
-                return NoContent();
-            }
-            catch (Exception)
-            {
-
-                return BadRequest();
-            }
+            return NoContent();
         }
 
+        [Authorize(Policy = "GerirIndisponibilidades")]
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult>DeleteIndisponibilidade(int id)
+        public async Task<IActionResult> DeleteIndisponibilidade(int id)
         {
-            var indisponibilidade = await _indisponibilidadeRepository.GetByIdAsync(id);
-            if(indisponibilidade == null)
+            var userId =
+                User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
             {
-                return NotFound();
+                return Unauthorized();
             }
-            try
+
+            var resultado =
+                await _deleteIndisponibilidadeUseCase.ExecuteAsync(
+                    id,
+                    userId,
+                    User.IsInRole("Funcionario"),
+                    User.IsInRole("Admin"));
+
+            if (!resultado.Sucesso)
             {
-                await _indisponibilidadeRepository.DeleteAsync(indisponibilidade);
-                return NoContent();
+                return TratarErro(resultado);
             }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
+
+            return NoContent();
         }
     }
 }

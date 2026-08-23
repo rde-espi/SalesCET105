@@ -1,11 +1,8 @@
-﻿namespace ProjetoFinalCet105.API.Entities
+﻿namespace ProjetoFinalCet105.API.DTOs
 {
-    public class Indisponibilidade:IEntity
+    public class NovaIndisponibilidadeDTO
     {
-        public int Id { get; set; }
-
-        public int FuncionarioId { get; set; }
-        public Funcionario Funcionario { get; set; }
+        public int? FuncionarioId { get; set; }
 
         public DateTime DataHoraInicio { get; set; }
         public DateTime DataHoraFim { get; set; }
