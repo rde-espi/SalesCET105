@@ -9,9 +9,9 @@ using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.Services.IndisponibilidadeService;
 using ProjetoFinalCet105.API.Services.MarcacaoService;
+using ProjetoFinalCet105.API.UseCases.Cliente;
 using ProjetoFinalCet105.API.UseCases.Feedbacks;
 using ProjetoFinalCet105.API.UseCases.Funcionarios;
-using ProjetoFinalCet105.API.UseCases.Funcionarios.ProjetoFinalCet105.API.UseCases.Funcionarios;
 using ProjetoFinalCet105.API.UseCases.Indisponibilidades;
 using ProjetoFinalCet105.API.UseCases.Marcacoes;
 using System.Text;
@@ -94,6 +94,12 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("AlterarFuncionario", policy =>
     policy.RequireRole("Funcionario", "Admin"));
+
+    options.AddPolicy("ConsultarCliente", policy =>
+    policy.RequireRole("Cliente", "Admin"));
+
+    options.AddPolicy("AlterarCliente", policy =>
+    policy.RequireRole("Cliente", "Admin"));
 });
 
 builder.Services.AddSwaggerGen(options =>
@@ -143,7 +149,8 @@ builder.Services.AddScoped<IMensagemRepository, MensagemRepository>();
 builder.Services.AddScoped<INotificacaoRepository, NotificacaoRepository>();
 builder.Services.AddScoped<IPromoCodeRepository, PromoCodeRepository>();
 builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
-builder.Services.AddScoped<IIndisponibilidadeService,IndisponibilidadeService>();
+builder.Services.AddScoped<IIndisponibilidadeService, IndisponibilidadeService>();
+
 
 //Services
 builder.Services.AddScoped<IMarcacaoService, MarcacaoService>();
@@ -166,6 +173,8 @@ builder.Services.AddScoped<DeleteIndisponibilidadeUseCase>();
 builder.Services.AddScoped<CreateFuncionarioUseCase>();
 builder.Services.AddScoped<UpdateFuncionarioUseCase>();
 builder.Services.AddScoped<DeleteFuncionarioUseCase>();
+builder.Services.AddScoped<CreateClienteUseCase>();
+builder.Services.AddScoped<UpdateClienteUseCase>();
 
 
 var app = builder.Build();
