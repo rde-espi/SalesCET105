@@ -1,29 +1,37 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 using ProjetoFinalCet105.API.DTOs;
-using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using ProjetoFinalCet105.API.UseCases.Funcionarios;
+using System.Security.Claims;
 
 namespace ProjetoFinalCet105.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FuncionariosController : ControllerBase
+    public class FuncionariosController : BaseApiController
     {
         private readonly IFuncionarioRepository _funcionarioRepository;
-        private readonly UserManager<User> _userManager;
         private readonly IServicoRepository _servicoRepository;
         private readonly IFuncionarioServicoRepository _funcionarioServicoRepository;
+        private readonly CreateFuncionarioUseCase _createFuncionarioUseCase;
+        private readonly UpdateFuncionarioUseCase _updateFuncionarioUseCase;
+        private readonly DeleteFuncionarioUseCase _deleteFuncionarioUseCase;
 
-        public FuncionariosController(IFuncionarioRepository funcionarioRepository,UserManager<User> userManager, IServicoRepository servicoRepository,IFuncionarioServicoRepository funcionarioServicoRepository)
+        public FuncionariosController(IFuncionarioRepository funcionarioRepository,
+            IServicoRepository servicoRepository,
+            IFuncionarioServicoRepository funcionarioServicoRepository,
+            CreateFuncionarioUseCase createFuncionarioUseCase,
+            UpdateFuncionarioUseCase updateFuncionarioUseCase,
+            DeleteFuncionarioUseCase deleteFuncionarioUseCase)
         {
             _funcionarioRepository = funcionarioRepository;
-            _userManager = userManager;
             _servicoRepository = servicoRepository;
             _funcionarioServicoRepository = funcionarioServicoRepository;
+            _createFuncionarioUseCase = createFuncionarioUseCase;
+            _updateFuncionarioUseCase = updateFuncionarioUseCase;
+            _deleteFuncionarioUseCase = deleteFuncionarioUseCase;
         }
 
         [HttpGet]
@@ -51,7 +59,7 @@ namespace ProjetoFinalCet105.API.Controllers
         public async Task<ActionResult<FuncionarioDTO>> GetFuncionarioById(int id)
         {
             var funcionario = await _funcionarioRepository.GetFuncionarioByIdAsync(id);
-            if(funcionario == null)
+            if (funcionario == null)
             {
                 return NotFound();
             }
@@ -70,14 +78,33 @@ namespace ProjetoFinalCet105.API.Controllers
             });
         }
 
+        [Authorize(Policy = "AlterarFuncionario")]
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<FuncionarioDTO>> GetFuncionarioByUserId(string userId)
         {
-            var funcionario = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+            var authenticatedUserId =
+                User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (authenticatedUserId == null)
+            {
+                return Unauthorized();
+            }
+
+            if (User.IsInRole("Funcionario") &&
+                !User.IsInRole("Admin") &&
+                authenticatedUserId != userId)
+            {
+                return Forbid();
+            }
+
+            var funcionario =
+                await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+
             if (funcionario == null)
             {
                 return NotFound();
             }
+
             return Ok(new FuncionarioDTO
             {
                 Id = funcionario.Id,
@@ -93,169 +120,68 @@ namespace ProjetoFinalCet105.API.Controllers
             });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<FuncionarioDTO>>CreateFuncionario(NovoFuncionarioDTO dto)
+        public async Task<ActionResult<FuncionarioDTO>> CreateFuncionario(NovoFuncionarioDTO dto)
         {
-            var userExistente = await _userManager.FindByEmailAsync(dto.Email);
-            if(userExistente != null)
+            var resultado =
+                await _createFuncionarioUseCase.ExecuteAsync(dto);
+
+            if (!resultado.Sucesso)
             {
-                return BadRequest("Ja existe um utilizador com este email");
+                return TratarErroComDados(resultado);
             }
-
-            var user = new User
-            {
-                NomeCompleto = dto.NomeCompleto,
-                UserName = dto.Email,
-                Email = dto.Email,
-                PhoneNumber = dto.Telefone,
-                FotografiaUrl = dto.FotografiaUrl,
-                Ativo = true,
-                DataCriacao = DateTime.Now
-            };
-
-            var resultadoUser = await _userManager.CreateAsync(user,dto.Password);
-
-            if (!resultadoUser.Succeeded)
-            {
-                return BadRequest(resultadoUser.Errors);
-            }
-
-            var resultadoRole = await _userManager.AddToRoleAsync(user, "Funcionario");
-            if (!resultadoRole.Succeeded)
-            {
-                return BadRequest(resultadoRole.Errors);
-            }
-
-            var funcionario = new Funcionario
-            {
-                UserId = user.Id,
-                Biografia = dto.Biografia,
-                DataAdmissao = dto.DataAdmissao,
-                Disponivel = dto.Disponivel,
-                Ativo = true
-            };
-
-            try
-            {
-                await _funcionarioRepository.CreateAsync(funcionario);
-            }
-            catch (Exception)
-            {
-                await _userManager.DeleteAsync(user);
-                return BadRequest();
-            }
-
-            var funcionarioDto = new FuncionarioDTO
-            {
-                Id = funcionario.Id,
-                UserId = user.Id,
-                NomeCompleto = user.NomeCompleto,
-                Email = user.Email,
-                Telefone = user.PhoneNumber,
-                FotografiaUrl = user.FotografiaUrl,
-                Biografia = funcionario.Biografia,
-                DataAdmissao = funcionario.DataAdmissao,
-                Disponivel = funcionario.Disponivel,
-                Ativo = funcionario.Ativo
-            };
 
             return CreatedAtAction(
                 nameof(GetFuncionarioById),
-                new { id = funcionario.Id },
-                funcionarioDto);
+                new { id = resultado.Dados!.Id },
+                resultado.Dados);
         }
 
+        [Authorize(Policy = "AlterarFuncionario")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult>UpdateFuncionario(int id,FuncionarioDTO dto)
+        public async Task<IActionResult> UpdateFuncionario(int id, UpdateFuncionarioDTO dto)
         {
-            if(id != dto.Id)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
             {
-                return BadRequest();
+                return Unauthorized();
             }
-            var funcionario = await _funcionarioRepository.GetByIdAsync(id);
 
-            if(funcionario == null)
+            var resultado =
+                await _updateFuncionarioUseCase.ExecuteAsync(
+                    id,
+                    userId,
+                    User.IsInRole("Funcionario"),
+                    User.IsInRole("Admin"),
+                    dto);
+
+            if (!resultado.Sucesso)
             {
-                return NotFound();
+                return TratarErro(resultado);
             }
-            var user = await _userManager.FindByIdAsync(funcionario.UserId);
-            if(user == null)
-            {
-                return NotFound("Utilizador associado ao funcionário não encontrado");
-            }
-            try
-            {
-                user.NomeCompleto = dto.NomeCompleto;
-                user.UserName = dto.Email;
-                user.Email = dto.Email;
-                user.PhoneNumber = dto.Telefone;
-                user.FotografiaUrl = dto.FotografiaUrl;
-                user.DataAtualizacao = DateTime.Now;
 
-                var resultadoUser = await _userManager.UpdateAsync(user);
-
-                if (!resultadoUser.Succeeded)
-                {
-                    return BadRequest(resultadoUser.Errors);
-                }
-
-                funcionario.Biografia = dto.Biografia;
-                funcionario.DataAdmissao = dto.DataAdmissao;
-                funcionario.Disponivel = dto.Disponivel;
-                funcionario.Ativo = dto.Ativo;
-
-                await _funcionarioRepository.UpdateAsync(funcionario);
-
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
+            return NoContent();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteFuncionario(int id)
         {
-            var funcionario = await _funcionarioRepository.GetByIdAsync(id);
-            if (funcionario == null)
-            {
-                return NotFound();
-            }
-            var user = await _userManager.FindByIdAsync(funcionario.UserId);
+            var resultado =
+                await _deleteFuncionarioUseCase.ExecuteAsync(id);
 
-            if (user == null)
+            if (!resultado.Sucesso)
             {
-                return NotFound("Utilizador associado ao funcionário não encontrado");
+                return TratarErro(resultado);
             }
 
-            try
-            {
-                funcionario.Ativo = false;
-                funcionario.Disponivel = false;
-                user.Ativo = false;
-                user.DataAtualizacao = DateTime.Now;
-
-                var resultadoUser = await _userManager.UpdateAsync(user);
-
-                if (!resultadoUser.Succeeded)
-                {
-                    return BadRequest(resultadoUser.Errors);
-                }
-
-                await _funcionarioRepository.UpdateAsync(funcionario);
-
-                return NoContent();
-            }
-            catch(Exception)
-            {
-                return BadRequest();
-            }
-
+            return NoContent();
         }
 
         [HttpGet("servico/{servicoId:int}")]
-        public async Task<ActionResult<IEnumerable<FuncionarioDTO>>>GetFuncionariosByServico(int servicoId)
+        public async Task<ActionResult<IEnumerable<FuncionarioDTO>>> GetFuncionariosByServico(int servicoId)
         {
             var servico = await _servicoRepository.GetByIdAsync(servicoId);
 

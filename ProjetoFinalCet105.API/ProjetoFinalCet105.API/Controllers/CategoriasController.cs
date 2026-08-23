@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.Entities;
@@ -34,6 +35,7 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(categoria);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Categoria>> CreateCategoria(Categoria categoria)
         {
@@ -49,6 +51,7 @@ namespace ProjetoFinalCet105.API.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateCategoria(int id, Categoria categoria)
         {
@@ -72,6 +75,7 @@ namespace ProjetoFinalCet105.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteCategoria(int id)
         {

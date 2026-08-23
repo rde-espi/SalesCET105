@@ -10,6 +10,8 @@ using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.Services.IndisponibilidadeService;
 using ProjetoFinalCet105.API.Services.MarcacaoService;
 using ProjetoFinalCet105.API.UseCases.Feedbacks;
+using ProjetoFinalCet105.API.UseCases.Funcionarios;
+using ProjetoFinalCet105.API.UseCases.Funcionarios.ProjetoFinalCet105.API.UseCases.Funcionarios;
 using ProjetoFinalCet105.API.UseCases.Indisponibilidades;
 using ProjetoFinalCet105.API.UseCases.Marcacoes;
 using System.Text;
@@ -89,6 +91,9 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("GerirIndisponibilidades", policy =>
         policy.RequireRole("Funcionario", "Admin"));
+
+    options.AddPolicy("AlterarFuncionario", policy =>
+    policy.RequireRole("Funcionario", "Admin"));
 });
 
 builder.Services.AddSwaggerGen(options =>
@@ -158,6 +163,9 @@ builder.Services.AddScoped<DeleteFeedbackUseCase>();
 builder.Services.AddScoped<CreateIndisponibilidadeUseCase>();
 builder.Services.AddScoped<UpdateIndisponibilidadeUseCase>();
 builder.Services.AddScoped<DeleteIndisponibilidadeUseCase>();
+builder.Services.AddScoped<CreateFuncionarioUseCase>();
+builder.Services.AddScoped<UpdateFuncionarioUseCase>();
+builder.Services.AddScoped<DeleteFuncionarioUseCase>();
 
 
 var app = builder.Build();
