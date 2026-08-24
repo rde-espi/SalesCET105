@@ -29,12 +29,16 @@ namespace ProjetoFinalCet105.API.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(fs => fs.Id == id);
         }
-        public async Task<bool> ExistFuncionarioServicoAsync(int funcionarioId,int servicoId)
+        public async Task<bool> ExistFuncionarioServicoAsync(
+            int funcionarioId,
+            int servicoId,
+            int? ignorarId = null)
         {
             return await _context.FuncionariosServicos
                 .AnyAsync(fs =>
                     fs.FuncionarioId == funcionarioId &&
-                    fs.ServicoId == servicoId);
+                    fs.ServicoId == servicoId &&
+                    (!ignorarId.HasValue || fs.Id != ignorarId.Value));
         }
     }
 }

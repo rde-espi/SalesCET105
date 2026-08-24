@@ -6,6 +6,6 @@ namespace ProjetoFinalCet105.API.Repositories
     {
         IQueryable<FuncionarioServico> GetAllWithDetails();
         Task<FuncionarioServico?> GetByIdWithDetailsAsync(int id);
-        Task<bool> ExistFuncionarioServicoAsync(int funcionarioId,int servicoId);
+        Task<bool> ExistFuncionarioServicoAsync(int funcionarioId,int servicoId,int? ignorarId = null);
     }
 }

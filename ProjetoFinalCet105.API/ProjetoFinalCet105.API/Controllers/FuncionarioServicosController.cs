@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.DTOs;
@@ -76,6 +77,7 @@ namespace ProjetoFinalCet105.API.Controllers
             });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<FuncionarioServicoDTO>>CreateFuncionarioServico(FuncionarioServicoDTO dto)
         {
@@ -91,7 +93,8 @@ namespace ProjetoFinalCet105.API.Controllers
 
             if (await _funcionarioServicoRepository.ExistFuncionarioServicoAsync(dto.FuncionarioId,dto.ServicoId))
             {
-                return BadRequest("Este funcionário já está associado a este serviço.");
+                return BadRequest(
+                    "Este funcionário já está associado a este serviço.");
             }
 
             try
@@ -103,7 +106,7 @@ namespace ProjetoFinalCet105.API.Controllers
                     PrecoPersonalizado = dto.PrecoPersonalizado,
                     DuracaoPersonalizadaMinutos =
                         dto.DuracaoPersonalizadaMinutos,
-                    Ativo = dto.Ativo
+                    Ativo = true
                 };
 
                 await _funcionarioServicoRepository
@@ -131,6 +134,7 @@ namespace ProjetoFinalCet105.API.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateFuncionarioServico(int id,FuncionarioServicoDTO dto)
         {
@@ -152,6 +156,11 @@ namespace ProjetoFinalCet105.API.Controllers
             if (!await _servicoRepository.ExistAsync(dto.ServicoId))
             {
                 return BadRequest("O serviço indicado não existe.");
+            }
+            if (await _funcionarioServicoRepository.ExistFuncionarioServicoAsync(dto.FuncionarioId,dto.ServicoId,id))
+            {
+                return BadRequest(
+                    "Este funcionário já está associado a este serviço.");
             }
 
             try
@@ -178,6 +187,7 @@ namespace ProjetoFinalCet105.API.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteFuncionarioServico(int id)
         {

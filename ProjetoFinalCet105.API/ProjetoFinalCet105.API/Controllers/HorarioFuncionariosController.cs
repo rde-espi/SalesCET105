@@ -1,191 +1,193 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using ProjetoFinalCet105.API.UseCases.HorariosFuncionarios;
+using System.Security.Claims;
 
 namespace ProjetoFinalCet105.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HorarioFuncionariosController : ControllerBase
+    public class HorarioFuncionariosController : BaseApiController
     {
         private readonly IHorarioFuncionarioRepository _horarioFuncionarioRepository;
         private readonly IFuncionarioRepository _funcionarioRepository;
+        private readonly CreateHorarioFuncionarioUseCase _createHorarioFuncionarioUseCase;
+        private readonly UpdateHorarioFuncionarioUseCase _updateHorarioFuncionarioUseCase;
+        private readonly DeleteHorarioFuncionarioUseCase _deleteHorarioFuncionarioUseCase;
 
-        public HorarioFuncionariosController(IHorarioFuncionarioRepository horarioFuncionarioRepository,IFuncionarioRepository funcionarioRepository)
+        public HorarioFuncionariosController(IHorarioFuncionarioRepository horarioFuncionarioRepository, IFuncionarioRepository funcionarioRepository,
+            CreateHorarioFuncionarioUseCase createHorarioFuncionarioUseCase, UpdateHorarioFuncionarioUseCase updateHorarioFuncionarioUseCase, 
+            DeleteHorarioFuncionarioUseCase deleteHorarioFuncionarioUseCase)
         {
             _horarioFuncionarioRepository = horarioFuncionarioRepository;
             _funcionarioRepository = funcionarioRepository;
+            _createHorarioFuncionarioUseCase = createHorarioFuncionarioUseCase;
+            _updateHorarioFuncionarioUseCase = updateHorarioFuncionarioUseCase;
+            _deleteHorarioFuncionarioUseCase = deleteHorarioFuncionarioUseCase;
         }
 
+        [Authorize(Policy = "ConsultarHorario")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<HorarioFuncionarioDTO>>> GetAllHorariosFuncionarios()
         {
-            var horarios = await _horarioFuncionarioRepository.GetAllWithFuncionario()
-                .Select(hf=> new HorarioFuncionarioDTO
+            var userId =
+                User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var query =
+                _horarioFuncionarioRepository.GetAllWithFuncionario();
+
+            if (User.IsInRole("Funcionario") &&
+                !User.IsInRole("Admin"))
+            {
+                var funcionario =
+                    await _funcionarioRepository
+                        .GetFuncionarioByUserIdAsync(userId);
+
+                if (funcionario == null)
                 {
-                    Id = hf.Id,
-                    FuncionarioId = hf.FuncionarioId,
-                    FuncionarioNome = hf.Funcionario.User.NomeCompleto,
-                    DiaSemana = hf.DiaSemana,
-                    HoraInicio = hf.HoraInicio,
-                    HoraFim = hf.HoraFim,
-                    Ativo = hf.Ativo
+                    return Forbid();
+                }
+
+                query = query.Where(h =>
+                    h.FuncionarioId == funcionario.Id);
+            }
+
+            var horarios = await query
+                .OrderBy(h => h.DiaSemana)
+                .ThenBy(h => h.HoraInicio)
+                .Select(h => new HorarioFuncionarioDTO
+                {
+                    Id = h.Id,
+                    FuncionarioId = h.FuncionarioId,
+                    FuncionarioNome =
+                        h.Funcionario.User.NomeCompleto,
+
+                    DiaSemana = h.DiaSemana,
+
+                    HoraInicio = h.HoraInicio,
+                    HoraFim = h.HoraFim,
+
+                    Ativo = h.Ativo
                 })
                 .ToListAsync();
+
             return Ok(horarios);
         }
 
+        [Authorize(Policy = "ConsultarHorario")]
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<HorarioFuncionarioDTO>>GetHorarioFuncionarioById(int id)
+        public async Task<ActionResult<HorarioFuncionarioDTO>> GetHorarioFuncionarioById(int id)
         {
             var horario = await _horarioFuncionarioRepository.GetByIdWithFuncionarioAsync(id);
-            if(horario == null)
+            if (horario == null)
             {
                 return NotFound();
             }
             return Ok(new HorarioFuncionarioDTO
             {
                 Id = horario.Id,
-                FuncionarioId=horario.FuncionarioId,
+                FuncionarioId = horario.FuncionarioId,
                 FuncionarioNome = horario.Funcionario.User.NomeCompleto,
-                DiaSemana=horario.DiaSemana,
-                HoraInicio=horario.HoraInicio,
-                HoraFim=horario.HoraFim,
-                Ativo=horario.Ativo
+                DiaSemana = horario.DiaSemana,
+                HoraInicio = horario.HoraInicio,
+                HoraFim = horario.HoraFim,
+                Ativo = horario.Ativo
             });
         }
 
+        [Authorize(Policy = "GerirHorario")]
         [HttpPost]
-        public async Task<ActionResult<HorarioFuncionarioDTO>>CreateHorarioFuncionario(HorarioFuncionarioDTO dto)
+        public async Task<ActionResult<HorarioFuncionarioDTO>> CreateHorarioFuncionario(NovoHorarioFuncionarioDTO dto)
         {
-            if (!await _funcionarioRepository.ExistAsync(dto.FuncionarioId))
+            var userId =
+                User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
             {
-                return BadRequest("O funcionário indicado não existe.");
+                return Unauthorized();
             }
 
-            if (dto.HoraFim <= dto.HoraInicio)
-            {
-                return BadRequest(
-                    "A hora de fim deve ser posterior à hora de início.");
-            }
-
-            if (await _horarioFuncionarioRepository.ExisteSobreposicaoAsync(dto.FuncionarioId,dto.DiaSemana,dto.HoraInicio,dto.HoraFim))
-            {
-                return BadRequest(
-                    "Já existe um horário sobreposto para este funcionário nesse dia.");
-            }
-
-            try
-            {
-                var horario = new HorarioFuncionario
-                {
-                    FuncionarioId = dto.FuncionarioId,
-                    DiaSemana = dto.DiaSemana,
-                    HoraInicio = dto.HoraInicio,
-                    HoraFim = dto.HoraFim,
-                    Ativo = dto.Ativo
-                };
-
-                await _horarioFuncionarioRepository.CreateAsync(horario);
-
-                dto.Id = horario.Id;
-
-                var funcionario = await _funcionarioRepository
-                    .GetFuncionarioByIdAsync(dto.FuncionarioId);
-
-                dto.FuncionarioNome = funcionario!.User.NomeCompleto;
-
-                return CreatedAtAction(
-                    nameof(GetHorarioFuncionarioById),
-                    new { id = horario.Id },
+            var resultado =
+                await _createHorarioFuncionarioUseCase.ExecuteAsync(
+                    userId,
+                    User.IsInRole("Funcionario"),
+                    User.IsInRole("Admin"),
                     dto);
-            }
-            catch (Exception)
+
+            if (!resultado.Sucesso)
             {
-                return BadRequest();
+                return TratarErroComDados(resultado);
             }
+
+            return CreatedAtAction(
+                nameof(GetHorarioFuncionarioById),
+                new { id = resultado.Dados!.Id },
+                resultado.Dados);
         }
 
-
+        [Authorize(Policy = "GerirHorario")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateHorarioFuncionario(int id,HorarioFuncionarioDTO dto)
+        public async Task<IActionResult> UpdateHorarioFuncionario(int id,UpdateHorarioFuncionarioDTO dto)
         {
-            if (id != dto.Id)
+            var userId =
+                User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
             {
-                return BadRequest();
+                return Unauthorized();
             }
 
-            if (!await _horarioFuncionarioRepository.ExistAsync(id))
+            var resultado =
+                await _updateHorarioFuncionarioUseCase.ExecuteAsync(
+                    id,
+                    userId,
+                    User.IsInRole("Funcionario"),
+                    User.IsInRole("Admin"),
+                    dto);
+
+            if (!resultado.Sucesso)
             {
-                return NotFound();
+                return TratarErro(resultado);
             }
 
-            if (!await _funcionarioRepository.ExistAsync(dto.FuncionarioId))
-            {
-                return BadRequest("O funcionário indicado não existe.");
-            }
-
-            if (dto.HoraFim <= dto.HoraInicio)
-            {
-                return BadRequest(
-                    "A hora de fim deve ser posterior à hora de início.");
-            }
-
-            if (await _horarioFuncionarioRepository.ExisteSobreposicaoAsync(dto.FuncionarioId,dto.DiaSemana,dto.HoraInicio,dto.HoraFim,id))
-            {
-                return BadRequest(
-                    "Já existe um horário sobreposto para este funcionário nesse dia.");
-            }
-
-            try
-            {
-                var horario = new HorarioFuncionario
-                {
-                    Id = id,
-                    FuncionarioId = dto.FuncionarioId,
-                    DiaSemana = dto.DiaSemana,
-                    HoraInicio = dto.HoraInicio,
-                    HoraFim = dto.HoraFim,
-                    Ativo = dto.Ativo
-                };
-
-                await _horarioFuncionarioRepository.UpdateAsync(horario);
-
-                return NoContent();
-            }
-            catch (Exception)
-            {
-                return BadRequest();
-            }
+            return NoContent();
         }
 
 
-
+        [Authorize(Policy = "GerirHorario")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteHorarioFuncionario(int id)
         {
-            var horario = await _horarioFuncionarioRepository.GetByIdAsync(id);
+            var userId =
+                User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (horario == null)
+            if (userId == null)
             {
-                return NotFound();
+                return Unauthorized();
             }
 
-            try
-            {
-                horario.Ativo = false;
+            var resultado =
+                await _deleteHorarioFuncionarioUseCase.ExecuteAsync(
+                    id,
+                    userId,
+                    User.IsInRole("Funcionario"),
+                    User.IsInRole("Admin"));
 
-                await _horarioFuncionarioRepository.UpdateAsync(horario);
-
-                return NoContent();
-            }
-            catch (Exception)
+            if (!resultado.Sucesso)
             {
-                return BadRequest();
+                return TratarErro(resultado);
             }
+
+            return NoContent();
         }
     }
 }
