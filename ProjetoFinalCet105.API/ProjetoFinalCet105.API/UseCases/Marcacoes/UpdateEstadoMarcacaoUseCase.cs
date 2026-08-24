@@ -1,6 +1,7 @@
 ﻿using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using ProjetoFinalCet105.API.Services.NotificacaoService;
 using ProjetoFinalCet105.API.UseCases.Common;
 
 namespace ProjetoFinalCet105.API.UseCases.Marcacoes
@@ -11,17 +12,20 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
         private readonly IFuncionarioRepository _funcionarioRepository;
         private readonly IEstadoMarcacaoRepository _estadoMarcacaoRepository;
         private readonly IHistoricoMarcacaoRepository _historicoMarcacaoRepository;
+        private readonly INotificacaoService _notificacaoService;
 
         public UpdateEstadoMarcacaoUseCase(
             IMarcacaoRepository marcacaoRepository,
             IFuncionarioRepository funcionarioRepository,
             IEstadoMarcacaoRepository estadoMarcacaoRepository,
-            IHistoricoMarcacaoRepository historicoMarcacaoRepository)
+            IHistoricoMarcacaoRepository historicoMarcacaoRepository,
+            INotificacaoService notificacaoService)
         {
             _marcacaoRepository = marcacaoRepository;
             _funcionarioRepository = funcionarioRepository;
             _estadoMarcacaoRepository = estadoMarcacaoRepository;
             _historicoMarcacaoRepository = historicoMarcacaoRepository;
+            _notificacaoService = notificacaoService;
         }
 
         public async Task<UseCaseResult<bool>> ExecuteAsync(int id,string userId,bool isFuncionario,bool isAdmin,UpdateEstadoMarcacaoDTO dto)
@@ -116,6 +120,18 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 };
 
                 await _historicoMarcacaoRepository.CreateAsync(historico);
+                try
+                {
+                    await _notificacaoService.NotificarEstadoMarcacaoAsync(
+                        marcacao.ClienteId,
+                        novoEstado.Nome,
+                        marcacao.DataHoraInicio);
+                }
+                catch
+                {
+                    // Falha na notificação não deve anular
+                    // a alteração do estado da marcação.
+                }
 
                 return UseCaseResult<bool>.Ok(true);
             }

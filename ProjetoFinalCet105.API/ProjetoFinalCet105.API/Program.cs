@@ -7,11 +7,13 @@ using Microsoft.OpenApi;
 using ProjetoFinalCet105.API.Data;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using ProjetoFinalCet105.API.Services;
 using ProjetoFinalCet105.API.Services.AuthService;
 using ProjetoFinalCet105.API.Services.EmailService;
 using ProjetoFinalCet105.API.Services.HorarioFuncionarioService;
 using ProjetoFinalCet105.API.Services.IndisponibilidadeService;
 using ProjetoFinalCet105.API.Services.MarcacaoService;
+using ProjetoFinalCet105.API.Services.NotificacaoService;
 using ProjetoFinalCet105.API.UseCases.AuthUsecase;
 using ProjetoFinalCet105.API.UseCases.Cliente;
 using ProjetoFinalCet105.API.UseCases.Feedbacks;
@@ -19,6 +21,7 @@ using ProjetoFinalCet105.API.UseCases.Funcionarios;
 using ProjetoFinalCet105.API.UseCases.HorariosFuncionarios;
 using ProjetoFinalCet105.API.UseCases.Indisponibilidades;
 using ProjetoFinalCet105.API.UseCases.Marcacoes;
+using ProjetoFinalCet105.API.UseCases.Notificacoes;
 using System.Text;
 
 
@@ -173,6 +176,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IIndisponibilidadeService, IndisponibilidadeService>();
 builder.Services.AddScoped<IHorarioFuncionarioService, HorarioFuncionarioService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<INotificacaoService, NotificacaoService>();
+builder.Services.AddHostedService<LembreteMarcacoesBackgroundService>();
 
 //UseCases
 builder.Services.AddScoped<CreateFeedbackUseCase>();
@@ -205,6 +210,7 @@ builder.Services.AddScoped<VerificarTwoFactorUseCase>();
 builder.Services.AddScoped<GerirTwoFactorUseCase>();
 builder.Services.AddScoped<ConfirmarEmailUseCase>();
 builder.Services.AddScoped<ReenviarConfirmacaoEmailUseCase>();
+builder.Services.AddScoped<MarcarNotificacaoLidaUseCase>();
 
 
 

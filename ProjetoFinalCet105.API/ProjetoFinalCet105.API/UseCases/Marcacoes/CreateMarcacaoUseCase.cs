@@ -4,6 +4,7 @@ using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.Services.MarcacaoService;
+using ProjetoFinalCet105.API.Services.NotificacaoService;
 using ProjetoFinalCet105.API.UseCases.Common;
 
 namespace ProjetoFinalCet105.API.UseCases.Marcacoes
@@ -17,6 +18,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
         private readonly IHistoricoMarcacaoRepository _historicoMarcacaoRepository;
         private readonly UserManager<User> _userManager;
         private readonly IMarcacaoService _marcacaoService;
+        private readonly INotificacaoService _notificacaoService;
 
         public CreateMarcacaoUseCase(
             IMarcacaoRepository marcacaoRepository,
@@ -25,7 +27,8 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             IEstadoMarcacaoRepository estadoMarcacaoRepository,
             IHistoricoMarcacaoRepository historicoMarcacaoRepository,
             UserManager<User> userManager,
-            IMarcacaoService marcacaoService)
+            IMarcacaoService marcacaoService,
+            INotificacaoService notificacaoService)
         {
             _marcacaoRepository = marcacaoRepository;
             _funcionarioRepository = funcionarioRepository;
@@ -34,11 +37,13 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             _historicoMarcacaoRepository = historicoMarcacaoRepository;
             _userManager = userManager;
             _marcacaoService = marcacaoService;
+            _notificacaoService = notificacaoService;
         }
 
         public async Task<UseCaseResult<MarcacaoDTO>> ExecuteAsync( string userId,bool isCliente,bool isFuncionario,bool isAdmin,NovaMarcacaoDTO dto)
         {
             string clienteId;
+            int funcionarioId;
 
             if (isCliente)
             {
@@ -77,23 +82,30 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             if (isFuncionario && !isAdmin)
             {
                 var funcionarioAutenticado =
-                    await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+                    await _funcionarioRepository
+                        .GetFuncionarioByUserIdAsync(userId);
 
                 if (funcionarioAutenticado == null)
                 {
-                    return UseCaseResult<MarcacaoDTO>
-                        .Falha("Funcionário autenticado não encontrado",TipoErro.Proibido);
+                    return UseCaseResult<MarcacaoDTO>.Falha(
+                        "Funcionário autenticado não encontrado.",
+                        TipoErro.Proibido);
                 }
 
-                if (dto.FuncionarioId != funcionarioAutenticado.Id)
+                funcionarioId = funcionarioAutenticado.Id;
+            }
+            else
+            {
+                if (!dto.FuncionarioId.HasValue)
                 {
-                    return UseCaseResult<MarcacaoDTO>
-                        .Falha("O funcionário só pode criar marcações na própria agenda", TipoErro.Proibido);
+                    return UseCaseResult<MarcacaoDTO>.Falha(
+                        "É necessário indicar o funcionário da marcação.");
                 }
+
+                funcionarioId = dto.FuncionarioId.Value;
             }
 
-            var funcionario =
-                await _funcionarioRepository.GetFuncionarioByIdAsync(dto.FuncionarioId);
+            var funcionario =await _funcionarioRepository.GetFuncionarioByIdAsync(funcionarioId);
 
             if (funcionario == null)
             {
@@ -122,7 +134,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                     .Falha("O serviço indicado não está disponível");
             }
 
-            var funcionarioServico = await _marcacaoService.GetFuncionarioServicoAsync(dto.FuncionarioId, dto.ServicoId);
+            var funcionarioServico = await _marcacaoService.GetFuncionarioServicoAsync(funcionarioId, dto.ServicoId);
             if (funcionarioServico == null)
             {
                 return UseCaseResult<MarcacaoDTO>
@@ -139,6 +151,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 funcionarioServico.DuracaoPersonalizadaMinutos
                 ?? servico.DuracaoMinutos;
 
+
             var dataHoraFim =
                 dto.DataHoraInicio.AddMinutes(duracaoMinutos);
 
@@ -152,9 +165,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 funcionarioServico.PrecoPersonalizado
                 ?? servico.Preco;
 
-            var diaSemana = dto.DataHoraInicio.DayOfWeek;
-
-            var horarioValido = await _marcacaoService.HorarioValidoAsync(dto.FuncionarioId,dto.DataHoraInicio,dataHoraFim);
+            var horarioValido = await _marcacaoService.HorarioValidoAsync(funcionarioId,dto.DataHoraInicio,dataHoraFim);
 
             if (!horarioValido)
             {
@@ -162,7 +173,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                     .Falha("A marcação está fora do horário de trabalho do funcionário");
             }
 
-            var indisponivel = await _marcacaoService.ExisteIndisponibilidadeAsync(dto.FuncionarioId,dto.DataHoraInicio,dataHoraFim);
+            var indisponivel = await _marcacaoService.ExisteIndisponibilidadeAsync(funcionarioId,dto.DataHoraInicio,dataHoraFim);
 
             if (indisponivel)
             {
@@ -170,7 +181,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                     .Falha("O funcionário está indisponível neste período");
             }
 
-            if (await _marcacaoService.ExisteSobreposicaoAsync(dto.FuncionarioId,dto.DataHoraInicio,dataHoraFim))
+            if (await _marcacaoService.ExisteSobreposicaoAsync(funcionarioId,dto.DataHoraInicio,dataHoraFim))
             {
                 return UseCaseResult<MarcacaoDTO>
                     .Falha("Já existe uma marcação para este funcionário neste período", TipoErro.Conflito);
@@ -191,7 +202,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 var marcacao = new Marcacao
                 {
                     ClienteId = clienteId,
-                    FuncionarioId = dto.FuncionarioId,
+                    FuncionarioId = funcionarioId,
                     ServicoId = dto.ServicoId,
                     EstadoMarcacaoId = estadoPendente.Id,
 
@@ -216,6 +227,23 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 };
 
                 await _historicoMarcacaoRepository.CreateAsync(historico);
+
+                try
+                {
+                    await _notificacaoService.NotificarCriacaoMarcacaoAsync(
+                        cliente.Id,
+                        funcionario.UserId,
+                        servico.Nome,
+                        marcacao.DataHoraInicio,
+                        isCliente,
+                        isFuncionario,
+                        isAdmin);
+                }
+                catch
+                {
+                    // Uma falha na notificação não deve anular
+                    // uma marcação que já foi criada com sucesso.
+                }
 
                 var resposta = new MarcacaoDTO
                 {

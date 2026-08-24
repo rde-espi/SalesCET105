@@ -4,7 +4,7 @@
     {
         public string? ClienteId { get; set; }
 
-        public int FuncionarioId { get; set; }
+        public int? FuncionarioId { get; set; }
 
         public int ServicoId { get; set; }
 

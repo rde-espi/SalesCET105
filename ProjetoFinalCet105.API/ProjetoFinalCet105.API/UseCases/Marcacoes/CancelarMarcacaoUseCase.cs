@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using ProjetoFinalCet105.API.Services.NotificacaoService;
 using ProjetoFinalCet105.API.UseCases.Common;
 
 namespace ProjetoFinalCet105.API.UseCases.Marcacoes
@@ -11,17 +12,20 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
         private readonly IFuncionarioRepository _funcionarioRepository;
         private readonly IEstadoMarcacaoRepository _estadoMarcacaoRepository;
         private readonly IHistoricoMarcacaoRepository _historicoMarcacaoRepository;
+        private readonly INotificacaoService _notificacaoService;
 
         public CancelarMarcacaoUseCase(
             IMarcacaoRepository marcacaoRepository,
             IFuncionarioRepository funcionarioRepository,
             IEstadoMarcacaoRepository estadoMarcacaoRepository,
-            IHistoricoMarcacaoRepository historicoMarcacaoRepository)
+            IHistoricoMarcacaoRepository historicoMarcacaoRepository,
+            INotificacaoService notificacaoService)
         {
             _marcacaoRepository = marcacaoRepository;
             _funcionarioRepository = funcionarioRepository;
             _estadoMarcacaoRepository = estadoMarcacaoRepository;
             _historicoMarcacaoRepository = historicoMarcacaoRepository;
+            _notificacaoService = notificacaoService;
         }
 
         public async Task<UseCaseResult<bool>> ExecuteAsync(int id,string userId,bool isCliente,bool isFuncionario,bool isAdmin)
@@ -92,6 +96,14 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 return UseCaseResult<bool>
                     .Falha("A marcação já se encontra cancelada.");
             }
+            var funcionario = await _funcionarioRepository.GetFuncionarioByIdAsync(marcacao.FuncionarioId);
+
+            if (funcionario == null)
+            {
+                return UseCaseResult<bool>.Falha(
+                    "Funcionário da marcação não encontrado.",
+                    TipoErro.NaoEncontrado);
+            }
 
             try
             {
@@ -111,6 +123,22 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 };
 
                 await _historicoMarcacaoRepository.CreateAsync(historico);
+                try
+                {
+                    await _notificacaoService
+                        .NotificarCancelamentoMarcacaoAsync(
+                            marcacao.ClienteId,
+                            funcionario.UserId,
+                            marcacao.DataHoraInicio,
+                            isCliente,
+                            isFuncionario,
+                            isAdmin);
+                }
+                catch
+                {
+                    // Falha na notificação não deve anular
+                    // o cancelamento da marcação.
+                }
 
                 return UseCaseResult<bool>.Ok(true);
             }

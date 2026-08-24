@@ -25,5 +25,9 @@
 
         public DateTime DataCriacao { get; set; }
         public DateTime? DataAtualizacao { get; set; }
+
+        public bool Lembrete24hEnviado { get; set; } = false;
+
+        public bool Lembrete30MinEnviado { get; set; } = false;
     }
 }

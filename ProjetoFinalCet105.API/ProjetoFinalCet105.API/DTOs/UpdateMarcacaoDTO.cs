@@ -2,7 +2,7 @@
 {
     public class UpdateMarcacaoDTO
     {
-        public int FuncionarioId { get; set; }
+        public int? FuncionarioId { get; set; }
 
         public int ServicoId { get; set; }
 

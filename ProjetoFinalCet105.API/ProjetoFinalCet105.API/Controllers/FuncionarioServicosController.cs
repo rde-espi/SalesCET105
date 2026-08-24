@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.DTOs;
@@ -16,7 +15,7 @@ namespace ProjetoFinalCet105.API.Controllers
         private readonly IFuncionarioRepository _funcionarioRepository;
         private readonly IServicoRepository _servicoRepository;
 
-        public FuncionarioServicosController(IFuncionarioServicoRepository funcionarioServicoRepository,IFuncionarioRepository funcionarioRepository,IServicoRepository servicoRepository)
+        public FuncionarioServicosController(IFuncionarioServicoRepository funcionarioServicoRepository, IFuncionarioRepository funcionarioRepository, IServicoRepository servicoRepository)
         {
             _funcionarioServicoRepository = funcionarioServicoRepository;
             _funcionarioRepository = funcionarioRepository;
@@ -24,7 +23,7 @@ namespace ProjetoFinalCet105.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<FuncionarioServicoDTO>>>GetAllFuncionarioServicos()
+        public async Task<ActionResult<IEnumerable<FuncionarioServicoDTO>>> GetAllFuncionarioServicos()
         {
             var funcionarioServicos = await _funcionarioServicoRepository
                 .GetAllWithDetails()
@@ -79,7 +78,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<FuncionarioServicoDTO>>CreateFuncionarioServico(FuncionarioServicoDTO dto)
+        public async Task<ActionResult<FuncionarioServicoDTO>> CreateFuncionarioServico(FuncionarioServicoDTO dto)
         {
             if (!await _funcionarioRepository.ExistAsync(dto.FuncionarioId))
             {
@@ -91,7 +90,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 return BadRequest("O serviço indicado não existe.");
             }
 
-            if (await _funcionarioServicoRepository.ExistFuncionarioServicoAsync(dto.FuncionarioId,dto.ServicoId))
+            if (await _funcionarioServicoRepository.ExistFuncionarioServicoAsync(dto.FuncionarioId, dto.ServicoId))
             {
                 return BadRequest(
                     "Este funcionário já está associado a este serviço.");
@@ -136,7 +135,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateFuncionarioServico(int id,FuncionarioServicoDTO dto)
+        public async Task<IActionResult> UpdateFuncionarioServico(int id, FuncionarioServicoDTO dto)
         {
             if (id != dto.Id)
             {
@@ -157,7 +156,7 @@ namespace ProjetoFinalCet105.API.Controllers
             {
                 return BadRequest("O serviço indicado não existe.");
             }
-            if (await _funcionarioServicoRepository.ExistFuncionarioServicoAsync(dto.FuncionarioId,dto.ServicoId,id))
+            if (await _funcionarioServicoRepository.ExistFuncionarioServicoAsync(dto.FuncionarioId, dto.ServicoId, id))
             {
                 return BadRequest(
                     "Este funcionário já está associado a este serviço.");
