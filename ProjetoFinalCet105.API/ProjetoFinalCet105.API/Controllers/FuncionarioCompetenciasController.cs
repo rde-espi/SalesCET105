@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using System.Security.Claims;
 
 namespace ProjetoFinalCet105.API.Controllers
 {
@@ -25,9 +27,9 @@ namespace ProjetoFinalCet105.API.Controllers
             _competenciaRepository = competenciaRepository;
         }
 
+        [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<FuncionarioCompetenciaDTO>>>
-            GetAllFuncionarioCompetencias()
+        public async Task<ActionResult<IEnumerable<FuncionarioCompetenciaDTO>>>GetAllFuncionarioCompetencias()
         {
             var dados = await _funcionarioCompetenciaRepository
                 .GetAllWithDetails()
@@ -45,9 +47,9 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(dados);
         }
 
+        [Authorize]
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<FuncionarioCompetenciaDTO>>
-            GetFuncionarioCompetenciaById(int id)
+        public async Task<ActionResult<FuncionarioCompetenciaDTO>>GetFuncionarioCompetenciaById(int id)
         {
             var fc = await _funcionarioCompetenciaRepository
                 .GetByIdWithDetailsAsync(id);
@@ -68,12 +70,40 @@ namespace ProjetoFinalCet105.API.Controllers
                 Certificacao = fc.Certificacao
             });
         }
-
+        
+        [Authorize(Policy = "GerirCompetenciasFuncionario")]
         [HttpPost]
-        public async Task<ActionResult<FuncionarioCompetenciaDTO>>
-            CreateFuncionarioCompetencia(FuncionarioCompetenciaDTO dto)
+        public async Task<ActionResult<FuncionarioCompetenciaDTO>>CreateFuncionarioCompetencia(FuncionarioCompetenciaDTO dto)
         {
-            if (!await _funcionarioRepository.ExistAsync(dto.FuncionarioId))
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            int funcionarioId;
+
+            if (User.IsInRole("Funcionario") &&
+                !User.IsInRole("Admin"))
+            {
+                var funcionarioAutenticado =
+                    await _funcionarioRepository
+                        .GetFuncionarioByUserIdAsync(userId);
+
+                if (funcionarioAutenticado == null)
+                {
+                    return Forbid();
+                }
+
+                funcionarioId = funcionarioAutenticado.Id;
+            }
+            else
+            {
+                funcionarioId = dto.FuncionarioId;
+            }
+
+            if (!await _funcionarioRepository.ExistAsync(funcionarioId))
             {
                 return BadRequest("O funcionário indicado não existe.");
             }
@@ -83,11 +113,16 @@ namespace ProjetoFinalCet105.API.Controllers
                 return BadRequest("A competência indicada não existe.");
             }
 
+            if (await _funcionarioCompetenciaRepository.ExisteFuncionarioCompetenciaAsync(funcionarioId,dto.CompetenciaId))
+            {
+                return BadRequest(
+                    "O funcionário já possui esta competência.");
+            }
             try
             {
                 var fc = new FuncionarioCompetencia
                 {
-                    FuncionarioId = dto.FuncionarioId,
+                    FuncionarioId = funcionarioId,
                     CompetenciaId = dto.CompetenciaId,
                     Nivel = dto.Nivel,
                     Certificacao = dto.Certificacao
@@ -98,11 +133,12 @@ namespace ProjetoFinalCet105.API.Controllers
                 dto.Id = fc.Id;
 
                 var funcionario = await _funcionarioRepository
-                    .GetFuncionarioByIdAsync(dto.FuncionarioId);
+                    .GetFuncionarioByIdAsync(funcionarioId);
 
                 var competencia = await _competenciaRepository
                     .GetByIdAsync(dto.CompetenciaId);
 
+                dto.FuncionarioId = funcionarioId;
                 dto.FuncionarioNome = funcionario!.User.NomeCompleto;
                 dto.CompetenciaNome = competencia!.Nome;
 
@@ -117,43 +153,78 @@ namespace ProjetoFinalCet105.API.Controllers
             }
         }
 
+        [Authorize(Policy = "GerirCompetenciasFuncionario")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateFuncionarioCompetencia(
-            int id,
-            FuncionarioCompetenciaDTO dto)
+        public async Task<IActionResult> UpdateFuncionarioCompetencia(int id,FuncionarioCompetenciaDTO dto)
         {
             if (id != dto.Id)
             {
                 return BadRequest();
             }
 
-            if (!await _funcionarioCompetenciaRepository.ExistAsync(id))
+            var userId =
+                User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            // Obter a associação que realmente existe
+            var fc =
+                await _funcionarioCompetenciaRepository.GetByIdAsync(id);
+
+            if (fc == null)
             {
                 return NotFound();
             }
 
-            if (!await _funcionarioRepository.ExistAsync(dto.FuncionarioId))
+            // A associação continua a pertencer ao mesmo funcionário
+            var funcionarioId = fc.FuncionarioId;
+
+            // Funcionário só pode alterar as próprias competências
+            if (User.IsInRole("Funcionario") &&
+                !User.IsInRole("Admin"))
             {
-                return BadRequest("O funcionário indicado não existe.");
+                var funcionarioAutenticado =
+                    await _funcionarioRepository
+                        .GetFuncionarioByUserIdAsync(userId);
+
+                if (funcionarioAutenticado == null)
+                {
+                    return Forbid();
+                }
+
+                if (fc.FuncionarioId != funcionarioAutenticado.Id)
+                {
+                    return Forbid();
+                }
             }
 
             if (!await _competenciaRepository.ExistAsync(dto.CompetenciaId))
             {
-                return BadRequest("A competência indicada não existe.");
+                return BadRequest(
+                    "A competência indicada não existe.");
+            }
+
+            if (await _funcionarioCompetenciaRepository
+                .ExisteFuncionarioCompetenciaAsync(
+                    funcionarioId,
+                    dto.CompetenciaId,
+                    id))
+            {
+                return BadRequest(
+                    "O funcionário já possui esta competência.");
             }
 
             try
             {
-                var fc = new FuncionarioCompetencia
-                {
-                    Id = id,
-                    FuncionarioId = dto.FuncionarioId,
-                    CompetenciaId = dto.CompetenciaId,
-                    Nivel = dto.Nivel,
-                    Certificacao = dto.Certificacao
-                };
+                fc.CompetenciaId = dto.CompetenciaId;
+                fc.Nivel = dto.Nivel;
+                fc.Certificacao = dto.Certificacao;
 
-                await _funcionarioCompetenciaRepository.UpdateAsync(fc);
+                await _funcionarioCompetenciaRepository
+                    .UpdateAsync(fc);
 
                 return NoContent();
             }
@@ -163,26 +234,55 @@ namespace ProjetoFinalCet105.API.Controllers
             }
         }
 
+        [Authorize(Policy = "GerirCompetenciasFuncionario")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteFuncionarioCompetencia(int id)
         {
-            var fc = await _funcionarioCompetenciaRepository.GetByIdAsync(id);
+            var userId =
+                User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var fc =
+                await _funcionarioCompetenciaRepository.GetByIdAsync(id);
 
             if (fc == null)
             {
                 return NotFound();
             }
 
+            // Funcionário só pode eliminar as próprias competências
+            if (User.IsInRole("Funcionario") &&
+                !User.IsInRole("Admin"))
+            {
+                var funcionarioAutenticado =
+                    await _funcionarioRepository
+                        .GetFuncionarioByUserIdAsync(userId);
+
+                if (funcionarioAutenticado == null)
+                {
+                    return Forbid();
+                }
+
+                if (fc.FuncionarioId != funcionarioAutenticado.Id)
+                {
+                    return Forbid();
+                }
+            }
+
             try
             {
                 await _funcionarioCompetenciaRepository.DeleteAsync(fc);
+
+                return NoContent();
             }
             catch (Exception)
             {
                 return BadRequest();
             }
-
-            return NoContent();
         }
     }
 }

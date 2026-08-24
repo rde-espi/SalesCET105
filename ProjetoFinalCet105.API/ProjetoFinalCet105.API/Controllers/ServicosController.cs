@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.DTOs;
@@ -14,22 +14,23 @@ namespace ProjetoFinalCet105.API.Controllers
         private readonly IServicoRepository _servicoRepository;
         private readonly ICategoriaRepository _categoriaRepository;
 
-        public ServicosController(IServicoRepository servicoRepository,ICategoriaRepository categoriaRepository)
+        public ServicosController(IServicoRepository servicoRepository, ICategoriaRepository categoriaRepository)
         {
             _servicoRepository = servicoRepository;
             _categoriaRepository = categoriaRepository;
         }
 
+        [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ServicoDTO>>>GetAllServicosWithCategoria()
+        public async Task<ActionResult<IEnumerable<ServicoDTO>>> GetAllServicosWithCategoria()
         {
             var servicos = await _servicoRepository
                 .GetAllWithCategoria()
-                .Select(s=> new ServicoDTO
+                .Select(s => new ServicoDTO
                 {
                     Id = s.Id,
                     CategoriaId = s.CategoriaId,
-                    CategoriaNome= s.Categoria!.Nome,
+                    CategoriaNome = s.Categoria!.Nome,
                     Nome = s.Nome,
                     Descricao = s.Descricao,
                     Preco = s.Preco,
@@ -43,15 +44,16 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(servicos);
         }
 
+        [Authorize]
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<ServicoDTO>>GetServicoByIdWithCategoria(int id)
+        public async Task<ActionResult<ServicoDTO>> GetServicoByIdWithCategoria(int id)
         {
             var servico = await _servicoRepository.GetByIdWithCategoriaAsync(id);
             if (servico == null)
             {
                 return NotFound();
             }
-            
+
             return Ok(new ServicoDTO
             {
                 Id = servico.Id,
@@ -68,27 +70,44 @@ namespace ProjetoFinalCet105.API.Controllers
             });
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<ServicoDTO>> CreateServico(ServicoDTO dto)
         {
-            if(!await _categoriaRepository.ExistAsync(dto.CategoriaId))
+            if (!await _categoriaRepository.ExistAsync(dto.CategoriaId))
             {
                 return BadRequest("Categoria indicada não existe");
             }
+
+            if (dto.Preco < 0)
+            {
+                return BadRequest("O preço do serviço não pode ser negativo.");
+            }
+
+            if (dto.DuracaoMinutos <= 0)
+            {
+                return BadRequest("A duração do serviço deve ser superior a zero.");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.Nome))
+            {
+                return BadRequest("O nome do serviço é obrigatório.");
+            }
+
             try
             {
                 var servico = new Servico
                 {
                     CategoriaId = dto.CategoriaId,
                     Nome = dto.Nome,
-                    Descricao= dto.Descricao,
-                    Preco= dto.Preco,
-                    DuracaoMinutos= dto.DuracaoMinutos,
+                    Descricao = dto.Descricao,
+                    Preco = dto.Preco,
+                    DuracaoMinutos = dto.DuracaoMinutos,
                     ImagemUrl = dto.ImagemUrl,
-                    Disponivel= dto.Disponivel,
-                    DataCriacao= DateTime.Now
+                    Disponivel = dto.Disponivel,
+                    DataCriacao = DateTime.Now
                 };
-                
+
                 await _servicoRepository.CreateAsync(servico);
 
                 dto.Id = servico.Id;
@@ -98,7 +117,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
                 dto.CategoriaNome = categoria!.Nome;
 
-                return CreatedAtAction(nameof(GetServicoByIdWithCategoria), new { id = servico.Id},dto);
+                return CreatedAtAction(nameof(GetServicoByIdWithCategoria), new { id = servico.Id }, dto);
             }
             catch (Exception)
             {
@@ -106,14 +125,15 @@ namespace ProjetoFinalCet105.API.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult>UpdateServico(ServicoDTO dto, int id)
+        public async Task<IActionResult> UpdateServico(ServicoDTO dto, int id)
         {
-            if(id != dto.Id)
+            if (id != dto.Id)
             {
                 return BadRequest();
             }
-            if(!await _servicoRepository.ExistAsync(id))
+            if (!await _servicoRepository.ExistAsync(id))
             {
                 return NotFound();
             }
@@ -122,10 +142,25 @@ namespace ProjetoFinalCet105.API.Controllers
                 return BadRequest("A categoria indicada não existe");
             }
 
+            if (dto.Preco < 0)
+            {
+                return BadRequest("O preço do serviço não pode ser negativo.");
+            }
+
+            if (dto.DuracaoMinutos <= 0)
+            {
+                return BadRequest("A duração do serviço deve ser superior a zero.");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.Nome))
+            {
+                return BadRequest("O nome do serviço é obrigatório.");
+            }
+
             try
             {
                 var servicoAtual = await _servicoRepository.GetByIdAsync(id);
-                if(servicoAtual == null)
+                if (servicoAtual == null)
                 {
                     return NotFound();
                 }
@@ -149,9 +184,10 @@ namespace ProjetoFinalCet105.API.Controllers
             {
                 return BadRequest();
             }
-            
+
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteServico(int id)
         {
@@ -161,15 +197,25 @@ namespace ProjetoFinalCet105.API.Controllers
             {
                 return NotFound();
             }
+
+            if (!servico.Disponivel)
+            {
+                return BadRequest("O serviço já se encontra indisponível.");
+            }
+
             try
             {
-                await _servicoRepository.DeleteAsync(servico);
+                servico.Disponivel = false;
+                servico.DataAtualizacao = DateTime.Now;
+
+                await _servicoRepository.UpdateAsync(servico);
+
+                return NoContent();
             }
             catch (Exception)
             {
                 return BadRequest();
             }
-            return NoContent();
         }
 
 

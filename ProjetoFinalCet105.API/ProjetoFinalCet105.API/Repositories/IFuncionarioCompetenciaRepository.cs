@@ -7,5 +7,6 @@ namespace ProjetoFinalCet105.API.Repositories
         IQueryable<FuncionarioCompetencia> GetAllWithDetails();
 
         Task<FuncionarioCompetencia?> GetByIdWithDetailsAsync(int id);
+        Task<bool> ExisteFuncionarioCompetenciaAsync(int funcionarioId,int competenciaId,int? ignorarId = null);
     }
 }

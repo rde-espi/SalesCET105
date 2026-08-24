@@ -29,5 +29,14 @@ namespace ProjetoFinalCet105.API.Repositories
             .AsNoTracking()
             .FirstOrDefaultAsync(fc => fc.Id == id);
         }
+
+        public async Task<bool> ExisteFuncionarioCompetenciaAsync(int funcionarioId, int competenciaId, int? ignorarId = null)
+        {
+            return await _context.FuncionariosCompetencias
+                .AnyAsync(fc =>
+                    fc.FuncionarioId == funcionarioId &&
+                    fc.CompetenciaId == competenciaId &&
+                    (!ignorarId.HasValue || fc.Id != ignorarId.Value));
+        }
     }
 }

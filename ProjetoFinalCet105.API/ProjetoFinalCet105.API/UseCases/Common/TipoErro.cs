@@ -6,6 +6,7 @@
         Validacao,
         NaoEncontrado,
         Proibido,
-        Conflito
+        Conflito,
+        NaoAutorizado
     }
 }

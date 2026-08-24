@@ -1,0 +1,62 @@
+﻿using System.Net;
+using System.Net.Mail;
+
+namespace ProjetoFinalCet105.API.Services.EmailService
+{
+    public class EmailService : IEmailService
+    {
+        private readonly IConfiguration _configuration;
+
+        public EmailService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        public async Task EnviarEmailAsync(string destinatario, string assunto,string mensagem)
+        {
+            var smtpServer =
+                _configuration["EmailSettings:SmtpServer"];
+
+            var port =
+                int.Parse(_configuration["EmailSettings:Port"]!);
+
+            var senderName =
+                _configuration["EmailSettings:SenderName"];
+
+            var senderEmail =
+                _configuration["EmailSettings:SenderEmail"];
+
+            var username =
+                _configuration["EmailSettings:Username"];
+
+            var password =
+                _configuration["EmailSettings:Password"];
+
+            using var smtpClient = new SmtpClient(smtpServer, port)
+            {
+                Credentials = new NetworkCredential(
+                    username,
+                    password),
+
+                EnableSsl = true
+            };
+
+            using var mailMessage = new MailMessage
+            {
+                From = new MailAddress(
+                    senderEmail!,
+                    senderName),
+
+                Subject = assunto,
+
+                Body = mensagem,
+
+                IsBodyHtml = true
+            };
+
+            mailMessage.To.Add(destinatario);
+
+            await smtpClient.SendMailAsync(mailMessage);
+        }
+    }
+}

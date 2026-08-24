@@ -7,9 +7,12 @@ using Microsoft.OpenApi;
 using ProjetoFinalCet105.API.Data;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using ProjetoFinalCet105.API.Services.AuthService;
+using ProjetoFinalCet105.API.Services.EmailService;
 using ProjetoFinalCet105.API.Services.HorarioFuncionarioService;
 using ProjetoFinalCet105.API.Services.IndisponibilidadeService;
 using ProjetoFinalCet105.API.Services.MarcacaoService;
+using ProjetoFinalCet105.API.UseCases.AuthUsecase;
 using ProjetoFinalCet105.API.UseCases.Cliente;
 using ProjetoFinalCet105.API.UseCases.Feedbacks;
 using ProjetoFinalCet105.API.UseCases.Funcionarios;
@@ -108,6 +111,9 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("GerirHorario", policy =>
         policy.RequireRole("Funcionario", "Admin"));
+
+    options.AddPolicy("GerirCompetenciasFuncionario", policy =>
+    policy.RequireRole("Funcionario", "Admin"));
 });
 
 builder.Services.AddSwaggerGen(options =>
@@ -157,12 +163,16 @@ builder.Services.AddScoped<IMensagemRepository, MensagemRepository>();
 builder.Services.AddScoped<INotificacaoRepository, NotificacaoRepository>();
 builder.Services.AddScoped<IPromoCodeRepository, PromoCodeRepository>();
 builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
-builder.Services.AddScoped<IIndisponibilidadeService, IndisponibilidadeService>();
-builder.Services.AddScoped<IHorarioFuncionarioService,HorarioFuncionarioService>();
+
+
 
 
 //Services
 builder.Services.AddScoped<IMarcacaoService, MarcacaoService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IIndisponibilidadeService, IndisponibilidadeService>();
+builder.Services.AddScoped<IHorarioFuncionarioService, HorarioFuncionarioService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 //UseCases
 builder.Services.AddScoped<CreateFeedbackUseCase>();
@@ -187,6 +197,14 @@ builder.Services.AddScoped<UpdateClienteUseCase>();
 builder.Services.AddScoped<CreateHorarioFuncionarioUseCase>();
 builder.Services.AddScoped<UpdateHorarioFuncionarioUseCase>();
 builder.Services.AddScoped<DeleteHorarioFuncionarioUseCase>();
+builder.Services.AddScoped<LoginUseCase>();
+builder.Services.AddScoped<AlterarPasswordUseCase>();
+builder.Services.AddScoped<RecuperarPasswordUseCase>();
+builder.Services.AddScoped<ResetPasswordUseCase>();
+builder.Services.AddScoped<VerificarTwoFactorUseCase>();
+builder.Services.AddScoped<GerirTwoFactorUseCase>();
+
+
 
 
 var app = builder.Build();
