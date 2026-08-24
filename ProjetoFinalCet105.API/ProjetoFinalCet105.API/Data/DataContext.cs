@@ -25,6 +25,7 @@ namespace ProjetoFinalCet105.API.Data
         public DbSet<HistoricoMarcacao> HistoricosMarcacoes { get; set; }
         public DbSet<Conversa> Conversas { get; set; }
         public DbSet<Mensagem> Mensagens { get; set; }
+        public DbSet<DispositivoUser> DispositivosUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {      

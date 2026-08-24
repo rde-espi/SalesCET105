@@ -25,5 +25,14 @@ namespace ProjetoFinalCet105.API.Repositories
                     n.Id == id &&
                     n.UserId == userId);
         }
+
+        public async Task<List<Notificacao>> GetNaoLidasByUserIdAsync(string userId)
+        {
+            return await _context.Notificacoes
+                .Where(n =>
+                    n.UserId == userId &&
+                    !n.Lida)
+                .ToListAsync();
+        }
     }
 }

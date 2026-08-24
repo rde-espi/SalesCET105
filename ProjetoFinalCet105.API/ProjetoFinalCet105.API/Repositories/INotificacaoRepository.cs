@@ -7,5 +7,6 @@ namespace ProjetoFinalCet105.API.Repositories
         IQueryable<Notificacao> GetByUserId(string userId);
 
         Task<Notificacao?> GetByIdAndUserIdAsync(int id,string userId);
+        Task<List<Notificacao>> GetNaoLidasByUserIdAsync(string userId);
     }
 }

@@ -1,4 +1,6 @@
 
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,9 +9,9 @@ using Microsoft.OpenApi;
 using ProjetoFinalCet105.API.Data;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
-using ProjetoFinalCet105.API.Services;
 using ProjetoFinalCet105.API.Services.AuthService;
 using ProjetoFinalCet105.API.Services.EmailService;
+using ProjetoFinalCet105.API.Services.FirebaseService;
 using ProjetoFinalCet105.API.Services.HorarioFuncionarioService;
 using ProjetoFinalCet105.API.Services.IndisponibilidadeService;
 using ProjetoFinalCet105.API.Services.MarcacaoService;
@@ -26,6 +28,23 @@ using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+var firebaseCredentialsPath = builder.Configuration["Firebase:CredentialsPath"];
+
+if (string.IsNullOrWhiteSpace(firebaseCredentialsPath))
+{
+    throw new InvalidOperationException(
+        "As credenciais do Firebase não estão configuradas.");
+}
+
+var credential = CredentialFactory
+        .FromFile<ServiceAccountCredential>(firebaseCredentialsPath)
+        .ToGoogleCredential();
+
+FirebaseApp.Create(new AppOptions
+{
+    Credential = credential
+});
 
 // Add services to the container.
 
@@ -166,6 +185,7 @@ builder.Services.AddScoped<IMensagemRepository, MensagemRepository>();
 builder.Services.AddScoped<INotificacaoRepository, NotificacaoRepository>();
 builder.Services.AddScoped<IPromoCodeRepository, PromoCodeRepository>();
 builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
+builder.Services.AddScoped<IDispositivoUserRepository,DispositivoUserRepository>();
 
 
 
@@ -178,6 +198,7 @@ builder.Services.AddScoped<IHorarioFuncionarioService, HorarioFuncionarioService
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<INotificacaoService, NotificacaoService>();
 builder.Services.AddHostedService<LembreteMarcacoesBackgroundService>();
+builder.Services.AddScoped<IFirebaseService,FirebaseService>();
 
 //UseCases
 builder.Services.AddScoped<CreateFeedbackUseCase>();
@@ -211,6 +232,7 @@ builder.Services.AddScoped<GerirTwoFactorUseCase>();
 builder.Services.AddScoped<ConfirmarEmailUseCase>();
 builder.Services.AddScoped<ReenviarConfirmacaoEmailUseCase>();
 builder.Services.AddScoped<MarcarNotificacaoLidaUseCase>();
+builder.Services.AddScoped<MarcarTodasComoLidasUseCase>();
 
 
 

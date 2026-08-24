@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.Services.EmailService;
+using ProjetoFinalCet105.API.Services.FirebaseService;
 
-namespace ProjetoFinalCet105.API.Services
+namespace ProjetoFinalCet105.API.Services.NotificacaoService
 {
     public class LembreteMarcacoesBackgroundService : BackgroundService
     {
@@ -30,6 +31,14 @@ namespace ProjetoFinalCet105.API.Services
                     scope.ServiceProvider
                         .GetRequiredService<IEmailService>();
 
+                var firebaseService =
+                    scope.ServiceProvider
+                    .GetRequiredService<IFirebaseService>();
+
+                var dispositivoRepository =
+                    scope.ServiceProvider
+                        .GetRequiredService<IDispositivoUserRepository>();
+
                 var agora = DateTime.Now;
 
                 var limiteInicio =
@@ -38,15 +47,60 @@ namespace ProjetoFinalCet105.API.Services
                 var limiteFim =
                     agora.AddHours(24).AddMinutes(10);
 
-                var marcacoes =
-                    await marcacaoRepository
-                        .GetAllWithDetails()
-                        .Where(m =>
-                            !m.Lembrete24hEnviado &&
-                            m.DataHoraInicio >= limiteInicio &&
-                            m.DataHoraInicio <= limiteFim &&
-                            m.EstadoMarcacao.Nome == "Confirmada")
-                        .ToListAsync(stoppingToken);
+                var marcacoes = await marcacaoRepository
+                    .GetAllWithDetails()
+                    .Where(m =>
+                    !m.Lembrete24hEnviado &&
+                    m.DataHoraInicio >= limiteInicio &&
+                    m.DataHoraInicio <= limiteFim &&
+                    m.EstadoMarcacao.Nome == "Confirmada")
+                    .ToListAsync(stoppingToken);
+
+                var limite30Inicio = agora.AddMinutes(25);
+
+                var limite30Fim = agora.AddMinutes(35);
+
+                var marcacoes30Min = await marcacaoRepository
+                    .GetAllWithDetails()
+                    .Where(m =>
+                    !m.Lembrete30MinEnviado &&
+                    m.DataHoraInicio >= limite30Inicio &&
+                    m.DataHoraInicio <= limite30Fim &&
+                    m.EstadoMarcacao.Nome == "Confirmada")
+                    .ToListAsync(stoppingToken);
+
+                foreach (var marcacao in marcacoes30Min)
+                {
+                    try
+                    {
+                        var dispositivos = await dispositivoRepository
+                            .GetAtivosByUserId(marcacao.ClienteId)
+                            .ToListAsync(stoppingToken);
+
+                        if (!dispositivos.Any())
+                        {
+                            continue;
+                        }
+
+                        foreach (var dispositivo in dispositivos)
+                        {
+                            await firebaseService.EnviarPushAsync(
+                                dispositivo.Fid,
+                                "A sua marcação está próxima",
+                                $"A sua marcação de {marcacao.Servico.Nome} " +
+                                $"começa às {marcacao.DataHoraInicio:HH:mm}.");
+                        }
+
+                        marcacao.Lembrete30MinEnviado = true;
+
+                        await marcacaoRepository.UpdateAsync(marcacao);
+                    }
+                    catch
+                    {
+                        // Mantém false para tentar novamente
+                        // na próxima execução.
+                    }
+                }
 
                 foreach (var marcacao in marcacoes)
                 {

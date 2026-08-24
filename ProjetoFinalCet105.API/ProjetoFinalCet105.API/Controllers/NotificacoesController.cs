@@ -16,11 +16,14 @@ namespace ProjetoFinalCet105.API.Controllers
         private readonly INotificacaoRepository
             _notificacaoRepository;
         private readonly MarcarNotificacaoLidaUseCase _marcarNotificacaoLidaUseCase;
+        private readonly MarcarTodasComoLidasUseCase _marcarTodasComoLidasUseCase;
 
-        public NotificacoesController(INotificacaoRepository notificacaoRepository, MarcarNotificacaoLidaUseCase marcarNotificacaoLidaUseCase)
+        public NotificacoesController(INotificacaoRepository notificacaoRepository, MarcarNotificacaoLidaUseCase marcarNotificacaoLidaUseCase,
+            MarcarTodasComoLidasUseCase marcarTodasComoLidasUseCase)
         {
             _notificacaoRepository = notificacaoRepository;
             _marcarNotificacaoLidaUseCase = marcarNotificacaoLidaUseCase;
+            _marcarTodasComoLidasUseCase = marcarTodasComoLidasUseCase;
         }
 
         [HttpGet]
@@ -86,6 +89,22 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(dto);
         }
 
+        [HttpGet("contador-nao-lidas")]
+        public async Task<ActionResult<int>>GetContadorNaoLidas()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var total = await _notificacaoRepository
+                .GetByUserId(userId)
+                .CountAsync(n => !n.Lida);
+
+            return Ok(total);
+        }
 
         [HttpPut("{id:int}/lida")]
         public async Task<IActionResult> MarcarComoLida(int id)
@@ -110,6 +129,29 @@ namespace ProjetoFinalCet105.API.Controllers
             return NoContent();
         }
 
-        
+        [HttpPut("marcar-todas-lidas")]
+        public async Task<IActionResult> MarcarTodasComoLidas()
+        {
+            var userId =
+                User.FindFirstValue(
+                    ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var resultado =
+                await _marcarTodasComoLidasUseCase
+                    .ExecuteAsync(userId);
+
+            if (!resultado.Sucesso)
+            {
+                return TratarErro(resultado);
+            }
+
+            return NoContent();
+        }
+
     }
 }
