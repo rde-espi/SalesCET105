@@ -6,5 +6,7 @@ namespace ProjetoFinalCet105.API.Services.AuthService
     public interface IAuthService
     {
         Task<LoginResponseDTO> GerarRespostaLoginAsync(User user);
+
+        Task EnviarConfirmacaoEmailAsync(User user);
     }
 }

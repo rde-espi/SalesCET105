@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ProjetoFinalCet105.API.DTOs;
-using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.UseCases.AuthUsecase;
 using System.Security.Claims;
 
@@ -12,29 +10,30 @@ namespace ProjetoFinalCet105.API.Controllers
     [ApiController]
     public class AuthController : BaseApiController
     {
-        private readonly UserManager<User> _userManager;
-        private readonly IConfiguration _configuration;
         private readonly LoginUseCase _loginUseCase;
         private readonly AlterarPasswordUseCase _alterarPasswordUseCase;
         private readonly RecuperarPasswordUseCase _recuperarPasswordUseCase;
         private readonly ResetPasswordUseCase _resetPasswordUseCase;
         private readonly VerificarTwoFactorUseCase _verificarTwoFactorUseCase;
         private readonly GerirTwoFactorUseCase _gerirTwoFactorUseCase;
+        private readonly ConfirmarEmailUseCase _confirmarEmailUseCase;
+        private readonly ReenviarConfirmacaoEmailUseCase _reenviarConfirmacaoEmailUseCase;
 
-        public AuthController(UserManager<User> userManager, IConfiguration configuration, LoginUseCase loginUseCase, AlterarPasswordUseCase alterarPasswordUseCase,
+        public AuthController(LoginUseCase loginUseCase, AlterarPasswordUseCase alterarPasswordUseCase,
             RecuperarPasswordUseCase recuperarPasswordUseCase, ResetPasswordUseCase resetPasswordUseCase, VerificarTwoFactorUseCase verificarTwoFactorUseCase,
-            GerirTwoFactorUseCase gerirTwoFactorUseCase)
+            GerirTwoFactorUseCase gerirTwoFactorUseCase, ConfirmarEmailUseCase confirmarEmailUseCase, ReenviarConfirmacaoEmailUseCase reenviarConfirmacaoEmailUseCase)
         {
-            _userManager = userManager;
-            _configuration = configuration;
             _loginUseCase = loginUseCase;
             _alterarPasswordUseCase = alterarPasswordUseCase;
             _recuperarPasswordUseCase = recuperarPasswordUseCase;
             _resetPasswordUseCase = resetPasswordUseCase;
             _verificarTwoFactorUseCase = verificarTwoFactorUseCase;
             _gerirTwoFactorUseCase = gerirTwoFactorUseCase;
+            _confirmarEmailUseCase = confirmarEmailUseCase;
+            _reenviarConfirmacaoEmailUseCase = reenviarConfirmacaoEmailUseCase;
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponseDTO>> Login(LoginDTO dto)
         {
@@ -153,6 +152,43 @@ namespace ProjetoFinalCet105.API.Controllers
                 mensagem = dto.Ativo
                     ? "Autenticação de dois fatores ativada."
                     : "Autenticação de dois fatores desativada."
+            });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("confirmar-email")]
+        public async Task<IActionResult> ConfirmarEmail(ConfirmarEmailDTO dto)
+        {
+            var resultado =
+                await _confirmarEmailUseCase.ExecuteAsync(dto);
+
+            if (!resultado.Sucesso)
+            {
+                return TratarErro(resultado);
+            }
+
+            return Ok(new
+            {
+                mensagem = "Email confirmado com sucesso."
+            });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("reenviar-confirmacao-email")]
+        public async Task<IActionResult> ReenviarConfirmacaoEmail(ReenviarConfirmacaoEmailDTO dto)
+        {
+            var resultado = await _reenviarConfirmacaoEmailUseCase.ExecuteAsync(dto);
+
+            if (!resultado.Sucesso)
+            {
+                return TratarErro(resultado);
+            }
+
+            return Ok(new
+            {
+                mensagem =
+                    "Se existir uma conta por confirmar associada a este email, " +
+                    "será enviada uma nova mensagem de confirmação."
             });
         }
     }

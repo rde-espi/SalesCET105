@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
+using ProjetoFinalCet105.API.Services.AuthService;
 using ProjetoFinalCet105.API.UseCases.Common;
 
 namespace ProjetoFinalCet105.API.UseCases.Cliente
@@ -8,10 +9,12 @@ namespace ProjetoFinalCet105.API.UseCases.Cliente
     public class CreateClienteUseCase
     {
         private readonly UserManager<User> _userManager;
+        private readonly IAuthService _authService;
 
-        public CreateClienteUseCase(UserManager<User> userManager)
+        public CreateClienteUseCase(UserManager<User> userManager, IAuthService authService)
         {
             _userManager = userManager;
+            _authService = authService;
         }
 
         public async Task<UseCaseResult<ClienteDTO>> ExecuteAsync(
@@ -79,6 +82,13 @@ namespace ProjetoFinalCet105.API.UseCases.Cliente
                 DataCriacao = user.DataCriacao,
                 DataAtualizacao = user.DataAtualizacao
             };
+            try
+            {
+                await _authService.EnviarConfirmacaoEmailAsync(user);
+            }
+            catch(Exception) 
+            {
+            }
 
             return UseCaseResult<ClienteDTO>.Ok(resposta);
         }

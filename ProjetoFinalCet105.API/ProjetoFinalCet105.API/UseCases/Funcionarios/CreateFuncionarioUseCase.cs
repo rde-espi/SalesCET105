@@ -2,6 +2,7 @@
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using ProjetoFinalCet105.API.Services.AuthService;
 using ProjetoFinalCet105.API.UseCases.Common;
 
 namespace ProjetoFinalCet105.API.UseCases.Funcionarios
@@ -10,13 +11,15 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
     {
         private readonly IFuncionarioRepository _funcionarioRepository;
         private readonly UserManager<User> _userManager;
+        private readonly IAuthService _authService;
 
         public CreateFuncionarioUseCase(
             IFuncionarioRepository funcionarioRepository,
-            UserManager<User> userManager)
+            UserManager<User> userManager, IAuthService authService)
         {
             _funcionarioRepository = funcionarioRepository;
             _userManager = userManager;
+            _authService = authService;
         }
 
         public async Task<UseCaseResult<FuncionarioDTO>> ExecuteAsync(
@@ -71,9 +74,11 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
                 return UseCaseResult<FuncionarioDTO>.Falha(erros);
             }
 
+            Funcionario funcionario;
+
             try
             {
-                var funcionario = new Funcionario
+                funcionario = new Funcionario
                 {
                     UserId = user.Id,
                     Biografia = dto.Biografia,
@@ -83,22 +88,6 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
                 };
 
                 await _funcionarioRepository.CreateAsync(funcionario);
-
-                var resposta = new FuncionarioDTO
-                {
-                    Id = funcionario.Id,
-                    UserId = user.Id,
-                    NomeCompleto = user.NomeCompleto,
-                    Email = user.Email,
-                    Telefone = user.PhoneNumber,
-                    FotografiaUrl = user.FotografiaUrl,
-                    Biografia = funcionario.Biografia,
-                    DataAdmissao = funcionario.DataAdmissao,
-                    Disponivel = funcionario.Disponivel,
-                    Ativo = funcionario.Ativo
-                };
-
-                return UseCaseResult<FuncionarioDTO>.Ok(resposta);
             }
             catch (Exception)
             {
@@ -107,6 +96,33 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
                 return UseCaseResult<FuncionarioDTO>.Falha(
                     "Ocorreu um erro ao criar o funcionário.");
             }
+
+            var resposta = new FuncionarioDTO
+            {
+                Id = funcionario.Id,
+                UserId = user.Id,
+                NomeCompleto = user.NomeCompleto,
+                Email = user.Email,
+                Telefone = user.PhoneNumber,
+                FotografiaUrl = user.FotografiaUrl,
+                Biografia = funcionario.Biografia,
+                DataAdmissao = funcionario.DataAdmissao,
+                Disponivel = funcionario.Disponivel,
+                Ativo = funcionario.Ativo
+            };
+
+            
+            try
+            {
+                await _authService
+                    .EnviarConfirmacaoEmailAsync(user);
+            }
+            catch
+            {
+                
+            }
+
+            return UseCaseResult<FuncionarioDTO>.Ok(resposta);
         }
     }
 }

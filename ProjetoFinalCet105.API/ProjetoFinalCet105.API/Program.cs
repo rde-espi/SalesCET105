@@ -203,6 +203,8 @@ builder.Services.AddScoped<RecuperarPasswordUseCase>();
 builder.Services.AddScoped<ResetPasswordUseCase>();
 builder.Services.AddScoped<VerificarTwoFactorUseCase>();
 builder.Services.AddScoped<GerirTwoFactorUseCase>();
+builder.Services.AddScoped<ConfirmarEmailUseCase>();
+builder.Services.AddScoped<ReenviarConfirmacaoEmailUseCase>();
 
 
 

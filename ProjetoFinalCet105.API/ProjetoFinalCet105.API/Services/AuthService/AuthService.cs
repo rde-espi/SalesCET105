@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
+using ProjetoFinalCet105.API.Services.EmailService;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -12,11 +13,13 @@ namespace ProjetoFinalCet105.API.Services.AuthService
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
-        public AuthService(UserManager<User> userManager,IConfiguration configuration)
+        public AuthService(UserManager<User> userManager,IConfiguration configuration,IEmailService emailService)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
         public async Task<LoginResponseDTO>GerarRespostaLoginAsync(User user)
@@ -56,6 +59,43 @@ namespace ProjetoFinalCet105.API.Services.AuthService
                 Email = user.Email!,
                 Roles = roles
             };
+        }
+
+        public async Task EnviarConfirmacaoEmailAsync(User user)
+        {
+            if (string.IsNullOrWhiteSpace(user.Email))
+            {
+                throw new InvalidOperationException(
+                    "O utilizador não possui um email válido.");
+            }
+
+            if (user.EmailConfirmed)
+            {
+                return;
+            }
+
+            var token =
+                await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            var mensagem = $@"
+        <h2>Confirmação de email</h2>
+
+        <p>Olá {user.NomeCompleto},</p>
+
+        <p>Obrigado pelo seu registo.</p>
+
+        <p>Utilize o seguinte código para confirmar
+        o seu endereço de email:</p>
+
+        <p><strong>{token}</strong></p>
+
+        <p>Se não efetuou este registo,
+        ignore esta mensagem.</p>";
+
+            await _emailService.EnviarEmailAsync(
+                user.Email,
+                "Confirmação de email",
+                mensagem);
         }
 
     }
