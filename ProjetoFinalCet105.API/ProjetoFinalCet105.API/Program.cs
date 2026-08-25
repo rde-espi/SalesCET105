@@ -18,6 +18,8 @@ using ProjetoFinalCet105.API.Services.MarcacaoService;
 using ProjetoFinalCet105.API.Services.NotificacaoService;
 using ProjetoFinalCet105.API.UseCases.AuthUsecase;
 using ProjetoFinalCet105.API.UseCases.Cliente;
+using ProjetoFinalCet105.API.UseCases.Conversas;
+using ProjetoFinalCet105.API.UseCases.Conversas.SignalR.Hubs;
 using ProjetoFinalCet105.API.UseCases.Feedbacks;
 using ProjetoFinalCet105.API.UseCases.Funcionarios;
 using ProjetoFinalCet105.API.UseCases.HorariosFuncionarios;
@@ -84,6 +86,25 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(
     Encoding.UTF8.GetBytes(
         builder.Configuration["Jwt:Key"]!))
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken =
+                context.Request.Query["access_token"];
+
+            var path = context.HttpContext.Request.Path;
+
+            if (!string.IsNullOrEmpty(accessToken) &&
+                path.StartsWithSegments("/hubs/chat"))
+            {
+                context.Token = accessToken;
+            }
+
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -199,6 +220,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<INotificacaoService, NotificacaoService>();
 builder.Services.AddHostedService<LembreteMarcacoesBackgroundService>();
 builder.Services.AddScoped<IFirebaseService,FirebaseService>();
+builder.Services.AddSignalR();
 
 //UseCases
 builder.Services.AddScoped<CreateFeedbackUseCase>();
@@ -233,6 +255,11 @@ builder.Services.AddScoped<ConfirmarEmailUseCase>();
 builder.Services.AddScoped<ReenviarConfirmacaoEmailUseCase>();
 builder.Services.AddScoped<MarcarNotificacaoLidaUseCase>();
 builder.Services.AddScoped<MarcarTodasComoLidasUseCase>();
+builder.Services.AddScoped<EnviarMensagemUseCase>();
+builder.Services.AddScoped<CriarConversaUseCase>();
+builder.Services.AddScoped<GetMinhasConversasUseCase>();
+builder.Services.AddScoped<GetConversaByIdUseCase>();
+builder.Services.AddScoped<MarcarMensagensComoLidasUseCase>();
 
 
 
@@ -257,10 +284,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseStaticFiles();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapHub<ChatHub>("/hubs/chat");
 app.Run();

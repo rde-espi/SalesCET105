@@ -25,8 +25,7 @@ namespace ProjetoFinalCet105.API
             };
         }
 
-        protected ActionResult<T> TratarErroComDados<T>(
-            UseCaseResult<T> resultado)
+        protected ActionResult<T> TratarErroComDados<T>(UseCaseResult<T> resultado)
         {
             return resultado.TipoErro switch
             {

@@ -203,5 +203,18 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
                     mensagem);
             }
         }
+        public async Task NotificarNovaMensagemAsync(string destinatarioId, string remetenteNome)
+        {
+            var notificacao = new Notificacao
+            {
+                UserId = destinatarioId,
+                Titulo = "Nova mensagem",
+                Mensagem = $"Recebeu uma nova mensagem de {remetenteNome}.",
+                Lida = false,
+                DataCriacao = DateTime.Now
+            };
+
+            await _notificacaoRepository.CreateAsync(notificacao);
+        }
     }
 }

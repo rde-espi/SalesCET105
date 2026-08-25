@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Teste SignalR - Chat</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        input, textarea, button {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        #mensagens {
+            border: 1px solid #ccc;
+            min-height: 200px;
+            padding: 15px;
+        }
+
+        .sucesso {
+            color: green;
+        }
+
+        .erro {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Teste SignalR - Chat</h1>
+
+    <label>URL da API:</label>
+    <input id="apiUrl"
+           value="https://localhost:44349">
+
+    <label>JWT:</label>
+<textarea id="token"
+          rows="5"
+          placeholder="Cole aqui o JWT do utilizador"></textarea>
+
+    <label>ID da conversa:</label>
+    <input id="conversaId"
+           type="number"
+           value="1">
+
+    <button onclick="ligar()">
+        Ligar ao SignalR
+    </button>
+
+    <button onclick="entrarNaConversa()">
+        Entrar na conversa
+    </button>
+
+    <h3>Estado</h3>
+    <div id="estado">
+        Desligado
+    </div>
+
+    <h3>Mensagens recebidas</h3>
+    <div id="mensagens"></div>
+
+    <script>
+
+        let connection = null;
+
+        async function ligar() {
+
+            const apiUrl =
+                document.getElementById("apiUrl").value;
+
+            const token =
+                document.getElementById("token").value.trim();
+
+            if (!token) {
+                mostrarErro("Introduza o JWT.");
+                return;
+            }
+
+            connection =
+                new signalR.HubConnectionBuilder()
+                    .withUrl(
+                        apiUrl + "/hubs/chat",
+                        {
+                            accessTokenFactory: () => token
+                        })
+                    .withAutomaticReconnect()
+                    .build();
+
+            connection.on(
+                "NovaMensagem",
+                function (mensagem) {
+
+                    console.log(
+                        "Mensagem recebida:",
+                        mensagem);
+
+                    const div =
+                        document.createElement("div");
+
+                    div.innerHTML =
+                        "<hr>" +
+                        "<strong>" +
+                        mensagem.remetenteNome +
+                        "</strong><br>" +
+                        mensagem.texto +
+                        "<br><small>" +
+                        mensagem.dataEnvio +
+                        "</small>";
+
+                    document
+                        .getElementById("mensagens")
+                        .prepend(div);
+                });
+
+            connection.onreconnecting(() => {
+
+                document.getElementById("estado").innerHTML =
+                    "<span class='erro'>A reconectar...</span>";
+            });
+
+            connection.on(
+                "MensagensLidas",
+                function (dados) {
+
+                    console.log(
+                        "Mensagens lidas:",
+                        dados);
+
+                    const div =
+                        document.createElement("div");
+
+                    div.innerHTML =
+                        "<hr>" +
+                        "<strong>✓✓ Mensagens lidas</strong><br>" +
+                        "Conversa: " +
+                        dados.conversaId +
+                        "<br>" +
+                        "Lidas por: " +
+                        dados.lidasPorUserId +
+                        "<br>" +
+                        "Data: " +
+                        dados.dataLeitura;
+
+                    document
+                        .getElementById("mensagens")
+                        .prepend(div);
+                });
+
+            connection.onreconnected(async () => {
+
+                document.getElementById("estado").innerHTML =
+                    "<span class='sucesso'>Ligado novamente</span>";
+
+                const conversaId =
+                    parseInt(
+                        document.getElementById("conversaId").value);
+
+                try {
+                    await connection.invoke(
+                        "EntrarNaConversa",
+                        conversaId);
+
+                    document.getElementById("estado").innerHTML =
+                        "<span class='sucesso'>" +
+                        "Reconectado à conversa " +
+                        conversaId +
+                        " ✓</span>";
+                }
+                catch (erro) {
+                    console.error(
+                        "Erro ao voltar a entrar na conversa:",
+                        erro);
+                }
+            });
+
+            connection.onclose(() => {
+
+                document.getElementById("estado").innerHTML =
+                    "<span class='erro'>Desligado</span>";
+            });
+
+            try {
+
+                await connection.start();
+
+                document.getElementById("estado").innerHTML =
+                    "<span class='sucesso'>SignalR ligado ✓</span>";
+
+                console.log("SignalR ligado.");
+
+            }
+            catch (erro) {
+
+                console.error(erro);
+
+                mostrarErro(
+                    "Erro ao ligar: " + erro);
+            }
+        }
+
+
+        async function entrarNaConversa() {
+
+            if (!connection ||
+                connection.state !==
+                signalR.HubConnectionState.Connected) {
+
+                mostrarErro(
+                    "Primeiro deve ligar ao SignalR.");
+
+                return;
+            }
+
+            const conversaId =
+                parseInt(
+                    document.getElementById(
+                        "conversaId").value);
+
+            try {
+
+                await connection.invoke(
+                    "EntrarNaConversa",
+                    conversaId);
+
+                document.getElementById("estado").innerHTML =
+                    "<span class='sucesso'>" +
+                    "Ligado à conversa " +
+                    conversaId +
+                    " ✓</span>";
+
+            }
+            catch (erro) {
+
+                console.error(erro);
+
+                mostrarErro(
+                    "Erro ao entrar na conversa: " +
+                    erro);
+            }
+        }
+
+
+        function mostrarErro(texto) {
+
+            document.getElementById("estado").innerHTML =
+                "<span class='erro'>" +
+                texto +
+                "</span>";
+        }
+
+    </script>
+
+</body>
+</html>

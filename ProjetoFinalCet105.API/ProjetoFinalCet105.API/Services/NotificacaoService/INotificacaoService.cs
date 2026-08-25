@@ -39,5 +39,9 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
             bool isCliente,
             bool isFuncionario,
             bool isAdmin);
+
+        Task NotificarNovaMensagemAsync(
+            string destinatarioId,
+            string remetenteNome);
     }
 }
