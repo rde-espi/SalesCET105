@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProjetoFinalCet105.API.Data;
 
@@ -11,9 +12,11 @@ using ProjetoFinalCet105.API.Data;
 namespace ProjetoFinalCet105.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20260826093731_PromocodeInThecontext")]
+    partial class PromocodeInThecontext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -552,20 +555,11 @@ namespace ProjetoFinalCet105.API.Migrations
                     b.Property<string>("Observacoes")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("PercentagemDescontoAplicada")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<decimal>("Preco")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("PromoCodeId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ServicoId")
                         .HasColumnType("int");
-
-                    b.Property<decimal?>("ValorDesconto")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -574,8 +568,6 @@ namespace ProjetoFinalCet105.API.Migrations
                     b.HasIndex("EstadoMarcacaoId");
 
                     b.HasIndex("FuncionarioId");
-
-                    b.HasIndex("PromoCodeId");
 
                     b.HasIndex("ServicoId");
 
@@ -1050,10 +1042,6 @@ namespace ProjetoFinalCet105.API.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("ProjetoFinalCet105.API.Entities.PromoCode", "PromoCode")
-                        .WithMany()
-                        .HasForeignKey("PromoCodeId");
-
                     b.HasOne("ProjetoFinalCet105.API.Entities.Servico", "Servico")
                         .WithMany()
                         .HasForeignKey("ServicoId")
@@ -1065,8 +1053,6 @@ namespace ProjetoFinalCet105.API.Migrations
                     b.Navigation("EstadoMarcacao");
 
                     b.Navigation("Funcionario");
-
-                    b.Navigation("PromoCode");
 
                     b.Navigation("Servico");
                 });

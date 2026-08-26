@@ -112,6 +112,10 @@ namespace ProjetoFinalCet105.API.Controllers
                     DataHoraFim = m.DataHoraFim,
 
                     Preco = m.Preco,
+                    PromoCodeId = m.PromoCodeId,
+                    PromoCode = m.PromoCode != null ? m.PromoCode.Codigo : null,
+                    PercentagemDescontoAplicada = m.PercentagemDescontoAplicada,
+                    ValorDesconto = m.ValorDesconto,
                     Observacoes = m.Observacoes,
 
                     DataCriacao = m.DataCriacao,
@@ -186,6 +190,11 @@ namespace ProjetoFinalCet105.API.Controllers
                 DataHoraFim = marcacao.DataHoraFim,
 
                 Preco = marcacao.Preco,
+                PromoCodeId = marcacao.PromoCodeId,
+                PromoCode = marcacao.PromoCode != null ? marcacao.PromoCode.Codigo : null,
+                PercentagemDescontoAplicada = marcacao.PercentagemDescontoAplicada,
+                ValorDesconto = marcacao.ValorDesconto,
+
                 Observacoes = marcacao.Observacoes,
 
                 DataCriacao = marcacao.DataCriacao,
@@ -351,6 +360,10 @@ namespace ProjetoFinalCet105.API.Controllers
                     DataHoraFim = m.DataHoraFim,
 
                     Preco = m.Preco,
+                    PromoCodeId = m.PromoCodeId,
+                    PromoCode = m.PromoCode != null ? m.PromoCode.Codigo : null,
+                    PercentagemDescontoAplicada = m.PercentagemDescontoAplicada,
+                    ValorDesconto = m.ValorDesconto,
                     Observacoes = m.Observacoes,
 
                     DataCriacao = m.DataCriacao,
@@ -418,6 +431,10 @@ namespace ProjetoFinalCet105.API.Controllers
                     DataHoraFim = m.DataHoraFim,
 
                     Preco = m.Preco,
+                    PromoCodeId = m.PromoCodeId,
+                    PromoCode = m.PromoCode != null ? m.PromoCode.Codigo : null,
+                    PercentagemDescontoAplicada = m.PercentagemDescontoAplicada,
+                    ValorDesconto = m.ValorDesconto,
                     Observacoes = m.Observacoes,
 
                     DataCriacao = m.DataCriacao,
@@ -490,6 +507,10 @@ namespace ProjetoFinalCet105.API.Controllers
                     DataHoraFim = m.DataHoraFim,
 
                     Preco = m.Preco,
+                    PromoCodeId = m.PromoCodeId,
+                    PromoCode = m.PromoCode != null ? m.PromoCode.Codigo : null,
+                    PercentagemDescontoAplicada = m.PercentagemDescontoAplicada,
+                    ValorDesconto = m.ValorDesconto,
                     Observacoes = m.Observacoes,
 
                     DataCriacao = m.DataCriacao,

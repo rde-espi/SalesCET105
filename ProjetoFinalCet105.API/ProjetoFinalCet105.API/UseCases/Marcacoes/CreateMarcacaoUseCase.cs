@@ -6,6 +6,7 @@ using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.Services.MarcacaoService;
 using ProjetoFinalCet105.API.Services.NotificacaoService;
 using ProjetoFinalCet105.API.UseCases.Common;
+using ProjetoFinalCet105.API.UseCases.PromoCodes;
 
 namespace ProjetoFinalCet105.API.UseCases.Marcacoes
 {
@@ -19,6 +20,8 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
         private readonly UserManager<User> _userManager;
         private readonly IMarcacaoService _marcacaoService;
         private readonly INotificacaoService _notificacaoService;
+        private readonly ValidarPromoCodeUseCase _validarPromoCodeUseCase;
+        private readonly IPromoCodeRepository _promoCodeRepository;
 
         public CreateMarcacaoUseCase(
             IMarcacaoRepository marcacaoRepository,
@@ -28,7 +31,9 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             IHistoricoMarcacaoRepository historicoMarcacaoRepository,
             UserManager<User> userManager,
             IMarcacaoService marcacaoService,
-            INotificacaoService notificacaoService)
+            INotificacaoService notificacaoService,
+            ValidarPromoCodeUseCase validarPromoCodeUseCase,
+            IPromoCodeRepository promoCodeRepository)
         {
             _marcacaoRepository = marcacaoRepository;
             _funcionarioRepository = funcionarioRepository;
@@ -38,6 +43,8 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             _userManager = userManager;
             _marcacaoService = marcacaoService;
             _notificacaoService = notificacaoService;
+            _validarPromoCodeUseCase = validarPromoCodeUseCase;
+            _promoCodeRepository = promoCodeRepository;
         }
 
         public async Task<UseCaseResult<MarcacaoDTO>> ExecuteAsync( string userId,bool isCliente,bool isFuncionario,bool isAdmin,NovaMarcacaoDTO dto)
@@ -148,12 +155,13 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             }
 
             var duracaoMinutos =
-                funcionarioServico.DuracaoPersonalizadaMinutos
-                ?? servico.DuracaoMinutos;
+                funcionarioServico.DuracaoPersonalizadaMinutos.HasValue &&
+                funcionarioServico.DuracaoPersonalizadaMinutos.Value > 0
+                ? funcionarioServico.DuracaoPersonalizadaMinutos.Value
+                : servico.DuracaoMinutos;
 
 
-            var dataHoraFim =
-                dto.DataHoraInicio.AddMinutes(duracaoMinutos);
+            var dataHoraFim = dto.DataHoraInicio.AddMinutes(duracaoMinutos);
 
             if (dataHoraFim.Date != dto.DataHoraInicio.Date)
             {
@@ -161,9 +169,37 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                     .Falha("A duração do serviço ultrapassa o horário do mesmo dia.");
             }
 
-            var preco =
-                funcionarioServico.PrecoPersonalizado
-                ?? servico.Preco;
+            var precoOriginal =
+                funcionarioServico.PrecoPersonalizado.HasValue &&
+                funcionarioServico.PrecoPersonalizado.Value > 0
+                ? funcionarioServico.PrecoPersonalizado.Value
+                : servico.Preco;
+
+
+            decimal precoFinal = precoOriginal;
+            decimal? valorDesconto = null;
+            decimal? percentagemAplicada = null;
+            int? promoCodeId = null;
+            string? codigoPromo = null;
+
+            if (!string.IsNullOrWhiteSpace(dto.PromoCode))
+            {
+                var validacao = await _validarPromoCodeUseCase.ExecuteAsync(dto.PromoCode, clienteId);
+
+                if (!validacao.Sucesso)
+                {
+                    return UseCaseResult<MarcacaoDTO>.Falha(validacao.Erro!, validacao.TipoErro);
+                }
+
+                promoCodeId = validacao.Dados!.PromoCodeId;
+                codigoPromo = validacao.Dados.Codigo;
+
+                percentagemAplicada = validacao.Dados.PercentagemDesconto;
+
+                valorDesconto = Math.Round(precoOriginal * (percentagemAplicada.Value / 100m), 2);
+
+                precoFinal = precoOriginal - valorDesconto.Value;
+            }
 
             var horarioValido = await _marcacaoService.HorarioValidoAsync(funcionarioId,dto.DataHoraInicio,dataHoraFim);
 
@@ -209,20 +245,40 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                     DataHoraInicio = dto.DataHoraInicio,
                     DataHoraFim = dataHoraFim,
 
-                    Preco = preco,
+                    Preco = precoFinal,
                     Observacoes = dto.Observacoes,
 
-                    DataCriacao = DateTime.Now
+                    DataCriacao = DateTime.Now,
+                    PromoCodeId = promoCodeId,
+                    PercentagemDescontoAplicada = percentagemAplicada,
+                    ValorDesconto = valorDesconto
                 };
 
                 await _marcacaoRepository.CreateAsync(marcacao);
+                if (promoCodeId.HasValue)
+                {
+                    try
+                    {
+                        await _promoCodeRepository
+                            .IncrementarUtilizacaoAsync(promoCodeId.Value);
+                    }
+                    catch
+                    {
+                        // A falha no contador não deve impedir
+                        // a criação da marcação.
+                    }
+                }
 
                 var historico = new HistoricoMarcacao
                 {
                     MarcacaoId = marcacao.Id,
                     UserId = userId,
                     Acao = "Criação",
-                    Descricao = "Marcação criada.",
+                    Descricao =
+                    promoCodeId.HasValue
+                    ? $"Marcação criada com o código promocional '{codigoPromo}' " +
+                    $"({percentagemAplicada}% de desconto)."
+                    : "Marcação criada.",
                     DataAlteracao = DateTime.Now
                 };
 
@@ -265,16 +321,23 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                     DataHoraFim = marcacao.DataHoraFim,
 
                     Preco = marcacao.Preco,
+                    PromoCodeId = marcacao.PromoCodeId,
+                    PromoCode = codigoPromo,
+                    PercentagemDescontoAplicada = marcacao.PercentagemDescontoAplicada,
+                    ValorDesconto = marcacao.ValorDesconto,
                     Observacoes = marcacao.Observacoes,
                     DataCriacao = marcacao.DataCriacao
                 };
-
+                                
                 return UseCaseResult<MarcacaoDTO>.Ok(resposta);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return UseCaseResult<MarcacaoDTO>
-                    .Falha("Ocorreu um erro ao criar a marcação");
+                var erro =
+                    ex.InnerException?.Message
+                    ?? ex.Message;
+
+                return UseCaseResult<MarcacaoDTO>.Falha($"Ocorreu um erro ao criar a marcação: {erro}");
             }
         }
     }

@@ -11,5 +11,6 @@
         public DateTime DataHoraInicio { get; set; }
 
         public string? Observacoes { get; set; }
+        public string? PromoCode { get; set; }
     }
 }

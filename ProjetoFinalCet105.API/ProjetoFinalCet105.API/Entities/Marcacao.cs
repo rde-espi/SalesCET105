@@ -29,5 +29,11 @@
         public bool Lembrete24hEnviado { get; set; } = false;
 
         public bool Lembrete30MinEnviado { get; set; } = false;
+
+        public int? PromoCodeId { get; set; }
+        public PromoCode? PromoCode { get; set; }
+
+        public decimal? PercentagemDescontoAplicada {  get; set; }
+        public decimal? ValorDesconto {  get; set; }
     }
 }

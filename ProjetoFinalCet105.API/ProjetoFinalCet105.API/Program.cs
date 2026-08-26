@@ -26,6 +26,7 @@ using ProjetoFinalCet105.API.UseCases.HorariosFuncionarios;
 using ProjetoFinalCet105.API.UseCases.Indisponibilidades;
 using ProjetoFinalCet105.API.UseCases.Marcacoes;
 using ProjetoFinalCet105.API.UseCases.Notificacoes;
+using ProjetoFinalCet105.API.UseCases.PromoCodes;
 using System.Text;
 
 
@@ -260,6 +261,7 @@ builder.Services.AddScoped<CriarConversaUseCase>();
 builder.Services.AddScoped<GetMinhasConversasUseCase>();
 builder.Services.AddScoped<GetConversaByIdUseCase>();
 builder.Services.AddScoped<MarcarMensagensComoLidasUseCase>();
+builder.Services.AddScoped<ValidarPromoCodeUseCase>();
 
 
 

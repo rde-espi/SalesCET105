@@ -32,6 +32,25 @@ namespace ProjetoFinalCet105.API.Controllers
             _confirmarEmailUseCase = confirmarEmailUseCase;
             _reenviarConfirmacaoEmailUseCase = reenviarConfirmacaoEmailUseCase;
         }
+        [Authorize]
+        [HttpGet("debug-utilizador")]
+        public IActionResult DebugUtilizador()
+        {
+            return Ok(new
+            {
+                Nome = User.Identity?.Name,
+                Autenticado = User.Identity?.IsAuthenticated,
+                EhCliente = User.IsInRole("Cliente"),
+                EhFuncionario = User.IsInRole("Funcionario"),
+                EhAdmin = User.IsInRole("Admin"),
+
+                Claims = User.Claims.Select(c => new
+                {
+                    c.Type,
+                    c.Value
+                })
+            });
+        }
 
         [AllowAnonymous]
         [HttpPost("login")]

@@ -29,6 +29,7 @@ namespace ProjetoFinalCet105.API.Repositories
                 .ThenInclude(f => f.User)
             .Include(m => m.Servico)
             .Include(m => m.EstadoMarcacao)
+            .Include(m => m.PromoCode)
             .AsNoTracking();
         }
 
@@ -40,8 +41,17 @@ namespace ProjetoFinalCet105.API.Repositories
                 .ThenInclude(f => f.User)
             .Include(m => m.Servico)
             .Include(m => m.EstadoMarcacao)
+            .Include(m => m.PromoCode)
             .AsNoTracking()
             .FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task<bool> ClienteJaUsouPromoCodeAsync(string clienteId,int promoCodeId)
+        {
+            return await _context.Marcacoes
+                .AnyAsync(m =>
+                    m.ClienteId == clienteId &&
+                    m.PromoCodeId == promoCodeId);
         }
     }
 }

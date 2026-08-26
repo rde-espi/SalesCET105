@@ -25,5 +25,9 @@
 
         public DateTime DataCriacao { get; set; }
         public DateTime? DataAtualizacao { get; set; }
+        public int? PromoCodeId { get; set; }
+        public string? PromoCode { get; set; }
+        public decimal? PercentagemDescontoAplicada { get; set; }
+        public decimal? ValorDesconto { get; set; }
     }
 }

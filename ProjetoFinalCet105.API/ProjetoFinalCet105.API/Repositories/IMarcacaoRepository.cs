@@ -13,5 +13,7 @@ namespace ProjetoFinalCet105.API.Repositories
             DateTime dataHoraInicio,
             DateTime dataHoraFim,
             int? marcacaoIdIgnorar = null);
+        
+        Task<bool> ClienteJaUsouPromoCodeAsync(string clienteId,int promoCodeId);
     }
 }
