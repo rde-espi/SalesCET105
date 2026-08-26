@@ -17,7 +17,6 @@ namespace ProjetoFinalCet105.API.Controllers
             _competenciaRepository = competenciaRepository;
         }
         
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Competencia>>> GetAllCompetencias()
         {
@@ -26,7 +25,6 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(competencias);
         }
 
-        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Competencia>> GetCompetenciaById(int id)
         {

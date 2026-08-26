@@ -34,25 +34,21 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
 
             if (marcacao == null)
             {
-                return UseCaseResult<bool>
-                    .Falha("Marcação não encontrada.",TipoErro.NaoEncontrado);
+                return UseCaseResult<bool>.Falha("Marcação não encontrada.",TipoErro.NaoEncontrado);
             }
 
             if (isFuncionario && !isAdmin)
             {
-                var funcionarioAutenticado =
-                    await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+                var funcionarioAutenticado = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
 
                 if (funcionarioAutenticado == null)
                 {
-                    return UseCaseResult<bool>
-                        .Falha("Funcionário autenticado não encontrado.",TipoErro.Proibido);
+                    return UseCaseResult<bool>.Falha("Funcionário autenticado não encontrado.",TipoErro.Proibido);
                 }
 
                 if (marcacao.FuncionarioId != funcionarioAutenticado.Id)
                 {
-                    return UseCaseResult<bool>
-                        .Falha("Não tem permissão para alterar o estado desta marcação.",TipoErro.Proibido);
+                    return UseCaseResult<bool>.Falha("Não tem permissão para alterar o estado desta marcação.",TipoErro.Proibido);
                 }
             }
 
@@ -60,32 +56,26 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
 
             if (estadoAtual == null)
             {
-                return UseCaseResult<bool>
-                    .Falha("O estado atual da marcação não foi encontrado.", TipoErro.NaoEncontrado);
+                return UseCaseResult<bool>.Falha("O estado atual da marcação não foi encontrado.", TipoErro.NaoEncontrado);
             }
 
-            var novoEstado =
-                await _estadoMarcacaoRepository.GetByIdAsync(
-                    dto.EstadoMarcacaoId);
+            var novoEstado =await _estadoMarcacaoRepository.GetByIdAsync(dto.EstadoMarcacaoId);
 
             if (novoEstado == null)
             {
-                return UseCaseResult<bool>
-                    .Falha("O estado indicado não existe.", TipoErro.NaoEncontrado);
+                return UseCaseResult<bool>.Falha("O estado indicado não existe.", TipoErro.NaoEncontrado);
             }
 
             if (estadoAtual.Nome == "Cancelada" ||
                 estadoAtual.Nome == "Concluida" ||
                 estadoAtual.Nome == "Não Compareceu")
             {
-                return UseCaseResult<bool>.Falha(
-                    $"A marcação encontra-se no estado '{estadoAtual.Nome}' e já não pode ser alterada.");
+                return UseCaseResult<bool>.Falha($"A marcação encontra-se no estado '{estadoAtual.Nome}' e já não pode ser alterada.");
             }
 
             if (novoEstado.Nome == "Cancelada")
             {
-                return UseCaseResult<bool>.Falha(
-                    "Para cancelar uma marcação deve utilizar o endpoint de cancelamento.");
+                return UseCaseResult<bool>.Falha("Para cancelar uma marcação deve utilizar o endpoint de cancelamento.");
             }
 
             var transicaoValida =
@@ -98,8 +88,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
 
             if (!transicaoValida)
             {
-                return UseCaseResult<bool>.Falha(
-                    $"Não é possível alterar o estado de '{estadoAtual.Nome}' para '{novoEstado.Nome}'.");
+                return UseCaseResult<bool>.Falha($"Não é possível alterar o estado de '{estadoAtual.Nome}' para '{novoEstado.Nome}'.");
             }
 
             try
@@ -137,8 +126,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             }
             catch (Exception)
             {
-                return UseCaseResult<bool>
-                    .Falha("Ocorreu um erro ao alterar o estado da marcação.");
+                return UseCaseResult<bool>.Falha("Ocorreu um erro ao alterar o estado da marcação.");
             }
         }
     }

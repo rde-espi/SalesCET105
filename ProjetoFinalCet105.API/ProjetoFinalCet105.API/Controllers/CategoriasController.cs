@@ -41,6 +41,7 @@ namespace ProjetoFinalCet105.API.Controllers
         {
             try
             {
+                categoria.Ativa = true;
                 await _categoriaRepository.CreateAsync(categoria);
 
                 return CreatedAtAction(nameof(GetCategoriaById), new { id = categoria.Id }, categoria);
@@ -86,16 +87,23 @@ namespace ProjetoFinalCet105.API.Controllers
                 return NotFound();
             }
 
+            if (!categoria.Ativa)
+            {
+                return BadRequest("A categoria já se encontra inativa.");
+            }
+
             try
             {
-                await _categoriaRepository.DeleteAsync(categoria);
+                categoria.Ativa = false;
+
+                await _categoriaRepository.UpdateAsync(categoria);
+
+                return NoContent();
             }
-            catch (Exception)
+            catch
             {
                 return BadRequest();
             }
-
-            return NoContent();
         }
     }
 }

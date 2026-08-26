@@ -18,10 +18,12 @@ namespace ProjetoFinalCet105.API.Controllers
         private readonly GerirTwoFactorUseCase _gerirTwoFactorUseCase;
         private readonly ConfirmarEmailUseCase _confirmarEmailUseCase;
         private readonly ReenviarConfirmacaoEmailUseCase _reenviarConfirmacaoEmailUseCase;
+        private readonly GoogleLoginUseCase _googleLoginUseCase;
 
         public AuthController(LoginUseCase loginUseCase, AlterarPasswordUseCase alterarPasswordUseCase,
             RecuperarPasswordUseCase recuperarPasswordUseCase, ResetPasswordUseCase resetPasswordUseCase, VerificarTwoFactorUseCase verificarTwoFactorUseCase,
-            GerirTwoFactorUseCase gerirTwoFactorUseCase, ConfirmarEmailUseCase confirmarEmailUseCase, ReenviarConfirmacaoEmailUseCase reenviarConfirmacaoEmailUseCase)
+            GerirTwoFactorUseCase gerirTwoFactorUseCase, ConfirmarEmailUseCase confirmarEmailUseCase, ReenviarConfirmacaoEmailUseCase reenviarConfirmacaoEmailUseCase,
+            GoogleLoginUseCase googleLoginUseCase)
         {
             _loginUseCase = loginUseCase;
             _alterarPasswordUseCase = alterarPasswordUseCase;
@@ -31,27 +33,9 @@ namespace ProjetoFinalCet105.API.Controllers
             _gerirTwoFactorUseCase = gerirTwoFactorUseCase;
             _confirmarEmailUseCase = confirmarEmailUseCase;
             _reenviarConfirmacaoEmailUseCase = reenviarConfirmacaoEmailUseCase;
+            _googleLoginUseCase = googleLoginUseCase;
         }
-        [Authorize]
-        [HttpGet("debug-utilizador")]
-        public IActionResult DebugUtilizador()
-        {
-            return Ok(new
-            {
-                Nome = User.Identity?.Name,
-                Autenticado = User.Identity?.IsAuthenticated,
-                EhCliente = User.IsInRole("Cliente"),
-                EhFuncionario = User.IsInRole("Funcionario"),
-                EhAdmin = User.IsInRole("Admin"),
-
-                Claims = User.Claims.Select(c => new
-                {
-                    c.Type,
-                    c.Value
-                })
-            });
-        }
-
+        
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponseDTO>> Login(LoginDTO dto)
@@ -209,6 +193,20 @@ namespace ProjetoFinalCet105.API.Controllers
                     "Se existir uma conta por confirmar associada a este email, " +
                     "será enviada uma nova mensagem de confirmação."
             });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("google")]
+        public async Task<ActionResult<LoginResponseDTO>> GoogleLogin(GoogleLoginDTO dto)
+        {
+            var resultado = await _googleLoginUseCase.ExecuteAsync(dto);
+
+            if (!resultado.Sucesso)
+            {
+                return TratarErroComDados(resultado);
+            }
+
+            return Ok(resultado.Dados);
         }
     }
 }

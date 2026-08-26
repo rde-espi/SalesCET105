@@ -21,8 +21,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
 
         public async Task<UseCaseResult<bool>> ExecuteAsync(int id,string userId,bool isFuncionario,bool isAdmin,UpdateFuncionarioDTO dto)
         {
-            var funcionario =
-                await _funcionarioRepository.GetByIdAsync(id);
+            var funcionario = await _funcionarioRepository.GetByIdAsync(id);
 
             if (funcionario == null)
             {

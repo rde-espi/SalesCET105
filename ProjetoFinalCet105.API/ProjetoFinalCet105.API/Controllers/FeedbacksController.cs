@@ -51,8 +51,7 @@ namespace ProjetoFinalCet105.API.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<FeedbackDTO>> GetFeedbackById(int id)
         {
-            var resultado =
-                await _getFeedbackByIdUseCase.ExecuteAsync(id);
+            var resultado = await _getFeedbackByIdUseCase.ExecuteAsync(id);
 
             if (!resultado.Sucesso)
             {
@@ -62,21 +61,18 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(resultado.Dados);
         }
 
-        [Authorize(Policy = "FeedbackMarcação")]
+        [Authorize(Roles ="Cliente")]
         [HttpPost]
-        public async Task<ActionResult<FeedbackDTO>> CreateFeedback(
-            NovoFeedbackDTO dto)
+        public async Task<ActionResult<FeedbackDTO>> CreateFeedback(NovoFeedbackDTO dto)
         {
-            var userId =
-                User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
                 return Unauthorized();
             }
 
-            var resultado =
-                await _createFeedbackUseCase.ExecuteAsync(userId, dto);
+            var resultado = await _createFeedbackUseCase.ExecuteAsync(userId, dto);
 
             if (!resultado.Sucesso)
             {
@@ -92,8 +88,7 @@ namespace ProjetoFinalCet105.API.Controllers
         [HttpGet("funcionario/{funcionarioId:int}/resumo")]
         public async Task<ActionResult<FeedbackResumoDTO>> GetFeedbackResumoFuncionario(int funcionarioId)
         {
-            var resultado =
-                await _getFeedbackResumoFuncionarioUseCase.ExecuteAsync(funcionarioId);
+            var resultado = await _getFeedbackResumoFuncionarioUseCase.ExecuteAsync(funcionarioId);
 
             if (!resultado.Sucesso)
             {
@@ -107,20 +102,18 @@ namespace ProjetoFinalCet105.API.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateFeedback(int id,UpdateFeedbackDTO dto)
         {
-            var userId =
-                User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
                 return Unauthorized();
             }
 
-            var resultado =
-                await _updateFeedbackUseCase.ExecuteAsync(
-                    id,
-                    userId,
-                    User.IsInRole("Admin"),
-                    dto);
+            var resultado = await _updateFeedbackUseCase.ExecuteAsync(
+                id,
+                userId,
+                User.IsInRole("Admin"),
+                dto);
 
             if (!resultado.Sucesso)
             {
@@ -134,19 +127,17 @@ namespace ProjetoFinalCet105.API.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteFeedback(int id)
         {
-            var userId =
-                User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
                 return Unauthorized();
             }
 
-            var resultado =
-                await _deleteFeedbackUseCase.ExecuteAsync(
-                    id,
-                    userId,
-                    User.IsInRole("Admin"));
+            var resultado = await _deleteFeedbackUseCase.ExecuteAsync(
+                id,
+                userId,
+                User.IsInRole("Admin"));
 
             if (!resultado.Sucesso)
             {

@@ -87,11 +87,35 @@ namespace ProjetoFinalCet105.API.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<HorarioFuncionarioDTO>> GetHorarioFuncionarioById(int id)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
             var horario = await _horarioFuncionarioRepository.GetByIdWithFuncionarioAsync(id);
             if (horario == null)
             {
                 return NotFound();
             }
+
+            if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
+            {
+                var funcionarioAutenticado = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+
+                if (funcionarioAutenticado == null)
+                {
+                    return Forbid();
+                }
+
+                if (horario.FuncionarioId !=
+                    funcionarioAutenticado.Id)
+                {
+                    return Forbid();
+                }
+            }
+
             return Ok(new HorarioFuncionarioDTO
             {
                 Id = horario.Id,

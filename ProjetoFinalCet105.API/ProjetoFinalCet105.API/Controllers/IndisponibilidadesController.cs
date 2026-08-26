@@ -32,8 +32,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "ConsultarIndisponibilidades")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<IndisponibilidadeDTO>>>
-    GetAllIndisponibilidadesWithFuncionario()
+        public async Task<ActionResult<IEnumerable<IndisponibilidadeDTO>>>GetAllIndisponibilidadesWithFuncionario()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -42,8 +41,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 return Unauthorized();
             }
 
-            var query = _indisponibilidadeRepository
-                .GetAllIndisponibilidadesWithFuncionario();
+            var query = _indisponibilidadeRepository.GetAllIndisponibilidadesWithFuncionario();
 
             if (User.IsInRole("Funcionario") &&
                 !User.IsInRole("Admin"))
@@ -83,11 +81,36 @@ namespace ProjetoFinalCet105.API.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<IndisponibilidadeDTO>>GetIndisponibilidadeWithFuncionarioById(int id)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
             var indisponibilidade = await _indisponibilidadeRepository.GetIndisponibilidadeWithFuncionarioByIdAsync(id);
+
             if(indisponibilidade == null)
             {
                 return NotFound();
             }
+
+            if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
+            {
+                var funcionarioAutenticado = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+
+                if (funcionarioAutenticado == null)
+                {
+                    return Forbid();
+                }
+
+                if (indisponibilidade.FuncionarioId !=
+                    funcionarioAutenticado.Id)
+                {
+                    return Forbid();
+                }
+            }
+
             return Ok(new IndisponibilidadeDTO
             {
                 Id = indisponibilidade.Id,

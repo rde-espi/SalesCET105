@@ -43,37 +43,29 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
 
             if (marcacaoAtual == null)
             {
-                return UseCaseResult<bool>
-                    .Falha("Marcação não encontrada.", TipoErro.NaoEncontrado);
+                return UseCaseResult<bool>.Falha("Marcação não encontrada.", TipoErro.NaoEncontrado);
             }
 
             if (isCliente && !isAdmin)
             {
                 if (marcacaoAtual.ClienteId != userId)
                 {
-                    return UseCaseResult<bool>
-                        .Falha("Não tem permissão para alterar esta marcação.", TipoErro.Proibido);
+                    return UseCaseResult<bool>.Falha("Não tem permissão para alterar esta marcação.", TipoErro.Proibido);
                 }
             }
 
             if (isFuncionario && !isAdmin)
             {
-                var funcionarioAutenticado =
-                    await _funcionarioRepository
-                        .GetFuncionarioByUserIdAsync(userId);
+                var funcionarioAutenticado = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
 
                 if (funcionarioAutenticado == null)
                 {
-                    return UseCaseResult<bool>.Falha(
-                        "Funcionário autenticado não encontrado.",
-                        TipoErro.Proibido);
+                    return UseCaseResult<bool>.Falha("Funcionário autenticado não encontrado.",TipoErro.Proibido);
                 }
 
                 if (marcacaoAtual.FuncionarioId != funcionarioAutenticado.Id)
                 {
-                    return UseCaseResult<bool>.Falha(
-                        "Não tem permissão para alterar esta marcação.",
-                        TipoErro.Proibido);
+                    return UseCaseResult<bool>.Falha("Não tem permissão para alterar esta marcação.",TipoErro.Proibido);
                 }
 
                 funcionarioId = funcionarioAutenticado.Id;
@@ -82,8 +74,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             {
                 if (!dto.FuncionarioId.HasValue)
                 {
-                    return UseCaseResult<bool>.Falha(
-                        "É necessário indicar o funcionário da marcação.");
+                    return UseCaseResult<bool>.Falha("É necessário indicar o funcionário da marcação.");
                 }
 
                 funcionarioId = dto.FuncionarioId.Value;
@@ -94,14 +85,11 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             var dataInicioAnterior = marcacaoAtual.DataHoraInicio;
             var observacoesAnterior = marcacaoAtual.Observacoes;
 
-            var estadoMarcacao =
-                await _estadoMarcacaoRepository.GetByIdAsync(
-                    marcacaoAtual.EstadoMarcacaoId);
+            var estadoMarcacao = await _estadoMarcacaoRepository.GetByIdAsync(marcacaoAtual.EstadoMarcacaoId);
 
             if (estadoMarcacao == null)
             {
-                return UseCaseResult<bool>
-                    .Falha("Estado da marcação não encontrado.", TipoErro.NaoEncontrado);
+                return UseCaseResult<bool>.Falha("Estado da marcação não encontrado.", TipoErro.NaoEncontrado);
             }
 
             if (estadoMarcacao.Nome == "Cancelada" ||
@@ -112,58 +100,51 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                     $"Não é possível alterar uma marcação com o estado '{estadoMarcacao.Nome}'.");
             }
 
-            var funcionario =
-                await _funcionarioRepository.GetByIdAsync(funcionarioId);
+            var funcionario = await _funcionarioRepository.GetByIdAsync(funcionarioId);
 
             if (funcionario == null)
             {
-                return UseCaseResult<bool>
-                    .Falha("O funcionário indicado não existe.", TipoErro.NaoEncontrado);
+                return UseCaseResult<bool>.Falha("O funcionário indicado não existe.", TipoErro.NaoEncontrado);
             }
 
             if (!funcionario.Ativo || !funcionario.Disponivel)
             {
-                return UseCaseResult<bool>
-                    .Falha("O funcionário indicado não está disponível.");
+                return UseCaseResult<bool>.Falha("O funcionário indicado não está disponível.");
             }
 
-            var servico =
-                await _servicoRepository.GetByIdAsync(dto.ServicoId);
+            var servico = await _servicoRepository.GetByIdAsync(dto.ServicoId);
 
             if (servico == null)
             {
-                return UseCaseResult<bool>
-                    .Falha("O serviço indicado não existe.", TipoErro.NaoEncontrado);
+                return UseCaseResult<bool>.Falha("O serviço indicado não existe.", TipoErro.NaoEncontrado);
             }
 
             if (!servico.Disponivel)
             {
-                return UseCaseResult<bool>
-                    .Falha("O serviço indicado não está disponível.");
+                return UseCaseResult<bool>.Falha("O serviço indicado não está disponível.");
             }
 
             var funcionarioServico = await _marcacaoService.GetFuncionarioServicoAsync(funcionarioId, dto.ServicoId);
 
             if (funcionarioServico == null)
             {
-                return UseCaseResult<bool>
-                    .Falha("O funcionário indicado não realiza este serviço.");
+                return UseCaseResult<bool>.Falha("O funcionário indicado não realiza este serviço.");
             }
 
             if (dto.DataHoraInicio <= DateTime.Now)
             {
-                return UseCaseResult<bool>
-                    .Falha("Não é possível reagendar para uma data/hora passada.");
+                return UseCaseResult<bool>.Falha("Não é possível reagendar para uma data/hora passada.");
             }
 
             var duracaoMinutos =
-                funcionarioServico.DuracaoPersonalizadaMinutos
-                ?? servico.DuracaoMinutos;
+                funcionarioServico.DuracaoPersonalizadaMinutos.HasValue &&
+                funcionarioServico.DuracaoPersonalizadaMinutos.Value > 0
+                ? funcionarioServico.DuracaoPersonalizadaMinutos.Value
+                : servico.DuracaoMinutos;
 
             if (duracaoMinutos <= 0)
             {
-                return UseCaseResult<bool>.Falha(
-                    "A duração do serviço deve ser superior a zero.");
+                return UseCaseResult<bool>.Falha("A duração do serviço deve ser superior a zero.");
             }
 
             var dataHoraFim =
@@ -171,34 +152,50 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
 
             if (dataHoraFim.Date != dto.DataHoraInicio.Date)
             {
-                return UseCaseResult<bool>
-                    .Falha("A duração do serviço ultrapassa o horário do mesmo dia.");
+                return UseCaseResult<bool>.Falha("A duração do serviço ultrapassa o horário do mesmo dia.");
             }
 
-            var preco =
-                funcionarioServico.PrecoPersonalizado
-                ?? servico.Preco;
+            var precoBase =
+                funcionarioServico.PrecoPersonalizado.HasValue &&
+                funcionarioServico.PrecoPersonalizado.Value > 0
+                ? funcionarioServico.PrecoPersonalizado.Value
+                : servico.Preco;
+
+            decimal precoFinal = precoBase;
+
+            if (marcacaoAtual.PercentagemDescontoAplicada.HasValue)
+            {
+                var valorDesconto =
+                    Math.Round(
+                        precoBase *
+                        (marcacaoAtual.PercentagemDescontoAplicada.Value / 100m),
+                        2);
+
+                marcacaoAtual.ValorDesconto = valorDesconto;
+                precoFinal = precoBase - valorDesconto;
+            }
+            else
+            {
+                marcacaoAtual.ValorDesconto = null;
+            }
 
             var horarioValido = await _marcacaoService.HorarioValidoAsync(funcionarioId, dto.DataHoraInicio, dataHoraFim);
 
             if (!horarioValido)
             {
-                return UseCaseResult<bool>
-                    .Falha("A marcação está fora do horário de trabalho do funcionário.");
+                return UseCaseResult<bool>.Falha("A marcação está fora do horário de trabalho do funcionário.");
             }
 
             var indisponivel = await _marcacaoService.ExisteIndisponibilidadeAsync(funcionarioId, dto.DataHoraInicio, dataHoraFim);
 
             if (indisponivel)
             {
-                return UseCaseResult<bool>
-                    .Falha("O funcionário está indisponível neste período.");
+                return UseCaseResult<bool>.Falha("O funcionário está indisponível neste período.");
             }
 
             if (await _marcacaoService.ExisteSobreposicaoAsync(funcionarioId, dto.DataHoraInicio, dataHoraFim, id))
             {
-                return UseCaseResult<bool>
-                    .Falha("Já existe uma marcação para este funcionário neste período.", TipoErro.Conflito);
+                return UseCaseResult<bool>.Falha("Já existe uma marcação para este funcionário neste período.", TipoErro.Conflito);
             }
 
             try
@@ -209,7 +206,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 marcacaoAtual.DataHoraInicio = dto.DataHoraInicio;
                 marcacaoAtual.DataHoraFim = dataHoraFim;
 
-                marcacaoAtual.Preco = preco;
+                marcacaoAtual.Preco = precoFinal;
                 marcacaoAtual.Observacoes = dto.Observacoes;
 
                 marcacaoAtual.DataAtualizacao = DateTime.Now;
@@ -252,8 +249,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             }
             catch (Exception)
             {
-                return UseCaseResult<bool>
-                    .Falha("Ocorreu um erro ao alterar a marcação.");
+                return UseCaseResult<bool>.Falha("Ocorreu um erro ao alterar a marcação.");
             }
         }
     }

@@ -262,6 +262,7 @@ builder.Services.AddScoped<GetMinhasConversasUseCase>();
 builder.Services.AddScoped<GetConversaByIdUseCase>();
 builder.Services.AddScoped<MarcarMensagensComoLidasUseCase>();
 builder.Services.AddScoped<ValidarPromoCodeUseCase>();
+builder.Services.AddScoped<GoogleLoginUseCase>();
 
 
 

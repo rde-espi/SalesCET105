@@ -20,7 +20,6 @@ namespace ProjetoFinalCet105.API.Controllers
             _categoriaRepository = categoriaRepository;
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ServicoDTO>>> GetAllServicosWithCategoria()
         {
@@ -44,7 +43,6 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(servicos);
         }
 
-        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<ServicoDTO>> GetServicoByIdWithCategoria(int id)
         {
