@@ -12,6 +12,7 @@ using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.Services.AuthService;
 using ProjetoFinalCet105.API.Services.EmailService;
 using ProjetoFinalCet105.API.Services.FirebaseService;
+using ProjetoFinalCet105.API.Services.GoogleCalendarService;
 using ProjetoFinalCet105.API.Services.HorarioFuncionarioService;
 using ProjetoFinalCet105.API.Services.IndisponibilidadeService;
 using ProjetoFinalCet105.API.Services.MarcacaoService;
@@ -22,6 +23,7 @@ using ProjetoFinalCet105.API.UseCases.Conversas;
 using ProjetoFinalCet105.API.UseCases.Conversas.SignalR.Hubs;
 using ProjetoFinalCet105.API.UseCases.Feedbacks;
 using ProjetoFinalCet105.API.UseCases.Funcionarios;
+using ProjetoFinalCet105.API.UseCases.GoogleCalendarUsecases;
 using ProjetoFinalCet105.API.UseCases.HorariosFuncionarios;
 using ProjetoFinalCet105.API.UseCases.Indisponibilidades;
 using ProjetoFinalCet105.API.UseCases.Marcacoes;
@@ -208,6 +210,8 @@ builder.Services.AddScoped<INotificacaoRepository, NotificacaoRepository>();
 builder.Services.AddScoped<IPromoCodeRepository, PromoCodeRepository>();
 builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
 builder.Services.AddScoped<IDispositivoUserRepository,DispositivoUserRepository>();
+builder.Services.AddScoped<IGoogleCalendarContaRepository,GoogleCalendarContaRepository>();
+builder.Services.AddScoped<IGoogleCalendarEventoRepository,GoogleCalendarEventoRepository>();
 
 
 
@@ -222,6 +226,9 @@ builder.Services.AddScoped<INotificacaoService, NotificacaoService>();
 builder.Services.AddHostedService<LembreteMarcacoesBackgroundService>();
 builder.Services.AddScoped<IFirebaseService,FirebaseService>();
 builder.Services.AddSignalR();
+builder.Services.AddScoped<IGoogleCalendarService,GoogleCalendarService>();
+builder.Services.AddScoped<IGoogleCalendarSyncService,GoogleCalendarSyncService>();
+
 
 //UseCases
 builder.Services.AddScoped<CreateFeedbackUseCase>();
@@ -263,6 +270,8 @@ builder.Services.AddScoped<GetConversaByIdUseCase>();
 builder.Services.AddScoped<MarcarMensagensComoLidasUseCase>();
 builder.Services.AddScoped<ValidarPromoCodeUseCase>();
 builder.Services.AddScoped<GoogleLoginUseCase>();
+builder.Services.AddScoped<ConectarGoogleCalendarUseCase>();
+builder.Services.AddScoped<CallbackGoogleCalendarUseCase>();
 
 
 

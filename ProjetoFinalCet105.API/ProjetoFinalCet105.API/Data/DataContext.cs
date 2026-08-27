@@ -27,6 +27,8 @@ namespace ProjetoFinalCet105.API.Data
         public DbSet<Mensagem> Mensagens { get; set; }
         public DbSet<DispositivoUser> DispositivosUsers { get; set; }
         public DbSet<PromoCode> PromoCodes { get; set; }
+        public DbSet<GoogleCalendarConta> GoogleCalendarContas { get; set; }
+        public DbSet<GoogleCalendarEvento> GoogleCalendarEventos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {      
@@ -199,6 +201,42 @@ namespace ProjetoFinalCet105.API.Data
                 .WithMany()
                 .HasForeignKey(m => m.RemetenteId)
                 .OnDelete(DeleteBehavior.Restrict);
+            // GOOGLE CALENDAR CONTA -> USER
+            modelBuilder.Entity<GoogleCalendarConta>()
+                .HasOne(g => g.User)
+                .WithMany()
+                .HasForeignKey(g => g.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Um utilizador só pode ter uma ligação Google Calendar
+            modelBuilder.Entity<GoogleCalendarConta>()
+                .HasIndex(g => g.UserId)
+                .IsUnique();
+
+
+            // GOOGLE CALENDAR EVENTO -> MARCACAO
+            modelBuilder.Entity<GoogleCalendarEvento>()
+                .HasOne(g => g.Marcacao)
+                .WithMany()
+                .HasForeignKey(g => g.MarcacaoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // GOOGLE CALENDAR EVENTO -> USER
+            modelBuilder.Entity<GoogleCalendarEvento>()
+                .HasOne(g => g.User)
+                .WithMany()
+                .HasForeignKey(g => g.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Impede duplicar o mesmo evento Google
+            // para a mesma marcação/utilizador
+            modelBuilder.Entity<GoogleCalendarEvento>()
+                .HasIndex(g => new
+                {
+                    g.MarcacaoId,
+                    g.UserId
+                })
+                .IsUnique();
         }
 
     }

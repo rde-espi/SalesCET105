@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using ProjetoFinalCet105.API.Services.GoogleCalendarService;
 using ProjetoFinalCet105.API.Services.MarcacaoService;
 using ProjetoFinalCet105.API.Services.NotificacaoService;
 using ProjetoFinalCet105.API.UseCases.Common;
@@ -22,6 +23,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
         private readonly INotificacaoService _notificacaoService;
         private readonly ValidarPromoCodeUseCase _validarPromoCodeUseCase;
         private readonly IPromoCodeRepository _promoCodeRepository;
+        private readonly IGoogleCalendarSyncService _googleCalendarSyncService;
 
         public CreateMarcacaoUseCase(
             IMarcacaoRepository marcacaoRepository,
@@ -33,7 +35,8 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             IMarcacaoService marcacaoService,
             INotificacaoService notificacaoService,
             ValidarPromoCodeUseCase validarPromoCodeUseCase,
-            IPromoCodeRepository promoCodeRepository)
+            IPromoCodeRepository promoCodeRepository,
+            IGoogleCalendarSyncService googleCalendarSyncService)
         {
             _marcacaoRepository = marcacaoRepository;
             _funcionarioRepository = funcionarioRepository;
@@ -45,6 +48,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             _notificacaoService = notificacaoService;
             _validarPromoCodeUseCase = validarPromoCodeUseCase;
             _promoCodeRepository = promoCodeRepository;
+            _googleCalendarSyncService = googleCalendarSyncService;
         }
 
         public async Task<UseCaseResult<MarcacaoDTO>> ExecuteAsync( string userId,bool isCliente,bool isFuncionario,bool isAdmin,NovaMarcacaoDTO dto)
@@ -283,6 +287,25 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 };
 
                 await _historicoMarcacaoRepository.CreateAsync(historico);
+
+                try
+                {
+                    var marcacaoCompleta =
+                        await _marcacaoRepository
+                            .GetByIdWithDetailsAsync(marcacao.Id);
+
+                    if (marcacaoCompleta != null)
+                    {
+                        await _googleCalendarSyncService
+                            .SincronizarCriacaoMarcacaoAsync(
+                                marcacaoCompleta);
+                    }
+                }
+                catch
+                {
+                    // Falha no Google Calendar não deve
+                    // impedir a criação da marcação.
+                }
 
                 try
                 {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using ProjetoFinalCet105.API.Services.GoogleCalendarService;
 using ProjetoFinalCet105.API.Services.NotificacaoService;
 using ProjetoFinalCet105.API.UseCases.Common;
 
@@ -13,19 +14,22 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
         private readonly IEstadoMarcacaoRepository _estadoMarcacaoRepository;
         private readonly IHistoricoMarcacaoRepository _historicoMarcacaoRepository;
         private readonly INotificacaoService _notificacaoService;
+        private readonly IGoogleCalendarSyncService _googleCalendarSyncService;
 
         public CancelarMarcacaoUseCase(
             IMarcacaoRepository marcacaoRepository,
             IFuncionarioRepository funcionarioRepository,
             IEstadoMarcacaoRepository estadoMarcacaoRepository,
             IHistoricoMarcacaoRepository historicoMarcacaoRepository,
-            INotificacaoService notificacaoService)
+            INotificacaoService notificacaoService,
+            IGoogleCalendarSyncService googleCalendarSyncService)
         {
             _marcacaoRepository = marcacaoRepository;
             _funcionarioRepository = funcionarioRepository;
             _estadoMarcacaoRepository = estadoMarcacaoRepository;
             _historicoMarcacaoRepository = historicoMarcacaoRepository;
             _notificacaoService = notificacaoService;
+            _googleCalendarSyncService = googleCalendarSyncService;
         }
 
         public async Task<UseCaseResult<bool>> ExecuteAsync(int id,string userId,bool isCliente,bool isFuncionario,bool isAdmin)
@@ -123,16 +127,31 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 };
 
                 await _historicoMarcacaoRepository.CreateAsync(historico);
+
                 try
                 {
-                    await _notificacaoService
-                        .NotificarCancelamentoMarcacaoAsync(
-                            marcacao.ClienteId,
-                            funcionario.UserId,
-                            marcacao.DataHoraInicio,
-                            isCliente,
-                            isFuncionario,
-                            isAdmin);
+                    var marcacaoCompleta = await _marcacaoRepository.GetByIdWithDetailsAsync(marcacao.Id);
+
+                    if (marcacaoCompleta != null)
+                    {
+                        await _googleCalendarSyncService.SincronizarCancelamentoMarcacaoAsync( marcacaoCompleta);
+                    }
+                }
+                catch
+                {
+                    // Falha no Google Calendar não deve
+                    // anular o cancelamento.
+                }
+
+                try
+                {
+                    await _notificacaoService.NotificarCancelamentoMarcacaoAsync(
+                        marcacao.ClienteId,
+                        funcionario.UserId,
+                        marcacao.DataHoraInicio,
+                        isCliente,
+                        isFuncionario,
+                        isAdmin);
                 }
                 catch
                 {
