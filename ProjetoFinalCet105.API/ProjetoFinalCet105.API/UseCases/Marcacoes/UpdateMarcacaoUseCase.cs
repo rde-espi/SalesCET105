@@ -18,6 +18,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
         private readonly IMarcacaoService _marcacaoService;
         private readonly INotificacaoService _notificacaoService;
         private readonly IGoogleCalendarSyncService _googleCalendarSyncService;
+        private readonly ILogger<UpdateMarcacaoUseCase> _logger;
 
         public UpdateMarcacaoUseCase(
             IMarcacaoRepository marcacaoRepository,
@@ -27,7 +28,8 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             IHistoricoMarcacaoRepository historicoMarcacaoRepository,
             IMarcacaoService marcacaoService,
             INotificacaoService notificacaoService,
-            IGoogleCalendarSyncService googleCalendarSyncService)
+            IGoogleCalendarSyncService googleCalendarSyncService,
+            ILogger<UpdateMarcacaoUseCase> logger)
         {
             _marcacaoRepository = marcacaoRepository;
             _funcionarioRepository = funcionarioRepository;
@@ -37,11 +39,12 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             _marcacaoService = marcacaoService;
             _notificacaoService = notificacaoService;
             _googleCalendarSyncService = googleCalendarSyncService;
+            _logger = logger;
         }
 
         public async Task<UseCaseResult<bool>> ExecuteAsync(int id, string userId, bool isCliente, bool isFuncionario, bool isAdmin, UpdateMarcacaoDTO dto)
         {
-            int funcionarioId;
+            string quemAlterou = "";
 
             var marcacaoAtual = await _marcacaoRepository.GetByIdAsync(id);
 
@@ -50,12 +53,15 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 return UseCaseResult<bool>.Falha("Marcação não encontrada.", TipoErro.NaoEncontrado);
             }
 
+            int funcionarioId = marcacaoAtual!.FuncionarioId;
+
             if (isCliente && !isAdmin)
             {
                 if (marcacaoAtual.ClienteId != userId)
                 {
                     return UseCaseResult<bool>.Falha("Não tem permissão para alterar esta marcação.", TipoErro.Proibido);
                 }
+                quemAlterou = marcacaoAtual.Cliente.NomeCompleto;
             }
 
             if (isFuncionario && !isAdmin)
@@ -72,19 +78,14 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                     return UseCaseResult<bool>.Falha("Não tem permissão para alterar esta marcação.",TipoErro.Proibido);
                 }
 
-                funcionarioId = funcionarioAutenticado.Id;
+                quemAlterou = funcionarioAutenticado.User.NomeCompleto;
             }
-            else
+
+            if (isAdmin)
             {
-                if (!dto.FuncionarioId.HasValue)
-                {
-                    return UseCaseResult<bool>.Falha("É necessário indicar o funcionário da marcação.");
-                }
-
-                funcionarioId = dto.FuncionarioId.Value;
+                quemAlterou = "Administrador";
             }
-
-            var funcionarioAnteriorId = marcacaoAtual.FuncionarioId;
+            
             var servicoAnteriorId = marcacaoAtual.ServicoId;
             var dataInicioAnterior = marcacaoAtual.DataHoraInicio;
             var observacoesAnterior = marcacaoAtual.Observacoes;
@@ -132,7 +133,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
 
             if (funcionarioServico == null)
             {
-                return UseCaseResult<bool>.Falha("O funcionário indicado não realiza este serviço.");
+                return UseCaseResult<bool>.Falha("Não é possível alterar para este serviço, pois o funcionário da marcação não o realiza.");
             }
 
             if (dto.DataHoraInicio <= DateTime.Now)
@@ -204,7 +205,6 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
 
             try
             {
-                marcacaoAtual.FuncionarioId = funcionarioId;
                 marcacaoAtual.ServicoId = dto.ServicoId;
 
                 marcacaoAtual.DataHoraInicio = dto.DataHoraInicio;
@@ -223,10 +223,10 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                     UserId = userId,
                     Acao = "Alteração da marcação",
                     Descricao =
-                        $"Funcionário: {funcionarioAnteriorId} -> {marcacaoAtual.FuncionarioId}; " +
-                        $"Serviço: {servicoAnteriorId} -> {marcacaoAtual.ServicoId}; " +
-                        $"Data/Hora: {dataInicioAnterior} -> {marcacaoAtual.DataHoraInicio}." +
-                        $"Observações: {observacoesAnterior} -> {marcacaoAtual.Observacoes}.",
+                    $"Ação feita por: {quemAlterou}; " +
+                    $"Serviço: {servicoAnteriorId} -> {marcacaoAtual.ServicoId}; " +
+                    $"Data/Hora: {dataInicioAnterior} -> {marcacaoAtual.DataHoraInicio}." +
+                    $"Observações: {observacoesAnterior} -> {marcacaoAtual.Observacoes}.",
                     DataAlteracao = DateTime.Now
                 };
 
@@ -241,10 +241,9 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                         await _googleCalendarSyncService.SincronizarAtualizacaoMarcacaoAsync( marcacaoCompleta);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Falha no Google Calendar não deve
-                    // anular a alteração da marcação.
+                    _logger.LogWarning( ex,"A marcação {MarcacaoId} foi alterada, mas ocorreu uma falha ao sincronizar a alteração com o Google Calendar.",marcacaoAtual.Id);
                 }
 
                 try
@@ -258,10 +257,9 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                         isFuncionario,
                         isAdmin);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Uma falha na notificação não deve anular
-                    // uma alteração já realizada com sucesso.
+                    _logger.LogWarning(ex,"A marcação {MarcacaoId} foi alterada, mas ocorreu uma falha ao enviar a notificação.",marcacaoAtual.Id); 
                 }
 
                 return UseCaseResult<bool>.Ok(true);

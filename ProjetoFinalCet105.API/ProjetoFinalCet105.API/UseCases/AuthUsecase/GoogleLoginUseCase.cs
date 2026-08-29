@@ -12,12 +12,14 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
         private readonly UserManager<User> _userManager;
         private readonly IAuthService _authService;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<GoogleLoginUseCase> _logger;
 
-        public GoogleLoginUseCase(UserManager<User> userManager, IAuthService authService, IConfiguration configuration)
+        public GoogleLoginUseCase(UserManager<User> userManager, IAuthService authService, IConfiguration configuration, ILogger<GoogleLoginUseCase> logger)
         {
             _userManager = userManager;
             _authService = authService;
             _configuration = configuration;
+            _logger = logger;
         }
 
         public async Task<UseCaseResult<LoginResponseDTO>> ExecuteAsync( GoogleLoginDTO dto)
@@ -46,9 +48,11 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
                         Audience = new[] { clientId }
                     });
             }
-            catch
+            catch (Exception ex)
             {
-                return UseCaseResult<LoginResponseDTO>.Falha("Token Google inválido.", TipoErro.NaoAutorizado);
+                _logger.LogWarning( ex, "Falha na validação do token de autenticação Google.");
+
+                return UseCaseResult<LoginResponseDTO>.Falha( "Token Google inválido.", TipoErro.NaoAutorizado);
             }
 
             if (string.IsNullOrWhiteSpace(payload.Subject) ||

@@ -30,15 +30,11 @@ namespace ProjetoFinalCet105.API.UseCases.GoogleCalendarUsecases
                     TipoErro.Validacao);
             }
 
-            var refreshToken =
-                await _googleCalendarService
-                    .TrocarCodigoPorRefreshTokenAsync(code);
+            var tokenGoogle = await _googleCalendarService.TrocarCodigoPorRefreshTokenAsync(code);
 
-            if (string.IsNullOrWhiteSpace(refreshToken))
+            if (tokenGoogle == null || string.IsNullOrWhiteSpace(tokenGoogle.RefreshToken))
             {
-                return UseCaseResult<bool>.Falha(
-                    "Não foi possível obter autorização do Google Calendar.",
-                    TipoErro.Validacao);
+                return UseCaseResult<bool>.Falha( "Não foi possível obter o refresh token do Google.");
             }
 
             var conta = await _repository.GetByUserIdAsync(userId);
@@ -48,7 +44,8 @@ namespace ProjetoFinalCet105.API.UseCases.GoogleCalendarUsecases
                 conta = new GoogleCalendarConta
                 {
                     UserId = userId,
-                    RefreshToken = refreshToken,
+                    RefreshToken = tokenGoogle.RefreshToken,
+                    GoogleEmail = tokenGoogle.GoogleEmail,
                     CalendarId = "primary",
                     Ativo = true,
                     DataCriacao = DateTime.UtcNow
@@ -58,7 +55,8 @@ namespace ProjetoFinalCet105.API.UseCases.GoogleCalendarUsecases
             }
             else
             {
-                conta.RefreshToken = refreshToken;
+                conta.RefreshToken = tokenGoogle.RefreshToken;
+                conta.GoogleEmail = tokenGoogle.GoogleEmail;
                 conta.Ativo = true;
                 conta.DataAtualizacao = DateTime.UtcNow;
 

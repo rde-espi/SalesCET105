@@ -1,4 +1,5 @@
-﻿using ProjetoFinalCet105.API.Entities;
+﻿using ProjetoFinalCet105.API.DTOs;
+using ProjetoFinalCet105.API.Entities;
 
 namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
 {
@@ -7,7 +8,7 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
         string GerarUrlAutorizacao(string userId);
         string? ObterUserIdDoState(string state);
 
-        Task<string?> TrocarCodigoPorRefreshTokenAsync( string code, CancellationToken cancellationToken = default);
+        Task<GoogleCalendarTokenDTO?> TrocarCodigoPorRefreshTokenAsync( string code, CancellationToken cancellationToken = default);
         Task<string> CriarEventoAsync(
             GoogleCalendarConta conta,
             string titulo,

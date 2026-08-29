@@ -10,13 +10,16 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
     {
         private readonly UserManager<User> _userManager;
         private readonly IAuthService _authService;
+        private readonly ILogger<ReenviarConfirmacaoEmailUseCase> _logger;
 
         public ReenviarConfirmacaoEmailUseCase(
             UserManager<User> userManager,
-            IAuthService authService)
+            IAuthService authService,
+            ILogger<ReenviarConfirmacaoEmailUseCase> logger)
         {
             _userManager = userManager;
             _authService = authService;
+            _logger = logger;
         }
 
         public async Task<UseCaseResult<bool>> ExecuteAsync(ReenviarConfirmacaoEmailDTO dto)
@@ -46,15 +49,15 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
 
             try
             {
-                await _authService
-                    .EnviarConfirmacaoEmailAsync(user);
+                await _authService.EnviarConfirmacaoEmailAsync(user);
 
                 return UseCaseResult<bool>.Ok(true);
             }
-            catch
+            catch (Exception ex)
             {
-                return UseCaseResult<bool>.Falha(
-                    "Não foi possível enviar o email de confirmação.");
+                _logger.LogError(ex, "Erro ao reenviar o email de confirmação.");
+
+                return UseCaseResult<bool>.Falha("Não foi possível enviar o email de confirmação.");
             }
         }
     }

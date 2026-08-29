@@ -1,11 +1,14 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
+using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Calendar.v3;
 using Google.Apis.Calendar.v3.Data;
 using Google.Apis.Services;
 using Microsoft.AspNetCore.DataProtection;
+using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
+using System.Net.Http.Headers;
 
 namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
 {
@@ -13,7 +16,7 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
     {
         private readonly IConfiguration _configuration;
         private readonly IDataProtector _stateProtector;
-        private const string RedirectUri ="https://localhost:44349/api/GoogleCalendar/callback";
+        private string RedirectUri => _configuration["GoogleCalendar:RedirectUri"]!;
 
         public GoogleCalendarService(IConfiguration configuration, IDataProtectionProvider dataProtectionProvider)
         {
@@ -23,7 +26,7 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
 
         private GoogleAuthorizationCodeFlow CriarFlow()
         {
-            var clientId =_configuration["GoogleAuth:ClientId"];
+            var clientId = _configuration["GoogleAuth:ClientId"];
 
             var clientSecret = _configuration["GoogleAuth:ClientSecret"];
 
@@ -43,7 +46,8 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
 
                     Scopes = new[]
                     {
-                        CalendarService.Scope.CalendarEvents
+                        CalendarService.Scope.CalendarEvents,
+                        "https://www.googleapis.com/auth/userinfo.email"
                     }
                 });
         }
@@ -52,7 +56,11 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
         {
             var flow = CriarFlow();
 
-            var request = flow.CreateAuthorizationCodeRequest(RedirectUri);
+            var request = (GoogleAuthorizationCodeRequestUrl)
+                flow.CreateAuthorizationCodeRequest(RedirectUri);
+
+            request.AccessType = "offline";
+            request.Prompt = "consent";
 
             var stateProtegido = _stateProtector.Protect(userId);
 
@@ -61,7 +69,7 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
             return request.Build().ToString();
         }
 
-        public async Task<string?> TrocarCodigoPorRefreshTokenAsync(string code,CancellationToken cancellationToken = default)
+        public async Task<GoogleCalendarTokenDTO?> TrocarCodigoPorRefreshTokenAsync( string code, CancellationToken cancellationToken = default)
         {
             var flow = CriarFlow();
 
@@ -71,7 +79,32 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
                 redirectUri: RedirectUri,
                 taskCancellationToken: cancellationToken);
 
-            return token.RefreshToken;
+            if (string.IsNullOrWhiteSpace(token.RefreshToken))
+            {
+                return null;
+            }
+
+            string? googleEmail = null;
+
+            if (!string.IsNullOrWhiteSpace(token.AccessToken))
+            {
+                using var httpClient = new HttpClient();
+
+                httpClient.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue(
+                        "Bearer",
+                        token.AccessToken);
+
+                var userInfo = await httpClient.GetFromJsonAsync<GoogleUserInfoDTO>( "https://www.googleapis.com/oauth2/v2/userinfo", cancellationToken);
+
+                googleEmail = userInfo?.Email;
+            }
+
+            return new GoogleCalendarTokenDTO
+            {
+                RefreshToken = token.RefreshToken,
+                GoogleEmail = googleEmail
+            };
         }
 
         public string? ObterUserIdDoState(string state)
@@ -103,7 +136,7 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
 
             if (string.IsNullOrWhiteSpace(clientId) || string.IsNullOrWhiteSpace(clientSecret))
             {
-                throw new InvalidOperationException( "As credenciais Google não estão configuradas.");
+                throw new InvalidOperationException("As credenciais Google não estão configuradas.");
             }
 
             var flow = CriarFlow();
@@ -113,13 +146,13 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
                 RefreshToken = conta.RefreshToken
             };
 
-            var credential = new UserCredential( flow, conta.UserId, token);
+            var credential = new UserCredential(flow, conta.UserId, token);
 
-            var accessToken = await credential.GetAccessTokenForRequestAsync( cancellationToken: cancellationToken);
+            var accessToken = await credential.GetAccessTokenForRequestAsync(cancellationToken: cancellationToken);
 
             if (string.IsNullOrWhiteSpace(accessToken))
             {
-                throw new InvalidOperationException( "Não foi possível obter um access token Google.");
+                throw new InvalidOperationException("Não foi possível obter um access token Google.");
             }
 
             var calendarService =
@@ -148,13 +181,13 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
                 }
             };
 
-            var request = calendarService.Events.Insert( evento, conta.CalendarId);
+            var request = calendarService.Events.Insert(evento, conta.CalendarId);
 
-            var criado = await request.ExecuteAsync( cancellationToken);
+            var criado = await request.ExecuteAsync(cancellationToken);
 
             if (string.IsNullOrWhiteSpace(criado.Id))
             {
-                throw new InvalidOperationException( "O Google Calendar não devolveu o ID do evento.");
+                throw new InvalidOperationException("O Google Calendar não devolveu o ID do evento.");
             }
 
             return criado.Id;
@@ -215,7 +248,7 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
                 .ExecuteAsync(cancellationToken);
         }
 
-        public async Task EliminarEventoAsync( GoogleCalendarConta conta,string googleEventId, CancellationToken cancellationToken = default)
+        public async Task EliminarEventoAsync(GoogleCalendarConta conta, string googleEventId, CancellationToken cancellationToken = default)
         {
             var flow = CriarFlow();
 

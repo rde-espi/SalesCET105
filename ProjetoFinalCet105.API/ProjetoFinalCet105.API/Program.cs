@@ -218,6 +218,7 @@ builder.Services.AddScoped<IGoogleCalendarEventoRepository,GoogleCalendarEventoR
 
 //Services
 builder.Services.AddScoped<IMarcacaoService, MarcacaoService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IIndisponibilidadeService, IndisponibilidadeService>();
 builder.Services.AddScoped<IHorarioFuncionarioService, HorarioFuncionarioService>();
@@ -272,6 +273,8 @@ builder.Services.AddScoped<ValidarPromoCodeUseCase>();
 builder.Services.AddScoped<GoogleLoginUseCase>();
 builder.Services.AddScoped<ConectarGoogleCalendarUseCase>();
 builder.Services.AddScoped<CallbackGoogleCalendarUseCase>();
+builder.Services.AddScoped<GetGoogleCalendarStatusUseCase>();
+builder.Services.AddScoped<DesligarGoogleCalendarUseCase>();
 
 
 

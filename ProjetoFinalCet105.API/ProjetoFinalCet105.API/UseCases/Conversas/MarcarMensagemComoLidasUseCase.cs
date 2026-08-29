@@ -10,15 +10,18 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
         private readonly IConversaRepository _conversaRepository;
         private readonly IMensagemRepository _mensagemRepository;
         private readonly IHubContext<ChatHub> _hubContext;
+        private readonly ILogger<MarcarMensagensComoLidasUseCase> _logger;
 
         public MarcarMensagensComoLidasUseCase(
             IConversaRepository conversaRepository,
             IMensagemRepository mensagemRepository,
-            IHubContext<ChatHub> hubContext)
+            IHubContext<ChatHub> hubContext,
+            ILogger<MarcarMensagensComoLidasUseCase> logger)
         {
             _conversaRepository = conversaRepository;
             _mensagemRepository = mensagemRepository;
             _hubContext = hubContext;
+            _logger = logger;
         }
 
         public async Task<UseCaseResult<bool>> ExecuteAsync(int conversaId, string userId)
@@ -77,10 +80,9 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
                             DataLeitura = agora
                         });
             }
-            catch
+            catch (Exception ex)
             {
-                // Falha no SignalR não deve impedir
-                // a atualização das mensagens na BD.
+                _logger.LogWarning( ex,"As mensagens da conversa {ConversaId} foram marcadas como lidas na BD, mas falhou a notificação SignalR.", conversaId);
             }
 
             return UseCaseResult<bool>.Ok(true);

@@ -24,6 +24,8 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
         private readonly ValidarPromoCodeUseCase _validarPromoCodeUseCase;
         private readonly IPromoCodeRepository _promoCodeRepository;
         private readonly IGoogleCalendarSyncService _googleCalendarSyncService;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<CreateMarcacaoUseCase> _logger;
 
         public CreateMarcacaoUseCase(
             IMarcacaoRepository marcacaoRepository,
@@ -36,7 +38,9 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             INotificacaoService notificacaoService,
             ValidarPromoCodeUseCase validarPromoCodeUseCase,
             IPromoCodeRepository promoCodeRepository,
-            IGoogleCalendarSyncService googleCalendarSyncService)
+            IGoogleCalendarSyncService googleCalendarSyncService,
+            IUnitOfWork unitOfWork,
+            ILogger<CreateMarcacaoUseCase> logger)
         {
             _marcacaoRepository = marcacaoRepository;
             _funcionarioRepository = funcionarioRepository;
@@ -49,6 +53,8 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             _validarPromoCodeUseCase = validarPromoCodeUseCase;
             _promoCodeRepository = promoCodeRepository;
             _googleCalendarSyncService = googleCalendarSyncService;
+            _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
         public async Task<UseCaseResult<MarcacaoDTO>> ExecuteAsync( string userId,bool isCliente,bool isFuncionario,bool isAdmin,NovaMarcacaoDTO dto)
@@ -237,6 +243,8 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                     .Falha("O estado inicial da marcação não foi encontrado");
             }
 
+            await _unitOfWork.BeginTransactionAsync();
+
             try
             {
                 var marcacao = new Marcacao
@@ -259,18 +267,10 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 };
 
                 await _marcacaoRepository.CreateAsync(marcacao);
+
                 if (promoCodeId.HasValue)
                 {
-                    try
-                    {
-                        await _promoCodeRepository
-                            .IncrementarUtilizacaoAsync(promoCodeId.Value);
-                    }
-                    catch
-                    {
-                        // A falha no contador não deve impedir
-                        // a criação da marcação.
-                    }
+                    await _promoCodeRepository.IncrementarUtilizacaoAsync(promoCodeId.Value);
                 }
 
                 var historico = new HistoricoMarcacao
@@ -288,23 +288,20 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
 
                 await _historicoMarcacaoRepository.CreateAsync(historico);
 
+                await _unitOfWork.CommitTransactionAsync();
+
                 try
                 {
-                    var marcacaoCompleta =
-                        await _marcacaoRepository
-                            .GetByIdWithDetailsAsync(marcacao.Id);
+                    var marcacaoCompleta = await _marcacaoRepository.GetByIdWithDetailsAsync(marcacao.Id);
 
                     if (marcacaoCompleta != null)
                     {
-                        await _googleCalendarSyncService
-                            .SincronizarCriacaoMarcacaoAsync(
-                                marcacaoCompleta);
+                        await _googleCalendarSyncService.SincronizarCriacaoMarcacaoAsync(marcacaoCompleta);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Falha no Google Calendar não deve
-                    // impedir a criação da marcação.
+                    _logger.LogWarning( ex,"A marcação {MarcacaoId} foi criada, mas ocorreu uma falha ao sincronizar com o Google Calendar.", marcacao.Id);
                 }
 
                 try
@@ -318,10 +315,9 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                         isFuncionario,
                         isAdmin);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Uma falha na notificação não deve anular
-                    // uma marcação que já foi criada com sucesso.
+                    _logger.LogWarning( ex,"A marcação {MarcacaoId} foi criada, mas ocorreu uma falha ao enviar a notificação.", marcacao.Id);
                 }
 
                 var resposta = new MarcacaoDTO
@@ -356,9 +352,9 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             }
             catch (Exception ex)
             {
-                var erro =
-                    ex.InnerException?.Message
-                    ?? ex.Message;
+                await _unitOfWork.RollbackTransactionAsync();
+
+                var erro = ex.InnerException?.Message ?? ex.Message;
 
                 return UseCaseResult<MarcacaoDTO>.Falha($"Ocorreu um erro ao criar a marcação: {erro}");
             }

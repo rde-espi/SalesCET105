@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
@@ -7,6 +8,7 @@ using System.Security.Claims;
 
 namespace ProjetoFinalCet105.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DispositivosController : ControllerBase

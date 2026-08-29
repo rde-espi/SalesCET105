@@ -18,9 +18,10 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
         private readonly IHubContext<ChatHub> _hubContext;
         private readonly IDispositivoUserRepository _dispositivoUserRepository;
         private readonly IFirebaseService _firebaseService;
+        private readonly ILogger<EnviarMensagemUseCase> _logger;
 
         public EnviarMensagemUseCase(IConversaRepository conversaRepository, IMensagemRepository mensagemRepository, INotificacaoService notificacaoService,
-            IHubContext<ChatHub> hubContext, IDispositivoUserRepository dispositivoUserRepository, IFirebaseService firebaseService)
+            IHubContext<ChatHub> hubContext, IDispositivoUserRepository dispositivoUserRepository, IFirebaseService firebaseService, ILogger<EnviarMensagemUseCase> logger)
         {
             _conversaRepository = conversaRepository;
             _mensagemRepository = mensagemRepository;
@@ -28,6 +29,7 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
             _hubContext = hubContext;
             _dispositivoUserRepository = dispositivoUserRepository;
             _firebaseService = firebaseService;
+            _logger = logger;
         }
 
         public async Task<UseCaseResult<MensagemDTO>> ExecuteAsync(int conversaId, string userId, EnviarMensagemDTO dto)
@@ -94,10 +96,9 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
                 {
                     await _notificacaoService.NotificarNovaMensagemAsync(destinatarioId, remetente.NomeCompleto);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Uma falha na notificação não deve impedir
-                    // o envio da mensagem.
+                    _logger.LogWarning( ex,"Falha ao criar notificação de nova mensagem para o utilizador {DestinatarioId}.", destinatarioId);
                 }
 
                 var resposta = new MensagemDTO
@@ -122,17 +123,15 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
                             "NovaMensagem",
                             resposta);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Uma falha no SignalR não deve impedir
-                    // que a mensagem seja guardada.
+                    _logger.LogWarning( ex, "Falha ao enviar mensagem por SignalR na conversa {ConversaId}.", conversa.Id);
                 }
                 try
                 {
-                    var dispositivos =
-                        await _dispositivoUserRepository
-                            .GetAtivosByUserId(destinatarioId)
-                            .ToListAsync();
+                    var dispositivos = await _dispositivoUserRepository
+                        .GetAtivosByUserId(destinatarioId)
+                        .ToListAsync();
 
                     foreach (var dispositivo in dispositivos)
                     {
@@ -142,17 +141,18 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
                             mensagem.Texto);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Uma falha no push não deve impedir
-                    // o envio da mensagem.
+                    _logger.LogWarning( ex,"Falha ao enviar push de nova mensagem para o utilizador {DestinatarioId}.", destinatarioId);
                 }
 
                 return UseCaseResult<MensagemDTO>.Ok(resposta);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return UseCaseResult<MensagemDTO>.Falha("Ocorreu um erro ao enviar a mensagem.");
+                _logger.LogError( ex, "Erro ao enviar mensagem na conversa {ConversaId}.",  conversaId);
+
+                return UseCaseResult<MensagemDTO>.Falha( "Ocorreu um erro ao enviar a mensagem.");
             }
         }
     }

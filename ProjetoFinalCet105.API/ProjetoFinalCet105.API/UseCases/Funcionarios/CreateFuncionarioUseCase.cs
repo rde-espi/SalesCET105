@@ -12,14 +12,16 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
         private readonly IFuncionarioRepository _funcionarioRepository;
         private readonly UserManager<User> _userManager;
         private readonly IAuthService _authService;
+        private readonly ILogger<CreateFuncionarioUseCase> _logger;
 
         public CreateFuncionarioUseCase(
             IFuncionarioRepository funcionarioRepository,
-            UserManager<User> userManager, IAuthService authService)
+            UserManager<User> userManager, IAuthService authService, ILogger<CreateFuncionarioUseCase> logger)
         {
             _funcionarioRepository = funcionarioRepository;
             _userManager = userManager;
             _authService = authService;
+            _logger = logger;
         }
 
         public async Task<UseCaseResult<FuncionarioDTO>> ExecuteAsync(
@@ -117,9 +119,9 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
                 await _authService
                     .EnviarConfirmacaoEmailAsync(user);
             }
-            catch
+            catch (Exception ex)
             {
-                
+                _logger.LogWarning(ex,"O funcionário {FuncionarioId} foi criado, mas ocorreu uma falha ao enviar o email de confirmação.",funcionario.Id);
             }
 
             return UseCaseResult<FuncionarioDTO>.Ok(resposta);

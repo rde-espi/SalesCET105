@@ -10,13 +10,16 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
     {
         private readonly IConversaRepository _conversaRepository;
         private readonly UserManager<User> _userManager;
+        private readonly ILogger<CriarConversaUseCase> _logger;
 
         public CriarConversaUseCase(
             IConversaRepository conversaRepository,
-            UserManager<User> userManager)
+            UserManager<User> userManager,
+            ILogger<CriarConversaUseCase> logger)
         {
             _conversaRepository = conversaRepository;
             _userManager = userManager;
+            _logger = logger;
         }
 
         public async Task<UseCaseResult<ConversaDTO>> ExecuteAsync(string userId, NovaConversaDTO dto)
@@ -160,9 +163,11 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
 
                 return UseCaseResult<ConversaDTO>.Ok(resposta);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return UseCaseResult<ConversaDTO>.Falha("Ocorreu um erro ao criar a conversa.");
+                _logger.LogError( ex,"Erro ao criar conversa para o utilizador {UserId}.", userId);
+
+                return UseCaseResult<ConversaDTO>.Falha( "Ocorreu um erro ao criar a conversa.");
             }
         }
     }

@@ -15,6 +15,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
         private readonly IHistoricoMarcacaoRepository _historicoMarcacaoRepository;
         private readonly INotificacaoService _notificacaoService;
         private readonly IGoogleCalendarSyncService _googleCalendarSyncService;
+        private readonly ILogger<CancelarMarcacaoUseCase> _logger;
 
         public CancelarMarcacaoUseCase(
             IMarcacaoRepository marcacaoRepository,
@@ -22,7 +23,8 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             IEstadoMarcacaoRepository estadoMarcacaoRepository,
             IHistoricoMarcacaoRepository historicoMarcacaoRepository,
             INotificacaoService notificacaoService,
-            IGoogleCalendarSyncService googleCalendarSyncService)
+            IGoogleCalendarSyncService googleCalendarSyncService,
+            ILogger<CancelarMarcacaoUseCase> logger)
         {
             _marcacaoRepository = marcacaoRepository;
             _funcionarioRepository = funcionarioRepository;
@@ -30,6 +32,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             _historicoMarcacaoRepository = historicoMarcacaoRepository;
             _notificacaoService = notificacaoService;
             _googleCalendarSyncService = googleCalendarSyncService;
+            _logger = logger;
         }
 
         public async Task<UseCaseResult<bool>> ExecuteAsync(int id,string userId,bool isCliente,bool isFuncionario,bool isAdmin)
@@ -137,10 +140,9 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                         await _googleCalendarSyncService.SincronizarCancelamentoMarcacaoAsync( marcacaoCompleta);
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Falha no Google Calendar não deve
-                    // anular o cancelamento.
+                    _logger.LogWarning(ex,"A marcação {MarcacaoId} foi cancelada, mas ocorreu uma falha ao remover o evento do Google Calendar.",id);
                 }
 
                 try
@@ -153,10 +155,9 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                         isFuncionario,
                         isAdmin);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Falha na notificação não deve anular
-                    // o cancelamento da marcação.
+                    _logger.LogWarning( ex,"A marcação {MarcacaoId} foi cancelada, mas ocorreu uma falha ao enviar a notificação.", id);
                 }
 
                 return UseCaseResult<bool>.Ok(true);

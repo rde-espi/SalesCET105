@@ -8,13 +8,15 @@ namespace ProjetoFinalCet105.API.Data
     {
         private readonly DataContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly IConfiguration _configuration;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public SeedDb(DataContext context, RoleManager<IdentityRole> roleManager,UserManager<User> userManager)
+        public SeedDb(DataContext context, RoleManager<IdentityRole> roleManager,UserManager<User> userManager,IConfiguration configuration)
         {
             _context = context;
             _roleManager = roleManager;
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         public async Task SeedAsync()
@@ -27,8 +29,9 @@ namespace ProjetoFinalCet105.API.Data
 
         private async Task SeedAdminAsync()
         {
-            var email = "r75312@gmail.com";
-            var user = await _userManager.FindByEmailAsync(email);
+            var email = _configuration["AdminSeed:Email"];
+            var password = _configuration["AdminSeed:Password"];
+            var user = await _userManager.FindByEmailAsync(email!);
 
             if (user == null)
             {
@@ -42,7 +45,7 @@ namespace ProjetoFinalCet105.API.Data
                     DataCriacao = DateTime.Now
                 };
 
-                var result = await _userManager.CreateAsync(user, "#Admin123");
+                var result = await _userManager.CreateAsync(user, password!);
 
 
                 if (!result.Succeeded)

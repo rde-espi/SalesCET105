@@ -10,11 +10,13 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
     {
         private readonly UserManager<User> _userManager;
         private readonly IEmailService _emailService;
+        private readonly ILogger<RecuperarPasswordUseCase> _logger;
 
-        public RecuperarPasswordUseCase( UserManager<User> userManager,IEmailService emailService)
+        public RecuperarPasswordUseCase( UserManager<User> userManager,IEmailService emailService, ILogger<RecuperarPasswordUseCase> logger)
         {
             _userManager = userManager;
             _emailService = emailService;
+            _logger = logger;
         }
 
         public async Task<UseCaseResult<bool>> ExecuteAsync(
@@ -58,17 +60,15 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
                     <p>Se não solicitou esta alteração,
                     ignore este email.</p>";
 
-                await _emailService.EnviarEmailAsync(
-                    user.Email!,
-                    "Recuperação de password",
-                    mensagem);
+                await _emailService.EnviarEmailAsync(user.Email!, "Recuperação de password", mensagem);
 
                 return UseCaseResult<bool>.Ok(true);
             }
             catch (Exception ex)
             {
-                return UseCaseResult<bool>.Falha(
-                    $"Não foi possível enviar o email de recuperação{ex.Message}");
+                _logger.LogError( ex, "Erro ao enviar o email de recuperação de password.");
+
+                return UseCaseResult<bool>.Falha("Não foi possível enviar o email de recuperação.");
             }
         }
     }

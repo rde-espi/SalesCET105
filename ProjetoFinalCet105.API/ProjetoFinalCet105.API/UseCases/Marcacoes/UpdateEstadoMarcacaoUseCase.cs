@@ -13,19 +13,22 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
         private readonly IEstadoMarcacaoRepository _estadoMarcacaoRepository;
         private readonly IHistoricoMarcacaoRepository _historicoMarcacaoRepository;
         private readonly INotificacaoService _notificacaoService;
+        private readonly ILogger<UpdateEstadoMarcacaoUseCase> _logger;
 
         public UpdateEstadoMarcacaoUseCase(
             IMarcacaoRepository marcacaoRepository,
             IFuncionarioRepository funcionarioRepository,
             IEstadoMarcacaoRepository estadoMarcacaoRepository,
             IHistoricoMarcacaoRepository historicoMarcacaoRepository,
-            INotificacaoService notificacaoService)
+            INotificacaoService notificacaoService,
+            ILogger<UpdateEstadoMarcacaoUseCase> logger)
         {
             _marcacaoRepository = marcacaoRepository;
             _funcionarioRepository = funcionarioRepository;
             _estadoMarcacaoRepository = estadoMarcacaoRepository;
             _historicoMarcacaoRepository = historicoMarcacaoRepository;
             _notificacaoService = notificacaoService;
+            _logger = logger;
         }
 
         public async Task<UseCaseResult<bool>> ExecuteAsync(int id,string userId,bool isFuncionario,bool isAdmin,UpdateEstadoMarcacaoDTO dto)
@@ -116,10 +119,11 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                         novoEstado.Nome,
                         marcacao.DataHoraInicio);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Falha na notificação não deve anular
-                    // a alteração do estado da marcação.
+                    _logger.LogWarning( ex, "O estado da marcação {MarcacaoId} foi alterado para {NovoEstado}, mas ocorreu uma falha ao enviar a notificação.",
+                        marcacao.Id,
+                        novoEstado.Nome);
                 }
 
                 return UseCaseResult<bool>.Ok(true);

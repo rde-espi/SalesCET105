@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Services.GoogleCalendarService;
 using ProjetoFinalCet105.API.UseCases.GoogleCalendarUsecases;
 using System.Security.Claims;
@@ -14,16 +14,22 @@ namespace ProjetoFinalCet105.API.Controllers
     {
         private readonly ConectarGoogleCalendarUseCase _conectarUseCase;
         private readonly IGoogleCalendarService _googleCalendarService;
+        private readonly GetGoogleCalendarStatusUseCase _getGoogleCalendarStatusUseCase;
+        private readonly DesligarGoogleCalendarUseCase _desligarGoogleCalendarUseCase;
         private readonly CallbackGoogleCalendarUseCase _callbackUseCase;
 
         public GoogleCalendarController(
             ConectarGoogleCalendarUseCase conectarUseCase,
             CallbackGoogleCalendarUseCase callbackUseCase,
-            IGoogleCalendarService googleCalendarService)
+            IGoogleCalendarService googleCalendarService,
+            GetGoogleCalendarStatusUseCase getGoogleCalendarStatusUseCase,
+            DesligarGoogleCalendarUseCase desligarGoogleCalendarUseCase)
         {
             _conectarUseCase = conectarUseCase;
             _callbackUseCase = callbackUseCase;
             _googleCalendarService = googleCalendarService;
+            _getGoogleCalendarStatusUseCase = getGoogleCalendarStatusUseCase;
+            _desligarGoogleCalendarUseCase = desligarGoogleCalendarUseCase;
         }
 
         [HttpGet("conectar")]
@@ -50,27 +56,27 @@ namespace ProjetoFinalCet105.API.Controllers
         }
         [AllowAnonymous]
         [HttpGet("callback")]
-        public async Task<IActionResult> Callback([FromQuery] string? code,[FromQuery] string? state, [FromQuery] string? error)
+        public async Task<IActionResult> Callback([FromQuery] string? code, [FromQuery] string? state, [FromQuery] string? error)
         {
             if (!string.IsNullOrWhiteSpace(error))
             {
-                return BadRequest( $"A autorização do Google Calendar foi recusada: {error}");
+                return BadRequest($"A autorização do Google Calendar foi recusada: {error}");
             }
 
             if (string.IsNullOrWhiteSpace(code) ||
                 string.IsNullOrWhiteSpace(state))
             {
-                return BadRequest( "Resposta de autorização Google inválida.");
+                return BadRequest("Resposta de autorização Google inválida.");
             }
 
             var userId = _googleCalendarService.ObterUserIdDoState(state);
 
             if (string.IsNullOrWhiteSpace(userId))
             {
-                return BadRequest( "Estado de autorização inválido.");
+                return BadRequest("Estado de autorização inválido.");
             }
 
-            var resultado = await _callbackUseCase.ExecuteAsync( userId, code);
+            var resultado = await _callbackUseCase.ExecuteAsync(userId, code);
 
             if (!resultado.Sucesso)
             {
@@ -80,6 +86,48 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(new
             {
                 mensagem = "Google Calendar ligado com sucesso."
+            });
+        }
+
+        [HttpGet("status")]
+        public async Task<ActionResult<GoogleCalendarStatusDTO>> GetStatus()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized();
+            }
+
+            var status =
+                await _getGoogleCalendarStatusUseCase.ExecuteAsync(userId);
+
+            return Ok(status);
+        }
+
+        [HttpDelete("desligar")]
+        public async Task<IActionResult> Desligar()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized();
+            }
+
+            var desligado = await _desligarGoogleCalendarUseCase.ExecuteAsync(userId);
+
+            if (!desligado)
+            {
+                return NotFound(new
+                {
+                    mensagem = "Google Calendar não está ligado."
+                });
+            }
+
+            return Ok(new
+            {
+                mensagem = "Google Calendar desligado com sucesso."
             });
         }
     }
