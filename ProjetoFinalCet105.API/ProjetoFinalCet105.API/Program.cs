@@ -36,20 +36,28 @@ var builder = WebApplication.CreateBuilder(args);
 
 var firebaseCredentialsPath = builder.Configuration["Firebase:CredentialsPath"];
 
-if (string.IsNullOrWhiteSpace(firebaseCredentialsPath))
+if (!string.IsNullOrWhiteSpace(firebaseCredentialsPath))
 {
-    throw new InvalidOperationException(
-        "As credenciais do Firebase não estão configuradas.");
+    try
+    {
+        var credential = CredentialFactory
+            .FromFile<ServiceAccountCredential>(firebaseCredentialsPath)
+            .ToGoogleCredential();
+
+        FirebaseApp.Create(new AppOptions
+        {
+            Credential = credential
+        });
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Firebase não inicializado: {ex.Message}");
+    }
 }
-
-var credential = CredentialFactory
-        .FromFile<ServiceAccountCredential>(firebaseCredentialsPath)
-        .ToGoogleCredential();
-
-FirebaseApp.Create(new AppOptions
+else
 {
-    Credential = credential
-});
+    Console.WriteLine("Firebase não inicializado: credenciais não configuradas.");
+}
 
 // Add services to the container.
 
