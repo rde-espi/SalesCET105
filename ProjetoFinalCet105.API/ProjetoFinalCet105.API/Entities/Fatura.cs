@@ -11,18 +11,15 @@ namespace ProjetoFinalCet105.API.Entities
 
         public int NumeroSequencial { get; set; }
 
-        // Ligação à marcação que originou a fatura
         public int MarcacaoId { get; set; }
         public Marcacao Marcacao { get; set; } = null!;
 
-        // Identificação do documento
         [Required]
         [MaxLength(50)]
         public string Numero { get; set; } = string.Empty;
 
         public DateTime DataEmissao { get; set; }
 
-        // Snapshot do cliente no momento da emissão
         [MaxLength(150)]
         public string? NomeCliente { get; set; }
 
@@ -63,7 +60,6 @@ namespace ProjetoFinalCet105.API.Entities
         [MaxLength(500)]
         public string? MensagemRespostaAT { get; set; }
 
-        public ICollection<FaturaItem> Itens { get; set; }
-            = new List<FaturaItem>();
+        public ICollection<FaturaItem> Itens { get; set; } = new List<FaturaItem>();
     }
 }

@@ -37,8 +37,7 @@ namespace ProjetoFinalCet105.API.Controllers
         [HttpGet("funcionario/{funcionarioId:int}")]
         public async Task<ActionResult<IEnumerable<FeedbackDTO>>> GetFeedbacksByFuncionario(int funcionarioId)
         {
-            var resultado =
-                await _getFeedbacksByFuncionarioUseCase.ExecuteAsync(funcionarioId);
+            var resultado = await _getFeedbacksByFuncionarioUseCase.ExecuteAsync(funcionarioId);
 
             if (!resultado.Sucesso)
             {
@@ -79,10 +78,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 return TratarErroComDados(resultado);
             }
 
-            return CreatedAtAction(
-                nameof(GetFeedbackById),
-                new { id = resultado.Dados!.Id },
-                resultado.Dados);
+            return CreatedAtAction( nameof(GetFeedbackById), new { id = resultado.Dados!.Id }, resultado.Dados);
         }
 
         [HttpGet("funcionario/{funcionarioId:int}/resumo")]

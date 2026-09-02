@@ -16,7 +16,7 @@ namespace ProjetoFinalCet105.API.Repositories
                 .AsNoTracking()
                 .Include(f => f.Itens)
                 .Include(f => f.Marcacao)
-                    .ThenInclude(m => m.Servico)
+                .ThenInclude(m => m.Servico)
                 .FirstOrDefaultAsync(f => f.Id == id);
         }
 
@@ -34,7 +34,7 @@ namespace ProjetoFinalCet105.API.Repositories
                 .AsNoTracking()
                 .Include(f => f.Itens)
                 .Include(f => f.Marcacao)
-                    .ThenInclude(m => m.Servico);
+                .ThenInclude(m => m.Servico);
         }
 
         public async Task<int> GetProximoNumeroSequencialAsync(string serie)

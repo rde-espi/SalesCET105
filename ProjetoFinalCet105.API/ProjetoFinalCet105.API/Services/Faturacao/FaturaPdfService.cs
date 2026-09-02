@@ -16,8 +16,7 @@ namespace ProjetoFinalCet105.API.Services.Faturacao
         private const string CorTexto = "#171717";
         private const string CorLinha = "#D3D3D3";
         private readonly FaturacaoSettings _settings;
-        private readonly CultureInfo _culture =
-            CultureInfo.GetCultureInfo("pt-PT");
+        private readonly CultureInfo _culture = CultureInfo.GetCultureInfo("pt-PT");
         private readonly IWebHostEnvironment _environment;
 
         public FaturaPdfService(IOptions<FaturacaoSettings> options, IWebHostEnvironment environment)
@@ -35,54 +34,49 @@ namespace ProjetoFinalCet105.API.Services.Faturacao
                     page.Size(PageSizes.A4);
                     page.Margin(35);
 
-                    page.DefaultTextStyle(
-                        style => style.FontSize(10));
+                    page.DefaultTextStyle(style => style.FontSize(10));
 
-                    page.Header()
-                        .Element(header =>
-                            CriarCabecalho(header, fatura));
+                    page.Header().Element(header => CriarCabecalho(header, fatura));
 
                     page.Content()
-                        .PaddingVertical(20)
-                        .Column(column =>
+                    .PaddingVertical(20)
+                    .Column(column =>
+                    {
+                        column.Spacing(15);
+                        
+                        if (string.Equals( fatura.Estado, "Anulada", StringComparison.OrdinalIgnoreCase))
                         {
-                            column.Spacing(15);
-
                             column.Item()
-                                .Element(container =>
-                                    CriarDadosCliente(
-                                        container,
-                                        fatura));
-
-                            column.Item()
-    .Element(container =>
-        CriarTabela(
-            container,
-            fatura));
-
-                            column.Item()
-    .Element(container =>
-        CriarTotais(
-            container,
-            fatura));
-                        });
-
-                    page.Footer()
-    .Element(footer =>
-        CriarRodape(footer, fatura));
+                            .Border(2)
+                            .BorderColor(Colors.Red.Darken2)
+                            .PaddingVertical(8)
+                            .AlignCenter()
+                            .Text("FATURA ANULADA")
+                            .FontSize(16)
+                            .Bold()
+                            .FontColor(Colors.Red.Darken2);
+                        }
+                        
+                        column.Item()
+                        .Element(container => CriarDadosCliente(container, fatura));
+                        
+                        column.Item()
+                        .Element(container => CriarTabela(container, fatura));
+                        
+                        column.Item()
+                        .Element(container => CriarTotais(container, fatura));
+                    });
+                    
+                    page.Footer().Element(footer => CriarRodape(footer, fatura));
                 });
             });
-
+            
             return document.GeneratePdf();
         }
-
-        private void CriarCabecalho(
-    IContainer container,
-    FaturaDTO fatura)
+        
+        private void CriarCabecalho(IContainer container,FaturaDTO fatura)
         {
-            var logoPath = Path.Combine(
-                _environment.ContentRootPath,
-                _settings.LogoPath);
+            var logoPath = Path.Combine(_environment.ContentRootPath,_settings.LogoPath);
 
             container
                 .Height(105)
@@ -141,8 +135,7 @@ namespace ProjetoFinalCet105.API.Services.Faturacao
                         });
 
                     // SEPARADOR DOURADO
-                    row.ConstantItem(2)
-                        .Background(CorDourada);
+                    row.ConstantItem(2).Background(CorDourada);
 
                     // FATURA
                     row.ConstantItem(165)
@@ -174,23 +167,18 @@ namespace ProjetoFinalCet105.API.Services.Faturacao
                             column.Item()
                                 .PaddingTop(7)
                                 .AlignRight()
-                                .Text(
-                                    $"Data: {fatura.DataEmissao.ToString("dd/MM/yyyy", _culture)}")
+                                .Text( $"Data: {fatura.DataEmissao.ToString("dd/MM/yyyy", _culture)}")
                                 .FontSize(10)
                                 .Bold();
                         });
                 });
         }
-
-        private void CriarDadosCliente(
-    IContainer container,
-    FaturaDTO fatura)
+        
+        private void CriarDadosCliente(IContainer container,FaturaDTO fatura)
         {
             container.Row(row =>
             {
-                // =========================
                 // DADOS DO CLIENTE
-                // =========================
                 row.RelativeItem(2)
                     .PaddingRight(20)
                     .Column(column =>
@@ -215,8 +203,7 @@ namespace ProjetoFinalCet105.API.Services.Faturacao
                                     .Text("Nome:")
                                     .Bold();
 
-                                r.RelativeItem()
-                                    .Text(fatura.NomeCliente ?? "-");
+                                r.RelativeItem().Text(fatura.NomeCliente ?? "-");
                             });
 
                         if (!string.IsNullOrWhiteSpace(fatura.NifCliente))
@@ -229,8 +216,7 @@ namespace ProjetoFinalCet105.API.Services.Faturacao
                                         .Text("NIF:")
                                         .Bold();
 
-                                    r.RelativeItem()
-                                        .Text(fatura.NifCliente);
+                                    r.RelativeItem().Text(fatura.NifCliente);
                                 });
                         }
 
@@ -244,8 +230,7 @@ namespace ProjetoFinalCet105.API.Services.Faturacao
                                         .Text("Morada:")
                                         .Bold();
 
-                                    r.RelativeItem()
-                                        .Text(fatura.MoradaCliente);
+                                    r.RelativeItem().Text(fatura.MoradaCliente);
                                 });
                         }
 
@@ -259,8 +244,7 @@ namespace ProjetoFinalCet105.API.Services.Faturacao
                                         .Text("Código Postal:")
                                         .Bold();
 
-                                    r.RelativeItem()
-                                        .Text(fatura.CodigoPostalCliente);
+                                    r.RelativeItem().Text(fatura.CodigoPostalCliente);
                                 });
                         }
 
@@ -274,15 +258,12 @@ namespace ProjetoFinalCet105.API.Services.Faturacao
                                         .Text("Localidade:")
                                         .Bold();
 
-                                    r.RelativeItem()
-                                        .Text(fatura.LocalidadeCliente);
+                                    r.RelativeItem().Text(fatura.LocalidadeCliente);
                                 });
                         }
                     });
 
-                // =========================
                 // BLOCO DA MARCAÇÃO
-                // =========================
                 row.RelativeItem()
                     .PaddingTop(45)
                     .Border(1)
@@ -318,21 +299,19 @@ namespace ProjetoFinalCet105.API.Services.Faturacao
                             });
 
                         column.Item()
-    .Row(r =>
-    {
-        r.RelativeItem()
-            .Text("Data:")
-            .Bold();
-
-        r.ConstantItem(95)
-            .AlignRight()
-            .Text(
-                fatura.DataMarcacao.ToString(
-                    "dd/MM/yyyy",
-                    _culture));
-    });
-
+                        .Row(r =>
+                        {
+                            r.RelativeItem()
+                            .Text("Data:")
+                            .Bold();
+                            
+                            r.ConstantItem(95)
+                            .AlignRight()
+                            .Text( fatura.DataMarcacao.ToString("dd/MM/yyyy", _culture));
+                        });
+                        
                         column.Item()
+
                             .Row(r =>
                             {
                                 r.ConstantItem(110)
@@ -341,17 +320,12 @@ namespace ProjetoFinalCet105.API.Services.Faturacao
 
                                 r.RelativeItem()
                                     .AlignRight()
-                                    .Text(
-                                        fatura.DataMarcacao.ToString(
-                                            "HH:mm",
-                                            _culture));
+                                    .Text( fatura.DataMarcacao.ToString( "HH:mm", _culture));
                             });
                     });
             });
         }
-        private void CriarTabela(
-    IContainer container,
-    FaturaDTO fatura)
+        private void CriarTabela(IContainer container,FaturaDTO fatura)
         {
             container.Table(table =>
             {
@@ -446,9 +420,7 @@ namespace ProjetoFinalCet105.API.Services.Faturacao
             });
         }
 
-        private void CriarTotais(
-    IContainer container,
-    FaturaDTO fatura)
+        private void CriarTotais(IContainer container,FaturaDTO fatura)
         {
             container.Row(row =>
             {
@@ -494,8 +466,7 @@ namespace ProjetoFinalCet105.API.Services.Faturacao
 
                                     r.ConstantItem(100)
                                         .AlignRight()
-                                        .Text(
-                                            $"-{fatura.ValorDesconto.ToString("C2", _culture)}");
+                                        .Text($"-{fatura.ValorDesconto.ToString("C2", _culture)}");
                                 });
                         }
 
@@ -541,44 +512,8 @@ namespace ProjetoFinalCet105.API.Services.Faturacao
                     });
             });
         }
-
-        private void CriarLinhaTotal(
-            ColumnDescriptor column,
-            string descricao,
-            decimal valor)
-        {
-            column.Item()
-                .Row(row =>
-                {
-                    row.RelativeItem()
-                        .Text(descricao);
-
-                    row.RelativeItem()
-                        .AlignRight()
-                        .Text(FormatarMoeda(valor));
-                });
-        }
-
-        private static IContainer CelulaCabecalho(
-            IContainer container)
-        {
-            return container
-                .BorderBottom(1)
-                .PaddingVertical(6)
-                .PaddingHorizontal(3);
-        }
-
-        private static IContainer CelulaConteudo(
-            IContainer container)
-        {
-            return container
-                .BorderBottom(0.5f)
-                .PaddingVertical(7)
-                .PaddingHorizontal(3);
-        }
-        private void CriarRodape(
-    IContainer container,
-    FaturaDTO fatura)
+                
+        private void CriarRodape( IContainer container, FaturaDTO fatura)
         {
             container.Column(column =>
             {
@@ -617,10 +552,6 @@ namespace ProjetoFinalCet105.API.Services.Faturacao
                             .FontColor(CorDourada);
                     });
             });
-        }
-        private string FormatarMoeda(decimal valor)
-        {
-            return valor.ToString("C2", _culture);
-        }
+        }        
     }
 }

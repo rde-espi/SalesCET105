@@ -30,88 +30,59 @@ namespace ProjetoFinalCet105.API.UseCases.Faturas
         {
             var query = _faturaRepository.GetAllWithDetails();
 
-            // ----------------------------------------------------
-            // AUTORIZAÇÃO
-            // ----------------------------------------------------
-
             if (!isAdmin)
             {
                 if (isCliente)
                 {
-                    query = query.Where(
-                        f => f.Marcacao.ClienteId == userId);
+                    query = query.Where( f => f.Marcacao.ClienteId == userId);
                 }
                 else if (isFuncionario)
                 {
-                    var funcionario =
-                        await _funcionarioRepository
-                            .GetFuncionarioByUserIdAsync(userId);
+                    var funcionario = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
 
                     if (funcionario == null)
                     {
-                        return UseCaseResult<List<FaturaDTO>>.Falha(
-                            "Funcionário autenticado não encontrado.",
-                            TipoErro.Proibido);
+                        return UseCaseResult<List<FaturaDTO>>.Falha("Funcionário autenticado não encontrado.", TipoErro.Proibido);
                     }
 
-                    query = query.Where(
-                        f => f.Marcacao.FuncionarioId == funcionario.Id);
+                    query = query.Where( f => f.Marcacao.FuncionarioId == funcionario.Id);
                 }
                 else
                 {
-                    return UseCaseResult<List<FaturaDTO>>.Falha(
-                        "Não tem permissão para consultar faturas.",
-                        TipoErro.Proibido);
+                    return UseCaseResult<List<FaturaDTO>>.Falha( "Não tem permissão para consultar faturas.", TipoErro.Proibido);
                 }
             }
 
-            // ----------------------------------------------------
-            // FILTROS
-            // ----------------------------------------------------
-
             if (dataInicio.HasValue)
             {
-                query = query.Where(
-                    f => f.DataEmissao >= dataInicio.Value);
+                query = query.Where(f => f.DataEmissao >= dataInicio.Value);
             }
 
             if (dataFim.HasValue)
             {
-                // Inclui todo o dia indicado em dataFim.
                 var limiteFinal = dataFim.Value.Date.AddDays(1);
 
-                query = query.Where(
-                    f => f.DataEmissao < limiteFinal);
+                query = query.Where( f => f.DataEmissao < limiteFinal);
             }
 
             if (!string.IsNullOrWhiteSpace(numero))
             {
                 var numeroPesquisa = numero.Trim();
 
-                query = query.Where(
-                    f => f.Numero.Contains(numeroPesquisa));
+                query = query.Where( f => f.Numero.Contains(numeroPesquisa));
             }
 
             if (!string.IsNullOrWhiteSpace(estado))
             {
                 var estadoPesquisa = estado.Trim();
 
-                query = query.Where(
-                    f => f.Estado == estadoPesquisa);
+                query = query.Where(f => f.Estado == estadoPesquisa);
             }
-
-            // ----------------------------------------------------
-            // CONSULTA
-            // ----------------------------------------------------
 
             var faturas = await query
                 .OrderByDescending(f => f.DataEmissao)
                 .ThenByDescending(f => f.NumeroSequencial)
                 .ToListAsync();
-
-            // ----------------------------------------------------
-            // DTO
-            // ----------------------------------------------------
 
             var resultado = faturas
                 .Select(f => new FaturaDTO

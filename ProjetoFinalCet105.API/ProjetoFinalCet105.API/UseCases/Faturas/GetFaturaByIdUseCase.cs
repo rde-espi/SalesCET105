@@ -25,59 +25,40 @@ namespace ProjetoFinalCet105.API.UseCases.Faturas
             bool isFuncionario,
             bool isAdmin)
         {
-            var fatura =
-                await _faturaRepository.GetByIdWithDetailsAsync(id);
+            var fatura = await _faturaRepository.GetByIdWithDetailsAsync(id);
 
             if (fatura == null)
             {
-                return UseCaseResult<FaturaDTO>.Falha(
-                    "Fatura não encontrada.",
-                    TipoErro.NaoEncontrado);
+                return UseCaseResult<FaturaDTO>.Falha( "Fatura não encontrada.", TipoErro.NaoEncontrado);
             }
 
-            // ADMIN
-            // Pode consultar qualquer fatura.
             if (!isAdmin)
-            {
-                // CLIENTE
-                // Apenas pode consultar faturas das suas marcações.
+            {                
                 if (isCliente)
                 {
                     if (fatura.Marcacao.ClienteId != userId)
                     {
-                        return UseCaseResult<FaturaDTO>.Falha(
-                            "Não tem permissão para consultar esta fatura.",
-                            TipoErro.Proibido);
+                        return UseCaseResult<FaturaDTO>.Falha("Não tem permissão para consultar esta fatura.", TipoErro.Proibido);
                     }
                 }
 
-                // FUNCIONÁRIO
-                // Apenas pode consultar faturas das suas marcações.
                 else if (isFuncionario)
                 {
-                    var funcionario =
-                        await _funcionarioRepository
-                            .GetFuncionarioByUserIdAsync(userId);
+                    var funcionario = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
 
                     if (funcionario == null)
                     {
-                        return UseCaseResult<FaturaDTO>.Falha(
-                            "Funcionário autenticado não encontrado.",
-                            TipoErro.Proibido);
+                        return UseCaseResult<FaturaDTO>.Falha("Funcionário autenticado não encontrado.",TipoErro.Proibido);
                     }
 
                     if (fatura.Marcacao.FuncionarioId != funcionario.Id)
                     {
-                        return UseCaseResult<FaturaDTO>.Falha(
-                            "Não tem permissão para consultar esta fatura.",
-                            TipoErro.Proibido);
+                        return UseCaseResult<FaturaDTO>.Falha( "Não tem permissão para consultar esta fatura.", TipoErro.Proibido);
                     }
                 }
                 else
                 {
-                    return UseCaseResult<FaturaDTO>.Falha(
-                        "Não tem permissão para consultar faturas.",
-                        TipoErro.Proibido);
+                    return UseCaseResult<FaturaDTO>.Falha( "Não tem permissão para consultar faturas.", TipoErro.Proibido);
                 }
             }
 

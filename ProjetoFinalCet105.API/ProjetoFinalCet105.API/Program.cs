@@ -318,6 +318,7 @@ builder.Services.AddScoped<DesligarGoogleCalendarUseCase>();
 builder.Services.AddScoped<CreateFaturaUseCase>();
 builder.Services.AddScoped<GetFaturaByIdUseCase>();
 builder.Services.AddScoped<GetFaturasUseCase>();
+builder.Services.AddScoped<AnularFaturaUseCase>();
 
 
 
