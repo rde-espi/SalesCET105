@@ -17,9 +17,7 @@
             };
         }
 
-        public static UseCaseResult<T> Falha(
-            string erro,
-            TipoErro tipoErro = TipoErro.Validacao)
+        public static UseCaseResult<T> Falha( string erro, TipoErro tipoErro = TipoErro.Validacao)
         {
             return new UseCaseResult<T>
             {

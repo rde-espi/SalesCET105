@@ -285,6 +285,156 @@ namespace ProjetoFinalCet105.API.Migrations
                     b.ToTable("EstadosMarcacoes");
                 });
 
+            modelBuilder.Entity("ProjetoFinalCet105.API.Entities.Fatura", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CodigoPostalCliente")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("CodigoRespostaAT")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("ComunicadaAT")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("DataComunicacaoAT")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataEmissao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("LocalidadeCliente")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("MarcacaoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MensagemRespostaAT")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("MoradaCliente")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("NifCliente")
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
+
+                    b.Property<string>("NomeCliente")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("NumeroSequencial")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Serie")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("ValorDesconto")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("ValorIva")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MarcacaoId")
+                        .IsUnique();
+
+                    b.HasIndex("Numero")
+                        .IsUnique();
+
+                    b.HasIndex("Serie", "NumeroSequencial")
+                        .IsUnique();
+
+                    b.ToTable("Faturas");
+                });
+
+            modelBuilder.Entity("ProjetoFinalCet105.API.Entities.FaturaItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CodigoIva")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<int>("FaturaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("MotivoIsencaoIva")
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<decimal>("PercentagemIva")
+                        .HasPrecision(5, 2)
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<decimal>("PrecoUnitario")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Quantidade")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("ServicoId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("ValorIva")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FaturaId");
+
+                    b.ToTable("FaturaItens");
+                });
+
             modelBuilder.Entity("ProjetoFinalCet105.API.Entities.Feedback", b =>
                 {
                     b.Property<int>("Id")
@@ -995,6 +1145,28 @@ namespace ProjetoFinalCet105.API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ProjetoFinalCet105.API.Entities.Fatura", b =>
+                {
+                    b.HasOne("ProjetoFinalCet105.API.Entities.Marcacao", "Marcacao")
+                        .WithMany()
+                        .HasForeignKey("MarcacaoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Marcacao");
+                });
+
+            modelBuilder.Entity("ProjetoFinalCet105.API.Entities.FaturaItem", b =>
+                {
+                    b.HasOne("ProjetoFinalCet105.API.Entities.Fatura", "Fatura")
+                        .WithMany("Itens")
+                        .HasForeignKey("FaturaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Fatura");
+                });
+
             modelBuilder.Entity("ProjetoFinalCet105.API.Entities.Feedback", b =>
                 {
                     b.HasOne("ProjetoFinalCet105.API.Entities.User", "Cliente")
@@ -1242,6 +1414,11 @@ namespace ProjetoFinalCet105.API.Migrations
             modelBuilder.Entity("ProjetoFinalCet105.API.Entities.EstadoMarcacao", b =>
                 {
                     b.Navigation("Marcacoes");
+                });
+
+            modelBuilder.Entity("ProjetoFinalCet105.API.Entities.Fatura", b =>
+                {
+                    b.Navigation("Itens");
                 });
 
             modelBuilder.Entity("ProjetoFinalCet105.API.Entities.Funcionario", b =>

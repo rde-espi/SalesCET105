@@ -11,16 +11,19 @@ using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.Services.AuthService;
 using ProjetoFinalCet105.API.Services.EmailService;
+using ProjetoFinalCet105.API.Services.Faturacao;
 using ProjetoFinalCet105.API.Services.FirebaseService;
 using ProjetoFinalCet105.API.Services.GoogleCalendarService;
 using ProjetoFinalCet105.API.Services.HorarioFuncionarioService;
 using ProjetoFinalCet105.API.Services.IndisponibilidadeService;
 using ProjetoFinalCet105.API.Services.MarcacaoService;
+using ProjetoFinalCet105.API.Services.NifService;
 using ProjetoFinalCet105.API.Services.NotificacaoService;
 using ProjetoFinalCet105.API.UseCases.AuthUsecase;
 using ProjetoFinalCet105.API.UseCases.Cliente;
 using ProjetoFinalCet105.API.UseCases.Conversas;
 using ProjetoFinalCet105.API.UseCases.Conversas.SignalR.Hubs;
+using ProjetoFinalCet105.API.UseCases.Faturas;
 using ProjetoFinalCet105.API.UseCases.Feedbacks;
 using ProjetoFinalCet105.API.UseCases.Funcionarios;
 using ProjetoFinalCet105.API.UseCases.GoogleCalendarUsecases;
@@ -30,8 +33,11 @@ using ProjetoFinalCet105.API.UseCases.Marcacoes;
 using ProjetoFinalCet105.API.UseCases.Notificacoes;
 using ProjetoFinalCet105.API.UseCases.PromoCodes;
 using System.Text;
+using System.Threading.RateLimiting;
 
 
+
+QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 var builder = WebApplication.CreateBuilder(args);
 
 var firebaseCredentialsPath = builder.Configuration["Firebase:CredentialsPath"];
@@ -200,6 +206,30 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<SeedDb>();
 
+//Configuração da faturação
+builder.Services.Configure<FaturacaoSettings>(builder.Configuration.GetSection(FaturacaoSettings.SectionName));
+
+
+//Limitador de chamadas a API NIT.PT devido a custos
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("NifValidation", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey:
+                httpContext.Connection.RemoteIpAddress?.ToString()
+                ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(5),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            }));
+
+    options.RejectionStatusCode =
+        StatusCodes.Status429TooManyRequests;
+});
+
 //Repositories
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<ICompetenciaRepository, CompetenciaRepository>();
@@ -220,6 +250,7 @@ builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
 builder.Services.AddScoped<IDispositivoUserRepository,DispositivoUserRepository>();
 builder.Services.AddScoped<IGoogleCalendarContaRepository,GoogleCalendarContaRepository>();
 builder.Services.AddScoped<IGoogleCalendarEventoRepository,GoogleCalendarEventoRepository>();
+builder.Services.AddScoped<IFaturaRepository, FaturaRepository>();
 
 
 
@@ -237,7 +268,8 @@ builder.Services.AddScoped<IFirebaseService,FirebaseService>();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<IGoogleCalendarService,GoogleCalendarService>();
 builder.Services.AddScoped<IGoogleCalendarSyncService,GoogleCalendarSyncService>();
-
+builder.Services.AddHttpClient<INifService, NifService>();
+builder.Services.AddScoped<IFaturaPdfService, FaturaPdfService>();
 
 //UseCases
 builder.Services.AddScoped<CreateFeedbackUseCase>();
@@ -283,7 +315,9 @@ builder.Services.AddScoped<ConectarGoogleCalendarUseCase>();
 builder.Services.AddScoped<CallbackGoogleCalendarUseCase>();
 builder.Services.AddScoped<GetGoogleCalendarStatusUseCase>();
 builder.Services.AddScoped<DesligarGoogleCalendarUseCase>();
-
+builder.Services.AddScoped<CreateFaturaUseCase>();
+builder.Services.AddScoped<GetFaturaByIdUseCase>();
+builder.Services.AddScoped<GetFaturasUseCase>();
 
 
 
@@ -310,6 +344,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseRateLimiter();
 
 app.MapControllers();
 app.MapHub<ChatHub>("/hubs/chat");

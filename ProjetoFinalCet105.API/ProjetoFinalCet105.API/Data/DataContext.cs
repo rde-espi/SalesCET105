@@ -29,6 +29,8 @@ namespace ProjetoFinalCet105.API.Data
         public DbSet<PromoCode> PromoCodes { get; set; }
         public DbSet<GoogleCalendarConta> GoogleCalendarContas { get; set; }
         public DbSet<GoogleCalendarEvento> GoogleCalendarEventos { get; set; }
+        public DbSet<Fatura> Faturas { get; set; }
+        public DbSet<FaturaItem> FaturaItens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {      
@@ -236,6 +238,70 @@ namespace ProjetoFinalCet105.API.Data
                     g.MarcacaoId,
                     g.UserId
                 })
+                .IsUnique();
+
+            // FATURA -> MARCACAO
+            modelBuilder.Entity<Fatura>()
+                .HasOne(f => f.Marcacao)
+                .WithMany()
+                .HasForeignKey(f => f.MarcacaoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Fatura>()
+                .HasIndex(f => f.MarcacaoId)
+                .IsUnique();
+
+            // FATURA ITEM -> FATURA
+            modelBuilder.Entity<FaturaItem>()
+                .HasOne(fi => fi.Fatura)
+                .WithMany(f => f.Itens)
+                .HasForeignKey(fi => fi.FaturaId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // PRECISÃO DECIMAL - FATURA
+            modelBuilder.Entity<Fatura>()
+                .Property(f => f.Subtotal)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Fatura>()
+                .Property(f => f.ValorDesconto)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Fatura>()
+                .Property(f => f.ValorIva)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Fatura>()
+                .Property(f => f.Total)
+                .HasPrecision(18, 2);
+            // Número completo da fatura deve ser único
+            modelBuilder.Entity<Fatura>()
+                .HasIndex(f => f.Numero)
+                .IsUnique();
+
+            // PRECISÃO DECIMAL - FATURA ITEM
+            modelBuilder.Entity<FaturaItem>()
+                .Property(fi => fi.Quantidade)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<FaturaItem>()
+                .Property(fi => fi.PrecoUnitario)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<FaturaItem>()
+                .Property(fi => fi.PercentagemIva)
+                .HasPrecision(5, 2);
+
+            modelBuilder.Entity<FaturaItem>()
+                .Property(fi => fi.ValorIva)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<FaturaItem>()
+                .Property(fi => fi.Total)
+                .HasPrecision(18, 2);
+            // Série + número sequencial devem ser únicos
+            modelBuilder.Entity<Fatura>()
+                .HasIndex(f => new { f.Serie, f.NumeroSequencial })
                 .IsUnique();
         }
 

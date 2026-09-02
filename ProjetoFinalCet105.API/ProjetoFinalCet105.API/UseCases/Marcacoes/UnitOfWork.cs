@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using ProjetoFinalCet105.API.Data;
+using System.Data;
 
 namespace ProjetoFinalCet105.API.UseCases.Marcacoes
 {
-    public class UnitOfWork:IUnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly DataContext _context;
         private IDbContextTransaction? _transaction;
@@ -13,10 +15,9 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             _context = context;
         }
 
-        public async Task BeginTransactionAsync()
+        public async Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
-            _transaction =
-                await _context.Database.BeginTransactionAsync();
+            _transaction = await _context.Database.BeginTransactionAsync(isolationLevel);
         }
 
         public async Task CommitTransactionAsync()
@@ -37,6 +38,30 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 await _transaction.DisposeAsync();
                 _transaction = null;
             }
+        }
+
+        public async Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> operation,IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
+        {
+            var strategy = _context.Database.CreateExecutionStrategy();
+
+            return await strategy.ExecuteAsync(async () =>
+            {
+                await using var transaction = await _context.Database.BeginTransactionAsync(isolationLevel);
+
+                try
+                {
+                    var result = await operation();
+
+                    await transaction.CommitAsync();
+
+                    return result;
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            });
         }
     }
 }
