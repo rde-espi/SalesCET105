@@ -10,6 +10,7 @@ using ProjetoFinalCet105.API.Data;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.Services.AuthService;
+using ProjetoFinalCet105.API.Services.DashboardService;
 using ProjetoFinalCet105.API.Services.EmailService;
 using ProjetoFinalCet105.API.Services.Faturacao;
 using ProjetoFinalCet105.API.Services.FirebaseService;
@@ -23,6 +24,7 @@ using ProjetoFinalCet105.API.UseCases.AuthUsecase;
 using ProjetoFinalCet105.API.UseCases.Cliente;
 using ProjetoFinalCet105.API.UseCases.Conversas;
 using ProjetoFinalCet105.API.UseCases.Conversas.SignalR.Hubs;
+using ProjetoFinalCet105.API.UseCases.Dashboard;
 using ProjetoFinalCet105.API.UseCases.Faturas;
 using ProjetoFinalCet105.API.UseCases.Feedbacks;
 using ProjetoFinalCet105.API.UseCases.Funcionarios;
@@ -251,6 +253,8 @@ builder.Services.AddScoped<IDispositivoUserRepository,DispositivoUserRepository>
 builder.Services.AddScoped<IGoogleCalendarContaRepository,GoogleCalendarContaRepository>();
 builder.Services.AddScoped<IGoogleCalendarEventoRepository,GoogleCalendarEventoRepository>();
 builder.Services.AddScoped<IFaturaRepository, FaturaRepository>();
+builder.Services.AddScoped<IClienteRepository,ClienteRepository>();
+builder.Services.AddScoped<IDespesaRepository,DespesaRepository>();
 
 
 
@@ -270,6 +274,7 @@ builder.Services.AddScoped<IGoogleCalendarService,GoogleCalendarService>();
 builder.Services.AddScoped<IGoogleCalendarSyncService,GoogleCalendarSyncService>();
 builder.Services.AddHttpClient<INifService, NifService>();
 builder.Services.AddScoped<IFaturaPdfService, FaturaPdfService>();
+builder.Services.AddScoped<IOcupacaoAgendaService,OcupacaoAgendaService>();
 
 //UseCases
 builder.Services.AddScoped<CreateFeedbackUseCase>();
@@ -319,6 +324,12 @@ builder.Services.AddScoped<CreateFaturaUseCase>();
 builder.Services.AddScoped<GetFaturaByIdUseCase>();
 builder.Services.AddScoped<GetFaturasUseCase>();
 builder.Services.AddScoped<AnularFaturaUseCase>();
+builder.Services.AddScoped<GetDashboardFinanceiroUseCase>();
+builder.Services.AddScoped<GetDashboardAgendaUseCase>();
+builder.Services.AddScoped<GetDashboardClientesUseCase>();
+builder.Services.AddScoped<GetDashboardEquipaUseCase>();
+
+
 
 
 

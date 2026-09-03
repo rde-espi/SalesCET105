@@ -31,6 +31,7 @@ namespace ProjetoFinalCet105.API.Data
         public DbSet<GoogleCalendarEvento> GoogleCalendarEventos { get; set; }
         public DbSet<Fatura> Faturas { get; set; }
         public DbSet<FaturaItem> FaturaItens { get; set; }
+        public DbSet<Despesa> Despesas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {      
@@ -303,6 +304,24 @@ namespace ProjetoFinalCet105.API.Data
             modelBuilder.Entity<Fatura>()
                 .HasIndex(f => new { f.Serie, f.NumeroSequencial })
                 .IsUnique();
+
+            modelBuilder.Entity<Despesa>(entity =>
+            {
+                entity.Property(d => d.Descricao)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                entity.Property(d => d.Valor)
+                    .HasPrecision(18, 2);
+
+                entity.Property(d => d.Categoria)
+                    .HasMaxLength(100);
+
+                entity.Property(d => d.Observacoes)
+                    .HasMaxLength(500);
+
+                entity.HasIndex(d => d.DataDespesa);
+            });
         }
 
     }
