@@ -32,6 +32,7 @@ namespace ProjetoFinalCet105.API.Data
         public DbSet<Fatura> Faturas { get; set; }
         public DbSet<FaturaItem> FaturaItens { get; set; }
         public DbSet<Despesa> Despesas { get; set; }
+        public DbSet<PermissaoAdminTemporaria> PermissoesAdminTemporarias { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {      
@@ -322,6 +323,29 @@ namespace ProjetoFinalCet105.API.Data
 
                 entity.HasIndex(d => d.DataDespesa);
             });
+
+            modelBuilder.Entity<PermissaoAdminTemporaria>()
+                .HasOne(p => p.FuncionarioUser)
+                .WithMany()
+                .HasForeignKey(p => p.FuncionarioUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PermissaoAdminTemporaria>()
+                .HasOne(p => p.ConcedidoPorUser)
+                .WithMany()
+                .HasForeignKey(p => p.ConcedidoPorUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<PermissaoAdminTemporaria>()
+                .Property(p => p.Motivo)
+                .HasMaxLength(500);
+            modelBuilder.Entity<PermissaoAdminTemporaria>()
+                .HasIndex(p => new
+                {
+                    p.FuncionarioUserId,
+                    p.DataFim,
+                    p.Revogada
+                });
         }
 
     }

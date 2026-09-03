@@ -7,7 +7,7 @@ namespace ProjetoFinalCet105.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "AdminOuAdminTemporario")]
     public class DashboardController : ControllerBase
     {
         private readonly GetDashboardFinanceiroUseCase

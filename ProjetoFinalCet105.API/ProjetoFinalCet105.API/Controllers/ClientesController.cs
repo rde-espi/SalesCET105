@@ -33,10 +33,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 return TratarErroComDados(resultado);
             }
 
-            return CreatedAtAction(
-                nameof(GetClienteById),
-                new { id = resultado.Dados!.Id },
-                resultado.Dados);
+            return CreatedAtAction(nameof(GetClienteById), new { id = resultado.Dados!.Id }, resultado.Dados);
         }
 
         [Authorize(Policy = "ConsultarCliente")]
@@ -91,21 +88,14 @@ namespace ProjetoFinalCet105.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCliente(string id,UpdateClienteDTO dto)
         {
-            var userId =
-                User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
                 return Unauthorized();
             }
 
-            var resultado =
-                await _updateClienteUseCase.ExecuteAsync(
-                    id,
-                    userId,
-                    User.IsInRole("Cliente"),
-                    User.IsInRole("Admin"),
-                    dto);
+            var resultado = await _updateClienteUseCase.ExecuteAsync( id, userId, User.IsInRole("Cliente"), User.IsInRole("Admin"), dto);
 
             if (!resultado.Sucesso)
             {
@@ -113,6 +103,35 @@ namespace ProjetoFinalCet105.API.Controllers
             }
 
             return NoContent();
+        }
+
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ClienteDTO>>> GetAllClientes()
+        {
+            var clientes = await _userManager.GetUsersInRoleAsync("Cliente");
+
+            var resultado = clientes
+                .Select(user => new ClienteDTO
+                {
+                    Id = user.Id,
+                    NomeCompleto = user.NomeCompleto,
+                    Email = user.Email!,
+                    Telefone = user.PhoneNumber,
+                    Contribuinte = user.Contribuinte,
+                    Morada = user.Morada,
+                    CodigoPostal = user.CodigoPostal,
+                    Localidade = user.Localidade,
+                    FotografiaUrl = user.FotografiaUrl,
+                    Ativo = user.Ativo,
+                    DataCriacao = user.DataCriacao,
+                    DataAtualizacao = user.DataAtualizacao
+                })
+                .OrderBy(c => c.NomeCompleto)
+                .ToList();
+
+            return Ok(resultado);
         }
     }
 }

@@ -2,10 +2,12 @@
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using ProjetoFinalCet105.API.Authorization;
 using ProjetoFinalCet105.API.Data;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
@@ -20,6 +22,7 @@ using ProjetoFinalCet105.API.Services.IndisponibilidadeService;
 using ProjetoFinalCet105.API.Services.MarcacaoService;
 using ProjetoFinalCet105.API.Services.NifService;
 using ProjetoFinalCet105.API.Services.NotificacaoService;
+using ProjetoFinalCet105.API.UseCases.Admin;
 using ProjetoFinalCet105.API.UseCases.AuthUsecase;
 using ProjetoFinalCet105.API.UseCases.Cliente;
 using ProjetoFinalCet105.API.UseCases.Conversas;
@@ -176,6 +179,11 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("GerirCompetenciasFuncionario", policy =>
     policy.RequireRole("Funcionario", "Admin"));
+
+
+    //Permissoes temporarias de admin
+    options.AddPolicy("AdminOuAdminTemporario",policy =>
+    policy.Requirements.Add(new AdminOuAdminTemporarioRequirement()));
 });
 
 builder.Services.AddSwaggerGen(options =>
@@ -210,6 +218,10 @@ builder.Services.AddScoped<SeedDb>();
 
 //Configuração da faturação
 builder.Services.Configure<FaturacaoSettings>(builder.Configuration.GetSection(FaturacaoSettings.SectionName));
+
+
+//Gestao de admin temporario
+builder.Services.AddScoped< IAuthorizationHandler, AdminOuAdminTemporarioHandler>();
 
 
 //Limitador de chamadas a API NIT.PT devido a custos
@@ -255,6 +267,7 @@ builder.Services.AddScoped<IGoogleCalendarEventoRepository,GoogleCalendarEventoR
 builder.Services.AddScoped<IFaturaRepository, FaturaRepository>();
 builder.Services.AddScoped<IClienteRepository,ClienteRepository>();
 builder.Services.AddScoped<IDespesaRepository,DespesaRepository>();
+builder.Services.AddScoped<IPermissaoAdminTemporariaRepository,PermissaoAdminTemporariaRepository>();
 
 
 
@@ -268,6 +281,7 @@ builder.Services.AddScoped<IHorarioFuncionarioService, HorarioFuncionarioService
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<INotificacaoService, NotificacaoService>();
 builder.Services.AddHostedService<LembreteMarcacoesBackgroundService>();
+builder.Services.AddHostedService<PermissaoAdminTemporariaBackgroundService>();
 builder.Services.AddScoped<IFirebaseService,FirebaseService>();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<IGoogleCalendarService,GoogleCalendarService>();
@@ -328,6 +342,9 @@ builder.Services.AddScoped<GetDashboardFinanceiroUseCase>();
 builder.Services.AddScoped<GetDashboardAgendaUseCase>();
 builder.Services.AddScoped<GetDashboardClientesUseCase>();
 builder.Services.AddScoped<GetDashboardEquipaUseCase>();
+builder.Services.AddScoped<AlterarRoleUserUseCase>();
+builder.Services.AddScoped<ConcederPermissaoAdminTemporariaUseCase>();
+builder.Services.AddScoped<RevogarPermissaoAdminTemporariaUseCase>();
 
 
 

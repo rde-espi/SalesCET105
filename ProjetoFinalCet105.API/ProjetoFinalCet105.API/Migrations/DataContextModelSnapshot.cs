@@ -922,6 +922,53 @@ namespace ProjetoFinalCet105.API.Migrations
                     b.ToTable("Notificacoes");
                 });
 
+            modelBuilder.Entity("ProjetoFinalCet105.API.Entities.PermissaoAdminTemporaria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConcedidoPorUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataFim")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DataInicio")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataNotificacaoExpiracao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DataRevogacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FuncionarioUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Motivo")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("Revogada")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConcedidoPorUserId");
+
+                    b.HasIndex("FuncionarioUserId", "DataFim", "Revogada");
+
+                    b.ToTable("PermissoesAdminTemporarias");
+                });
+
             modelBuilder.Entity("ProjetoFinalCet105.API.Entities.PromoCode", b =>
                 {
                     b.Property<int>("Id")
@@ -1421,6 +1468,25 @@ namespace ProjetoFinalCet105.API.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ProjetoFinalCet105.API.Entities.PermissaoAdminTemporaria", b =>
+                {
+                    b.HasOne("ProjetoFinalCet105.API.Entities.User", "ConcedidoPorUser")
+                        .WithMany()
+                        .HasForeignKey("ConcedidoPorUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ProjetoFinalCet105.API.Entities.User", "FuncionarioUser")
+                        .WithMany()
+                        .HasForeignKey("FuncionarioUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ConcedidoPorUser");
+
+                    b.Navigation("FuncionarioUser");
                 });
 
             modelBuilder.Entity("ProjetoFinalCet105.API.Entities.Servico", b =>
