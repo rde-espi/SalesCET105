@@ -82,23 +82,19 @@ namespace ProjetoFinalCet105.API.Controllers
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<FuncionarioDTO>> GetFuncionarioByUserId(string userId)
         {
-            var authenticatedUserId =
-                User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var authenticatedUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (authenticatedUserId == null)
             {
                 return Unauthorized();
             }
 
-            if (User.IsInRole("Funcionario") &&
-                !User.IsInRole("Admin") &&
-                authenticatedUserId != userId)
+            if (User.IsInRole("Funcionario") && !User.IsInRole("Admin") &&  authenticatedUserId != userId)
             {
                 return Forbid();
             }
 
-            var funcionario =
-                await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+            var funcionario = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
 
             if (funcionario == null)
             {
@@ -124,18 +120,14 @@ namespace ProjetoFinalCet105.API.Controllers
         [HttpPost]
         public async Task<ActionResult<FuncionarioDTO>> CreateFuncionario(NovoFuncionarioDTO dto)
         {
-            var resultado =
-                await _createFuncionarioUseCase.ExecuteAsync(dto);
+            var resultado = await _createFuncionarioUseCase.ExecuteAsync(dto);
 
             if (!resultado.Sucesso)
             {
                 return TratarErroComDados(resultado);
             }
 
-            return CreatedAtAction(
-                nameof(GetFuncionarioById),
-                new { id = resultado.Dados!.Id },
-                resultado.Dados);
+            return CreatedAtAction( nameof(GetFuncionarioById), new { id = resultado.Dados!.Id }, resultado.Dados);
         }
 
         [Authorize(Policy = "AlterarFuncionario")]
@@ -149,13 +141,12 @@ namespace ProjetoFinalCet105.API.Controllers
                 return Unauthorized();
             }
 
-            var resultado =
-                await _updateFuncionarioUseCase.ExecuteAsync(
-                    id,
-                    userId,
-                    User.IsInRole("Funcionario"),
-                    User.IsInRole("Admin"),
-                    dto);
+            var resultado = await _updateFuncionarioUseCase.ExecuteAsync(
+                id,
+                userId,
+                User.IsInRole("Funcionario"),
+                User.IsInRole("Admin"),
+                dto);
 
             if (!resultado.Sucesso)
             {
@@ -169,8 +160,7 @@ namespace ProjetoFinalCet105.API.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteFuncionario(int id)
         {
-            var resultado =
-                await _deleteFuncionarioUseCase.ExecuteAsync(id);
+            var resultado = await _deleteFuncionarioUseCase.ExecuteAsync(id);
 
             if (!resultado.Sucesso)
             {
@@ -211,6 +201,7 @@ namespace ProjetoFinalCet105.API.Controllers
                     Ativo = fs.Funcionario.Ativo
                 })
                 .ToListAsync();
+
             return Ok(funcionarios);
         }
     }

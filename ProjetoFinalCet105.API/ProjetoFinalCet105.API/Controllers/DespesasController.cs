@@ -10,7 +10,7 @@ namespace ProjetoFinalCet105.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "AdminOuAdminTemporario")]
     public class DespesasController : ControllerBase
     {
         private readonly IDespesaRepository _despesaRepository;

@@ -68,7 +68,7 @@ namespace ProjetoFinalCet105.API.Controllers
             });
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPost]
         public async Task<ActionResult<ServicoDTO>> CreateServico(ServicoDTO dto)
         {
@@ -123,7 +123,7 @@ namespace ProjetoFinalCet105.API.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateServico(ServicoDTO dto, int id)
         {
@@ -185,7 +185,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteServico(int id)
         {
@@ -215,9 +215,5 @@ namespace ProjetoFinalCet105.API.Controllers
                 return BadRequest();
             }
         }
-
-
-
-
     }
 }

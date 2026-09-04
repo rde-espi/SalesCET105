@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.Entities;
@@ -28,14 +27,14 @@ namespace ProjetoFinalCet105.API.Controllers
         public async Task<ActionResult<Categoria>> GetCategoriaById(int id)
         {
             var categoria = await _categoriaRepository.GetByIdAsync(id);
-            if(categoria == null)
+            if (categoria == null)
             {
                 return NotFound();
             }
             return Ok(categoria);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPost]
         public async Task<ActionResult<Categoria>> CreateCategoria(Categoria categoria)
         {
@@ -46,21 +45,21 @@ namespace ProjetoFinalCet105.API.Controllers
 
                 return CreatedAtAction(nameof(GetCategoriaById), new { id = categoria.Id }, categoria);
             }
-            catch (Exception) 
+            catch (Exception)
             {
                 return BadRequest();
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateCategoria(int id, Categoria categoria)
         {
-            if(id != categoria.Id)
+            if (id != categoria.Id)
             {
                 return BadRequest();
             }
-            if(!await _categoriaRepository.ExistAsync(id))
+            if (!await _categoriaRepository.ExistAsync(id))
             {
                 return NotFound();
             }
@@ -69,14 +68,14 @@ namespace ProjetoFinalCet105.API.Controllers
             {
                 await _categoriaRepository.UpdateAsync(categoria);
             }
-            catch (Exception) 
+            catch (Exception)
             {
                 return BadRequest();
             }
             return NoContent();
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteCategoria(int id)
         {

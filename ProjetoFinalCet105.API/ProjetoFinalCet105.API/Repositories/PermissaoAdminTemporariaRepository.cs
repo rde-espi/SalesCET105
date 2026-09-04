@@ -15,6 +15,7 @@ namespace ProjetoFinalCet105.API.Repositories
             return _context.PermissoesAdminTemporarias
                 .Include(p => p.FuncionarioUser)
                 .Include(p => p.ConcedidoPorUser)
+                .Include(p => p.RevogadaPorUser)
                 .AsNoTracking();
         }
     }

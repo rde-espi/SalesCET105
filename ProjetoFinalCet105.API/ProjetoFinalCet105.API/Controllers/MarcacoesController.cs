@@ -137,8 +137,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 return Unauthorized();
             }
 
-            var marcacao = await _marcacaoRepository
-                .GetByIdWithDetailsAsync(id);
+            var marcacao = await _marcacaoRepository.GetByIdWithDetailsAsync(id);
 
             if (marcacao == null)
             {
@@ -155,8 +154,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
             if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
             {
-                var funcionario = await _funcionarioRepository
-                    .GetFuncionarioByUserIdAsync(userId);
+                var funcionario = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
 
                 if (funcionario == null)
                 {
@@ -271,21 +269,19 @@ namespace ProjetoFinalCet105.API.Controllers
         [HttpPatch("{id:int}/estado")]
         public async Task<IActionResult> UpdateEstadoMarcacao(int id,UpdateEstadoMarcacaoDTO dto)
         {
-            var userId =
-                User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
                 return Unauthorized();
             }
 
-            var resultado =
-                await _updateEstadoMarcacaoUseCase.ExecuteAsync(
-                    id,
-                    userId,
-                    User.IsInRole("Funcionario"),
-                    User.IsInRole("Admin"),
-                    dto);
+            var resultado = await _updateEstadoMarcacaoUseCase.ExecuteAsync(
+                id,
+                userId,
+                User.IsInRole("Funcionario"),
+                User.IsInRole("Admin"),
+                dto);
 
             if (!resultado.Sucesso)
             {
@@ -300,21 +296,19 @@ namespace ProjetoFinalCet105.API.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteMarcacao(int id)
         {
-            var userId =
-                User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
                 return Unauthorized();
             }
 
-            var resultado =
-                await _cancelarMarcacaoUseCase.ExecuteAsync(
-                    id,
-                    userId,
-                    User.IsInRole("Cliente"),
-                    User.IsInRole("Funcionario"),
-                    User.IsInRole("Admin"));
+            var resultado = await _cancelarMarcacaoUseCase.ExecuteAsync(
+                id,
+                userId,
+                User.IsInRole("Cliente"),
+                User.IsInRole("Funcionario"),
+                User.IsInRole("Admin"));
 
             if (!resultado.Sucesso)
             {
@@ -324,14 +318,13 @@ namespace ProjetoFinalCet105.API.Controllers
             return NoContent();
         }
 
-        [Authorize(Policy = "AdminOnly")]
+        [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpGet("cliente/{clienteId}")]
         public async Task<ActionResult<IEnumerable<MarcacaoDTO>>> GetMarcacoesByCliente(string clienteId)
         {
             var cliente = await _userManager.FindByIdAsync(clienteId);
 
-            if (cliente == null ||
-                !await _userManager.IsInRoleAsync(cliente, "Cliente"))
+            if (cliente == null || !await _userManager.IsInRoleAsync(cliente, "Cliente"))
             {
                 return NotFound("Cliente não encontrado.");
             }
@@ -387,8 +380,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
             if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
             {
-                var funcionarioAutenticado =
-                    await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+                var funcionarioAutenticado = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
 
                 if (funcionarioAutenticado == null)
                 {
@@ -458,8 +450,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
             if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
             {
-                var funcionarioAutenticado =
-                    await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+                var funcionarioAutenticado = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
 
                 if (funcionarioAutenticado == null)
                 {
@@ -562,8 +553,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
             if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
             {
-                var funcionarioAutenticado =
-                    await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+                var funcionarioAutenticado = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
 
                 if (funcionarioAutenticado == null)
                 {

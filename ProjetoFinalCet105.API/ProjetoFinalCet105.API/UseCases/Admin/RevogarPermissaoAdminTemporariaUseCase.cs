@@ -15,7 +15,7 @@ namespace ProjetoFinalCet105.API.UseCases.Admin
             _notificacaoService = notificacaoService;
         }
 
-        public async Task<UseCaseResult<bool>> ExecuteAsync(int permissaoId)
+        public async Task<UseCaseResult<bool>> ExecuteAsync(int permissaoId, string adminUserId)
         {
             var permissao = await _permissaoRepository.GetByIdAsync(permissaoId);
 
@@ -38,6 +38,7 @@ namespace ProjetoFinalCet105.API.UseCases.Admin
 
             permissao.Revogada = true;
             permissao.DataRevogacao = agora;
+            permissao.RevogadaPorUserId = adminUserId;
 
             await _permissaoRepository.UpdateAsync(permissao);
 

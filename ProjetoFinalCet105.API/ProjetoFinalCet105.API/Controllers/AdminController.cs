@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.DTOs;
+using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.UseCases.Admin;
 using ProjetoFinalCet105.API.UseCases.Common;
 using System.Security.Claims;
@@ -16,14 +17,16 @@ namespace ProjetoFinalCet105.API.Controllers
         private readonly AlterarRoleUserUseCase _alterarRoleUserUseCase;
         private readonly ConcederPermissaoAdminTemporariaUseCase _concederPermissaoAdminTemporariaUseCase;
         private readonly RevogarPermissaoAdminTemporariaUseCase _revogarPermissaoAdminTemporariaUseCase;
+        private readonly IPermissaoAdminTemporariaRepository _permissaoAdminTemporariaRepository;
 
         public AdminController(AlterarRoleUserUseCase alterarRoleUserUseCase,
             ConcederPermissaoAdminTemporariaUseCase concederPermissaoAdminTemporariaUseCase,
-            RevogarPermissaoAdminTemporariaUseCase revogarPermissaoAdminTemporariaUseCase)
+            RevogarPermissaoAdminTemporariaUseCase revogarPermissaoAdminTemporariaUseCase, IPermissaoAdminTemporariaRepository permissaoAdminTemporariaRepository)
         {
             _alterarRoleUserUseCase = alterarRoleUserUseCase;
             _concederPermissaoAdminTemporariaUseCase = concederPermissaoAdminTemporariaUseCase;
             _revogarPermissaoAdminTemporariaUseCase = revogarPermissaoAdminTemporariaUseCase;
+            _permissaoAdminTemporariaRepository = permissaoAdminTemporariaRepository;
         }
 
         [HttpPatch("users/{userId}/role")]
@@ -34,7 +37,7 @@ namespace ProjetoFinalCet105.API.Controllers
             if (string.IsNullOrWhiteSpace(adminAtualId))
                 return Unauthorized();
 
-            var resultado = await _alterarRoleUserUseCase.ExecuteAsync( userId, adminAtualId,dto);
+            var resultado = await _alterarRoleUserUseCase.ExecuteAsync(userId, adminAtualId, dto);
 
             if (!resultado.Sucesso)
             {
@@ -60,7 +63,7 @@ namespace ProjetoFinalCet105.API.Controllers
             if (string.IsNullOrWhiteSpace(adminUserId))
                 return Unauthorized();
 
-            var resultado = await _concederPermissaoAdminTemporariaUseCase.ExecuteAsync( adminUserId, dto);
+            var resultado = await _concederPermissaoAdminTemporariaUseCase.ExecuteAsync(adminUserId, dto);
 
             if (!resultado.Sucesso)
             {
@@ -81,7 +84,15 @@ namespace ProjetoFinalCet105.API.Controllers
         [HttpPatch("permissoes-temporarias/{id}/revogar")]
         public async Task<IActionResult> RevogarPermissaoTemporaria(int id)
         {
-            var resultado = await _revogarPermissaoAdminTemporariaUseCase.ExecuteAsync(id);
+            var adminUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var resultado = await _revogarPermissaoAdminTemporariaUseCase.ExecuteAsync(id,adminUserId!);
+
+            if (string.IsNullOrWhiteSpace(adminUserId))
+            {
+                return Unauthorized();
+            }
+                
 
             if (!resultado.Sucesso)
             {
@@ -97,5 +108,46 @@ namespace ProjetoFinalCet105.API.Controllers
                 mensagem = "Permissão administrativa temporária revogada com sucesso."
             });
         }
+
+        [HttpGet("permissoes-temporarias")]
+        public async Task<ActionResult<IEnumerable<PermissaoAdminTemporariaDTO>>> GetPermissoesTemporarias()
+        {
+            var agora = DateTime.UtcNow;
+
+            var permissoes = await _permissaoAdminTemporariaRepository
+                .GetAllWithUsers()
+                .OrderByDescending(p => p.DataInicio)
+                .Select(p => new PermissaoAdminTemporariaDTO
+                {
+                    Id = p.Id,
+
+                    FuncionarioUserId = p.FuncionarioUserId,
+                    FuncionarioNome = p.FuncionarioUser.NomeCompleto,
+
+                    ConcedidoPorUserId = p.ConcedidoPorUserId,
+                    ConcedidoPorNome = p.ConcedidoPorUser.NomeCompleto,
+
+                    RevogadaPorUserId = p.RevogadaPorUserId,
+                    RevogadaPorNome = p.RevogadaPorUser != null ? p.RevogadaPorUser.NomeCompleto : null,
+
+                    DataInicio = p.DataInicio,
+                    DataFim = p.DataFim,
+
+                    Motivo = p.Motivo,
+
+                    Revogada = p.Revogada,
+                    DataRevogacao = p.DataRevogacao,
+
+                    Estado = p.Revogada
+                        ? "Revogada"
+                        : p.DataFim <= agora
+                            ? "Expirada"
+                            : "Ativa"
+                })
+                .ToListAsync();
+
+            return Ok(permissoes);
+        }
+
     }
 }

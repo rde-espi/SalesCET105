@@ -76,7 +76,7 @@ namespace ProjetoFinalCet105.API.Controllers
             });
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPost]
         public async Task<ActionResult<FuncionarioServicoDTO>> CreateFuncionarioServico(FuncionarioServicoDTO dto)
         {
@@ -133,7 +133,7 @@ namespace ProjetoFinalCet105.API.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateFuncionarioServico(int id, FuncionarioServicoDTO dto)
         {
@@ -186,7 +186,7 @@ namespace ProjetoFinalCet105.API.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteFuncionarioServico(int id)
         {

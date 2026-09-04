@@ -346,6 +346,11 @@ namespace ProjetoFinalCet105.API.Data
                     p.DataFim,
                     p.Revogada
                 });
+            modelBuilder.Entity<PermissaoAdminTemporaria>()
+                .HasOne(p => p.RevogadaPorUser)
+                .WithMany()
+                .HasForeignKey(p => p.RevogadaPorUserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
     }

@@ -13,6 +13,9 @@
         public string ConcedidoPorUserId { get; set; } = string.Empty;
 
         public User ConcedidoPorUser { get; set; } = null!;
+        public string? RevogadaPorUserId { get; set; }
+
+        public User? RevogadaPorUser { get; set; }
 
         public DateTime DataInicio { get; set; }
 

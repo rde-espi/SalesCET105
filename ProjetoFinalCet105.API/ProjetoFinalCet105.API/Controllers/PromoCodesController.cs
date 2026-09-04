@@ -17,15 +17,13 @@ namespace ProjetoFinalCet105.API.Controllers
         private readonly IPromoCodeRepository _promoCodeRepository;
         private readonly ValidarPromoCodeUseCase _validarPromoCodeUseCase;
 
-        public PromoCodesController(
-            IPromoCodeRepository promoCodeRepository,
-            ValidarPromoCodeUseCase validarPromoCodeUseCase)
+        public PromoCodesController( IPromoCodeRepository promoCodeRepository, ValidarPromoCodeUseCase validarPromoCodeUseCase)
         {
             _promoCodeRepository = promoCodeRepository;
             _validarPromoCodeUseCase = validarPromoCodeUseCase;
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PromoCodeDTO>>> GetAll()
         {
@@ -49,12 +47,11 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(promoCodes);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<PromoCodeDTO>> GetById(int id)
         {
-            var promoCode =
-                await _promoCodeRepository.GetByIdAsync(id);
+            var promoCode = await _promoCodeRepository.GetByIdAsync(id);
 
             if (promoCode == null)
             {
@@ -77,7 +74,7 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(dto);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPost]
         public async Task<ActionResult<PromoCodeDTO>> Create(CriarPromoCodeDTO dto)
         {
@@ -86,24 +83,20 @@ namespace ProjetoFinalCet105.API.Controllers
                 return BadRequest("O código é obrigatório.");
             }
 
-            if (dto.PercentagemDesconto <= 0 ||
-                dto.PercentagemDesconto > 100)
+            if (dto.PercentagemDesconto <= 0 || dto.PercentagemDesconto > 100)
             {
-                return BadRequest(
-                    "A percentagem de desconto deve estar entre 0 e 100.");
+                return BadRequest( "A percentagem de desconto deve estar entre 0 e 100.");
             }
 
             if (dto.DataFim <= dto.DataInicio)
             {
-                return BadRequest(
-                    "A data final deve ser posterior à data inicial.");
+                return BadRequest( "A data final deve ser posterior à data inicial.");
             }
 
             if (dto.LimiteUtilizacoes.HasValue &&
                 dto.LimiteUtilizacoes.Value <= 0)
             {
-                return BadRequest(
-                    "O limite de utilizações deve ser superior a zero.");
+                return BadRequest( "O limite de utilizações deve ser superior a zero.");
             }
 
             var codigo = dto.Codigo.Trim().ToUpper();
@@ -142,9 +135,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 Ativo = promoCode.Ativo
             };
 
-            return CreatedAtAction(
-                nameof(GetAll),
-                resposta);
+            return CreatedAtAction( nameof(GetById),new { id = promoCode.Id }, resposta);
         }
 
         [Authorize(Roles = "Cliente")]
@@ -168,7 +159,7 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(resultado.Dados);
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id,UpdatePromoCodeDTO dto)
         {
@@ -184,24 +175,19 @@ namespace ProjetoFinalCet105.API.Controllers
                 return BadRequest("O código é obrigatório.");
             }
 
-            if (dto.PercentagemDesconto <= 0 ||
-                dto.PercentagemDesconto > 100)
+            if (dto.PercentagemDesconto <= 0 || dto.PercentagemDesconto > 100)
             {
-                return BadRequest(
-                    "A percentagem de desconto deve estar entre 0 e 100.");
+                return BadRequest( "A percentagem de desconto deve estar entre 0 e 100.");
             }
 
             if (dto.DataFim <= dto.DataInicio)
             {
-                return BadRequest(
-                    "A data final deve ser posterior à data inicial.");
+                return BadRequest("A data final deve ser posterior à data inicial.");
             }
 
-            if (dto.LimiteUtilizacoes.HasValue &&
-                dto.LimiteUtilizacoes.Value <= 0)
+            if (dto.LimiteUtilizacoes.HasValue && dto.LimiteUtilizacoes.Value <= 0)
             {
-                return BadRequest(
-                    "O limite de utilizações deve ser superior a zero.");
+                return BadRequest( "O limite de utilizações deve ser superior a zero.");
             }
 
             var codigo = dto.Codigo.Trim().ToUpper();
@@ -210,8 +196,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
             if (existente != null && existente.Id != promoCode.Id)
             {
-                return Conflict(
-                    "Já existe outro código promocional com este código.");
+                return Conflict( "Já existe outro código promocional com este código.");
             }
 
             promoCode.Codigo = codigo;
@@ -226,12 +211,11 @@ namespace ProjetoFinalCet105.API.Controllers
             return NoContent();
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPatch("{id:int}/ativo")]
         public async Task<IActionResult> UpdateAtivo(int id,UpdatePromoCodeAtivoDTO dto)
         {
-            var promoCode =
-                await _promoCodeRepository.GetByIdAsync(id);
+            var promoCode = await _promoCodeRepository.GetByIdAsync(id);
 
             if (promoCode == null)
             {
