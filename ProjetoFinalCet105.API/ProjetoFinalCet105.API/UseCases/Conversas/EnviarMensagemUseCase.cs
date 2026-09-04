@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
-using ProjetoFinalCet105.API.Services.FirebaseService;
 using ProjetoFinalCet105.API.Services.NotificacaoService;
 using ProjetoFinalCet105.API.UseCases.Common;
 using ProjetoFinalCet105.API.UseCases.Conversas.SignalR.Hubs;
@@ -16,47 +14,34 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
         private readonly IMensagemRepository _mensagemRepository;
         private readonly INotificacaoService _notificacaoService;
         private readonly IHubContext<ChatHub> _hubContext;
-        private readonly IDispositivoUserRepository _dispositivoUserRepository;
-        private readonly IFirebaseService _firebaseService;
         private readonly ILogger<EnviarMensagemUseCase> _logger;
 
         public EnviarMensagemUseCase(IConversaRepository conversaRepository, IMensagemRepository mensagemRepository, INotificacaoService notificacaoService,
-            IHubContext<ChatHub> hubContext, IDispositivoUserRepository dispositivoUserRepository, IFirebaseService firebaseService, ILogger<EnviarMensagemUseCase> logger)
+            IHubContext<ChatHub> hubContext, ILogger<EnviarMensagemUseCase> logger)
         {
             _conversaRepository = conversaRepository;
             _mensagemRepository = mensagemRepository;
             _notificacaoService = notificacaoService;
             _hubContext = hubContext;
-            _dispositivoUserRepository = dispositivoUserRepository;
-            _firebaseService = firebaseService;
             _logger = logger;
         }
 
         public async Task<UseCaseResult<MensagemDTO>> ExecuteAsync(int conversaId, string userId, EnviarMensagemDTO dto)
         {
-            // 1. Verificar se a conversa existe
             var conversa = await _conversaRepository.GetByIdWithDetailsAsync(conversaId);
 
             if (conversa == null)
             {
-                return UseCaseResult<MensagemDTO>.Falha(
-                    "Conversa não encontrada.",
-                    TipoErro.NaoEncontrado);
+                return UseCaseResult<MensagemDTO>.Falha("Conversa não encontrada.", TipoErro.NaoEncontrado);
             }
 
-            // 2. Só os participantes podem enviar mensagens
-            var pertenceAConversa =
-                conversa.ClienteId == userId ||
-                conversa.FuncionarioUserId == userId;
+            var pertenceAConversa = conversa.ClienteId == userId || conversa.FuncionarioUserId == userId;
 
             if (!pertenceAConversa)
             {
-                return UseCaseResult<MensagemDTO>.Falha(
-                    "Não tem permissão para enviar mensagens nesta conversa.",
-                    TipoErro.Proibido);
+                return UseCaseResult<MensagemDTO>.Falha("Não tem permissão para enviar mensagens nesta conversa.", TipoErro.Proibido);
             }
 
-            // 3. Não aceitar mensagem vazia
             if (string.IsNullOrWhiteSpace(dto.Texto))
             {
                 return UseCaseResult<MensagemDTO>.Falha("A mensagem não pode estar vazia.");
@@ -68,14 +53,14 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
                 {
                     ConversaId = conversa.Id,
 
-                    // Nunca vem do DTO
+                    
                     RemetenteId = userId,
 
                     Texto = dto.Texto.Trim(),
 
                     DataEnvio = DateTime.Now,
 
-                    // O destinatário ainda não a leu
+                    
                     Lida = false,
                     DataLeitura = null
                 };
@@ -98,7 +83,7 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning( ex,"Falha ao criar notificação de nova mensagem para o utilizador {DestinatarioId}.", destinatarioId);
+                    _logger.LogWarning(ex, "Falha ao criar notificação de nova mensagem para o utilizador {DestinatarioId}.", destinatarioId);
                 }
 
                 var resposta = new MensagemDTO
@@ -119,40 +104,20 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
                 {
                     await _hubContext.Clients
                         .Group($"conversa-{conversa.Id}")
-                        .SendAsync(
-                            "NovaMensagem",
-                            resposta);
+                        .SendAsync("NovaMensagem", resposta);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning( ex, "Falha ao enviar mensagem por SignalR na conversa {ConversaId}.", conversa.Id);
-                }
-                try
-                {
-                    var dispositivos = await _dispositivoUserRepository
-                        .GetAtivosByUserId(destinatarioId)
-                        .ToListAsync();
-
-                    foreach (var dispositivo in dispositivos)
-                    {
-                        await _firebaseService.EnviarPushAsync(
-                            dispositivo.Fid,
-                            $"Nova mensagem de {remetente.NomeCompleto}",
-                            mensagem.Texto);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning( ex,"Falha ao enviar push de nova mensagem para o utilizador {DestinatarioId}.", destinatarioId);
+                    _logger.LogWarning(ex, "Falha ao enviar mensagem por SignalR na conversa {ConversaId}.", conversa.Id);
                 }
 
                 return UseCaseResult<MensagemDTO>.Ok(resposta);
             }
             catch (Exception ex)
             {
-                _logger.LogError( ex, "Erro ao enviar mensagem na conversa {ConversaId}.",  conversaId);
+                _logger.LogError(ex, "Erro ao enviar mensagem na conversa {ConversaId}.", conversaId);
 
-                return UseCaseResult<MensagemDTO>.Falha( "Ocorreu um erro ao enviar a mensagem.");
+                return UseCaseResult<MensagemDTO>.Falha("Ocorreu um erro ao enviar a mensagem.");
             }
         }
     }

@@ -1,18 +1,29 @@
-﻿using ProjetoFinalCet105.API.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using ProjetoFinalCet105.API.Services.FirebaseService;
 
 namespace ProjetoFinalCet105.API.Services.NotificacaoService
 {
     public class NotificacaoService : INotificacaoService
     {
         private readonly INotificacaoRepository _notificacaoRepository;
+        private readonly IDispositivoUserRepository _dispositivoUserRepository;
+        private readonly IFirebaseService _firebaseService;
+        private readonly ILogger<NotificacaoService> _logger;
 
-        public NotificacaoService(INotificacaoRepository notificacaoRepository)
+        public NotificacaoService(INotificacaoRepository notificacaoRepository,
+            IDispositivoUserRepository dispositivoUserRepository,
+            IFirebaseService firebaseService,
+            ILogger<NotificacaoService> logger)
         {
             _notificacaoRepository = notificacaoRepository;
+            _dispositivoUserRepository = dispositivoUserRepository;
+            _firebaseService = firebaseService;
+            _logger = logger;
         }
 
-        public async Task CriarNotificacaoAsync(string userId,string titulo,string mensagem)
+        public async Task CriarNotificacaoAsync( string userId, string titulo, string mensagem)
         {
             var notificacao = new Notificacao
             {
@@ -24,6 +35,33 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
             };
 
             await _notificacaoRepository.CreateAsync(notificacao);
+                       
+            try
+            {
+                var dispositivos = await _dispositivoUserRepository
+                    .GetAtivosByUserId(userId)
+                    .ToListAsync();
+
+                foreach (var dispositivo in dispositivos)
+                {
+                    try
+                    {
+                        await _firebaseService.EnviarPushAsync( dispositivo.Fid, titulo, mensagem);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(
+                            ex,
+                            "Falha ao enviar push para o dispositivo {DispositivoId} do utilizador {UserId}.",
+                            dispositivo.Id,
+                            userId);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex,"Não foi possível processar o envio push da notificação para o utilizador {UserId}.", userId);
+            }
         }
 
         public async Task NotificarCriacaoMarcacaoAsync(
@@ -42,35 +80,23 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
 
             if (isCliente && !isAdmin)
             {
-                await CriarNotificacaoAsync(
-                    funcionarioUserId,
-                    "Nova marcação",
-                    mensagem);
+                await CriarNotificacaoAsync( funcionarioUserId, "Nova marcação", mensagem);
 
                 return;
             }
 
             if (isFuncionario && !isAdmin)
             {
-                await CriarNotificacaoAsync(
-                    clienteUserId,
-                    "Nova marcação",
-                    mensagem);
+                await CriarNotificacaoAsync( clienteUserId, "Nova marcação", mensagem);
 
                 return;
             }
 
             if (isAdmin)
             {
-                await CriarNotificacaoAsync(
-                    clienteUserId,
-                    "Nova marcação",
-                    mensagem);
+                await CriarNotificacaoAsync( clienteUserId, "Nova marcação", mensagem);
 
-                await CriarNotificacaoAsync(
-                    funcionarioUserId,
-                    "Nova marcação",
-                    mensagem);
+                await CriarNotificacaoAsync( funcionarioUserId, "Nova marcação",  mensagem);
             }
         }
         public async Task NotificarAlteracaoMarcacaoAsync(
@@ -90,35 +116,23 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
 
             if (isCliente && !isAdmin)
             {
-                await CriarNotificacaoAsync(
-                    funcionarioUserId,
-                    "Marcação alterada",
-                    mensagem);
+                await CriarNotificacaoAsync( funcionarioUserId, "Marcação alterada", mensagem);
 
                 return;
             }
 
             if (isFuncionario && !isAdmin)
             {
-                await CriarNotificacaoAsync(
-                    clienteUserId,
-                    "Marcação alterada",
-                    mensagem);
+                await CriarNotificacaoAsync( clienteUserId, "Marcação alterada", mensagem);
 
                 return;
             }
 
             if (isAdmin)
             {
-                await CriarNotificacaoAsync(
-                    clienteUserId,
-                    "Marcação alterada",
-                    mensagem);
+                await CriarNotificacaoAsync( clienteUserId, "Marcação alterada", mensagem);
 
-                await CriarNotificacaoAsync(
-                    funcionarioUserId,
-                    "Marcação alterada",
-                    mensagem);
+                await CriarNotificacaoAsync( funcionarioUserId,"Marcação alterada",   mensagem);
             }
         }
 
@@ -148,10 +162,7 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
                 return;
             }
 
-            await CriarNotificacaoAsync(
-                clienteUserId,
-                titulo,
-                mensagem);
+            await CriarNotificacaoAsync( clienteUserId, titulo, mensagem);
         }
 
         public async Task NotificarCancelamentoMarcacaoAsync(
@@ -170,10 +181,7 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
             // Cliente cancelou → funcionário recebe
             if (isCliente && !isAdmin)
             {
-                await CriarNotificacaoAsync(
-                    funcionarioUserId,
-                    "Marcação cancelada",
-                    mensagem);
+                await CriarNotificacaoAsync( funcionarioUserId, "Marcação cancelada",  mensagem);
 
                 return;
             }
@@ -181,10 +189,7 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
             // Funcionário cancelou → cliente recebe
             if (isFuncionario && !isAdmin)
             {
-                await CriarNotificacaoAsync(
-                    clienteUserId,
-                    "Marcação cancelada",
-                    mensagem);
+                await CriarNotificacaoAsync( clienteUserId, "Marcação cancelada", mensagem);
 
                 return;
             }
@@ -192,29 +197,14 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
             // Admin cancelou → ambos recebem
             if (isAdmin)
             {
-                await CriarNotificacaoAsync(
-                    clienteUserId,
-                    "Marcação cancelada",
-                    mensagem);
+                await CriarNotificacaoAsync( clienteUserId, "Marcação cancelada",  mensagem);
 
-                await CriarNotificacaoAsync(
-                    funcionarioUserId,
-                    "Marcação cancelada",
-                    mensagem);
+                await CriarNotificacaoAsync( funcionarioUserId, "Marcação cancelada",  mensagem);
             }
         }
-        public async Task NotificarNovaMensagemAsync(string destinatarioId, string remetenteNome)
+        public async Task NotificarNovaMensagemAsync( string destinatarioId,string remetenteNome)
         {
-            var notificacao = new Notificacao
-            {
-                UserId = destinatarioId,
-                Titulo = "Nova mensagem",
-                Mensagem = $"Recebeu uma nova mensagem de {remetenteNome}.",
-                Lida = false,
-                DataCriacao = DateTime.Now
-            };
-
-            await _notificacaoRepository.CreateAsync(notificacao);
+            await CriarNotificacaoAsync( destinatarioId, "Nova mensagem", $"Recebeu uma nova mensagem de {remetenteNome}.");
         }
     }
 }
