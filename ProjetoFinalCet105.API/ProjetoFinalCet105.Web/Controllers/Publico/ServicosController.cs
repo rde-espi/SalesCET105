@@ -2,7 +2,7 @@
 using ProjetoFinalCet105.Web.Models;
 using ProjetoFinalCet105.Web.Services;
 
-namespace ProjetoFinalCet105.Web.Controllers
+namespace ProjetoFinalCet105.Web.Controllers.Publico
 {
     public class ServicosController : Controller
     {

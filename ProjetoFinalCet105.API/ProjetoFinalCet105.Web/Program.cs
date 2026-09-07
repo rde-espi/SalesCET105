@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using ProjetoFinalCet105.Web.Services;
 using System.Globalization;
 
@@ -18,6 +19,29 @@ builder.Services.AddHttpClient("ProjetoFinalApi", client =>
 
 builder.Services.AddScoped<ApiService>();
 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(8);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/AcessoNegado";
+
+        options.Cookie.HttpOnly = true;
+        options.Cookie.IsEssential = true;
+
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.SlidingExpiration = true;
+    });
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -30,6 +54,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseSession();
+app.UseAuthentication();
 
 app.UseAuthorization();
 

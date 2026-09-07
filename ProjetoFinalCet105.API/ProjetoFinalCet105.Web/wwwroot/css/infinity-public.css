@@ -922,6 +922,335 @@ main {
     color: #d9d4ca;
 }
 
+/* =========================
+   LOGIN
+========================= */
+
+.ib-login-page {
+    min-height: calc(100vh - 78px);
+    padding: 70px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient( 135deg, #f8f5ef 0%, #eee8dc 100% );
+}
+
+
+.ib-login-container {
+    width: 100%;
+    max-width: 1080px;
+    min-height: 610px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid rgba(190, 162, 86, 0.18);
+    border-radius: 6px;
+    box-shadow: 0 25px 70px rgba(31, 27, 22, 0.12);
+}
+
+
+/* FORM */
+
+.ib-login-panel {
+    padding: 65px 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+.ib-login-heading span {
+    display: block;
+    margin-bottom: 12px;
+    color: #a67c42;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 3.5px;
+}
+
+
+.ib-login-heading h1 {
+    margin: 0;
+    color: #25221e;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 3rem;
+    font-weight: 500;
+    line-height: 1;
+}
+
+
+.ib-login-heading p {
+    margin: 18px 0 36px;
+    color: #827b71;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.82rem;
+    line-height: 1.7;
+}
+
+
+/* FIELDS */
+
+.ib-login-form {
+    width: 100%;
+}
+
+
+.ib-form-group {
+    margin-bottom: 21px;
+}
+
+
+    .ib-form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #403a32;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.72rem;
+        font-weight: 600;
+    }
+
+
+    .ib-form-group input {
+        width: 100%;
+        height: 48px;
+        padding: 0 14px;
+        box-sizing: border-box;
+        border: 1px solid #ded8ce;
+        border-radius: 4px;
+        outline: none;
+        background: #fbfaf7;
+        color: #2b2824;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.8rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+
+        .ib-form-group input:focus {
+            border-color: #c6a05e;
+            box-shadow: 0 0 0 3px rgba(216, 176, 113, 0.12);
+        }
+
+
+        .ib-form-group input::placeholder {
+            color: #aaa39a;
+        }
+
+
+/* OPTIONS */
+
+.ib-login-options {
+    margin-top: 4px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+
+.ib-remember {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #777067;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.69rem;
+}
+
+
+    .ib-remember input {
+        accent-color: #c79d57;
+    }
+
+
+.ib-login-options a {
+    color: #a07840;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.69rem;
+}
+
+
+    .ib-login-options a:hover {
+        color: #c09550;
+    }
+
+
+/* BUTTON */
+
+.ib-login-submit {
+    width: 100%;
+    height: 49px;
+    border: 0;
+    border-radius: 4px;
+    cursor: pointer;
+    background: linear-gradient( 135deg, #edcb7c, #d8b071 );
+    color: #1b1916;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+    .ib-login-submit:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 9px 25px rgba(216, 176, 113, 0.24);
+    }
+
+
+/* REGISTER */
+
+.ib-login-register {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.69rem;
+    color: #817a70;
+}
+
+
+    .ib-login-register a {
+        color: #a07840;
+        font-weight: 600;
+    }
+
+
+/* IMAGE */
+
+.ib-login-image {
+    position: relative;
+    background: url("/images/login-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+}
+
+
+.ib-login-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient( 180deg, rgba(14, 14, 12, 0.16), rgba(15, 13, 10, 0.78) );
+}
+
+
+.ib-login-image-copy {
+    position: absolute;
+    left: 45px;
+    right: 45px;
+    bottom: 50px;
+    z-index: 2;
+    color: white;
+}
+
+
+    .ib-login-image-copy > span {
+        color: #e0b86c;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.62rem;
+        font-weight: 600;
+        letter-spacing: 3px;
+    }
+
+
+    .ib-login-image-copy h2 {
+        margin: 10px 0;
+        color: #ffffff;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 2.7rem;
+        font-weight: 500;
+        line-height: 0.95;
+    }
+
+
+    .ib-login-image-copy p {
+        max-width: 330px;
+        margin: 0;
+        color: rgba(255, 255, 255, 0.75);
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.72rem;
+        line-height: 1.7;
+    }
+
+.ib-user-menu {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.ib-user-greeting {
+    color: #e5dfd6;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.72rem;
+    white-space: nowrap;
+}
+
+    .ib-user-greeting strong {
+        color: var(--ib-gold);
+        font-weight: 500;
+    }
+
+.ib-logout-form {
+    margin: 0;
+}
+
+.ib-logout-button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: #c9c3ba;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.7rem;
+    transition: color 0.2s ease;
+}
+
+    .ib-logout-button:hover {
+        color: var(--ib-gold);
+    }
+
+/* ERRORS */
+
+.ib-field-error,
+.ib-login-error {
+    color: #a54c43;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.68rem;
+}
+
+
+.ib-field-error {
+    display: block;
+    margin-top: 6px;
+}
+
+
+.ib-login-error {
+    margin-bottom: 15px;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 800px) {
+
+    .ib-login-container {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-login-image {
+        display: none;
+    }
+
+    .ib-login-panel {
+        padding: 50px 35px;
+    }
+}
 
 /* MAIN */
 
@@ -1258,6 +1587,246 @@ main {
     }
 
     .ib-footer-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================
+   DASHBOARD - HEADER
+========================= */
+
+.ib-dashboard-header {
+    min-height: 76px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+
+/* WELCOME */
+
+.ib-dashboard-welcome h1 {
+    margin: 0;
+    color: #171715;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 2.55rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.ib-dashboard-welcome p {
+    margin: 5px 0 0;
+    color: #5f5a53;
+    font-size: 0.7rem;
+    font-weight: 400;
+}
+
+
+/* DATE */
+
+.ib-dashboard-date {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-right: 10px;
+}
+
+.ib-dashboard-date-icon {
+    width: 39px;
+    height: 39px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #b77f29;
+}
+
+    .ib-dashboard-date-icon svg {
+        width: 31px;
+        height: 31px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+.ib-dashboard-date > div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ib-dashboard-date strong {
+    color: #24211e;
+    font-size: 0.69rem;
+    font-weight: 500;
+}
+
+.ib-dashboard-date span {
+    color: #716b63;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 0.82rem;
+    font-style: italic;
+    text-align: center;
+}
+
+
+/* =========================
+   DASHBOARD - KPI
+========================= */
+
+.ib-dashboard-kpis {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
+}
+
+
+/* CARD */
+
+.ib-kpi-card {
+    min-width: 0;
+    min-height: 118px;
+    padding: 19px 17px;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    background: rgba(255, 253, 249, 0.78);
+    border: 1px solid #e5ded3;
+    border-radius: 6px;
+    box-shadow: 0 3px 14px rgba(41, 35, 27, 0.035);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .ib-kpi-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(185, 137, 63, 0.4);
+        box-shadow: 0 8px 24px rgba(41, 35, 27, 0.07);
+    }
+
+
+/* ICON */
+
+.ib-kpi-icon {
+    width: 43px;
+    height: 43px;
+    flex: 0 0 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #b98531;
+}
+
+    .ib-kpi-icon svg {
+        width: 34px;
+        height: 34px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.45;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+.ib-kpi-euro {
+    border: 2px solid #b98531;
+    border-radius: 50%;
+    font-family: "Montserrat", sans-serif;
+    font-size: 1.35rem;
+    font-weight: 500;
+}
+
+
+/* CONTENT */
+
+.ib-kpi-content {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.ib-kpi-value {
+    color: #181715;
+    font-size: 1.18rem;
+    font-weight: 600;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+.ib-kpi-label {
+    margin-top: 5px;
+    color: #68625b;
+    font-size: 0.61rem;
+    white-space: nowrap;
+}
+
+
+/* COMPARISON */
+
+.ib-kpi-comparison {
+    margin-top: 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+    .ib-kpi-comparison strong {
+        font-size: 0.64rem;
+        font-weight: 600;
+    }
+
+    .ib-kpi-comparison span {
+        color: #8d877f;
+        font-size: 0.49rem;
+        white-space: nowrap;
+    }
+
+    .ib-kpi-comparison.positive strong {
+        color: #249640;
+    }
+
+    .ib-kpi-comparison.negative strong {
+        color: #b64c45;
+    }
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1250px) {
+
+    .ib-dashboard-kpis {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 900px) {
+
+    .ib-dashboard-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ib-dashboard-date {
+        padding-right: 0;
+    }
+
+    .ib-dashboard-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 550px) {
+
+    .ib-dashboard-welcome h1 {
+        font-size: 2.1rem;
+    }
+
+    .ib-dashboard-kpis {
         grid-template-columns: 1fr;
     }
 }

@@ -1,0 +1,152 @@
+﻿@model LoginViewModel
+
+@{
+    ViewData["Title"] = "Entrar";
+    Layout = "_PublicLayout";
+}
+
+<section class="ib-login-page">
+
+    <div class="ib-login-container">
+
+        <div class="ib-login-panel">
+
+            <div class="ib-login-heading">
+
+                <span>
+                    ÁREA RESERVADA
+                </span>
+
+                <h1>
+                    Bem-vindo de volta.
+                </h1>
+
+                <p>
+                    Entre na sua conta Infinity Beauty
+                    para continuar.
+                </p>
+
+            </div>
+
+
+            <form asp-controller="Account"
+                  asp-action="Login"
+                  method="post"
+                  class="ib-login-form">
+
+                @Html.AntiForgeryToken()
+
+
+                <div asp-validation-summary="ModelOnly"
+                     class="ib-login-error">
+                </div>
+
+
+                <div class="ib-form-group">
+
+                    <label asp-for="Email">
+                        Email
+                    </label>
+
+                    <input asp-for="Email"
+                           type="email"
+                           placeholder="exemplo@email.pt"
+                           autocomplete="email" />
+
+                    <span asp-validation-for="Email"
+                          class="ib-field-error">
+                    </span>
+
+                </div>
+
+
+                <div class="ib-form-group">
+
+                    <label asp-for="Password">
+                        Password
+                    </label>
+
+                    <input asp-for="Password"
+                           type="password"
+                           placeholder="Introduza a sua password"
+                           autocomplete="current-password" />
+
+                    <span asp-validation-for="Password"
+                          class="ib-field-error">
+                    </span>
+
+                </div>
+
+
+                <div class="ib-login-options">
+
+                    <label class="ib-remember">
+
+                        <input asp-for="RememberMe" />
+
+                        <span>
+                            Manter sessão iniciada
+                        </span>
+
+                    </label>
+
+
+                    <a href="#">
+                        Esqueceu a password?
+                    </a>
+
+                </div>
+
+
+                <button type="submit"
+                        class="ib-login-submit">
+
+                    Entrar
+
+                </button>
+
+
+                <div class="ib-login-register">
+
+                    <span>
+                        Ainda não tem conta?
+                    </span>
+
+                    <a href="#">
+                        Criar conta
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <div class="ib-login-image">
+
+            <div class="ib-login-image-overlay"></div>
+
+            <div class="ib-login-image-copy">
+
+                <span>
+                    INFINITY BEAUTY
+                </span>
+
+                <h2>
+                    O seu momento.<br />
+                    O seu cuidado.
+                </h2>
+
+                <p>
+                    Beleza e bem-estar numa experiência
+                    criada especialmente para si.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

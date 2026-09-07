@@ -13,5 +13,16 @@
         {
             return await _httpClient.GetFromJsonAsync<T>(endpoint);
         }
+        public async Task<TResponse?> PostAsync<TRequest, TResponse>( string endpoint, TRequest data)
+        {
+            var response = await _httpClient.PostAsJsonAsync(endpoint, data);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return default;
+            }
+
+            return await response.Content.ReadFromJsonAsync<TResponse>();
+        }
     }
 }

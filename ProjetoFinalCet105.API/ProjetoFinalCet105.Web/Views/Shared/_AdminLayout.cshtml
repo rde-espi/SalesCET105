@@ -1,0 +1,406 @@
+﻿<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Infinity Beauty</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@400;500;600&display=swap"
+          rel="stylesheet">
+
+    
+
+    <link rel="stylesheet"
+          href="~/css/infinity-admin.css"
+          asp-append-version="true" />
+</head>
+
+<body>
+
+    <div class="ib-admin">
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+
+        <aside class="ib-admin-sidebar" id="adminSidebar">
+
+            <a asp-controller="Dashboard"
+               asp-action="Index"
+               class="ib-admin-logo">
+
+                <img src="~/images/logo-symbol.png"
+                     alt="Infinity Beauty" />
+
+                <div>
+                    <strong>INFINITY BEAUTY</strong>
+
+                    <span>
+                        CENTER | SPA | WELLNESS
+                    </span>
+                </div>
+
+            </a>
+
+
+            <nav class="ib-admin-menu">
+
+                <a asp-controller="Dashboard"
+                   asp-action="Index"
+                   class="ib-admin-menu-item active">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 11L12 3l9 8"></path>
+                        <path d="M5 10v11h14V10"></path>
+                        <path d="M9 21v-7h6v7"></path>
+                    </svg>
+
+                    <span>Dashboard</span>
+                </a>
+
+
+                <a href="#"
+                   class="ib-admin-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                        <path d="M8 3v4M16 3v4M3 10h18"></path>
+                    </svg>
+
+                    <span>Marcações</span>
+                </a>
+
+
+                <a href="#"
+                   class="ib-admin-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                        <path d="M8 3v4M16 3v4M3 10h18"></path>
+                        <path d="M8 14h2M12 14h2M16 14h1"></path>
+                    </svg>
+
+                    <span>Calendário</span>
+                </a>
+
+
+                <a href="#"
+                   class="ib-admin-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="8" r="4"></circle>
+                        <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path>
+                    </svg>
+
+                    <span>Clientes</span>
+                </a>
+
+
+                <a href="/Admin/Servicos"
+                   class="ib-admin-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.4 1a8 8 0 0 0-2-1.2L14.2 3h-4.4l-.4 2.7a8 8 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.4-1a8 8 0 0 0 2 1.2l.4 2.7h4.4l.4-2.7a8 8 0 0 0 2-1.2l2.4 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"></path>
+                    </svg>
+
+                    <span>Serviços</span>
+                </a>
+
+
+                <a href="/Admin/Categorias"
+                   class="ib-admin-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <rect x="4" y="3" width="16" height="18" rx="2"></rect>
+                        <path d="M8 8h8M8 12h8M8 16h5"></path>
+                    </svg>
+
+                    <span>Categorias</span>
+                </a>
+
+
+                <a href="#"
+                   class="ib-admin-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="9" cy="8" r="4"></circle>
+                        <circle cx="17" cy="10" r="3"></circle>
+                        <path d="M2 21c0-4 3-7 7-7s7 3 7 7"></path>
+                        <path d="M16 15c3 0 5 2 5 5"></path>
+                    </svg>
+
+                    <span>Profissionais</span>
+                </a>
+
+
+                <a href="#"
+                   class="ib-admin-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.4 1a8 8 0 0 0-2-1.2L14.2 3h-4.4l-.4 2.7a8 8 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.5A7 7 0 0 0 5 12"></path>
+                    </svg>
+
+                    <span>Competências</span>
+                </a>
+
+
+                <a href="#"
+                   class="ib-admin-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 20V10M10 20V4M16 20v-7M22 20V7"></path>
+                    </svg>
+
+                    <span>Indisponibilidades</span>
+                </a>
+
+
+                <a href="#"
+                   class="ib-admin-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <rect x="4" y="3" width="16" height="18" rx="2"></rect>
+                        <path d="M8 8h8M8 12h8M8 16h6"></path>
+                    </svg>
+
+                    <span>Faturas</span>
+                </a>
+
+
+                <a href="#"
+                   class="ib-admin-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 20h16"></path>
+                        <path d="M7 16l3-4 3 2 4-6"></path>
+                    </svg>
+
+                    <span>Despesas</span>
+                </a>
+
+
+                <a href="#"
+                   class="ib-admin-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 12l8-8 8 8-8 8z"></path>
+                        <circle cx="12" cy="9" r="1"></circle>
+                    </svg>
+
+                    <span>Promoções</span>
+                </a>
+
+
+                <a href="#"
+                   class="ib-admin-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                        <path d="M3 7l9 7 9-7"></path>
+                    </svg>
+
+                    <span>Mensagens</span>
+                </a>
+
+
+                <a href="#"
+                   class="ib-admin-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                        <path d="M10 21h4"></path>
+                    </svg>
+
+                    <span>Notificações</span>
+                </a>
+
+            </nav>
+
+
+            <div class="ib-admin-sidebar-footer">
+
+                <span class="ib-admin-signature">
+                    Beleza,<br />
+                    bem-estar, sempre.
+                </span>
+
+                <a asp-controller="Home"
+                   asp-action="Index">
+
+                    ← Voltar ao site
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN
+        ========================== -->
+
+        <div class="ib-admin-main">
+
+            <!-- TOPBAR -->
+
+            <header class="ib-admin-topbar">
+
+                <button type="button"
+                        class="ib-admin-menu-toggle"
+                        id="adminMenuToggle"
+                        aria-label="Abrir menu"
+                        aria-expanded="false">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                   
+                </button>
+
+
+                <div class="ib-admin-search">
+
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <path d="M20 20l-4-4"></path>
+                    </svg>
+
+                    <input type="search"
+                           placeholder="Pesquisar clientes, serviços, marcações..." />
+
+                </div>
+
+
+                <div class="ib-admin-topbar-actions">
+
+                    <button type="button"
+                            class="ib-admin-notification"
+                            aria-label="Notificações">
+
+                        <svg viewBox="0 0 24 24">
+                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                            <path d="M10 21h4"></path>
+                        </svg>
+
+                    </button>
+
+
+                    <span class="ib-admin-topbar-divider"></span>
+
+
+                    <div class="ib-admin-profile">
+
+                        <div class="ib-admin-avatar">
+                            @{
+                                var nome = User.Identity?.Name ?? "A";
+                                var inicial = nome.Substring(0, 1).ToUpper();
+                            }
+
+                            @inicial
+                        </div>
+
+                        <div class="ib-admin-profile-info">
+
+                            <strong>
+                                @User.Identity?.Name
+                            </strong>
+
+                            <span>
+                                Administrador
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <form asp-controller="Account"
+                          asp-action="Logout"
+                          method="post"
+                          class="ib-admin-logout">
+
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit">
+                            Sair
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </header>
+
+
+            <!-- PAGE CONTENT -->
+
+            <main class="ib-admin-content">
+
+                @RenderBody()
+
+            </main>
+
+
+            <!-- FOOTER -->
+
+            <footer class="ib-admin-footer">
+
+                <span>
+                    © @DateTime.Now.Year Infinity Beauty.
+                    Todos os direitos reservados.
+                </span>
+
+                <div>
+                    <a href="#">Política de Privacidade</a>
+                    <a href="#">Termos e Condições</a>
+                    <a href="#">Suporte</a>
+                </div>
+
+            </footer>
+
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    
+    <script>
+            const menuToggle =
+                document.getElementById("adminMenuToggle");
+
+            const sidebar =
+                document.getElementById("adminSidebar");
+
+            if (menuToggle && sidebar) {
+
+                menuToggle.addEventListener("click", function() {
+
+                    sidebar.classList.toggle("open");
+
+                    const isOpen =
+                        sidebar.classList.contains("open");
+
+                    menuToggle.setAttribute(
+                        "aria-expanded",
+                        isOpen
+                    );
+                });
+
+            }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
