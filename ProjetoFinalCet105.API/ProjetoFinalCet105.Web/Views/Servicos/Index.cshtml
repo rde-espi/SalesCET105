@@ -1,0 +1,41 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.ServicoViewModel>
+@{
+    ViewData["Title"] = "Serviços";
+    Layout = "_PublicLayout";
+}
+
+
+
+<h1>Serviços</h1>
+
+@if (Model.Count == 0)
+{
+    <p>Não foram encontrados serviços.</p>
+}
+else
+{
+    @foreach (var servico in Model)
+    {
+        <div>
+            <h3>@servico.Nome</h3>
+
+            <p>
+                Categoria: @servico.CategoriaNome
+            </p>
+
+            <p>
+                @servico.Descricao
+            </p>
+
+            <p>
+                Preço: @servico.Preco.ToString("C")
+            </p>
+
+            <p>
+                Duração: @servico.DuracaoMinutos minutos
+            </p>
+
+            <hr />
+        </div>
+    }
+}

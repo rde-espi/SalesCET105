@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="ProjetoFinalCet105.API/ProjetoFinalCet105.API.csproj" />
+  <Project Path="ProjetoFinalCet105.Web/ProjetoFinalCet105.Web.csproj" Id="86aaf6fc-55cf-4b26-9564-f896d0d0d848" />
 </Solution>

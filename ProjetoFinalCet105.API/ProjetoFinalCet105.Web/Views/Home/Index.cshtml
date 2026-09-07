@@ -1,0 +1,284 @@
+﻿@model List<CategoriaViewModel>
+
+@{
+    ViewData["Title"] = "Início";
+    Layout = "_PublicLayout";
+}
+
+<section class="ib-hero">
+
+    <div class="ib-hero-overlay"></div>
+
+    <div class="ib-hero-content">
+
+        <div class="ib-hero-copy">
+
+            <span class="ib-hero-eyebrow">
+                BEAUTY · SPA · WELLNESS
+            </span>
+
+            <h1 class="ib-hero-title">
+                Mais que beleza,
+                <em>um cuidado que fica.</em>
+            </h1>
+
+            <p class="ib-hero-text">
+                Descubra experiências de beleza e bem-estar pensadas para si,
+                num ambiente elegante, tranquilo e acolhedor.
+            </p>
+
+            <div class="ib-hero-actions">
+
+                <a href="#"
+                   class="ib-hero-primary">
+                    Marcar agora
+                </a>
+
+                <a asp-controller="Servicos"
+                   asp-action="Index"
+                   class="ib-hero-secondary">
+                    Conhecer serviços
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="ib-hero-signature">
+            Cuidar de si é um ato de amor.
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="ib-benefits">
+
+    <div class="ib-benefit-item">
+        <span class="ib-benefit-icon">✦</span>
+
+        <div>
+            <strong>Atendimento personalizado</strong>
+            <span>Cada experiência pensada para si</span>
+        </div>
+    </div>
+
+
+    <div class="ib-benefit-item">
+        <span class="ib-benefit-icon">✦</span>
+
+        <div>
+            <strong>Profissionais especializados</strong>
+            <span>Qualidade, experiência e cuidado</span>
+        </div>
+    </div>
+
+
+    <div class="ib-benefit-item">
+        <span class="ib-benefit-icon">✦</span>
+
+        <div>
+            <strong>Ambiente premium</strong>
+            <span>Conforto, elegância e tranquilidade</span>
+        </div>
+    </div>
+
+
+    <div class="ib-benefit-item">
+        <span class="ib-benefit-icon">✦</span>
+
+        <div>
+            <strong>Bem-estar completo</strong>
+            <span>Beleza exterior e equilíbrio interior</span>
+        </div>
+    </div>
+
+</section>
+<section class="ib-home-services">
+
+    <div class="ib-home-services-container">
+
+        <div class="ib-home-services-header">
+
+            <div>
+                <span class="ib-home-services-eyebrow">
+                    OS NOSSOS SERVIÇOS
+                </span>
+
+                <h2>
+                    Beleza, saúde e bem-estar para si.
+                </h2>
+            </div>
+
+            <a asp-controller="Servicos"
+               asp-action="Index"
+               class="ib-home-services-all">
+
+                Ver todos os serviços
+                <span>→</span>
+
+            </a>
+
+        </div>
+
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="ib-home-services-grid">
+
+                @foreach (var categoria in Model)
+                {
+                    <a asp-controller="Servicos"
+                       asp-action="Index"
+                       asp-route-categoriaId="@categoria.Id"
+                       class="ib-home-category-card">
+
+                        <div class="ib-home-category-image">
+
+                            @if (!string.IsNullOrWhiteSpace(categoria.ImagemUrl))
+                            {
+                                <img src="@categoria.ImagemUrl"
+                                     alt="@categoria.Nome" />
+                            }
+                            else
+                            {
+                                <div class="ib-home-category-placeholder">
+                                    <span>@categoria.Nome</span>
+                                </div>
+                            }
+
+                        </div>
+
+                        <div class="ib-home-category-info">
+
+                            <div>
+
+                                <h3>
+                                    @categoria.Nome
+                                </h3>
+
+                                @if (!string.IsNullOrWhiteSpace(categoria.Descricao))
+                                {
+                                    <p>
+                                        @categoria.Descricao
+                                    </p>
+                                }
+
+                            </div>
+
+                            <span class="ib-category-arrow">
+                                →
+                            </span>
+
+                        </div>
+
+                    </a>
+                }
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-services-empty">
+                Nenhuma categoria disponível.
+            </div>
+        }
+
+    </div>
+
+</section>
+<section class="ib-home-feature-strip">
+
+    <div class="ib-home-feature-overlay"></div>
+
+    <div class="ib-home-feature-container">
+
+        <div class="ib-home-feature-grid">
+
+            <div class="ib-home-feature-item">
+
+                <div class="ib-home-feature-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                        <line x1="8" y1="3" x2="8" y2="7"></line>
+                        <line x1="16" y1="3" x2="16" y2="7"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                </div>
+
+                <div>
+                    <strong>Marcação Online</strong>
+                    <span>Rápida e simples</span>
+                </div>
+
+            </div>
+
+
+            <div class="ib-home-feature-item">
+
+                <div class="ib-home-feature-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <line x1="12" y1="7" x2="12" y2="12"></line>
+                        <line x1="12" y1="12" x2="16" y2="14"></line>
+                    </svg>
+                </div>
+
+                <div>
+                    <strong>Horários Flexíveis</strong>
+                    <span>Pensados em si</span>
+                </div>
+
+            </div>
+
+
+            <div class="ib-home-feature-item">
+
+                <div class="ib-home-feature-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 22s7-6.2 7-13a7 7 0 1 0-14 0c0 6.8 7 13 7 13z"></path>
+                        <circle cx="12" cy="9" r="2.5"></circle>
+                    </svg>
+                </div>
+
+                <div>
+                    <strong>Localização</strong>
+                    <span>Fácil acesso</span>
+                </div>
+
+            </div>
+
+
+            <div class="ib-home-feature-item">
+
+                <div class="ib-home-feature-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 2.5l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.1l6.2-.9L12 2.5z"></path>
+                    </svg>
+                </div>
+
+                <div>
+                    <strong>Clientes Satisfeitos</strong>
+                    <span>Experiências reais</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="ib-home-feature-quote">
+            <span>
+                A sua melhor versão
+            </span>
+
+            <strong>
+                começa aqui.
+            </strong>
+        </div>
+
+    </div>
+
+</section>
+
