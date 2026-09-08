@@ -1398,3 +1398,175 @@ body,
         min-height: 300px;
     }
 }
+
+/* =========================
+   DASHBOARD - EQUIPA
+========================= */
+
+.ib-team-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.ib-team-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(25, 25, 25, 0.08);
+}
+
+    .ib-team-row:last-child {
+        border-bottom: none;
+    }
+
+.ib-team-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+    flex: 1;
+}
+
+    .ib-team-info strong {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #191919;
+    }
+
+    .ib-team-info span {
+        font-size: 0.78rem;
+        color: #777;
+    }
+
+.ib-team-performance {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    white-space: nowrap;
+}
+
+    .ib-team-performance strong {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #191919;
+    }
+
+    .ib-team-performance span {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #BEA256;
+    }
+
+/* =========================
+   NOTIFICATION BELL
+========================= */
+
+.ib-notification-bell {
+    position: relative;
+}
+
+.ib-bell-button {
+    width: 42px;
+    height: 42px;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .ib-bell-button svg {
+        width: 22px;
+        height: 22px;
+        stroke: #f5f2eb;
+        stroke-width: 1.8;
+        fill: none;
+    }
+
+    .ib-bell-button:hover {
+        background: linear-gradient( 135deg, #e5c783, #ad792e );
+    }
+
+.ib-bell-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #C0392B;
+    color: white;
+    font-size: .65rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ib-bell-dropdown {
+    position: absolute;
+    top: 52px;
+    right: 0;
+    width: 340px;
+    background: white;
+    border-radius: 14px;
+    border: 1px solid rgba(25,25,25,.08);
+    box-shadow: 0 18px 45px rgba(0,0,0,.12);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: .22s;
+    z-index: 3000;
+}
+
+.ib-notification-bell:hover .ib-bell-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.ib-bell-header {
+    padding: 18px 18px 14px;
+    border-bottom: 1px solid #f0ece4;
+    display: flex;
+    justify-content: space-between;
+}
+
+.ib-bell-item {
+    padding: 14px 18px;
+    border-bottom: 1px solid #f7f4ef;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+    .ib-bell-item.unread {
+        background: rgba(216,176,113,.08);
+    }
+
+    .ib-bell-item strong {
+        font-size: .85rem;
+    }
+
+    .ib-bell-item span {
+        font-size: .78rem;
+        color: #666;
+    }
+
+    .ib-bell-item small {
+        color: #999;
+        font-size: .72rem;
+    }
+
+.ib-bell-footer {
+    display: block;
+    text-align: center;
+    padding: 14px;
+    color: var(--ib-gold-dark);
+    font-weight: 600;
+}

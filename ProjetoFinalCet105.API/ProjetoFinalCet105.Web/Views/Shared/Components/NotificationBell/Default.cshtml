@@ -1,0 +1,66 @@
+﻿@model NotificationBellViewModel
+
+<div class="ib-notification-bell">
+
+    <button class="ib-bell-button" type="button">
+
+        <svg viewBox="0 0 24 24">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
+            <path d="M10 21h4" />
+        </svg>
+
+        @if (Model.NaoLidas > 0)
+        {
+            <span class="ib-bell-badge">
+                @Model.NaoLidas
+            </span>
+        }
+
+    </button>
+
+    <div class="ib-bell-dropdown">
+
+        <div class="ib-bell-header">
+
+            <strong>Notificações</strong>
+
+            @if (Model.NaoLidas > 0)
+            {
+                <small>@Model.NaoLidas não lidas</small>
+            }
+
+        </div>
+
+        @if (Model.Notificacoes.Any())
+        {
+            @foreach (var n in Model.Notificacoes)
+            {
+                <div class="ib-bell-item @(n.Lida ? "" : "unread")">
+
+                    <strong>@n.Titulo</strong>
+
+                    <span>@n.Mensagem</span>
+
+                    <small>@n.DataCriacao.ToString("dd/MM HH:mm")</small>
+
+                </div>
+            }
+        }
+        else
+        {
+            <div class="ib-bell-empty">
+                Sem notificações
+            </div>
+        }
+
+        <a asp-controller="Notificacoes"
+           asp-action="Index"
+           class="ib-bell-footer">
+
+            Ver todas →
+
+        </a>
+
+    </div>
+
+</div>

@@ -1,16 +1,57 @@
-﻿@{
+﻿@model DashboardViewModel
+@using System.Text.Json
+
+@{
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 
     var hoje = DateTime.Now;
 
-    var cultura = new System.Globalization.CultureInfo("pt-PT");
+    var cultura =
+        new System.Globalization.CultureInfo("pt-PT");
 
     var dataFormatada =
-        hoje.ToString("dddd, d 'de' MMMM 'de' yyyy", cultura);
+        hoje.ToString(
+            "dddd, d 'de' MMMM 'de' yyyy",
+            cultura);
 
     dataFormatada =
-        char.ToUpper(dataFormatada[0]) + dataFormatada.Substring(1);
+        char.ToUpper(dataFormatada[0]) +
+        dataFormatada.Substring(1);
+
+
+    // =========================
+    // EVOLUÇÃO DA FATURAÇÃO
+    // =========================
+
+    var labelsFaturacao =
+        Model.EvolucaoMensal
+            .Select(x => x.NomeMes)
+            .ToList();
+
+    var valoresFaturacao =
+        Model.EvolucaoMensal
+            .Select(x => x.Total)
+            .ToList();
+
+
+    // =========================
+    // FATURAÇÃO POR CATEGORIA
+    // =========================
+
+    var labelsCategorias =
+        Model.FaturacaoPorCategoria
+            .Select(x => x.NomeCategoria)
+            .ToList();
+
+    var valoresCategorias =
+        Model.FaturacaoPorCategoria
+            .Select(x => x.TotalFaturado)
+            .ToList();
+
+    var totalFaturacaoCategorias =
+        Model.FaturacaoPorCategoria
+            .Sum(x => x.TotalFaturado);
 }
 
 <!-- =========================
@@ -95,16 +136,15 @@
         <div class="ib-kpi-content">
 
             <strong class="ib-kpi-value">
-                28
+                @(Model.Agenda?.TotalMarcacoesMes ?? 0)
             </strong>
 
             <span class="ib-kpi-label">
-                Marcações hoje
+                Marcações este mês
             </span>
 
-            <div class="ib-kpi-comparison positive">
-                <strong>▲ +12%</strong>
-                <span>vs. semana anterior</span>
+            <div class="ib-kpi-comparison">
+                <span>Dados atuais</span>
             </div>
 
         </div>
@@ -141,16 +181,15 @@
         <div class="ib-kpi-content">
 
             <strong class="ib-kpi-value">
-                42
+                @(Model.Clientes?.NovosClientesMes ?? 0)
             </strong>
 
             <span class="ib-kpi-label">
-                Clientes esta semana
+                Novos clientes este mês
             </span>
 
-            <div class="ib-kpi-comparison positive">
-                <strong>▲ +8%</strong>
-                <span>vs. semana anterior</span>
+            <div class="ib-kpi-comparison">
+                <span>Dados atuais</span>
             </div>
 
         </div>
@@ -169,16 +208,16 @@
         <div class="ib-kpi-content">
 
             <strong class="ib-kpi-value">
-                1.250,00 €
+                @(Model.Financeiro?.FaturacaoHoje.ToString("C2",
+                    new System.Globalization.CultureInfo("pt-PT")) ?? "0,00 €")
             </strong>
 
             <span class="ib-kpi-label">
                 Faturação hoje
             </span>
 
-            <div class="ib-kpi-comparison positive">
-                <strong>▲ +15%</strong>
-                <span>vs. semana anterior</span>
+            <div class="ib-kpi-comparison">
+                <span>Dados atuais</span>
             </div>
 
         </div>
@@ -205,16 +244,15 @@
         <div class="ib-kpi-content">
 
             <strong class="ib-kpi-value">
-                78%
+                @($"{Model.Agenda?.TaxaOcupacao ?? 0:0.#}%")
             </strong>
 
             <span class="ib-kpi-label">
                 Taxa de ocupação
             </span>
 
-            <div class="ib-kpi-comparison positive">
-                <strong>▲ +6%</strong>
-                <span>vs. semana anterior</span>
+            <div class="ib-kpi-comparison">
+                <span>Este mês</span>
             </div>
 
         </div>
@@ -226,29 +264,27 @@
 
     <article class="ib-kpi-card">
 
-        <div class="ib-kpi-icon">
-
-            <svg viewBox="0 0 24 24">
-
-                <path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9z"></path>
-
-            </svg>
-
+        <div class="ib-kpi-icon ib-kpi-euro">
+            €
         </div>
 
         <div class="ib-kpi-content">
 
             <strong class="ib-kpi-value">
-                4,8
+                @(Model.Financeiro?.ResultadoMes.ToString(
+                    "C2",
+                    new System.Globalization.CultureInfo("pt-PT"))
+                    ?? "0,00 €")
             </strong>
 
             <span class="ib-kpi-label">
-                Avaliação média
+                Resultado do mês
             </span>
 
-            <div class="ib-kpi-comparison positive">
-                <strong>▲ +0,2</strong>
-                <span>vs. mês anterior</span>
+            <div class="ib-kpi-comparison">
+                <span>
+                    Após despesas
+                </span>
             </div>
 
         </div>
@@ -286,12 +322,12 @@
     </article>
 
 
-    <!-- MARCAÇÕES POR CATEGORIA -->
+    <!-- FATURAÇÃO POR CATEGORIA -->
 
     <article class="ib-dashboard-panel ib-category-panel">
 
         <div class="ib-panel-header">
-            <h2>Marcações por categoria</h2>
+            <h2>Faturação por categoria</h2>
         </div>
 
         <div class="ib-category-chart-content">
@@ -301,44 +337,54 @@
                 <canvas id="categoryChart"></canvas>
 
                 <div class="ib-donut-center">
-                    <strong>128</strong>
-                    <span>marcações</span>
+                    <strong>
+                        @totalFaturacaoCategorias.ToString(
+                            "N0",
+                            new System.Globalization.CultureInfo("pt-PT")) €
+                    </strong>
+
+                    <span>faturado</span>
                 </div>
 
             </div>
 
-
             <div class="ib-category-legend">
 
-                <div>
-                    <span class="ib-legend-dot category-1"></span>
-                    <span class="ib-legend-name">Cabelo</span>
-                    <strong>35%</strong>
-                </div>
+                @if (Model.FaturacaoPorCategoria.Any())
+                {
+                    var indiceCategoria = 0;
 
-                <div>
-                    <span class="ib-legend-dot category-2"></span>
-                    <span class="ib-legend-name">Estética</span>
-                    <strong>28%</strong>
-                </div>
+                    foreach (var categoria in Model.FaturacaoPorCategoria)
+                    {
+                        var percentagem =
+                            totalFaturacaoCategorias > 0
+                                ? categoria.TotalFaturado /
+                                  totalFaturacaoCategorias * 100
+                                : 0;
 
-                <div>
-                    <span class="ib-legend-dot category-3"></span>
-                    <span class="ib-legend-name">Unhas</span>
-                    <strong>18%</strong>
-                </div>
+                        <div>
+                            <span class="ib-legend-dot"
+                                  data-category-index="@indiceCategoria">
+                            </span>
 
-                <div>
-                    <span class="ib-legend-dot category-4"></span>
-                    <span class="ib-legend-name">Wellness</span>
-                    <strong>12%</strong>
-                </div>
+                            <span class="ib-legend-name">
+                                @categoria.NomeCategoria
+                            </span>
 
-                <div>
-                    <span class="ib-legend-dot category-5"></span>
-                    <span class="ib-legend-name">Outros</span>
-                    <strong>7%</strong>
-                </div>
+                            <strong>
+                                @percentagem.ToString("0.#")%
+                            </strong>
+                        </div>
+
+                        indiceCategoria++;
+                    }
+                }
+                else
+                {
+                    <span class="ib-dashboard-empty">
+                        Sem dados de faturação.
+                    </span>
+                }
 
             </div>
 
@@ -356,106 +402,56 @@
         </div>
 
 
-        <div class="ib-top-services">
+        <div class="ib-top-services-list">
 
-            <div class="ib-top-service">
+            @if (Model.ServicosMaisFaturados.Any())
+            {
+                var posicao = 1;
 
-                <span class="ib-service-position">1</span>
+                foreach (var servico in Model.ServicosMaisFaturados)
+                {
+                    var iniciais = string.Join("",
+                        servico.NomeServico
+                            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                            .Take(2)
+                            .Select(p => char.ToUpper(p[0])));
 
-                <div class="ib-service-placeholder">
-                    TF
+                    <div class="ib-service-rank">
+
+                        <span class="ib-rank-number">
+                            @posicao
+                        </span>
+
+                        <div class="ib-service-avatar">
+                            @iniciais
+                        </div>
+
+                        <div class="ib-service-info">
+                            <strong>@servico.NomeServico</strong>
+
+                            <span>
+                                @servico.Quantidade
+                                @(servico.Quantidade == 1 ? "serviço" : "serviços")
+                            </span>
+                        </div>
+
+                        <strong class="ib-service-value">
+                            @servico.TotalFaturado.ToString(
+                                "C2",
+                                new System.Globalization.CultureInfo("pt-PT"))
+                        </strong>
+
+                    </div>
+
+                    posicao++;
+                }
+            }
+            else
+            {
+                <div class="ib-dashboard-empty">
+                    Ainda não existem dados de faturação.
                 </div>
-
-                <div class="ib-service-info">
-                    <strong>Tratamento Facial</strong>
-                    <span>28 marcações</span>
-                </div>
-
-                <strong class="ib-service-revenue">
-                    420,00 €
-                </strong>
-
-            </div>
-
-
-            <div class="ib-top-service">
-
-                <span class="ib-service-position">2</span>
-
-                <div class="ib-service-placeholder">
-                    MR
-                </div>
-
-                <div class="ib-service-info">
-                    <strong>Massagem Relaxante</strong>
-                    <span>24 marcações</span>
-                </div>
-
-                <strong class="ib-service-revenue">
-                    360,00 €
-                </strong>
-
-            </div>
-
-
-            <div class="ib-top-service">
-
-                <span class="ib-service-position">3</span>
-
-                <div class="ib-service-placeholder">
-                    MG
-                </div>
-
-                <div class="ib-service-info">
-                    <strong>Manicure Gel</strong>
-                    <span>31 marcações</span>
-                </div>
-
-                <strong class="ib-service-revenue">
-                    310,00 €
-                </strong>
-
-            </div>
-
-
-            <div class="ib-top-service">
-
-                <span class="ib-service-position muted">4</span>
-
-                <div class="ib-service-placeholder">
-                    CF
-                </div>
-
-                <div class="ib-service-info">
-                    <strong>Corte Feminino</strong>
-                    <span>19 marcações</span>
-                </div>
-
-                <strong class="ib-service-revenue">
-                    280,00 €
-                </strong>
-
-            </div>
-
-
-            <div class="ib-top-service">
-
-                <span class="ib-service-position muted">5</span>
-
-                <div class="ib-service-placeholder">
-                    LP
-                </div>
-
-                <div class="ib-service-info">
-                    <strong>Limpeza de Pele</strong>
-                    <span>18 marcações</span>
-                </div>
-
-                <strong class="ib-service-revenue">
-                    250,00 €
-                </strong>
-
-            </div>
+            }
 
         </div>
 
@@ -485,144 +481,78 @@
 
         <div class="ib-agenda-list">
 
-            <div class="ib-agenda-item">
+            @if (Model.MarcacoesHoje.Any())
+            {
+                foreach (var marcacao in Model.MarcacoesHoje)
+                {
+                    var iniciaisCliente = string.Join("",
+                        marcacao.ClienteNome
+                            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                            .Take(2)
+                            .Select(p => char.ToUpper(p[0])));
 
-                <div class="ib-agenda-time">
-                    <strong>09:00</strong>
-                    <span>09:45</span>
+                    var estadoCss =
+                        marcacao.EstadoMarcacaoNome.ToLower() switch
+                        {
+                            "confirmada" => "ib-status-confirmed",
+                            "pendente" => "ib-status-pending",
+                            "em curso" => "ib-status-progress",
+                            "concluída" => "ib-status-confirmed",
+                            "cancelada" => "ib-status-cancelled",
+                            _ => ""
+                        };
+
+                    <div class="ib-agenda-item">
+
+                        <div class="ib-agenda-time">
+                            <strong>
+                                @marcacao.DataHoraInicio.ToString("HH:mm")
+                            </strong>
+
+                            <span>
+                                @marcacao.DataHoraFim.ToString("HH:mm")
+                            </span>
+                        </div>
+
+                        <div class="ib-person-avatar">
+                            @iniciaisCliente
+                        </div>
+
+                        <div class="ib-agenda-info">
+
+                            <strong>
+                                @marcacao.ClienteNome
+                            </strong>
+
+                            <span>
+                                @marcacao.ServicoNome
+                            </span>
+
+                            <small>
+                                @marcacao.FuncionarioNome
+                            </small>
+
+                        </div>
+
+                        <span class="ib-status @estadoCss">
+                            @marcacao.EstadoMarcacaoNome
+                        </span>
+
+                        <button class="ib-row-options"
+                                type="button"
+                                aria-label="Opções">
+                            •••
+                        </button>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="ib-dashboard-empty">
+                    Não existem marcações para hoje.
                 </div>
-
-                <div class="ib-person-avatar">MS</div>
-
-                <div class="ib-agenda-info">
-                    <strong>Maria Silva</strong>
-                    <span>Limpeza de Pele</span>
-                    <small>Ana Costa</small>
-                </div>
-
-                <span class="ib-status ib-status-progress">
-                    Em curso
-                </span>
-
-                <button class="ib-row-options"
-                        type="button"
-                        aria-label="Opções">
-                    •••
-                </button>
-
-            </div>
-
-
-            <div class="ib-agenda-item">
-
-                <div class="ib-agenda-time">
-                    <strong>10:00</strong>
-                    <span>11:00</span>
-                </div>
-
-                <div class="ib-person-avatar">JP</div>
-
-                <div class="ib-agenda-info">
-                    <strong>Joana Pereira</strong>
-                    <span>Manicure Gel</span>
-                    <small>Sofia Almeida</small>
-                </div>
-
-                <span class="ib-status ib-status-confirmed">
-                    Confirmada
-                </span>
-
-                <button class="ib-row-options"
-                        type="button"
-                        aria-label="Opções">
-                    •••
-                </button>
-
-            </div>
-
-
-            <div class="ib-agenda-item">
-
-                <div class="ib-agenda-time">
-                    <strong>11:15</strong>
-                    <span>12:00</span>
-                </div>
-
-                <div class="ib-person-avatar">CM</div>
-
-                <div class="ib-agenda-info">
-                    <strong>Carla Mendes</strong>
-                    <span>Tratamento Facial</span>
-                    <small>Mariana Silva</small>
-                </div>
-
-                <span class="ib-status ib-status-confirmed">
-                    Confirmada
-                </span>
-
-                <button class="ib-row-options"
-                        type="button"
-                        aria-label="Opções">
-                    •••
-                </button>
-
-            </div>
-
-
-            <div class="ib-agenda-item">
-
-                <div class="ib-agenda-time">
-                    <strong>14:00</strong>
-                    <span>15:00</span>
-                </div>
-
-                <div class="ib-person-avatar">AR</div>
-
-                <div class="ib-agenda-info">
-                    <strong>Ana Ribeiro</strong>
-                    <span>Massagem Relaxante</span>
-                    <small>João Pereira</small>
-                </div>
-
-                <span class="ib-status ib-status-confirmed">
-                    Confirmada
-                </span>
-
-                <button class="ib-row-options"
-                        type="button"
-                        aria-label="Opções">
-                    •••
-                </button>
-
-            </div>
-
-
-            <div class="ib-agenda-item">
-
-                <div class="ib-agenda-time">
-                    <strong>16:00</strong>
-                    <span>16:45</span>
-                </div>
-
-                <div class="ib-person-avatar">SA</div>
-
-                <div class="ib-agenda-info">
-                    <strong>Sofia Almeida</strong>
-                    <span>Coloração</span>
-                    <small>Ana Costa</small>
-                </div>
-
-                <span class="ib-status ib-status-pending">
-                    Pendente
-                </span>
-
-                <button class="ib-row-options"
-                        type="button"
-                        aria-label="Opções">
-                    •••
-                </button>
-
-            </div>
+            }
 
         </div>
 
@@ -646,221 +576,141 @@
 
         <div class="ib-recent-clients">
 
-            <div class="ib-client-row">
+            @if (Model.UltimosClientes.Any())
+            {
+                foreach (var cliente in Model.UltimosClientes)
+                {
+                    var iniciais = string.Join("",
+                        cliente.NomeCompleto
+                            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                            .Take(2)
+                            .Select(p => char.ToUpper(p[0])));
 
-                <div class="ib-person-avatar">MC</div>
+                    var dataCliente =
+                        cliente.DataCriacao.Date == DateTime.Today
+                            ? "Hoje"
+                            : cliente.DataCriacao.ToString("dd/MM/yyyy");
 
-                <div class="ib-client-info">
-                    <strong>Mariana Costa</strong>
-                    <span>marianacosta@email.com</span>
+                    <div class="ib-client-row">
+
+                        <div class="ib-person-avatar">
+                            @iniciais
+                        </div>
+
+                        <div class="ib-client-info">
+
+                            <strong>
+                                @cliente.NomeCompleto
+                            </strong>
+
+                            <span>
+                                @cliente.Email
+                            </span>
+
+                        </div>
+
+                        <div class="ib-client-date">
+
+                            <span>
+                                @dataCliente
+                            </span>
+
+                            <strong>
+                                @cliente.DataCriacao.ToString("HH:mm")
+                            </strong>
+
+                        </div>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="ib-dashboard-empty">
+                    Ainda não existem clientes registados.
                 </div>
-
-                <div class="ib-client-date">
-                    <span>Hoje</span>
-                    <strong>16:24</strong>
-                </div>
-
-            </div>
-
-
-            <div class="ib-client-row">
-
-                <div class="ib-person-avatar">RS</div>
-
-                <div class="ib-client-info">
-                    <strong>Rui Santos</strong>
-                    <span>ruisantos@email.com</span>
-                </div>
-
-                <div class="ib-client-date">
-                    <span>Hoje</span>
-                    <strong>15:10</strong>
-                </div>
-
-            </div>
-
-
-            <div class="ib-client-row">
-
-                <div class="ib-person-avatar">CM</div>
-
-                <div class="ib-client-info">
-                    <strong>Carla Mendes</strong>
-                    <span>carlamendes@email.com</span>
-                </div>
-
-                <div class="ib-client-date">
-                    <span>Hoje</span>
-                    <strong>14:02</strong>
-                </div>
-
-            </div>
-
-
-            <div class="ib-client-row">
-
-                <div class="ib-person-avatar">SL</div>
-
-                <div class="ib-client-info">
-                    <strong>Sofia Lima</strong>
-                    <span>sofialima@email.com</span>
-                </div>
-
-                <div class="ib-client-date">
-                    <span>Hoje</span>
-                    <strong>12:45</strong>
-                </div>
-
-            </div>
-
-
-            <div class="ib-client-row">
-
-                <div class="ib-person-avatar">DF</div>
-
-                <div class="ib-client-info">
-                    <strong>Diogo Ferreira</strong>
-                    <span>diogoferreira@email.com</span>
-                </div>
-
-                <div class="ib-client-date">
-                    <span>Hoje</span>
-                    <strong>11:20</strong>
-                </div>
-
-            </div>
+            }
 
         </div>
 
     </article>
 
 
-    <!-- NOTIFICAÇÕES -->
+    <!-- DESEMPENHO DA EQUIPA -->
 
-    <article class="ib-dashboard-panel ib-notifications-panel">
+    <article class="ib-dashboard-panel ib-team-panel">
 
         <div class="ib-panel-header">
 
-            <h2>Notificações recentes</h2>
+            <h2>Desempenho da equipa</h2>
 
             <a href="#" class="ib-panel-link">
-                Ver todas
+                Ver equipa
             </a>
 
         </div>
 
+        <div class="ib-team-list">
 
-        <div class="ib-notification-list">
+            @if (Model.Equipa.Any())
+            {
+                foreach (var funcionario in Model.Equipa.Take(5))
+                {
+                    var iniciais = string.Join("",
+                        funcionario.NomeFuncionario
+                            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                            .Take(2)
+                            .Select(p => char.ToUpper(p[0])));
 
-            <div class="ib-notification-row">
+                    <div class="ib-team-row">
 
-                <div class="ib-notification-icon">
-                    <svg viewBox="0 0 24 24">
-                        <rect x="3" y="5" width="18" height="16" rx="2"></rect>
-                        <path d="M8 3v4M16 3v4M3 10h18"></path>
-                    </svg>
+                        <div class="ib-person-avatar">
+                            @iniciais
+                        </div>
+
+                        <div class="ib-team-info">
+
+                            <strong>
+                                @funcionario.NomeFuncionario
+                            </strong>
+
+                            <span>
+                                @funcionario.MarcacoesConcluidas
+                                @(funcionario.MarcacoesConcluidas == 1
+                                    ? "serviço concluído"
+                                    : "serviços concluídos")
+                            </span>
+
+                        </div>
+
+                        <div class="ib-team-performance">
+
+                            <strong>
+                                @funcionario.TotalFaturado.ToString("N2", cultura) €
+                            </strong>
+
+                            <span>
+                                ★ @funcionario.AvaliacaoMedia.ToString("N1", cultura)
+                            </span>
+
+                        </div>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="ib-dashboard-empty">
+                    Ainda não existem dados de desempenho da equipa.
                 </div>
-
-                <div class="ib-notification-info">
-                    <strong>Nova marcação</strong>
-                    <span>
-                        Maria Silva marcou Limpeza de Pele para 16/09 às 10:00
-                    </span>
-                </div>
-
-                <span class="ib-notification-time">
-                    há 5 min
-                </span>
-
-            </div>
-
-
-            <div class="ib-notification-row">
-
-                <div class="ib-notification-icon ib-notification-success">
-                    €
-                </div>
-
-                <div class="ib-notification-info">
-                    <strong>Pagamento recebido</strong>
-                    <span>
-                        Fatura FT 2026/0048 paga (80,00 €)
-                    </span>
-                </div>
-
-                <span class="ib-notification-time">
-                    há 28 min
-                </span>
-
-            </div>
-
-
-            <div class="ib-notification-row">
-
-                <div class="ib-notification-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M4 5h16v12H9l-5 4z"></path>
-                        <path d="M8 10h8"></path>
-                    </svg>
-                </div>
-
-                <div class="ib-notification-info">
-                    <strong>Nova mensagem</strong>
-                    <span>Mensagem de Joana Pereira</span>
-                </div>
-
-                <span class="ib-notification-time">
-                    há 1 hora
-                </span>
-
-            </div>
-
-
-            <div class="ib-notification-row">
-
-                <div class="ib-notification-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9z"></path>
-                    </svg>
-                </div>
-
-                <div class="ib-notification-info">
-                    <strong>Avaliação recebida</strong>
-                    <span>Cliente Carla Mendes avaliou com 5 estrelas</span>
-                </div>
-
-                <span class="ib-notification-time">
-                    há 2 horas
-                </span>
-
-            </div>
-
-
-            <div class="ib-notification-row">
-
-                <div class="ib-notification-icon">
-                    <svg viewBox="0 0 24 24">
-                        <circle cx="12" cy="8" r="4"></circle>
-                        <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path>
-                    </svg>
-                </div>
-
-                <div class="ib-notification-info">
-                    <strong>Indisponibilidade aprovada</strong>
-                    <span>Indisponibilidade de Ana Costa aprovada</span>
-                </div>
-
-                <span class="ib-notification-time">
-                    há 3 horas
-                </span>
-
-            </div>
+            }
 
         </div>
 
     </article>
 
 </section>
+
 @section Scripts {
 
     <script>
@@ -880,24 +730,10 @@
 
                 data: {
 
-                    labels: [
-                        "Abr",
-                        "Mai",
-                        "Jun",
-                        "Jul",
-                        "Ago",
-                        "Set"
-                    ],
+                    labels: @Html.Raw(JsonSerializer.Serialize(labelsFaturacao)),
 
                     datasets: [{
-                        data: [
-                            2200,
-                            3400,
-                            4700,
-                            4100,
-                            5800,
-                            7500
-                        ],
+                        data: @Html.Raw(JsonSerializer.Serialize(valoresFaturacao)),
 
                         borderColor: "#b57d27",
 
@@ -991,7 +827,7 @@
 
 
         /* =========================
-           CATEGORIAS
+        FATURAÇÃO POR CATEGORIA
         ========================= */
 
         const categoryCanvas =
@@ -999,82 +835,125 @@
 
         if (categoryCanvas) {
 
-            new Chart(categoryCanvas, {
+            const categoryColors = [
+                "#aa7928",
+                "#cf9d48",
+                "#edc77d",
+                "#dfad58",
+                "#d8d3ca",
+                "#8f6728",
+                "#bea256",
+                "#e4c894"
+            ];
 
-                type: "doughnut",
+            const categoryLabels =
+                @Html.Raw(JsonSerializer.Serialize(labelsCategorias));
 
-                data: {
+            const categoryValues =
+                @Html.Raw(JsonSerializer.Serialize(valoresCategorias));
 
-                    labels: [
-                        "Cabelo",
-                        "Estética",
-                        "Unhas",
-                        "Wellness",
-                        "Outros"
-                    ],
+            if (categoryValues.length > 0) {
 
-                    datasets: [{
+                new Chart(categoryCanvas, {
 
-                        data: [
-                            35,
-                            28,
-                            18,
-                            12,
-                            7
-                        ],
+                    type: "doughnut",
 
-                        backgroundColor: [
-                            "#aa7928",
-                            "#cf9d48",
-                            "#edc77d",
-                            "#dfad58",
-                            "#d8d3ca"
-                        ],
+                    data: {
 
-                        borderColor:
-                            "#fffdfa",
+                        labels: categoryLabels,
 
-                        borderWidth: 1
+                        datasets: [{
+                            data: categoryValues,
 
-                    }]
+                            backgroundColor:
+                                categoryLabels.map(
+                                    (_, index) =>
+                                        categoryColors[
+                                        index % categoryColors.length
+                                        ]
+                                ),
 
-                },
+                            borderColor: "#fffdfa",
 
-                options: {
+                            borderWidth: 1
+                        }]
+                    },
 
-                    responsive: true,
+                    options: {
 
-                    maintainAspectRatio: false,
+                        responsive: true,
 
-                    cutout: "67%",
+                        maintainAspectRatio: false,
 
-                    plugins: {
+                        cutout: "67%",
 
-                        legend: {
-                            display: false
-                        },
+                        plugins: {
 
-                        tooltip: {
+                            legend: {
+                                display: false
+                            },
 
-                            callbacks: {
+                            tooltip: {
 
-                                label: function(context) {
-                                    return context.label +
-                                        ": " +
-                                        context.raw +
-                                        "%";
+                                callbacks: {
+
+                                    label: function(context) {
+
+                                        const total =
+                                            context.dataset.data.reduce(
+                                                (soma, valor) =>
+                                                    soma + Number(valor),
+                                                0
+                                            );
+
+                                        const valor =
+                                            Number(context.raw);
+
+                                        const percentagem =
+                                            total > 0
+                                                ? (valor / total) * 100
+                                                : 0;
+
+                                        return context.label +
+                                            ": " +
+                                            new Intl.NumberFormat(
+                                                "pt-PT",
+                                                {
+                                                    style: "currency",
+                                                    currency: "EUR"
+                                                }
+                                            ).format(valor) +
+                                            " (" +
+                                            percentagem.toFixed(1) +
+                                            "%)";
+                                    }
                                 }
-
                             }
-
                         }
-
                     }
+                });
 
-                }
 
-            });
+                /* Sincronizar as cores da legenda
+                   HTML com o gráfico */
 
+                document
+                    .querySelectorAll(
+                        ".ib-legend-dot[data-category-index]"
+                    )
+                    .forEach(function(dot) {
+
+                        const index =
+                            Number(
+                                dot.dataset.categoryIndex
+                            );
+
+                        dot.style.backgroundColor =
+                            categoryColors[
+                            index % categoryColors.length
+                            ];
+                    });
+            }
         }
 
     </script>

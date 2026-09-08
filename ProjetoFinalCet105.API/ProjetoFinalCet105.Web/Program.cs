@@ -18,6 +18,7 @@ builder.Services.AddHttpClient("ProjetoFinalApi", client =>
 });
 
 builder.Services.AddScoped<ApiService>();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSession(options =>
 {

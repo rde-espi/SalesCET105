@@ -1,12 +1,16 @@
-﻿namespace ProjetoFinalCet105.Web.Services
+﻿using System.Net.Http.Headers;
+
+namespace ProjetoFinalCet105.Web.Services
 {
     public class ApiService
     {
         private readonly HttpClient _httpClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ApiService(IHttpClientFactory httpClientFactory)
+        public ApiService(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = httpClientFactory.CreateClient("ProjetoFinalApi");
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<T?> GetAsync<T>(string endpoint)
@@ -24,5 +28,29 @@
 
             return await response.Content.ReadFromJsonAsync<TResponse>();
         }
+
+        public async Task<T?> GetAuthenticatedAsync<T>(string endpoint)
+        {
+            var token = _httpContextAccessor
+                .HttpContext?
+                .Session
+                .GetString("JwtToken");
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return default;
+            }
+
+            using var request = new HttpRequestMessage( HttpMethod.Get, endpoint);
+
+            request.Headers.Authorization = new AuthenticationHeaderValue( "Bearer", token);
+
+            using var response = await _httpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<T>();
+        }
     }
 }
+
