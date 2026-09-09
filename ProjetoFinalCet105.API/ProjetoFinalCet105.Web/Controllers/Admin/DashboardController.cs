@@ -22,13 +22,33 @@ namespace ProjetoFinalCet105.Web.Controllers.Admin
             var agenda = await _apiService.GetAuthenticatedAsync<DashboardAgendaViewModel>( "api/Dashboard/agenda");
 
             var clientes = await _apiService.GetAuthenticatedAsync<DashboardClientesViewModel>( "api/Dashboard/clientes");
-            var evolucaoMensal = await _apiService.GetAuthenticatedAsync<List<FaturacaoMensalViewModel>>("api/Dashboard/financeiro/evolucao-mensal");
             var servicosMaisFaturados = await _apiService.GetAuthenticatedAsync<List<ServicoFaturacaoViewModel>>("api/Dashboard/financeiro/servicos?limite=5");
             var faturacaoPorCategoria = await _apiService.GetAuthenticatedAsync<List<FaturacaoCategoriaViewModel>>("api/Dashboard/financeiro/categorias");
             var todasMarcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoDashboardViewModel>>("api/Marcacoes");
             var todosClientes = await _apiService.GetAuthenticatedAsync<List<ClienteRecenteViewModel>>("api/Clientes");
             var todasNotificacoes = await _apiService.GetAuthenticatedAsync<List<NotificacaoDashboardViewModel>>("api/Notificacoes");
             var equipa = await _apiService.GetAuthenticatedAsync<List<DesempenhoFuncionarioViewModel>>("api/Dashboard/equipa");
+
+            var anoAtual = DateTime.Today.Year;
+            var anoAnterior = anoAtual - 1;
+
+            var evolucaoAnoAtual =
+                await _apiService.GetAuthenticatedAsync<List<FaturacaoMensalViewModel>>(
+                    $"api/Dashboard/financeiro/evolucao-mensal?ano={anoAtual}");
+
+            var evolucaoAnoAnterior =
+                await _apiService.GetAuthenticatedAsync<List<FaturacaoMensalViewModel>>(
+                    $"api/Dashboard/financeiro/evolucao-mensal?ano={anoAnterior}");
+
+            var evolucaoMensalCompleta =
+                (evolucaoAnoAnterior ?? new List<FaturacaoMensalViewModel>())
+                    .Concat(evolucaoAnoAtual ?? new List<FaturacaoMensalViewModel>())
+                    .OrderBy(x => x.Ano)
+                    .ThenBy(x => x.Mes)
+                    .ToList();
+
+            var evolucaoMensal =
+                evolucaoAnoAtual ?? new List<FaturacaoMensalViewModel>();
 
             var notificacoesRecentes =
                 todasNotificacoes?
@@ -61,11 +81,13 @@ namespace ProjetoFinalCet105.Web.Controllers.Admin
                 Agenda = agenda,
                 Clientes = clientes,
                 EvolucaoMensal = evolucaoMensal ?? new List<FaturacaoMensalViewModel>(),
+                FaturacaoPorCategoria = faturacaoPorCategoria ?? new List<FaturacaoCategoriaViewModel>(),
                 ServicosMaisFaturados = servicosMaisFaturados ?? new List<ServicoFaturacaoViewModel>(),
                 MarcacoesHoje = marcacoesHoje,
                 UltimosClientes = ultimosClientes,
                 NotificacoesRecentes = notificacoesRecentes,
                 NotificacoesNaoLidas = notificacoesNaoLidas,
+                EvolucaoMensalCompleta = evolucaoMensalCompleta,
                 Equipa = equipa ?? new List<DesempenhoFuncionarioViewModel>()
             };
                      

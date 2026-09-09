@@ -49,9 +49,18 @@
             .Select(x => x.TotalFaturado)
             .ToList();
 
+    var evolucaoCompletaJson = JsonSerializer.Serialize(Model.EvolucaoMensalCompleta.Select(x => new
+    {
+        ano = x.Ano,
+        mes = x.Mes,
+        total = x.Total
+    }));
+
     var totalFaturacaoCategorias =
         Model.FaturacaoPorCategoria
             .Sum(x => x.TotalFaturado);
+
+
 }
 
 <!-- =========================
@@ -112,850 +121,1421 @@
 
 </section>
 
+<div class="ib-dashboard-tabs" role="tablist">
 
-<!-- =========================
+    <button type="button"
+            class="ib-dashboard-tab active"
+            data-dashboard-tab="overview">
+        Visão Geral
+    </button>
+
+    <button type="button"
+            class="ib-dashboard-tab"
+            data-dashboard-tab="finance">
+        Financeiro
+    </button>
+
+    <button type="button"
+            class="ib-dashboard-tab"
+            data-dashboard-tab="agenda">
+        Agenda
+    </button>
+
+    <button type="button"
+            class="ib-dashboard-tab"
+            data-dashboard-tab="clients">
+        Clientes
+    </button>
+
+    <button type="button"
+            class="ib-dashboard-tab"
+            data-dashboard-tab="team">
+        Equipa
+    </button>
+
+</div>
+
+<section class="ib-dashboard-tab-content active" data-dashboard-content="overview">
+
+    <!-- =========================
      KPI CARDS
 ========================= -->
 
-<section class="ib-dashboard-kpis">
+    <section class="ib-dashboard-kpis">
 
-    <!-- MARCAÇÕES -->
+        <!-- MARCAÇÕES -->
 
-    <article class="ib-kpi-card">
+        <article class="ib-kpi-card">
 
-        <div class="ib-kpi-icon">
+            <div class="ib-kpi-icon">
 
-            <svg viewBox="0 0 24 24">
-                <rect x="3" y="5" width="18" height="16" rx="2"></rect>
-                <path d="M8 3v4M16 3v4M3 10h18"></path>
-                <path d="M8 14h2M12 14h2"></path>
-            </svg>
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                    <path d="M8 3v4M16 3v4M3 10h18"></path>
+                    <path d="M8 14h2M12 14h2"></path>
+                </svg>
 
-        </div>
-
-        <div class="ib-kpi-content">
-
-            <strong class="ib-kpi-value">
-                @(Model.Agenda?.TotalMarcacoesMes ?? 0)
-            </strong>
-
-            <span class="ib-kpi-label">
-                Marcações este mês
-            </span>
-
-            <div class="ib-kpi-comparison">
-                <span>Dados atuais</span>
             </div>
 
-        </div>
+            <div class="ib-kpi-content">
 
-    </article>
+                <strong class="ib-kpi-value">
+                    @(Model.Agenda?.TotalMarcacoesMes ?? 0)
+                </strong>
 
-
-    <!-- CLIENTES -->
-
-    <article class="ib-kpi-card">
-
-        <div class="ib-kpi-icon">
-
-            <svg viewBox="0 0 24 24">
-
-                <circle cx="9"
-                        cy="8"
-                        r="4">
-                </circle>
-
-                <circle cx="17"
-                        cy="10"
-                        r="3">
-                </circle>
-
-                <path d="M2 21c0-4 3-7 7-7s7 3 7 7"></path>
-
-                <path d="M16 15c3 0 5 2 5 5"></path>
-
-            </svg>
-
-        </div>
-
-        <div class="ib-kpi-content">
-
-            <strong class="ib-kpi-value">
-                @(Model.Clientes?.NovosClientesMes ?? 0)
-            </strong>
-
-            <span class="ib-kpi-label">
-                Novos clientes este mês
-            </span>
-
-            <div class="ib-kpi-comparison">
-                <span>Dados atuais</span>
-            </div>
-
-        </div>
-
-    </article>
-
-
-    <!-- FATURAÇÃO -->
-
-    <article class="ib-kpi-card">
-
-        <div class="ib-kpi-icon ib-kpi-euro">
-            €
-        </div>
-
-        <div class="ib-kpi-content">
-
-            <strong class="ib-kpi-value">
-                @(Model.Financeiro?.FaturacaoHoje.ToString("C2",
-                    new System.Globalization.CultureInfo("pt-PT")) ?? "0,00 €")
-            </strong>
-
-            <span class="ib-kpi-label">
-                Faturação hoje
-            </span>
-
-            <div class="ib-kpi-comparison">
-                <span>Dados atuais</span>
-            </div>
-
-        </div>
-
-    </article>
-
-
-    <!-- OCUPAÇÃO -->
-
-    <article class="ib-kpi-card">
-
-        <div class="ib-kpi-icon">
-
-            <svg viewBox="0 0 24 24">
-
-                <path d="M4 20V13"></path>
-                <path d="M10 20V9"></path>
-                <path d="M16 20V5"></path>
-
-            </svg>
-
-        </div>
-
-        <div class="ib-kpi-content">
-
-            <strong class="ib-kpi-value">
-                @($"{Model.Agenda?.TaxaOcupacao ?? 0:0.#}%")
-            </strong>
-
-            <span class="ib-kpi-label">
-                Taxa de ocupação
-            </span>
-
-            <div class="ib-kpi-comparison">
-                <span>Este mês</span>
-            </div>
-
-        </div>
-
-    </article>
-
-
-    <!-- AVALIAÇÃO -->
-
-    <article class="ib-kpi-card">
-
-        <div class="ib-kpi-icon ib-kpi-euro">
-            €
-        </div>
-
-        <div class="ib-kpi-content">
-
-            <strong class="ib-kpi-value">
-                @(Model.Financeiro?.ResultadoMes.ToString(
-                    "C2",
-                    new System.Globalization.CultureInfo("pt-PT"))
-                    ?? "0,00 €")
-            </strong>
-
-            <span class="ib-kpi-label">
-                Resultado do mês
-            </span>
-
-            <div class="ib-kpi-comparison">
-                <span>
-                    Após despesas
+                <span class="ib-kpi-label">
+                    Marcações este mês
                 </span>
-            </div>
 
-        </div>
-
-    </article>
-
-</section>
-<!-- =========================
-     DASHBOARD - ANALYTICS
-========================= -->
-
-<section class="ib-dashboard-analytics">
-
-    <!-- EVOLUÇÃO DA FATURAÇÃO -->
-
-    <article class="ib-dashboard-panel ib-revenue-panel">
-
-        <div class="ib-panel-header">
-
-            <h2>Evolução da faturação</h2>
-
-            <select class="ib-dashboard-period"
-                    aria-label="Período da faturação">
-                <option>Últimos 6 meses</option>
-                <option>Últimos 12 meses</option>
-                <option>Este ano</option>
-            </select>
-
-        </div>
-
-        <div class="ib-revenue-chart">
-            <canvas id="revenueChart"></canvas>
-        </div>
-
-    </article>
-
-
-    <!-- FATURAÇÃO POR CATEGORIA -->
-
-    <article class="ib-dashboard-panel ib-category-panel">
-
-        <div class="ib-panel-header">
-            <h2>Faturação por categoria</h2>
-        </div>
-
-        <div class="ib-category-chart-content">
-
-            <div class="ib-donut-wrapper">
-
-                <canvas id="categoryChart"></canvas>
-
-                <div class="ib-donut-center">
-                    <strong>
-                        @totalFaturacaoCategorias.ToString(
-                            "N0",
-                            new System.Globalization.CultureInfo("pt-PT")) €
-                    </strong>
-
-                    <span>faturado</span>
+                <div class="ib-kpi-comparison">
+                    <span>Dados atuais</span>
                 </div>
 
             </div>
 
-            <div class="ib-category-legend">
+        </article>
 
-                @if (Model.FaturacaoPorCategoria.Any())
-                {
-                    var indiceCategoria = 0;
 
-                    foreach (var categoria in Model.FaturacaoPorCategoria)
+        <!-- CLIENTES -->
+
+        <article class="ib-kpi-card">
+
+            <div class="ib-kpi-icon">
+
+                <svg viewBox="0 0 24 24">
+
+                    <circle cx="9"
+                            cy="8"
+                            r="4">
+                    </circle>
+
+                    <circle cx="17"
+                            cy="10"
+                            r="3">
+                    </circle>
+
+                    <path d="M2 21c0-4 3-7 7-7s7 3 7 7"></path>
+
+                    <path d="M16 15c3 0 5 2 5 5"></path>
+
+                </svg>
+
+            </div>
+
+            <div class="ib-kpi-content">
+
+                <strong class="ib-kpi-value">
+                    @(Model.Clientes?.NovosClientesMes ?? 0)
+                </strong>
+
+                <span class="ib-kpi-label">
+                    Novos clientes este mês
+                </span>
+
+                <div class="ib-kpi-comparison">
+                    <span>Dados atuais</span>
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- FATURAÇÃO -->
+
+        <article class="ib-kpi-card">
+
+            <div class="ib-kpi-icon ib-kpi-euro">
+                €
+            </div>
+
+            <div class="ib-kpi-content">
+
+                <strong class="ib-kpi-value">
+                    @(Model.Financeiro?.FaturacaoHoje.ToString("C2",
+                        new System.Globalization.CultureInfo("pt-PT")) ?? "0,00 €")
+                </strong>
+
+                <span class="ib-kpi-label">
+                    Faturação hoje
+                </span>
+
+                <div class="ib-kpi-comparison">
+                    <span>Dados atuais</span>
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- OCUPAÇÃO -->
+
+        <article class="ib-kpi-card">
+
+            <div class="ib-kpi-icon">
+
+                <svg viewBox="0 0 24 24">
+
+                    <path d="M4 20V13"></path>
+                    <path d="M10 20V9"></path>
+                    <path d="M16 20V5"></path>
+
+                </svg>
+
+            </div>
+
+            <div class="ib-kpi-content">
+
+                <strong class="ib-kpi-value">
+                    @($"{Model.Agenda?.TaxaOcupacao ?? 0:0.#}%")
+                </strong>
+
+                <span class="ib-kpi-label">
+                    Taxa de ocupação
+                </span>
+
+                <div class="ib-kpi-comparison">
+                    <span>Este mês</span>
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- AVALIAÇÃO -->
+
+        <article class="ib-kpi-card">
+
+            <div class="ib-kpi-icon ib-kpi-euro">
+                €
+            </div>
+
+            <div class="ib-kpi-content">
+
+                <strong class="ib-kpi-value">
+                    @(Model.Financeiro?.ResultadoMes.ToString(
+                        "C2",
+                        new System.Globalization.CultureInfo("pt-PT"))
+                        ?? "0,00 €")
+                </strong>
+
+                <span class="ib-kpi-label">
+                    Resultado do mês
+                </span>
+
+                <div class="ib-kpi-comparison">
+                    <span>
+                        Após despesas
+                    </span>
+                </div>
+
+            </div>
+
+        </article>
+
+    </section>
+    <!-- =========================
+     DASHBOARD - ANALYTICS
+========================= -->
+
+    <section class="ib-dashboard-analytics">
+
+        <!-- EVOLUÇÃO DA FATURAÇÃO -->
+
+        <article class="ib-dashboard-panel ib-revenue-panel">
+
+            <div class="ib-panel-header">
+
+                <h2>Evolução da faturação</h2>
+
+                <select class="ib-dashboard-period"
+                        aria-label="Período da faturação">
+                    <option>Últimos 6 meses</option>
+                    <option>Últimos 12 meses</option>
+                    <option>Este ano</option>
+                </select>
+
+            </div>
+
+            <div class="ib-revenue-chart">
+                <canvas id="revenueChart"></canvas>
+            </div>
+
+        </article>
+
+
+        <!-- FATURAÇÃO POR CATEGORIA -->
+
+        <article class="ib-dashboard-panel ib-category-panel">
+
+            <div class="ib-panel-header">
+                <h2>Faturação por categoria</h2>
+            </div>
+
+            <div class="ib-category-chart-content">
+
+                <div class="ib-donut-wrapper">
+
+                    <canvas id="categoryChart"></canvas>
+
+                    <div class="ib-donut-center">
+                        <strong>
+                            @totalFaturacaoCategorias.ToString(
+                                "N0",
+                                new System.Globalization.CultureInfo("pt-PT")) €
+                        </strong>
+
+                        <span>faturado</span>
+                    </div>
+
+                </div>
+
+                <div class="ib-category-legend">
+
+                    @if (Model.FaturacaoPorCategoria.Any())
                     {
-                        var percentagem =
-                            totalFaturacaoCategorias > 0
-                                ? categoria.TotalFaturado /
-                                  totalFaturacaoCategorias * 100
-                                : 0;
+                        var indiceCategoria = 0;
 
-                        <div>
-                            <span class="ib-legend-dot"
-                                  data-category-index="@indiceCategoria">
+                        foreach (var categoria in Model.FaturacaoPorCategoria)
+                        {
+                            var percentagem =
+                                totalFaturacaoCategorias > 0
+                                    ? categoria.TotalFaturado /
+                                      totalFaturacaoCategorias * 100
+                                    : 0;
+
+                            <div>
+                                <span class="ib-legend-dot"
+                                      data-category-index="@indiceCategoria">
+                                </span>
+
+                                <span class="ib-legend-name">
+                                    @categoria.NomeCategoria
+                                </span>
+
+                                <strong>
+                                    @percentagem.ToString("0.#")%
+                                </strong>
+                            </div>
+
+                            indiceCategoria++;
+                        }
+                    }
+                    else
+                    {
+                        <span class="ib-dashboard-empty">
+                            Sem dados de faturação.
+                        </span>
+                    }
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- SERVIÇOS MAIS FATURADOS -->
+
+        <article class="ib-dashboard-panel ib-top-services-panel">
+
+            <div class="ib-panel-header">
+                <h2>Serviços mais faturados</h2>
+            </div>
+
+
+            <div class="ib-top-services-list">
+
+                @if (Model.ServicosMaisFaturados.Any())
+                {
+                    var posicao = 1;
+
+                    foreach (var servico in Model.ServicosMaisFaturados)
+                    {
+                        var iniciais = string.Join("",
+                            servico.NomeServico
+                                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                                .Take(2)
+                                .Select(p => char.ToUpper(p[0])));
+
+                        <div class="ib-service-rank">
+
+                            <span class="ib-rank-number">
+                                @posicao
                             </span>
 
-                            <span class="ib-legend-name">
-                                @categoria.NomeCategoria
-                            </span>
+                            <div class="ib-service-avatar">
+                                @iniciais
+                            </div>
 
-                            <strong>
-                                @percentagem.ToString("0.#")%
+                            <div class="ib-service-info">
+                                <strong>@servico.NomeServico</strong>
+
+                                <span>
+                                    @servico.Quantidade
+                                    @(servico.Quantidade == 1 ? "serviço" : "serviços")
+                                </span>
+                            </div>
+
+                            <strong class="ib-service-value">
+                                @servico.TotalFaturado.ToString(
+                                    "C2",
+                                    new System.Globalization.CultureInfo("pt-PT"))
                             </strong>
+
                         </div>
 
-                        indiceCategoria++;
+                        posicao++;
                     }
                 }
                 else
                 {
-                    <span class="ib-dashboard-empty">
-                        Sem dados de faturação.
-                    </span>
+                    <div class="ib-dashboard-empty">
+                        Ainda não existem dados de faturação.
+                    </div>
                 }
 
             </div>
 
-        </div>
+        </article>
 
-    </article>
-
-
-    <!-- SERVIÇOS MAIS FATURADOS -->
-
-    <article class="ib-dashboard-panel ib-top-services-panel">
-
-        <div class="ib-panel-header">
-            <h2>Serviços mais faturados</h2>
-        </div>
-
-
-        <div class="ib-top-services-list">
-
-            @if (Model.ServicosMaisFaturados.Any())
-            {
-                var posicao = 1;
-
-                foreach (var servico in Model.ServicosMaisFaturados)
-                {
-                    var iniciais = string.Join("",
-                        servico.NomeServico
-                            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                            .Take(2)
-                            .Select(p => char.ToUpper(p[0])));
-
-                    <div class="ib-service-rank">
-
-                        <span class="ib-rank-number">
-                            @posicao
-                        </span>
-
-                        <div class="ib-service-avatar">
-                            @iniciais
-                        </div>
-
-                        <div class="ib-service-info">
-                            <strong>@servico.NomeServico</strong>
-
-                            <span>
-                                @servico.Quantidade
-                                @(servico.Quantidade == 1 ? "serviço" : "serviços")
-                            </span>
-                        </div>
-
-                        <strong class="ib-service-value">
-                            @servico.TotalFaturado.ToString(
-                                "C2",
-                                new System.Globalization.CultureInfo("pt-PT"))
-                        </strong>
-
-                    </div>
-
-                    posicao++;
-                }
-            }
-            else
-            {
-                <div class="ib-dashboard-empty">
-                    Ainda não existem dados de faturação.
-                </div>
-            }
-
-        </div>
-
-    </article>
-
-</section>
-<!-- =========================
+    </section>
+    <!-- =========================
      DASHBOARD - ATIVIDADE
 ========================= -->
 
-<section class="ib-dashboard-activity">
+    <section class="ib-dashboard-activity">
 
-    <!-- AGENDA DE HOJE -->
+        <!-- AGENDA DE HOJE -->
 
-    <article class="ib-dashboard-panel ib-agenda-panel">
+        <article class="ib-dashboard-panel ib-agenda-panel">
 
-        <div class="ib-panel-header">
+            <div class="ib-panel-header">
 
-            <h2>Agenda de hoje</h2>
+                <h2>Agenda de hoje</h2>
 
-            <a href="#" class="ib-panel-link">
-                Ver calendário
-            </a>
+                <a href="#" class="ib-panel-link">
+                    Ver calendário
+                </a>
+
+            </div>
+
+
+            <div class="ib-agenda-list">
+
+                @if (Model.MarcacoesHoje.Any())
+                {
+                    foreach (var marcacao in Model.MarcacoesHoje)
+                    {
+                        var iniciaisCliente = string.Join("",
+                            marcacao.ClienteNome
+                                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                                .Take(2)
+                                .Select(p => char.ToUpper(p[0])));
+
+                        var estadoCss =
+                            marcacao.EstadoMarcacaoNome.ToLower() switch
+                            {
+                                "confirmada" => "ib-status-confirmed",
+                                "pendente" => "ib-status-pending",
+                                "em curso" => "ib-status-progress",
+                                "concluída" => "ib-status-confirmed",
+                                "cancelada" => "ib-status-cancelled",
+                                _ => ""
+                            };
+
+                        <div class="ib-agenda-item">
+
+                            <div class="ib-agenda-time">
+                                <strong>
+                                    @marcacao.DataHoraInicio.ToString("HH:mm")
+                                </strong>
+
+                                <span>
+                                    @marcacao.DataHoraFim.ToString("HH:mm")
+                                </span>
+                            </div>
+
+                            <div class="ib-person-avatar">
+                                @iniciaisCliente
+                            </div>
+
+                            <div class="ib-agenda-info">
+
+                                <strong>
+                                    @marcacao.ClienteNome
+                                </strong>
+
+                                <span>
+                                    @marcacao.ServicoNome
+                                </span>
+
+                                <small>
+                                    @marcacao.FuncionarioNome
+                                </small>
+
+                            </div>
+
+                            <span class="ib-status @estadoCss">
+                                @marcacao.EstadoMarcacaoNome
+                            </span>
+
+                            <button class="ib-row-options"
+                                    type="button"
+                                    aria-label="Opções">
+                                •••
+                            </button>
+
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="ib-dashboard-empty">
+                        Não existem marcações para hoje.
+                    </div>
+                }
+
+            </div>
+
+        </article>
+
+
+        <!-- ÚLTIMOS CLIENTES -->
+
+        <article class="ib-dashboard-panel ib-clients-panel">
+
+            <div class="ib-panel-header">
+
+                <h2>Últimos clientes</h2>
+
+                <a href="#" class="ib-panel-link">
+                    Ver todos
+                </a>
+
+            </div>
+
+
+            <div class="ib-recent-clients">
+
+                @if (Model.UltimosClientes.Any())
+                {
+                    foreach (var cliente in Model.UltimosClientes)
+                    {
+                        var iniciais = string.Join("",
+                            cliente.NomeCompleto
+                                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                                .Take(2)
+                                .Select(p => char.ToUpper(p[0])));
+
+                        var dataCliente =
+                            cliente.DataCriacao.Date == DateTime.Today
+                                ? "Hoje"
+                                : cliente.DataCriacao.ToString("dd/MM/yyyy");
+
+                        <div class="ib-client-row">
+
+                            <div class="ib-person-avatar">
+                                @iniciais
+                            </div>
+
+                            <div class="ib-client-info">
+
+                                <strong>
+                                    @cliente.NomeCompleto
+                                </strong>
+
+                                <span>
+                                    @cliente.Email
+                                </span>
+
+                            </div>
+
+                            <div class="ib-client-date">
+
+                                <span>
+                                    @dataCliente
+                                </span>
+
+                                <strong>
+                                    @cliente.DataCriacao.ToString("HH:mm")
+                                </strong>
+
+                            </div>
+
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="ib-dashboard-empty">
+                        Ainda não existem clientes registados.
+                    </div>
+                }
+
+            </div>
+
+        </article>
+
+
+        <!-- DESEMPENHO DA EQUIPA -->
+
+        <article class="ib-dashboard-panel ib-team-panel">
+
+            <div class="ib-panel-header">
+
+                <h2>Desempenho da equipa</h2>
+
+                <a href="#" class="ib-panel-link">
+                    Ver equipa
+                </a>
+
+            </div>
+
+            <div class="ib-team-list">
+
+                @if (Model.Equipa.Any())
+                {
+                    foreach (var funcionario in Model.Equipa.Take(5))
+                    {
+                        var iniciais = string.Join("",
+                            funcionario.NomeFuncionario
+                                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                                .Take(2)
+                                .Select(p => char.ToUpper(p[0])));
+
+                        <div class="ib-team-row">
+
+                            <div class="ib-person-avatar">
+                                @iniciais
+                            </div>
+
+                            <div class="ib-team-info">
+
+                                <strong>
+                                    @funcionario.NomeFuncionario
+                                </strong>
+
+                                <span>
+                                    @funcionario.MarcacoesConcluidas
+                                    @(funcionario.MarcacoesConcluidas == 1
+                                        ? "serviço concluído"
+                                        : "serviços concluídos")
+                                </span>
+
+                            </div>
+
+                            <div class="ib-team-performance">
+
+                                <strong>
+                                    @funcionario.TotalFaturado.ToString("N2", cultura) €
+                                </strong>
+
+                                <span>
+                                    ★ @funcionario.AvaliacaoMedia.ToString("N1", cultura)
+                                </span>
+
+                            </div>
+
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="ib-dashboard-empty">
+                        Ainda não existem dados de desempenho da equipa.
+                    </div>
+                }
+
+            </div>
+
+        </article>
+
+    </section>
+</section>
+
+<section class="ib-dashboard-tab-content" data-dashboard-content="finance">
+
+    <div class="ib-dashboard-section-header">
+        <div>
+            <span class="ib-section-eyebrow">Análise financeira</span>
+            <h2>Financeiro</h2>
+            <p>
+                Acompanhe a faturação, despesas e desempenho financeiro
+                do Infinity Beauty.
+            </p>
+        </div>
+    </div>
+
+    @if (Model.Financeiro != null)
+    {
+        <!-- RESUMO PRINCIPAL -->
+        <div class="ib-finance-main-grid">
+
+            <article class="ib-finance-main-card">
+                <span class="ib-finance-label">Faturação hoje</span>
+                <strong>
+                    @Model.Financeiro.FaturacaoHoje.ToString("N2", cultura) €
+                </strong>
+                <small>Receita do dia</small>
+            </article>
+
+            <article class="ib-finance-main-card">
+                <span class="ib-finance-label">Esta semana</span>
+                <strong>
+                    @Model.Financeiro.FaturacaoSemana.ToString("N2", cultura) €
+                </strong>
+                <small>Faturação semanal</small>
+            </article>
+
+            <article class="ib-finance-main-card">
+                <span class="ib-finance-label">Este mês</span>
+                <strong>
+                    @Model.Financeiro.FaturacaoMes.ToString("N2", cultura) €
+                </strong>
+                <small>Faturação mensal</small>
+            </article>
+
+            <article class="ib-finance-main-card ib-finance-result">
+                <span class="ib-finance-label">Resultado do mês</span>
+                <strong>
+                    @Model.Financeiro.ResultadoMes.ToString("N2", cultura) €
+                </strong>
+                <small>Faturação após despesas</small>
+            </article>
 
         </div>
 
 
-        <div class="ib-agenda-list">
+        <!-- INDICADORES -->
+        <div class="ib-finance-secondary-grid">
 
-            @if (Model.MarcacoesHoje.Any())
-            {
-                foreach (var marcacao in Model.MarcacoesHoje)
+            <article class="ib-finance-small-card">
+                <span>Despesas do mês</span>
+                <strong>
+                    @Model.Financeiro.DespesasMes.ToString("N2", cultura) €
+                </strong>
+            </article>
+
+            <article class="ib-finance-small-card">
+                <span>Ticket médio</span>
+                <strong>
+                    @Model.Financeiro.TicketMedioMes.ToString("N2", cultura) €
+                </strong>
+            </article>
+
+            <article class="ib-finance-small-card">
+                <span>Total de faturas</span>
+                <strong>
+                    @Model.Financeiro.TotalFaturasMes
+                </strong>
+            </article>
+
+            <article class="ib-finance-small-card">
+                <span>Margem</span>
+                <strong>
+                    @Model.Financeiro.MargemPercentualMes.ToString("N1", cultura)%
+                </strong>
+            </article>
+
+        </div>
+
+
+        <!-- ANÁLISE FISCAL -->
+        <article class="ib-dashboard-panel ib-finance-tax">
+
+            <div class="ib-panel-header">
+                <div>
+                    <h2>Distribuição fiscal</h2>
+                    <span>Faturação do mês por identificação fiscal</span>
+                </div>
+            </div>
+
+            <div class="ib-tax-grid">
+
+                <div class="ib-tax-block">
+
+                    <span>Com NIF</span>
+
+                    <strong>
+                        @Model.Financeiro.ValorComNifMes.ToString("N2", cultura) €
+                    </strong>
+
+                    <small>
+                        @Model.Financeiro.FaturasComNifMes
+                        @(Model.Financeiro.FaturasComNifMes == 1
+                            ? "fatura"
+                            : "faturas")
+                    </small>
+
+                </div>
+
+                <div class="ib-tax-divider"></div>
+
+                <div class="ib-tax-block">
+
+                    <span>Sem NIF</span>
+
+                    <strong>
+                        @Model.Financeiro.ValorSemNifMes.ToString("N2", cultura) €
+                    </strong>
+
+                    <small>
+                        @Model.Financeiro.FaturasSemNifMes
+                        @(Model.Financeiro.FaturasSemNifMes == 1
+                            ? "fatura"
+                            : "faturas")
+                    </small>
+
+                </div>
+
+            </div>
+
+        </article>
+
+        <div class="ib-finance-analysis-header">
+            <div>
+                <span class="ib-section-eyebrow">Tendências e desempenho</span>
+                <h2>Análise financeira</h2>
+            </div>
+
+            <select id="financePeriod"
+                    class="ib-dashboard-period"
+                    aria-label="Período da análise financeira">
+
+                <option value="6">Últimos 6 meses</option>
+                <option value="12">Últimos 12 meses</option>
+                <option value="year">Este ano</option>
+
+            </select>
+        </div>
+
+        <div class="ib-finance-analysis-grid">
+
+            <!-- EVOLUÇÃO -->
+            <article class="ib-dashboard-panel ib-finance-evolution">
+
+                <div class="ib-panel-header">
+                    <div>
+                        <h2>Evolução da faturação</h2>
+                        <span>Receita faturada ao longo do período</span>
+                    </div>
+                </div>
+
+                <div class="ib-chart-container ib-finance-chart">
+                    <canvas id="financeRevenueChart"></canvas>
+                </div>
+
+            </article>
+
+
+            <!-- CATEGORIAS -->
+            <article class="ib-dashboard-panel">
+
+                <div class="ib-panel-header">
+                    <div>
+                        <h2>Faturação por categoria</h2>
+                        <span>Distribuição da receita por área</span>
+                    </div>
+                </div>
+
+                @if (Model.FaturacaoPorCategoria.Any())
                 {
-                    var iniciaisCliente = string.Join("",
-                        marcacao.ClienteNome
-                            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                            .Take(2)
-                            .Select(p => char.ToUpper(p[0])));
+                    var totalCategoriasFinanceiro =
+                        Model.FaturacaoPorCategoria.Sum(x => x.TotalFaturado);
 
-                    var estadoCss =
-                        marcacao.EstadoMarcacaoNome.ToLower() switch
+                    <div class="ib-finance-category-list">
+
+                        @foreach (var categoria in
+                            Model.FaturacaoPorCategoria
+                                .OrderByDescending(x => x.TotalFaturado))
                         {
-                            "confirmada" => "ib-status-confirmed",
-                            "pendente" => "ib-status-pending",
-                            "em curso" => "ib-status-progress",
-                            "concluída" => "ib-status-confirmed",
-                            "cancelada" => "ib-status-cancelled",
-                            _ => ""
-                        };
+                            var percentagem =
+                                totalCategoriasFinanceiro > 0
+                                    ? categoria.TotalFaturado /
+                                      totalCategoriasFinanceiro * 100
+                                    : 0;
 
-                    <div class="ib-agenda-item">
+                            <div class="ib-finance-category-row">
 
-                        <div class="ib-agenda-time">
-                            <strong>
-                                @marcacao.DataHoraInicio.ToString("HH:mm")
-                            </strong>
+                                <div class="ib-finance-category-head">
+                                    <strong>@categoria.NomeCategoria</strong>
 
-                            <span>
-                                @marcacao.DataHoraFim.ToString("HH:mm")
-                            </span>
-                        </div>
+                                    <span>
+                                        @categoria.TotalFaturado.ToString("N2", cultura) €
+                                    </span>
+                                </div>
 
-                        <div class="ib-person-avatar">
-                            @iniciaisCliente
-                        </div>
+                                <div class="ib-finance-progress">
+                                    <span style="width:@percentagem.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%"></span>
+                                </div>
 
-                        <div class="ib-agenda-info">
+                                <small>
+                                    @percentagem.ToString("N1", cultura)% da faturação
+                                </small>
 
-                            <strong>
-                                @marcacao.ClienteNome
-                            </strong>
-
-                            <span>
-                                @marcacao.ServicoNome
-                            </span>
-
-                            <small>
-                                @marcacao.FuncionarioNome
-                            </small>
-
-                        </div>
-
-                        <span class="ib-status @estadoCss">
-                            @marcacao.EstadoMarcacaoNome
-                        </span>
-
-                        <button class="ib-row-options"
-                                type="button"
-                                aria-label="Opções">
-                            •••
-                        </button>
+                            </div>
+                        }
 
                     </div>
                 }
-            }
-            else
-            {
-                <div class="ib-dashboard-empty">
-                    Não existem marcações para hoje.
-                </div>
-            }
-
-        </div>
-
-    </article>
-
-
-    <!-- ÚLTIMOS CLIENTES -->
-
-    <article class="ib-dashboard-panel ib-clients-panel">
-
-        <div class="ib-panel-header">
-
-            <h2>Últimos clientes</h2>
-
-            <a href="#" class="ib-panel-link">
-                Ver todos
-            </a>
-
-        </div>
-
-
-        <div class="ib-recent-clients">
-
-            @if (Model.UltimosClientes.Any())
-            {
-                foreach (var cliente in Model.UltimosClientes)
+                else
                 {
-                    var iniciais = string.Join("",
-                        cliente.NomeCompleto
-                            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                            .Take(2)
-                            .Select(p => char.ToUpper(p[0])));
-
-                    var dataCliente =
-                        cliente.DataCriacao.Date == DateTime.Today
-                            ? "Hoje"
-                            : cliente.DataCriacao.ToString("dd/MM/yyyy");
-
-                    <div class="ib-client-row">
-
-                        <div class="ib-person-avatar">
-                            @iniciais
-                        </div>
-
-                        <div class="ib-client-info">
-
-                            <strong>
-                                @cliente.NomeCompleto
-                            </strong>
-
-                            <span>
-                                @cliente.Email
-                            </span>
-
-                        </div>
-
-                        <div class="ib-client-date">
-
-                            <span>
-                                @dataCliente
-                            </span>
-
-                            <strong>
-                                @cliente.DataCriacao.ToString("HH:mm")
-                            </strong>
-
-                        </div>
-
+                    <div class="ib-dashboard-empty">
+                        Ainda não existem dados de faturação por categoria.
                     </div>
                 }
+
+            </article>
+
+        </div>
+        <article class="ib-dashboard-panel ib-finance-services-panel">
+
+            <div class="ib-panel-header">
+                <div>
+                    <h2>Serviços mais faturados</h2>
+                    <span>Serviços com maior contribuição para a receita</span>
+                </div>
+            </div>
+
+            @if (Model.ServicosMaisFaturados.Any())
+            {
+                <div class="ib-finance-services-table">
+
+                    <div class="ib-finance-table-head">
+                        <span>Serviço</span>
+                        <span>Quantidade</span>
+                        <span>Faturação</span>
+                    </div>
+
+                    @{
+                        var posicao = 1;
+                    }
+
+                    @foreach (var servico in Model.ServicosMaisFaturados)
+                    {
+                        <div class="ib-finance-service-row">
+
+                            <div class="ib-finance-service-name">
+
+                                <span class="ib-finance-rank">
+                                    @posicao
+                                </span>
+
+                                <strong>
+                                    @servico.NomeServico
+                                </strong>
+
+                            </div>
+
+                            <span>
+                                @servico.Quantidade
+                            </span>
+
+                            <strong>
+                                @servico.TotalFaturado.ToString("N2", cultura) €
+                            </strong>
+
+                        </div>
+
+                        posicao++;
+                    }
+
+                </div>
             }
             else
             {
                 <div class="ib-dashboard-empty">
-                    Ainda não existem clientes registados.
+                    Ainda não existem dados de faturação por serviço.
                 </div>
             }
 
+        </article>
+
+    }
+    else
+    {
+        <div class="ib-dashboard-empty">
+            Não foi possível carregar os dados financeiros.
         </div>
+    }
 
-    </article>
+</section>
 
 
-    <!-- DESEMPENHO DA EQUIPA -->
+<section class="ib-dashboard-tab-content"
+         data-dashboard-content="agenda">
 
-    <article class="ib-dashboard-panel ib-team-panel">
-
-        <div class="ib-panel-header">
-
-            <h2>Desempenho da equipa</h2>
-
-            <a href="#" class="ib-panel-link">
-                Ver equipa
-            </a>
-
+    <div class="ib-dashboard-section-header">
+        <div>
+            <span class="ib-section-eyebrow">Gestão operacional</span>
+            <h2>Agenda</h2>
+            <p>
+                Analise marcações, ocupação e padrões de procura.
+            </p>
         </div>
+    </div>
 
-        <div class="ib-team-list">
+    <div class="ib-dashboard-coming">
+        Área da agenda
+    </div>
 
-            @if (Model.Equipa.Any())
-            {
-                foreach (var funcionario in Model.Equipa.Take(5))
-                {
-                    var iniciais = string.Join("",
-                        funcionario.NomeFuncionario
-                            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                            .Take(2)
-                            .Select(p => char.ToUpper(p[0])));
+</section>
 
-                    <div class="ib-team-row">
 
-                        <div class="ib-person-avatar">
-                            @iniciais
-                        </div>
+<section class="ib-dashboard-tab-content"
+         data-dashboard-content="clients">
 
-                        <div class="ib-team-info">
-
-                            <strong>
-                                @funcionario.NomeFuncionario
-                            </strong>
-
-                            <span>
-                                @funcionario.MarcacoesConcluidas
-                                @(funcionario.MarcacoesConcluidas == 1
-                                    ? "serviço concluído"
-                                    : "serviços concluídos")
-                            </span>
-
-                        </div>
-
-                        <div class="ib-team-performance">
-
-                            <strong>
-                                @funcionario.TotalFaturado.ToString("N2", cultura) €
-                            </strong>
-
-                            <span>
-                                ★ @funcionario.AvaliacaoMedia.ToString("N1", cultura)
-                            </span>
-
-                        </div>
-
-                    </div>
-                }
-            }
-            else
-            {
-                <div class="ib-dashboard-empty">
-                    Ainda não existem dados de desempenho da equipa.
-                </div>
-            }
-
+    <div class="ib-dashboard-section-header">
+        <div>
+            <span class="ib-section-eyebrow">Base de clientes</span>
+            <h2>Clientes</h2>
+            <p>
+                Acompanhe crescimento, recorrência e atividade dos clientes.
+            </p>
         </div>
+    </div>
 
-    </article>
+    <div class="ib-dashboard-coming">
+        Área de clientes
+    </div>
+
+</section>
+
+
+<section class="ib-dashboard-tab-content"
+         data-dashboard-content="team">
+
+    <div class="ib-dashboard-section-header">
+        <div>
+            <span class="ib-section-eyebrow">Desempenho</span>
+            <h2>Equipa</h2>
+            <p>
+                Consulte o desempenho e produtividade dos profissionais.
+            </p>
+        </div>
+    </div>
+
+    <div class="ib-dashboard-coming">
+        Área da equipa
+    </div>
 
 </section>
 
 @section Scripts {
-
     <script>
+        /* =========================================================
+           DADOS RAZOR -> JAVASCRIPT
+        ========================================================= */
+        const overviewRevenueLabels = @Html.Raw(JsonSerializer.Serialize(labelsFaturacao));
+        const overviewRevenueValues = @Html.Raw(JsonSerializer.Serialize(valoresFaturacao));
+        const financeRevenueData = @Html.Raw(evolucaoCompletaJson);
+        const categoryLabels = @Html.Raw(JsonSerializer.Serialize(labelsCategorias));
+        const categoryValues = @Html.Raw(JsonSerializer.Serialize(valoresCategorias));
 
-        /* =========================
-           FATURAÇÃO
-        ========================= */
+        /* =========================================================
+           FUNÇÕES AUXILIARES
+        ========================================================= */
+        function formatCurrency(value, maximumFractionDigits = 2) {
+            return new Intl.NumberFormat('pt-PT', {
+                style: 'currency',
+                currency: 'EUR',
+                maximumFractionDigits: maximumFractionDigits
+            }).format(Number(value) || 0);
+        }
 
-        const revenueCanvas =
-            document.getElementById("revenueChart");
+        function getMonthlyRevenue(year, month) {
+            const item = financeRevenueData.find(x =>
+                x.ano === year && x.mes === month
+            );
+
+            return item ? Number(item.total) : 0;
+        }
+
+        function buildRevenuePeriod(period) {
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth() + 1;
+            const dates = [];
+
+            if (period === 'year') {
+                for (let month = 1; month <= currentMonth; month++) {
+                    dates.push({
+                        year: currentYear,
+                        month: month
+                    });
+                }
+            } else {
+                const months = period === '12' ? 12 : 6;
+
+                for (let i = months - 1; i >= 0; i--) {
+                    const date = new Date(
+                        currentYear,
+                        currentMonth - 1 - i,
+                        1
+                    );
+
+                    dates.push({
+                        year: date.getFullYear(),
+                        month: date.getMonth() + 1
+                    });
+                }
+            }
+
+            const labels = dates.map(item => {
+                const date = new Date(item.year, item.month - 1, 1);
+
+                return date.toLocaleDateString('pt-PT', {
+                    month: 'short',
+                    year: period === '12' ? '2-digit' : undefined
+                });
+            });
+
+            const values = dates.map(item =>
+                getMonthlyRevenue(item.year, item.month)
+            );
+
+            return { labels, values };
+        }
+
+        function calculateRevenueScale(values) {
+            const numericValues = values.map(value => Number(value) || 0);
+            const maxValue = Math.max(...numericValues, 0);
+
+            if (maxValue <= 0) {
+                return {
+                    min: 0,
+                    max: 5,
+                    step: 1
+                };
+            }
+
+            // Aproximadamente 5 intervalos entre 0 e o valor máximo.
+            const rawStep = maxValue / 5;
+            const magnitude = Math.pow(
+                10,
+                Math.floor(Math.log10(rawStep))
+            );
+            const normalizedStep = rawStep / magnitude;
+
+            let niceStep;
+
+            if (normalizedStep <= 1) {
+                niceStep = 1;
+            } else if (normalizedStep <= 2) {
+                niceStep = 2;
+            } else if (normalizedStep <= 5) {
+                niceStep = 5;
+            } else {
+                niceStep = 10;
+            }
+
+            const step = niceStep * magnitude;
+            let max = Math.ceil(maxValue / step) * step;
+
+            // Garante espaço visual acima do maior ponto quando ele cai
+            // exatamente no último tick.
+            if (max === maxValue) {
+                max += step;
+            }
+
+            return {
+                min: 0,
+                max: max,
+                step: step
+            };
+        }
+
+        /* =========================================================
+           VISÃO GERAL - EVOLUÇÃO DA FATURAÇÃO
+        ========================================================= */
+        const revenueCanvas = document.getElementById('revenueChart');
+        let overviewRevenueChart = null;
 
         if (revenueCanvas) {
-
-            new Chart(revenueCanvas, {
-
-                type: "line",
-
+            overviewRevenueChart = new Chart(revenueCanvas, {
+                type: 'line',
                 data: {
-
-                    labels: @Html.Raw(JsonSerializer.Serialize(labelsFaturacao)),
-
+                    labels: overviewRevenueLabels,
                     datasets: [{
-                        data: @Html.Raw(JsonSerializer.Serialize(valoresFaturacao)),
-
-                        borderColor: "#b57d27",
-
-                        backgroundColor:
-                            "rgba(216, 176, 113, 0.15)",
-
+                        label: 'Faturação',
+                        data: overviewRevenueValues,
+                        borderColor: '#b57d27',
+                        backgroundColor: 'rgba(216, 176, 113, 0.15)',
                         borderWidth: 2,
-
                         pointRadius: 3,
-
-                        pointBackgroundColor:
-                            "#b57d27",
-
-                        pointBorderColor:
-                            "#b57d27",
-
+                        pointBackgroundColor: '#b57d27',
+                        pointBorderColor: '#b57d27',
                         fill: true,
-
                         tension: 0
                     }]
                 },
-
                 options: {
-
                     responsive: true,
-
                     maintainAspectRatio: false,
-
                     plugins: {
-
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: context => formatCurrency(context.raw)
+                            }
                         }
-
                     },
-
                     scales: {
-
                         x: {
-
                             grid: {
-                                color:
-                                    "rgba(80, 70, 55, 0.07)"
+                                color: 'rgba(80, 70, 55, 0.07)'
                             },
-
                             ticks: {
-                                color: "#777168",
-
+                                color: '#777168',
                                 font: {
                                     size: 9
                                 }
                             }
-
                         },
-
                         y: {
-
                             beginAtZero: true,
-
                             grid: {
-                                color:
-                                    "rgba(80, 70, 55, 0.08)"
+                                color: 'rgba(80, 70, 55, 0.08)'
                             },
-
                             ticks: {
-
-                                color: "#777168",
-
+                                color: '#777168',
                                 font: {
                                     size: 9
                                 },
-
-                                callback: function(value) {
-
-                                    return new Intl.NumberFormat(
-                                        "pt-PT"
-                                    ).format(value) + " €";
-                                }
-
+                                callback: value => formatCurrency(value, 0)
                             }
-
                         }
-
                     }
-
                 }
-
             });
-
         }
 
+        /* =========================================================
+           VISÃO GERAL - FATURAÇÃO POR CATEGORIA
+        ========================================================= */
+        const categoryCanvas = document.getElementById('categoryChart');
 
-        /* =========================
-        FATURAÇÃO POR CATEGORIA
-        ========================= */
-
-        const categoryCanvas =
-            document.getElementById("categoryChart");
-
-        if (categoryCanvas) {
-
+        if (categoryCanvas && categoryValues.length > 0) {
             const categoryColors = [
-                "#aa7928",
-                "#cf9d48",
-                "#edc77d",
-                "#dfad58",
-                "#d8d3ca",
-                "#8f6728",
-                "#bea256",
-                "#e4c894"
+                '#aa7928',
+                '#cf9d48',
+                '#edc77d',
+                '#dfad58',
+                '#d8d3ca',
+                '#8f6728',
+                '#bea256',
+                '#e4c894'
             ];
 
-            const categoryLabels =
-                @Html.Raw(JsonSerializer.Serialize(labelsCategorias));
+            new Chart(categoryCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        data: categoryValues,
+                        backgroundColor: categoryLabels.map(
+                            (_, index) => categoryColors[index % categoryColors.length]
+                        ),
+                        borderColor: '#fffdfa',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '67%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const total = context.dataset.data.reduce(
+                                        (sum, value) => sum + Number(value),
+                                        0
+                                    );
+                                    const value = Number(context.raw);
+                                    const percentage = total > 0
+                                        ? (value / total) * 100
+                                        : 0;
 
-            const categoryValues =
-                @Html.Raw(JsonSerializer.Serialize(valoresCategorias));
-
-            if (categoryValues.length > 0) {
-
-                new Chart(categoryCanvas, {
-
-                    type: "doughnut",
-
-                    data: {
-
-                        labels: categoryLabels,
-
-                        datasets: [{
-                            data: categoryValues,
-
-                            backgroundColor:
-                                categoryLabels.map(
-                                    (_, index) =>
-                                        categoryColors[
-                                        index % categoryColors.length
-                                        ]
-                                ),
-
-                            borderColor: "#fffdfa",
-
-                            borderWidth: 1
-                        }]
-                    },
-
-                    options: {
-
-                        responsive: true,
-
-                        maintainAspectRatio: false,
-
-                        cutout: "67%",
-
-                        plugins: {
-
-                            legend: {
-                                display: false
-                            },
-
-                            tooltip: {
-
-                                callbacks: {
-
-                                    label: function(context) {
-
-                                        const total =
-                                            context.dataset.data.reduce(
-                                                (soma, valor) =>
-                                                    soma + Number(valor),
-                                                0
-                                            );
-
-                                        const valor =
-                                            Number(context.raw);
-
-                                        const percentagem =
-                                            total > 0
-                                                ? (valor / total) * 100
-                                                : 0;
-
-                                        return context.label +
-                                            ": " +
-                                            new Intl.NumberFormat(
-                                                "pt-PT",
-                                                {
-                                                    style: "currency",
-                                                    currency: "EUR"
-                                                }
-                                            ).format(valor) +
-                                            " (" +
-                                            percentagem.toFixed(1) +
-                                            "%)";
-                                    }
+                                    return `${context.label}: ${formatCurrency(value)} (${percentage.toFixed(1)}%)`;
                                 }
                             }
                         }
                     }
+                }
+            });
+
+            document
+                .querySelectorAll('.ib-legend-dot[data-category-index]')
+                .forEach(dot => {
+                    const index = Number(dot.dataset.categoryIndex);
+                    dot.style.backgroundColor =
+                        categoryColors[index % categoryColors.length];
                 });
-
-
-                /* Sincronizar as cores da legenda
-                   HTML com o gráfico */
-
-                document
-                    .querySelectorAll(
-                        ".ib-legend-dot[data-category-index]"
-                    )
-                    .forEach(function(dot) {
-
-                        const index =
-                            Number(
-                                dot.dataset.categoryIndex
-                            );
-
-                        dot.style.backgroundColor =
-                            categoryColors[
-                            index % categoryColors.length
-                            ];
-                    });
-            }
         }
 
-    </script>
+        /* =========================================================
+           FINANCEIRO - EVOLUÇÃO DA FATURAÇÃO
+        ========================================================= */
+        const financeRevenueCanvas = document.getElementById('financeRevenueChart');
+        let financeRevenueChart = null;
 
+        if (financeRevenueCanvas) {
+            financeRevenueChart = new Chart(financeRevenueCanvas, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Faturação',
+                        data: [],
+                        borderColor: '#D8B071',
+                        backgroundColor: 'rgba(216, 176, 113, 0.10)',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#D8B071',
+                        pointBorderColor: '#D8B071',
+                        tension: 0.35,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: {
+                            top: 8,
+                            right: 8,
+                            bottom: 30,
+                            left: 4
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: context => formatCurrency(context.raw)
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            offset: true,
+
+                            grid: {
+                                display: false,
+                                drawBorder: true
+                            },
+
+                            border: {
+                                display: true,
+                                color: 'rgba(80, 70, 55, 0.18)'
+                            },
+
+                            ticks: {
+                                display: true,
+                                color: '#777168',
+                                padding: 10,
+                                maxRotation: 0,
+                                minRotation: 0
+                            }
+                        },
+                        y: {
+                            min: 0,
+                            max: 5,
+                            grid: {
+                                color: 'rgba(80, 70, 55, 0.08)'
+                            },
+                            ticks: {
+                                stepSize: 1,
+                                padding: 8,
+                                color: '#777168',
+                                callback: value => formatCurrency(value, 0)
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateFinanceRevenueChart(period) {
+            if (!financeRevenueChart) {
+                return;
+            }
+
+            const data = buildRevenuePeriod(period);
+            const scale = calculateRevenueScale(data.values);
+
+            financeRevenueChart.data.labels = data.labels;
+            financeRevenueChart.data.datasets[0].data = data.values;
+
+            financeRevenueChart.options.scales.y.min = scale.min;
+            financeRevenueChart.options.scales.y.max = scale.max;
+            financeRevenueChart.options.scales.y.ticks.stepSize = scale.step;
+
+            financeRevenueChart.update();
+        }
+
+        const financePeriod = document.getElementById('financePeriod');
+
+        if (financePeriod && financeRevenueChart) {
+            financePeriod.addEventListener('change', function() {
+                updateFinanceRevenueChart(this.value);
+            });
+
+            updateFinanceRevenueChart(financePeriod.value);
+        }
+
+        /* =========================================================
+           SEPARADORES DO DASHBOARD
+        ========================================================= */
+        const dashboardTabs = document.querySelectorAll('[data-dashboard-tab]');
+        const dashboardContents = document.querySelectorAll('[data-dashboard-content]');
+
+        dashboardTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const target = this.dataset.dashboardTab;
+
+                dashboardTabs.forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                dashboardContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                this.classList.add('active');
+
+                const targetContent = document.querySelector(
+                    `[data-dashboard-content="${target}"]`
+                );
+
+                targetContent?.classList.add('active');
+
+                // Charts criados dentro de tabs escondidos precisam de resize
+                // depois de o respetivo conteúdo ficar visível.
+                window.setTimeout(() => {
+                    if (target === 'overview') {
+                        overviewRevenueChart?.resize();
+                        Chart.getChart('categoryChart')?.resize();
+                    }
+
+                    if (target === 'finance') {
+                        financeRevenueChart?.resize();
+                    }
+                }, 50);
+            });
+        });
+    </script>
 }

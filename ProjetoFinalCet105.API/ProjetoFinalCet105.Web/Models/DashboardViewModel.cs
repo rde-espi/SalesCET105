@@ -18,6 +18,7 @@
         public List<MarcacaoDashboardViewModel> MarcacoesHoje { get; set; } = new();
         public List<ClienteRecenteViewModel> UltimosClientes { get; set; } = new();
         public List<NotificacaoDashboardViewModel> NotificacoesRecentes { get; set; } = new();
+        public List<FaturacaoMensalViewModel> EvolucaoMensalCompleta { get; set; } = new();
 
         public int NotificacoesNaoLidas { get; set; }
     }
