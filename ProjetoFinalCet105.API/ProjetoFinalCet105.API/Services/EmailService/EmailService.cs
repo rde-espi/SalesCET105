@@ -12,7 +12,7 @@ namespace ProjetoFinalCet105.API.Services.EmailService
             _configuration = configuration;
         }
 
-        public async Task EnviarEmailAsync(string destinatario, string assunto,string mensagem)
+        public async Task EnviarEmailAsync(string destinatario, string assunto, string mensagem)
         {
             var smtpServer =
                 _configuration["EmailSettings:SmtpServer"];

@@ -4,11 +4,11 @@ using ProjetoFinalCet105.API.Entities;
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public class PromoCodeRepository:GenericRepository<PromoCode>,IPromoCodeRepository
+    public class PromoCodeRepository : GenericRepository<PromoCode>, IPromoCodeRepository
     {
-        public PromoCodeRepository(DataContext context): base(context)
+        public PromoCodeRepository(DataContext context) : base(context)
         {
-            
+
         }
         public async Task<PromoCode?> GetByCodigoAsync(string codigo)
         {
@@ -18,7 +18,7 @@ namespace ProjetoFinalCet105.API.Repositories
                 p.Codigo == codigo);
         }
 
-        public async Task<bool> ClienteJaUsouPromoCodeAsync(string clienteId,int promoCodeId)
+        public async Task<bool> ClienteJaUsouPromoCodeAsync(string clienteId, int promoCodeId)
         {
             return await _context.Marcacoes
                 .AnyAsync(m =>

@@ -7,7 +7,7 @@ namespace ProjetoFinalCet105.API.UseCases.GoogleCalendarUsecases
     {
         private readonly IGoogleCalendarContaRepository _googleCalendarContaRepository;
 
-        public GetGoogleCalendarStatusUseCase( IGoogleCalendarContaRepository googleCalendarContaRepository)
+        public GetGoogleCalendarStatusUseCase(IGoogleCalendarContaRepository googleCalendarContaRepository)
         {
             _googleCalendarContaRepository = googleCalendarContaRepository;
         }

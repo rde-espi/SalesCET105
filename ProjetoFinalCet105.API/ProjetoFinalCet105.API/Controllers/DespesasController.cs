@@ -44,7 +44,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
             var resultado = MapearDTO(despesa);
 
-            return CreatedAtAction( nameof(GetById), new { id = despesa.Id }, resultado);
+            return CreatedAtAction(nameof(GetById), new { id = despesa.Id }, resultado);
         }
 
         [HttpGet]

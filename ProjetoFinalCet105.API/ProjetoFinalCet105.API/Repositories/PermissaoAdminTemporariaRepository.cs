@@ -6,7 +6,7 @@ namespace ProjetoFinalCet105.API.Repositories
 {
     public class PermissaoAdminTemporariaRepository : GenericRepository<PermissaoAdminTemporaria>, IPermissaoAdminTemporariaRepository
     {
-        public PermissaoAdminTemporariaRepository( DataContext context) : base(context)
+        public PermissaoAdminTemporariaRepository(DataContext context) : base(context)
         {
         }
 

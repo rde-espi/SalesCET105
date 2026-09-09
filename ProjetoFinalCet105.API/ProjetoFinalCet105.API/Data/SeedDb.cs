@@ -11,7 +11,7 @@ namespace ProjetoFinalCet105.API.Data
         private readonly IConfiguration _configuration;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public SeedDb(DataContext context, RoleManager<IdentityRole> roleManager,UserManager<User> userManager,IConfiguration configuration)
+        public SeedDb(DataContext context, RoleManager<IdentityRole> roleManager, UserManager<User> userManager, IConfiguration configuration)
         {
             _context = context;
             _roleManager = roleManager;
@@ -54,7 +54,7 @@ namespace ProjetoFinalCet105.API.Data
                         string.Join(";", result.Errors.Select(e => e.Description)));
                 }
             }
-            if(!await _userManager.IsInRoleAsync(user, "Admin"))
+            if (!await _userManager.IsInRoleAsync(user, "Admin"))
             {
                 await _userManager.AddToRoleAsync(user, "Admin");
             }
@@ -64,7 +64,7 @@ namespace ProjetoFinalCet105.API.Data
         {
             if (!await _context.EstadosMarcacoes.AnyAsync())
             {
-                var estados = new List<EstadoMarcacao> 
+                var estados = new List<EstadoMarcacao>
                 {
                     new EstadoMarcacao
                     {
@@ -107,7 +107,7 @@ namespace ProjetoFinalCet105.API.Data
 
             foreach (var role in roles)
             {
-                if(!await _roleManager.RoleExistsAsync(role))
+                if (!await _roleManager.RoleExistsAsync(role))
                 {
                     await _roleManager.CreateAsync(new IdentityRole(role));
                 }

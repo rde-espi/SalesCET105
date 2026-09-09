@@ -18,13 +18,13 @@ namespace ProjetoFinalCet105.API.UseCases.Admin
             "Cliente"
         };
 
-        public AlterarRoleUserUseCase( UserManager<User> userManager, IFuncionarioRepository funcionarioRepository)
+        public AlterarRoleUserUseCase(UserManager<User> userManager, IFuncionarioRepository funcionarioRepository)
         {
             _userManager = userManager;
             _funcionarioRepository = funcionarioRepository;
         }
 
-        public async Task<UseCaseResult<bool>> ExecuteAsync( string userId, string adminAtualId, AlterarRoleUserDTO dto)
+        public async Task<UseCaseResult<bool>> ExecuteAsync(string userId, string adminAtualId, AlterarRoleUserDTO dto)
         {
             if (string.IsNullOrWhiteSpace(dto.NovaRole))
             {
@@ -32,30 +32,30 @@ namespace ProjetoFinalCet105.API.UseCases.Admin
             }
 
             var novaRole = RolesPermitidas
-                .FirstOrDefault(r => r.Equals( dto.NovaRole.Trim(), StringComparison.OrdinalIgnoreCase));
+                .FirstOrDefault(r => r.Equals(dto.NovaRole.Trim(), StringComparison.OrdinalIgnoreCase));
 
             if (novaRole == null)
             {
-                return UseCaseResult<bool>.Falha( "Role inválida. As roles permitidas são Admin, Funcionario e Cliente.");
+                return UseCaseResult<bool>.Falha("Role inválida. As roles permitidas são Admin, Funcionario e Cliente.");
             }
 
             // Impede o Admin de alterar a própria role.
             if (userId == adminAtualId)
             {
-                return UseCaseResult<bool>.Falha( "Não pode alterar a sua própria role.");
+                return UseCaseResult<bool>.Falha("Não pode alterar a sua própria role.");
             }
 
             var user = await _userManager.FindByIdAsync(userId);
 
             if (user == null)
             {
-                return UseCaseResult<bool>.Falha( "Utilizador não encontrado.", TipoErro.NaoEncontrado);
+                return UseCaseResult<bool>.Falha("Utilizador não encontrado.", TipoErro.NaoEncontrado);
             }
 
             var rolesAtuais = await _userManager.GetRolesAsync(user);
 
             // Se já tem exatamente esta role
-            if (rolesAtuais.Count == 1 && rolesAtuais.Contains( novaRole, StringComparer.OrdinalIgnoreCase))
+            if (rolesAtuais.Count == 1 && rolesAtuais.Contains(novaRole, StringComparer.OrdinalIgnoreCase))
             {
                 return UseCaseResult<bool>.Falha($"O utilizador já possui a role {novaRole}.");
             }
@@ -67,13 +67,13 @@ namespace ProjetoFinalCet105.API.UseCases.Admin
 
                 if (admins.Count <= 1)
                 {
-                    return UseCaseResult<bool>.Falha( "Não é possível remover a role Admin do último administrador do sistema.");
+                    return UseCaseResult<bool>.Falha("Não é possível remover a role Admin do último administrador do sistema.");
                 }
             }
 
             var funcionario = await _funcionarioRepository.GetFuncionarioByUserIdAsync(user.Id);
 
-            
+
             if (novaRole != "Funcionario" && funcionario != null && funcionario.Ativo)
             {
                 funcionario.Ativo = false;
@@ -82,7 +82,7 @@ namespace ProjetoFinalCet105.API.UseCases.Admin
                 await _funcionarioRepository.UpdateAsync(funcionario);
             }
 
-            
+
             if (novaRole == "Funcionario")
             {
                 if (funcionario == null)
@@ -116,7 +116,7 @@ namespace ProjetoFinalCet105.API.UseCases.Admin
             // Remove todas as roles principais atuais.
             if (rolesAtuais.Any())
             {
-                var resultadoRemover =await _userManager.RemoveFromRolesAsync(user, rolesAtuais);
+                var resultadoRemover = await _userManager.RemoveFromRolesAsync(user, rolesAtuais);
 
                 if (!resultadoRemover.Succeeded)
                 {
@@ -131,7 +131,7 @@ namespace ProjetoFinalCet105.API.UseCases.Admin
 
             if (!resultadoAdicionar.Succeeded)
             {
-                var erros = string.Join( "; ", resultadoAdicionar.Errors.Select(e => e.Description));
+                var erros = string.Join("; ", resultadoAdicionar.Errors.Select(e => e.Description));
 
                 return UseCaseResult<bool>.Falha(erros);
             }
@@ -142,7 +142,7 @@ namespace ProjetoFinalCet105.API.UseCases.Admin
 
             if (!resultadoUser.Succeeded)
             {
-                var erros = string.Join( "; ", resultadoUser.Errors.Select(e => e.Description));
+                var erros = string.Join("; ", resultadoUser.Errors.Select(e => e.Description));
 
                 return UseCaseResult<bool>.Falha(erros);
             }

@@ -43,7 +43,7 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
                 cancellationToken);
         }
 
-        public async Task SincronizarCancelamentoMarcacaoAsync(Marcacao marcacao,CancellationToken cancellationToken = default)
+        public async Task SincronizarCancelamentoMarcacaoAsync(Marcacao marcacao, CancellationToken cancellationToken = default)
         {
             // CLIENTE
             await EliminarEventoParaUserAsync(
@@ -58,7 +58,7 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
                 cancellationToken);
         }
 
-        private async Task EliminarEventoParaUserAsync( Marcacao marcacao, string userId,CancellationToken cancellationToken)
+        private async Task EliminarEventoParaUserAsync(Marcacao marcacao, string userId, CancellationToken cancellationToken)
         {
             var conta = await _contaRepository.GetByUserIdAsync(userId);
 
@@ -67,14 +67,14 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
                 return;
             }
 
-            var evento = await _eventoRepository.GetByMarcacaoAndUserAsync( marcacao.Id,userId);
+            var evento = await _eventoRepository.GetByMarcacaoAndUserAsync(marcacao.Id, userId);
 
             if (evento == null)
             {
                 return;
             }
 
-            await _googleCalendarService.EliminarEventoAsync(conta,evento.GoogleEventId, cancellationToken);
+            await _googleCalendarService.EliminarEventoAsync(conta, evento.GoogleEventId, cancellationToken);
 
             await _eventoRepository.DeleteAsync(evento);
         }
@@ -123,7 +123,7 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
             await _eventoRepository.CreateAsync(evento);
         }
 
-        public async Task SincronizarAtualizacaoMarcacaoAsync(Marcacao marcacao,CancellationToken cancellationToken = default)
+        public async Task SincronizarAtualizacaoMarcacaoAsync(Marcacao marcacao, CancellationToken cancellationToken = default)
         {
             var titulo = $"Marcação - {marcacao.Servico.Nome}";
 
@@ -164,7 +164,7 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
             }
 
             var evento = await _eventoRepository.GetByMarcacaoAndUserAsync(marcacao.Id, userId);
-                        
+
             if (evento == null)
             {
                 await CriarEventoParaUserAsync(

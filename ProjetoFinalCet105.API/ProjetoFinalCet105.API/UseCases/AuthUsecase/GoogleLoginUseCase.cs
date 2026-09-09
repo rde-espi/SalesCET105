@@ -22,11 +22,11 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
             _logger = logger;
         }
 
-        public async Task<UseCaseResult<LoginResponseDTO>> ExecuteAsync( GoogleLoginDTO dto)
+        public async Task<UseCaseResult<LoginResponseDTO>> ExecuteAsync(GoogleLoginDTO dto)
         {
             if (string.IsNullOrWhiteSpace(dto.IdToken))
             {
-                return UseCaseResult<LoginResponseDTO>.Falha("Token Google inválido.",TipoErro.NaoAutorizado);
+                return UseCaseResult<LoginResponseDTO>.Falha("Token Google inválido.", TipoErro.NaoAutorizado);
             }
 
             GoogleJsonWebSignature.Payload payload;
@@ -50,9 +50,9 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
             }
             catch (Exception ex)
             {
-                _logger.LogWarning( ex, "Falha na validação do token de autenticação Google.");
+                _logger.LogWarning(ex, "Falha na validação do token de autenticação Google.");
 
-                return UseCaseResult<LoginResponseDTO>.Falha( "Token Google inválido.", TipoErro.NaoAutorizado);
+                return UseCaseResult<LoginResponseDTO>.Falha("Token Google inválido.", TipoErro.NaoAutorizado);
             }
 
             if (string.IsNullOrWhiteSpace(payload.Subject) ||
@@ -72,7 +72,7 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
             {
                 if (!user.Ativo)
                 {
-                    return UseCaseResult<LoginResponseDTO>.Falha("O utilizador encontra-se desativado.",TipoErro.NaoAutorizado);
+                    return UseCaseResult<LoginResponseDTO>.Falha("O utilizador encontra-se desativado.", TipoErro.NaoAutorizado);
                 }
 
                 if (string.IsNullOrWhiteSpace(user.GoogleId))
@@ -112,7 +112,7 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
                 return UseCaseResult<LoginResponseDTO>.Falha($"Não foi possível criar o utilizador: {erros}");
             }
 
-            var resultadoRole = await _userManager.AddToRoleAsync( novoUser,"Cliente");
+            var resultadoRole = await _userManager.AddToRoleAsync(novoUser, "Cliente");
 
             if (!resultadoRole.Succeeded)
             {

@@ -4,7 +4,7 @@ using ProjetoFinalCet105.API.Entities;
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public class DispositivoUserRepository : GenericRepository<DispositivoUser>,IDispositivoUserRepository
+    public class DispositivoUserRepository : GenericRepository<DispositivoUser>, IDispositivoUserRepository
     {
         public DispositivoUserRepository(
             DataContext context)

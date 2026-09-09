@@ -19,9 +19,9 @@ namespace ProjetoFinalCet105.Web.Controllers.Admin
         {
             var financeiro = await _apiService.GetAuthenticatedAsync<DashboardFinanceiroViewModel>("api/Dashboard/financeiro");
 
-            var agenda = await _apiService.GetAuthenticatedAsync<DashboardAgendaViewModel>( "api/Dashboard/agenda");
+            var agenda = await _apiService.GetAuthenticatedAsync<DashboardAgendaViewModel>("api/Dashboard/agenda");
 
-            var clientes = await _apiService.GetAuthenticatedAsync<DashboardClientesViewModel>( "api/Dashboard/clientes");
+            var clientes = await _apiService.GetAuthenticatedAsync<DashboardClientesViewModel>("api/Dashboard/clientes");
             var servicosMaisFaturados = await _apiService.GetAuthenticatedAsync<List<ServicoFaturacaoViewModel>>("api/Dashboard/financeiro/servicos?limite=5");
             var faturacaoPorCategoria = await _apiService.GetAuthenticatedAsync<List<FaturacaoCategoriaViewModel>>("api/Dashboard/financeiro/categorias");
             var todasMarcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoDashboardViewModel>>("api/Marcacoes");
@@ -75,6 +75,22 @@ namespace ProjetoFinalCet105.Web.Controllers.Admin
                     .ToList()
                 ?? new List<MarcacaoDashboardViewModel>();
 
+
+            var servicosMaisMarcados =
+    await _apiService
+        .GetAuthenticatedAsync<List<ServicoMaisMarcadoViewModel>>(
+            "api/Dashboard/agenda/servicos?limite=5");
+
+            var horariosMaiorProcura =
+                await _apiService
+                    .GetAuthenticatedAsync<List<HorarioMaiorProcuraViewModel>>(
+                        "api/Dashboard/agenda/horarios-procura?limite=5");
+
+            var diasMaiorProcura =
+                await _apiService
+                    .GetAuthenticatedAsync<List<DiaSemanaProcuraViewModel>>(
+                        "api/Dashboard/agenda/dias-procura");
+
             var model = new DashboardViewModel
             {
                 Financeiro = financeiro,
@@ -88,9 +104,15 @@ namespace ProjetoFinalCet105.Web.Controllers.Admin
                 NotificacoesRecentes = notificacoesRecentes,
                 NotificacoesNaoLidas = notificacoesNaoLidas,
                 EvolucaoMensalCompleta = evolucaoMensalCompleta,
+                ServicosMaisMarcados = servicosMaisMarcados ?? new List<ServicoMaisMarcadoViewModel>(),
+
+                HorariosMaiorProcura = horariosMaiorProcura ?? new List<HorarioMaiorProcuraViewModel>(),
+
+                DiasMaiorProcura = diasMaiorProcura ?? new List<DiaSemanaProcuraViewModel>(),
                 Equipa = equipa ?? new List<DesempenhoFuncionarioViewModel>()
             };
-                     
+
+
             return View(model);
         }
 

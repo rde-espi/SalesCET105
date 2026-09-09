@@ -1,6 +1,6 @@
 ﻿namespace ProjetoFinalCet105.API.Entities
 {
-    public class HorarioFuncionario:IEntity
+    public class HorarioFuncionario : IEntity
     {
         public int Id { get; set; }
 

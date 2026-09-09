@@ -1,6 +1,6 @@
 ﻿namespace ProjetoFinalCet105.API.Entities
 {
-    public class HistoricoMarcacao:IEntity
+    public class HistoricoMarcacao : IEntity
     {
         public int Id { get; set; }
 

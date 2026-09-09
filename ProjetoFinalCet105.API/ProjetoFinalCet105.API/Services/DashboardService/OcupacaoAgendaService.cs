@@ -19,7 +19,7 @@ namespace ProjetoFinalCet105.API.Services.DashboardService
             _marcacaoRepository = marcacaoRepository;
         }
 
-        public async Task<(decimal HorasDisponiveis, decimal HorasOcupadas)>CalcularAsync( DateTime dataInicio, DateTime dataFim)
+        public async Task<(decimal HorasDisponiveis, decimal HorasOcupadas)> CalcularAsync(DateTime dataInicio, DateTime dataFim)
         {
             var horarios = await _horarioRepository
                 .GetAllWithFuncionario()
@@ -90,7 +90,7 @@ namespace ProjetoFinalCet105.API.Services.DashboardService
                 }
             }
 
-            return ( HorasDisponiveis:Math.Round(minutosDisponiveis / 60, 2),HorasOcupadas: Math.Round(minutosOcupados / 60, 2));
+            return (HorasDisponiveis: Math.Round(minutosDisponiveis / 60, 2), HorasOcupadas: Math.Round(minutosOcupados / 60, 2));
         }
 
         private static decimal CalcularMinutosSobrepostos(DateTime inicioLimite, DateTime fimLimite, IEnumerable<(DateTime Inicio, DateTime Fim)> periodos)
@@ -134,7 +134,7 @@ namespace ProjetoFinalCet105.API.Services.DashboardService
                 }
             }
 
-            totalMinutos +=(decimal)(fimAtual - inicioAtual).TotalMinutes;
+            totalMinutos += (decimal)(fimAtual - inicioAtual).TotalMinutes;
 
             return totalMinutos;
         }

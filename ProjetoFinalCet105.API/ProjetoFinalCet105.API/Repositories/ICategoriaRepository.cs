@@ -2,7 +2,7 @@
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public interface ICategoriaRepository:IGenericRepository<Categoria>
+    public interface ICategoriaRepository : IGenericRepository<Categoria>
     {
     }
 }

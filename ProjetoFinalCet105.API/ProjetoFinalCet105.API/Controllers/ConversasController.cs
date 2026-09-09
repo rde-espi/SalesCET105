@@ -37,7 +37,7 @@ namespace ProjetoFinalCet105.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ConversaDTO>>>GetMinhasConversas()
+        public async Task<ActionResult<List<ConversaDTO>>> GetMinhasConversas()
         {
             var userId =
                 User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -49,7 +49,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
             var isAdmin = User.IsInRole("Admin");
 
-            var resultado = await _getMinhasConversasUseCase.ExecuteAsync(userId,isAdmin);
+            var resultado = await _getMinhasConversasUseCase.ExecuteAsync(userId, isAdmin);
 
             if (!resultado.Sucesso)
             {
@@ -60,7 +60,7 @@ namespace ProjetoFinalCet105.API.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<ConversaDTO>>GetConversaById(int id)
+        public async Task<ActionResult<ConversaDTO>> GetConversaById(int id)
         {
             var userId =
                 User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -70,7 +70,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 return Unauthorized();
             }
 
-            var resultado = await _getConversaByIdUseCase.ExecuteAsync(id, userId,User.IsInRole("Admin"));
+            var resultado = await _getConversaByIdUseCase.ExecuteAsync(id, userId, User.IsInRole("Admin"));
 
             if (!resultado.Sucesso)
             {
@@ -100,7 +100,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Roles = "Cliente,Funcionario")]
         [HttpPost]
-        public async Task<ActionResult<ConversaDTO>>CriarConversa(NovaConversaDTO dto)
+        public async Task<ActionResult<ConversaDTO>> CriarConversa(NovaConversaDTO dto)
         {
             var userId =
                 User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -124,7 +124,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Roles = "Cliente,Funcionario")]
         [HttpPost("{id:int}/mensagens")]
-        public async Task<ActionResult<MensagemDTO>>EnviarMensagem(int id, EnviarMensagemDTO dto)
+        public async Task<ActionResult<MensagemDTO>> EnviarMensagem(int id, EnviarMensagemDTO dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -145,16 +145,16 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Roles = "Cliente,Funcionario")]
         [HttpPut("{id:int}/mensagens/lidas")]
-        public async Task<IActionResult>MarcarMensagensComoLidas(int id)
+        public async Task<IActionResult> MarcarMensagensComoLidas(int id)
         {
-            var userId =User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userId == null)
             {
                 return Unauthorized();
             }
 
-            var resultado = await _marcarMensagensComoLidasUseCase.ExecuteAsync(id,userId);
+            var resultado = await _marcarMensagensComoLidasUseCase.ExecuteAsync(id, userId);
 
             if (!resultado.Sucesso)
             {

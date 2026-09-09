@@ -1,6 +1,6 @@
 ﻿namespace ProjetoFinalCet105.API.Entities
 {
-    public class GoogleCalendarEvento:IEntity
+    public class GoogleCalendarEvento : IEntity
     {
         public int Id { get; set; }
 

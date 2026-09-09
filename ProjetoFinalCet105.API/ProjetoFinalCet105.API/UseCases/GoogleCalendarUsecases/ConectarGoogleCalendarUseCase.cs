@@ -16,7 +16,7 @@ namespace ProjetoFinalCet105.API.UseCases.GoogleCalendarUsecases
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
-                return UseCaseResult<string>.Falha( "Utilizador inválido.", TipoErro.NaoAutorizado);
+                return UseCaseResult<string>.Falha("Utilizador inválido.", TipoErro.NaoAutorizado);
             }
 
             var url = _googleCalendarService.GerarUrlAutorizacao(userId);

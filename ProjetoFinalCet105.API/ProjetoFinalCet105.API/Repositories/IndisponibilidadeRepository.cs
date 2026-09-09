@@ -4,11 +4,11 @@ using ProjetoFinalCet105.API.Entities;
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public class IndisponibilidadeRepository:GenericRepository<Indisponibilidade>,IIndisponibilidadeRepository
+    public class IndisponibilidadeRepository : GenericRepository<Indisponibilidade>, IIndisponibilidadeRepository
     {
-        public IndisponibilidadeRepository(DataContext context):base(context)
+        public IndisponibilidadeRepository(DataContext context) : base(context)
         {
-            
+
         }
 
         public async Task<bool> ExisteSobreposiçãoAsync(int funcionarioId, DateTime inicio, DateTime fim, int? idIgnorar = null)

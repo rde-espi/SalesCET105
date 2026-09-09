@@ -2,7 +2,7 @@
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public interface IEstadoMarcacaoRepository:IGenericRepository<EstadoMarcacao>
+    public interface IEstadoMarcacaoRepository : IGenericRepository<EstadoMarcacao>
     {
     }
 }

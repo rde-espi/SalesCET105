@@ -14,7 +14,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient("ProjetoFinalApi", client =>
 {
-    client.BaseAddress = new Uri( builder.Configuration["ApiSettings:BaseUrl"]!);
+    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"]!);
 });
 
 builder.Services.AddScoped<ApiService>();

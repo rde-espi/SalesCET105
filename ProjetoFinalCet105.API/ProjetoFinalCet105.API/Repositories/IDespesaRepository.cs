@@ -2,7 +2,7 @@
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public interface IDespesaRepository:IGenericRepository<Despesa>
+    public interface IDespesaRepository : IGenericRepository<Despesa>
     {
         IQueryable<Despesa> GetAllDespesas();
     }

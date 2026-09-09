@@ -2,7 +2,7 @@
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public interface IDispositivoUserRepository :IGenericRepository<DispositivoUser>
+    public interface IDispositivoUserRepository : IGenericRepository<DispositivoUser>
     {
         Task<DispositivoUser?> GetByFidAsync(string fid);
 

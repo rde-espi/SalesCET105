@@ -8,7 +8,7 @@ namespace ProjetoFinalCet105.API.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-            
+
         }
         public DbSet<Funcionario> Funcionarios { get; set; }
         public DbSet<Servico> Servicos { get; set; }
@@ -35,7 +35,7 @@ namespace ProjetoFinalCet105.API.Data
         public DbSet<PermissaoAdminTemporaria> PermissoesAdminTemporarias { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {      
+        {
             base.OnModelCreating(modelBuilder);
 
             // SERVICO -> CATEGORIA

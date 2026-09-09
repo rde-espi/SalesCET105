@@ -113,7 +113,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
                 Ativo = funcionario.Ativo
             };
 
-            
+
             try
             {
                 await _authService
@@ -121,7 +121,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex,"O funcionário {FuncionarioId} foi criado, mas ocorreu uma falha ao enviar o email de confirmação.",funcionario.Id);
+                _logger.LogWarning(ex, "O funcionário {FuncionarioId} foi criado, mas ocorreu uma falha ao enviar o email de confirmação.", funcionario.Id);
             }
 
             return UseCaseResult<FuncionarioDTO>.Ok(resposta);

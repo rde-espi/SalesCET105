@@ -2,9 +2,9 @@
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public interface IServicoRepository:IGenericRepository<Servico>
+    public interface IServicoRepository : IGenericRepository<Servico>
     {
         IQueryable<Servico> GetAllWithCategoria();
-        Task<Servico?>GetByIdWithCategoriaAsync(int id);
+        Task<Servico?> GetByIdWithCategoriaAsync(int id);
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface IFirebaseService
     {
-        Task<string> EnviarPushAsync(string fid,string titulo,string mensagem);
+        Task<string> EnviarPushAsync(string fid, string titulo, string mensagem);
     }
 }

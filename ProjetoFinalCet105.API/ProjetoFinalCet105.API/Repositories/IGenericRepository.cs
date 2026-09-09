@@ -2,7 +2,7 @@
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public interface IGenericRepository<T> where T : class,IEntity
+    public interface IGenericRepository<T> where T : class, IEntity
     {
         IQueryable<T> GetAll();
 

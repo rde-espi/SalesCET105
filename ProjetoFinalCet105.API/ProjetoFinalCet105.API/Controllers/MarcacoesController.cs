@@ -62,27 +62,27 @@ namespace ProjetoFinalCet105.API.Controllers
             _userManager = userManager;
         }
 
-        [Authorize(Policy ="ConsultarMarcacoes")]
+        [Authorize(Policy = "ConsultarMarcacoes")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MarcacaoDTO>>> GetAllMarcacoes()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if(userId == null)
+            if (userId == null)
             {
                 return Unauthorized();
             }
 
             var query = _marcacaoRepository.GetAllWithDetails();
 
-            if(User.IsInRole("Cliente") && !User.IsInRole("Admin"))
+            if (User.IsInRole("Cliente") && !User.IsInRole("Admin"))
             {
-                query = query.Where(m=> m.ClienteId == userId);
+                query = query.Where(m => m.ClienteId == userId);
             }
             else if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
             {
                 var funcionario = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
 
-                if(funcionario == null)
+                if (funcionario == null)
                 {
                     return Forbid();
                 }
@@ -91,7 +91,7 @@ namespace ProjetoFinalCet105.API.Controllers
             }
 
             var marcacoes = await query
-                .OrderBy(m=> m.DataHoraInicio)
+                .OrderBy(m => m.DataHoraInicio)
                 .Select(m => new MarcacaoDTO
                 {
                     Id = m.Id,
@@ -126,7 +126,7 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(marcacoes);
         }
 
-        [Authorize(Policy ="ConsultarMarcacoes")]
+        [Authorize(Policy = "ConsultarMarcacoes")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<MarcacaoDTO>> GetMarcacaoById(int id)
         {
@@ -223,12 +223,12 @@ namespace ProjetoFinalCet105.API.Controllers
                 return BadRequest(resultado.Erro);
             }
 
-            return CreatedAtAction(nameof(GetMarcacaoById),new { id = resultado.Dados!.Id },resultado.Dados);
+            return CreatedAtAction(nameof(GetMarcacaoById), new { id = resultado.Dados!.Id }, resultado.Dados);
         }
 
         [Authorize(Policy = "AlterarMarcacao")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateMarcacao(int id,UpdateMarcacaoDTO dto)
+        public async Task<IActionResult> UpdateMarcacao(int id, UpdateMarcacaoDTO dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -267,7 +267,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "GerirMarcacoes")]
         [HttpPatch("{id:int}/estado")]
-        public async Task<IActionResult> UpdateEstadoMarcacao(int id,UpdateEstadoMarcacaoDTO dto)
+        public async Task<IActionResult> UpdateEstadoMarcacao(int id, UpdateEstadoMarcacaoDTO dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -513,9 +513,9 @@ namespace ProjetoFinalCet105.API.Controllers
         }
 
         [HttpGet("disponibilidade")]
-        public async Task<ActionResult<IEnumerable<DateTime>>> GetDisponibilidade(int funcionarioId,int servicoId,DateTime data)
+        public async Task<ActionResult<IEnumerable<DateTime>>> GetDisponibilidade(int funcionarioId, int servicoId, DateTime data)
         {
-            var resultado = await _getDisponibilidadeUseCase.ExecuteAsync(funcionarioId,servicoId,data);
+            var resultado = await _getDisponibilidadeUseCase.ExecuteAsync(funcionarioId, servicoId, data);
 
             if (!resultado.Sucesso)
             {
@@ -574,17 +574,17 @@ namespace ProjetoFinalCet105.API.Controllers
                 {
                     Id = h.Id,
                     MarcacaoId = h.MarcacaoId,
-                    
+
                     UserId = h.UserId,
                     UserNome = h.User.NomeCompleto,
-                    
+
                     Acao = h.Acao,
                     Descricao = h.Descricao,
                     DataAlteracao = h.DataAlteracao
                 })
                 .ToListAsync();
-            
+
             return Ok(historico);
-        }      
+        }
     }
 }

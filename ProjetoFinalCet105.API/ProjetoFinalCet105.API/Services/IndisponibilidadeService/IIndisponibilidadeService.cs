@@ -6,11 +6,11 @@ namespace ProjetoFinalCet105.API.Services.IndisponibilidadeService
 {
     public interface IIndisponibilidadeService
     {
-        Task<List<HorarioFuncionario>> ObterHorariosTrabalhoAsync(int funcionarioId,DateTime data);
+        Task<List<HorarioFuncionario>> ObterHorariosTrabalhoAsync(int funcionarioId, DateTime data);
 
-        Task<List<Marcacao>> ObterMarcacoesDoDiaAsync(int funcionarioId,DateTime data);
+        Task<List<Marcacao>> ObterMarcacoesDoDiaAsync(int funcionarioId, DateTime data);
 
-        UseCaseResult<bool> ValidarTipoIndisponibilidade(bool diaCompleto,bool restoDoDia);
+        UseCaseResult<bool> ValidarTipoIndisponibilidade(bool diaCompleto, bool restoDoDia);
 
         UseCaseResult<PeriodoIndisponibilidade> CalcularPeriodo(
             DateTime dataHoraInicio,
@@ -20,8 +20,8 @@ namespace ProjetoFinalCet105.API.Services.IndisponibilidadeService
             List<HorarioFuncionario> horariosTrabalho,
             List<Marcacao> marcacoesConcluidas);
 
-        UseCaseResult<bool> ValidarConflitoComMarcacoesConfirmadas(DateTime inicio,DateTime fim,List<Marcacao> marcacoesConfirmadas);
+        UseCaseResult<bool> ValidarConflitoComMarcacoesConfirmadas(DateTime inicio, DateTime fim, List<Marcacao> marcacoesConfirmadas);
 
-        Task<bool> ExisteSobreposicaoAsync(int funcionarioId,DateTime inicio,DateTime fim,int? ignorarId = null);
+        Task<bool> ExisteSobreposicaoAsync(int funcionarioId, DateTime inicio, DateTime fim, int? ignorarId = null);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace ProjetoFinalCet105.API.Entities
 {
-    public class PermissaoAdminTemporaria: IEntity
+    public class PermissaoAdminTemporaria : IEntity
     {
         public int Id { get; set; }
 

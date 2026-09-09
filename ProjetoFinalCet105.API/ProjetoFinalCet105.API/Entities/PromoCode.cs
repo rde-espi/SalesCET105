@@ -1,6 +1,6 @@
 ﻿namespace ProjetoFinalCet105.API.Entities
 {
-    public class PromoCode:IEntity
+    public class PromoCode : IEntity
     {
         public int Id { get; set; }
 

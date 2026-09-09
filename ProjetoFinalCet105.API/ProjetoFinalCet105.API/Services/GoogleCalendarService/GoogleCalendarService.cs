@@ -69,7 +69,7 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
             return request.Build().ToString();
         }
 
-        public async Task<GoogleCalendarTokenDTO?> TrocarCodigoPorRefreshTokenAsync( string code, CancellationToken cancellationToken = default)
+        public async Task<GoogleCalendarTokenDTO?> TrocarCodigoPorRefreshTokenAsync(string code, CancellationToken cancellationToken = default)
         {
             var flow = CriarFlow();
 
@@ -95,7 +95,7 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
                         "Bearer",
                         token.AccessToken);
 
-                var userInfo = await httpClient.GetFromJsonAsync<GoogleUserInfoDTO>( "https://www.googleapis.com/oauth2/v2/userinfo", cancellationToken);
+                var userInfo = await httpClient.GetFromJsonAsync<GoogleUserInfoDTO>("https://www.googleapis.com/oauth2/v2/userinfo", cancellationToken);
 
                 googleEmail = userInfo?.Email;
             }

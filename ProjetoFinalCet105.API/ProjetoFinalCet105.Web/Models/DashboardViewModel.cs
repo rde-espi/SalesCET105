@@ -19,6 +19,11 @@
         public List<ClienteRecenteViewModel> UltimosClientes { get; set; } = new();
         public List<NotificacaoDashboardViewModel> NotificacoesRecentes { get; set; } = new();
         public List<FaturacaoMensalViewModel> EvolucaoMensalCompleta { get; set; } = new();
+        public List<ServicoMaisMarcadoViewModel> ServicosMaisMarcados { get; set; } = new();
+
+        public List<HorarioMaiorProcuraViewModel> HorariosMaiorProcura { get; set; } = new();
+
+        public List<DiaSemanaProcuraViewModel> DiasMaiorProcura { get; set; } = new();
 
         public int NotificacoesNaoLidas { get; set; }
     }
@@ -196,5 +201,29 @@
         public DateTime DataCriacao { get; set; }
 
         public DateTime? DataLeitura { get; set; }
+    }
+
+    public class ServicoMaisMarcadoViewModel
+    {
+        public int ServicoId { get; set; }
+        public string NomeServico { get; set; } = string.Empty;
+        public int QuantidadeMarcacoes { get; set; }
+        public decimal Percentagem { get; set; }
+    }
+
+    public class HorarioMaiorProcuraViewModel
+    {
+        public int Hora { get; set; }
+        public string FaixaHoraria { get; set; } = string.Empty;
+        public int QuantidadeMarcacoes { get; set; }
+        public decimal Percentagem { get; set; }
+    }
+
+    public class DiaSemanaProcuraViewModel
+    {
+        public int DiaSemana { get; set; }
+        public string NomeDia { get; set; } = string.Empty;
+        public int QuantidadeMarcacoes { get; set; }
+        public decimal Percentagem { get; set; }
     }
 }

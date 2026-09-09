@@ -1,6 +1,6 @@
 ﻿namespace ProjetoFinalCet105.API.Entities
 {
-    public class EstadoMarcacao:IEntity
+    public class EstadoMarcacao : IEntity
     {
         public int Id { get; set; }
 

@@ -27,7 +27,7 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
         public async Task<UseCaseResult<bool>> ExecuteAsync(int conversaId, string userId)
         {
             // Verificar se a conversa existe
-            var conversa =await _conversaRepository.GetByIdWithDetailsAsync(conversaId);
+            var conversa = await _conversaRepository.GetByIdWithDetailsAsync(conversaId);
 
             if (conversa == null)
             {
@@ -48,8 +48,8 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
                     TipoErro.Proibido);
             }
 
-  
-            var mensagens = await _mensagemRepository.GetNaoLidasAsync(conversaId,userId);
+
+            var mensagens = await _mensagemRepository.GetNaoLidasAsync(conversaId, userId);
 
             if (!mensagens.Any())
             {
@@ -82,7 +82,7 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
             }
             catch (Exception ex)
             {
-                _logger.LogWarning( ex,"As mensagens da conversa {ConversaId} foram marcadas como lidas na BD, mas falhou a notificação SignalR.", conversaId);
+                _logger.LogWarning(ex, "As mensagens da conversa {ConversaId} foram marcadas como lidas na BD, mas falhou a notificação SignalR.", conversaId);
             }
 
             return UseCaseResult<bool>.Ok(true);

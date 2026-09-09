@@ -35,11 +35,11 @@ namespace ProjetoFinalCet105.API.UseCases.Faturas
             _settings = options.Value;
         }
 
-        public async Task<UseCaseResult<FaturaDTO>> ExecuteAsync(int marcacaoId,string userId,bool isFuncionario, bool isAdmin)
+        public async Task<UseCaseResult<FaturaDTO>> ExecuteAsync(int marcacaoId, string userId, bool isFuncionario, bool isAdmin)
         {
             if (!isAdmin && !isFuncionario)
             {
-                return UseCaseResult<FaturaDTO>.Falha( "Não tem permissão para emitir faturas.", TipoErro.Proibido);
+                return UseCaseResult<FaturaDTO>.Falha("Não tem permissão para emitir faturas.", TipoErro.Proibido);
             }
 
             var marcacao = await _marcacaoRepository.GetByIdWithDetailsAsync(marcacaoId);
@@ -64,9 +64,9 @@ namespace ProjetoFinalCet105.API.UseCases.Faturas
                 }
             }
 
-            if (!string.Equals( marcacao.EstadoMarcacao.Nome, "Concluida", StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(marcacao.EstadoMarcacao.Nome, "Concluida", StringComparison.OrdinalIgnoreCase))
             {
-                return UseCaseResult<FaturaDTO>.Falha( "A fatura apenas pode ser emitida para uma marcação concluída.");
+                return UseCaseResult<FaturaDTO>.Falha("A fatura apenas pode ser emitida para uma marcação concluída.");
             }
 
             var faturaExistente = await _faturaRepository.GetByMarcacaoIdAsync(marcacaoId);
@@ -85,7 +85,7 @@ namespace ProjetoFinalCet105.API.UseCases.Faturas
             }
 
             // VALORES DA FATURA
-          
+
             decimal total = Math.Round(marcacao.Preco, 2);
 
             decimal valorDesconto = Math.Round(marcacao.ValorDesconto ?? 0m, 2);
@@ -103,18 +103,18 @@ namespace ProjetoFinalCet105.API.UseCases.Faturas
 
                 decimal baseTributavel = Math.Round(total / divisorIva, 2);
 
-                valorIva =Math.Round(total - baseTributavel, 2);
+                valorIva = Math.Round(total - baseTributavel, 2);
             }
             else
-            {              
-                valorIva =Math.Round( total * (_settings.TaxaIva / 100m), 2);
+            {
+                valorIva = Math.Round(total * (_settings.TaxaIva / 100m), 2);
             }
             // SNAPSHOT DOS DADOS
             string? nifCliente = string.IsNullOrWhiteSpace(cliente.Contribuinte) ? null : cliente.Contribuinte.Trim();
 
             string nomeCliente = cliente.NomeCompleto;
 
-            string? moradaCliente = string.IsNullOrWhiteSpace(cliente.Morada) ? null: cliente.Morada.Trim();
+            string? moradaCliente = string.IsNullOrWhiteSpace(cliente.Morada) ? null : cliente.Morada.Trim();
 
             string? codigoPostalCliente = string.IsNullOrWhiteSpace(cliente.CodigoPostal) ? null : cliente.CodigoPostal.Trim();
 
@@ -124,62 +124,62 @@ namespace ProjetoFinalCet105.API.UseCases.Faturas
             {
                 // Revalidar dentro da transação
                 var faturaExistenteNaTransacao = await _faturaRepository.GetByMarcacaoIdAsync(marcacaoId);
-                
+
                 if (faturaExistenteNaTransacao != null)
                 {
                     return UseCaseResult<FaturaDTO>.Falha("Já existe uma fatura emitida para esta marcação.");
                 }
-                
+
                 int numeroSequencial = await _faturaRepository.GetProximoNumeroSequencialAsync(_settings.Serie);
-                
+
                 string numeroFatura = $"{_settings.Serie}/{numeroSequencial:D6}";
-                
+
                 var fatura = new Fatura
                 {
                     MarcacaoId = marcacao.Id,
-                    
+
                     Numero = numeroFatura,
                     Serie = _settings.Serie,
                     NumeroSequencial = numeroSequencial,
-                    
+
                     DataEmissao = DateTime.Now,
-                    
+
                     NomeCliente = nomeCliente,
                     NifCliente = nifCliente,
                     MoradaCliente = moradaCliente,
                     CodigoPostalCliente = codigoPostalCliente,
                     LocalidadeCliente = localidadeCliente,
-                    
+
                     Subtotal = subtotal,
                     ValorDesconto = valorDesconto,
                     ValorIva = valorIva,
                     Total = total,
-                    
+
                     Estado = "Emitida",
-                    
+
                     ComunicadaAT = false
                 };
-                
+
                 var item = new FaturaItem
                 {
                     ServicoId = marcacao.ServicoId,
                     Descricao = marcacao.Servico.Nome,
-                    
+
                     Quantidade = 1m,
                     PrecoUnitario = total,
-                    
+
                     PercentagemIva = _settings.TaxaIva,
                     ValorIva = valorIva,
                     Total = total,
-                    
+
                     CodigoIva = _settings.CodigoIva,
                     MotivoIsencaoIva = null
                 };
-                
+
                 fatura.Itens.Add(item);
-                
+
                 await _faturaRepository.CreateAsync(fatura);
-                
+
                 var resultado = new FaturaDTO
                 {
                     Id = fatura.Id,
@@ -188,27 +188,27 @@ namespace ProjetoFinalCet105.API.UseCases.Faturas
                     Numero = fatura.Numero,
                     Serie = fatura.Serie,
                     NumeroSequencial = fatura.NumeroSequencial,
-                    
+
                     DataEmissao = fatura.DataEmissao,
-                    
+
                     NomeCliente = fatura.NomeCliente,
                     NifCliente = fatura.NifCliente,
                     MoradaCliente = fatura.MoradaCliente,
                     CodigoPostalCliente = fatura.CodigoPostalCliente,
                     LocalidadeCliente = fatura.LocalidadeCliente,
-                    
+
                     Subtotal = fatura.Subtotal,
                     ValorDesconto = fatura.ValorDesconto,
                     ValorIva = fatura.ValorIva,
                     Total = fatura.Total,
-                    
+
                     Estado = fatura.Estado,
-                    
+
                     ComunicadaAT = fatura.ComunicadaAT,
                     DataComunicacaoAT = fatura.DataComunicacaoAT,
                     CodigoRespostaAT = fatura.CodigoRespostaAT,
                     MensagemRespostaAT = fatura.MensagemRespostaAT,
-                    
+
                     Itens = fatura.Itens
                     .Select(i => new FaturaItemDTO
                     {
@@ -225,7 +225,7 @@ namespace ProjetoFinalCet105.API.UseCases.Faturas
                     })
                     .ToList()
                 };
-                
+
                 return UseCaseResult<FaturaDTO>.Ok(resultado);
             },
             IsolationLevel.Serializable);

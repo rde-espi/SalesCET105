@@ -2,7 +2,7 @@
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public interface IIndisponibilidadeRepository:IGenericRepository<Indisponibilidade>
+    public interface IIndisponibilidadeRepository : IGenericRepository<Indisponibilidade>
     {
         IQueryable<Indisponibilidade> GetAllIndisponibilidadesWithFuncionario();
         Task<Indisponibilidade?> GetIndisponibilidadeWithFuncionarioByIdAsync(int id);

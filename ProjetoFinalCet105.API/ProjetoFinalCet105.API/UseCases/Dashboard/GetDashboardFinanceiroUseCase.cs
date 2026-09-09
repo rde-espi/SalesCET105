@@ -22,7 +22,7 @@ namespace ProjetoFinalCet105.API.UseCases.Dashboard
 
             var inicioSemana = hoje.AddDays(-(((int)hoje.DayOfWeek + 6) % 7));
 
-            var inicioMes = new DateTime( hoje.Year, hoje.Month, 1);
+            var inicioMes = new DateTime(hoje.Year, hoje.Month, 1);
 
             var amanha = hoje.AddDays(1);
             var inicioProximoMes = inicioMes.AddMonths(1);
@@ -108,7 +108,7 @@ namespace ProjetoFinalCet105.API.UseCases.Dashboard
                 MargemPercentualMes = Math.Round(margemPercentualMes, 2)
             };
         }
-        public async Task<List<FaturacaoMensalDTO>> ExecuteEvolucaoMensalAsync( int? ano = null)
+        public async Task<List<FaturacaoMensalDTO>> ExecuteEvolucaoMensalAsync(int? ano = null)
         {
             var anoSelecionado = ano ?? DateTime.Today.Year;
 
@@ -139,7 +139,7 @@ namespace ProjetoFinalCet105.API.UseCases.Dashboard
                     Ano = x.Ano,
                     Mes = x.Mes,
 
-                    NomeMes = cultura.TextInfo.ToTitleCase( cultura.DateTimeFormat.GetMonthName(x.Mes)),
+                    NomeMes = cultura.TextInfo.ToTitleCase(cultura.DateTimeFormat.GetMonthName(x.Mes)),
 
                     Total = x.Total
                 })
@@ -171,7 +171,7 @@ namespace ProjetoFinalCet105.API.UseCases.Dashboard
             return dados;
         }
 
-        public async Task<List<CategoriaFaturacaoDTO>>ExecuteFaturacaoPorCategoriaAsync()
+        public async Task<List<CategoriaFaturacaoDTO>> ExecuteFaturacaoPorCategoriaAsync()
         {
             var dados = await _faturaRepository
                 .GetAllWithDetails()

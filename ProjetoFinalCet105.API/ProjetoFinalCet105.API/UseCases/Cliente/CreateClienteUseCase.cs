@@ -14,7 +14,7 @@ namespace ProjetoFinalCet105.API.UseCases.Cliente
         private readonly ILogger<CreateClienteUseCase> _logger;
         private readonly INifService _nifService;
 
-        public CreateClienteUseCase(UserManager<User> userManager, IAuthService authService, ILogger<CreateClienteUseCase> logger,INifService nifService)
+        public CreateClienteUseCase(UserManager<User> userManager, IAuthService authService, ILogger<CreateClienteUseCase> logger, INifService nifService)
         {
             _userManager = userManager;
             _authService = authService;
@@ -22,7 +22,7 @@ namespace ProjetoFinalCet105.API.UseCases.Cliente
             _nifService = nifService;
         }
 
-        public async Task<UseCaseResult<ClienteDTO>> ExecuteAsync( NovoClienteDTO dto)
+        public async Task<UseCaseResult<ClienteDTO>> ExecuteAsync(NovoClienteDTO dto)
         {
             var userExistente = await _userManager.FindByEmailAsync(dto.Email);
 
@@ -57,24 +57,24 @@ namespace ProjetoFinalCet105.API.UseCases.Cliente
                 DataCriacao = DateTime.Now
             };
 
-            
 
-            var resultado = await _userManager.CreateAsync( user, dto.Password);
+
+            var resultado = await _userManager.CreateAsync(user, dto.Password);
 
             if (!resultado.Succeeded)
             {
-                var erros = string.Join( "; ", resultado.Errors.Select(e => e.Description));
+                var erros = string.Join("; ", resultado.Errors.Select(e => e.Description));
 
                 return UseCaseResult<ClienteDTO>.Falha(erros);
             }
 
-            var resultadoRole = await _userManager.AddToRoleAsync( user,"Cliente");
+            var resultadoRole = await _userManager.AddToRoleAsync(user, "Cliente");
 
             if (!resultadoRole.Succeeded)
             {
                 await _userManager.DeleteAsync(user);
 
-                var erros = string.Join("; ",resultadoRole.Errors.Select(e => e.Description));
+                var erros = string.Join("; ", resultadoRole.Errors.Select(e => e.Description));
 
                 return UseCaseResult<ClienteDTO>.Falha(erros);
             }
@@ -100,7 +100,7 @@ namespace ProjetoFinalCet105.API.UseCases.Cliente
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex,"O cliente {ClienteId} foi criado, mas ocorreu uma falha ao enviar o email de confirmação.",user.Id);
+                _logger.LogWarning(ex, "O cliente {ClienteId} foi criado, mas ocorreu uma falha ao enviar o email de confirmação.", user.Id);
             }
 
             return UseCaseResult<ClienteDTO>.Ok(resposta);

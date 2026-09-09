@@ -35,7 +35,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             _logger = logger;
         }
 
-        public async Task<UseCaseResult<bool>> ExecuteAsync(int id,string userId,bool isCliente,bool isFuncionario,bool isAdmin)
+        public async Task<UseCaseResult<bool>> ExecuteAsync(int id, string userId, bool isCliente, bool isFuncionario, bool isAdmin)
         {
             var marcacao = await _marcacaoRepository.GetByIdAsync(id);
 
@@ -137,12 +137,12 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
 
                     if (marcacaoCompleta != null)
                     {
-                        await _googleCalendarSyncService.SincronizarCancelamentoMarcacaoAsync( marcacaoCompleta);
+                        await _googleCalendarSyncService.SincronizarCancelamentoMarcacaoAsync(marcacaoCompleta);
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex,"A marcação {MarcacaoId} foi cancelada, mas ocorreu uma falha ao remover o evento do Google Calendar.",id);
+                    _logger.LogWarning(ex, "A marcação {MarcacaoId} foi cancelada, mas ocorreu uma falha ao remover o evento do Google Calendar.", id);
                 }
 
                 try
@@ -157,7 +157,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning( ex,"A marcação {MarcacaoId} foi cancelada, mas ocorreu uma falha ao enviar a notificação.", id);
+                    _logger.LogWarning(ex, "A marcação {MarcacaoId} foi cancelada, mas ocorreu uma falha ao enviar a notificação.", id);
                 }
 
                 return UseCaseResult<bool>.Ok(true);

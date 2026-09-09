@@ -6,7 +6,7 @@ namespace ProjetoFinalCet105.API.Repositories
 {
     public class MensagemRepository : GenericRepository<Mensagem>, IMensagemRepository
     {
-        public MensagemRepository(DataContext context): base(context)
+        public MensagemRepository(DataContext context) : base(context)
         {
         }
 

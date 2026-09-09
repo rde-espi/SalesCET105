@@ -1,6 +1,6 @@
 ﻿namespace ProjetoFinalCet105.API.Entities
 {
-    public class Indisponibilidade:IEntity
+    public class Indisponibilidade : IEntity
     {
         public int Id { get; set; }
 

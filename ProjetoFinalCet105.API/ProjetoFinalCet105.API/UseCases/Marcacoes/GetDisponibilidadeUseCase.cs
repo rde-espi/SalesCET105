@@ -31,7 +31,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             _marcacaoRepository = marcacaoRepository;
         }
 
-        public async Task<UseCaseResult<IEnumerable<DateTime>>> ExecuteAsync(int funcionarioId,int servicoId,DateTime data)
+        public async Task<UseCaseResult<IEnumerable<DateTime>>> ExecuteAsync(int funcionarioId, int servicoId, DateTime data)
         {
             var funcionario = await _funcionarioRepository.GetByIdAsync(funcionarioId);
 

@@ -8,7 +8,7 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
         string GerarUrlAutorizacao(string userId);
         string? ObterUserIdDoState(string state);
 
-        Task<GoogleCalendarTokenDTO?> TrocarCodigoPorRefreshTokenAsync( string code, CancellationToken cancellationToken = default);
+        Task<GoogleCalendarTokenDTO?> TrocarCodigoPorRefreshTokenAsync(string code, CancellationToken cancellationToken = default);
         Task<string> CriarEventoAsync(
             GoogleCalendarConta conta,
             string titulo,

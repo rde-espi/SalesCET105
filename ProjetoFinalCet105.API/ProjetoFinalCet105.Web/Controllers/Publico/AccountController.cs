@@ -39,11 +39,11 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                 Password = model.Password
             };
 
-            var response = await _apiService.PostAsync<object, LoginResponseViewModel>( "api/Auth/login", request);
+            var response = await _apiService.PostAsync<object, LoginResponseViewModel>("api/Auth/login", request);
 
             if (response == null)
             {
-                ModelState.AddModelError( string.Empty, "Email ou password incorretos.");
+                ModelState.AddModelError(string.Empty, "Email ou password incorretos.");
 
                 return View(model);
             }
@@ -60,49 +60,49 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (string.IsNullOrWhiteSpace(response.Token))
             {
-                ModelState.AddModelError( string.Empty, "Não foi possível concluir o login.");
+                ModelState.AddModelError(string.Empty, "Não foi possível concluir o login.");
 
                 return View(model);
             }
 
 
             // Guardar dados da sessão
-            HttpContext.Session.SetString( "JwtToken", response.Token);
+            HttpContext.Session.SetString("JwtToken", response.Token);
             var claims = new List<Claim>
             {
                 new Claim(
                     ClaimTypes.NameIdentifier,
                     response.UserId),
-                
+
                 new Claim(
                     ClaimTypes.Name,
                     response.NomeCompleto),
-                
+
                 new Claim(
                     ClaimTypes.Email,
                     response.Email)
             };
 
-            HttpContext.Session.SetString( "UserId",  response.UserId);
+            HttpContext.Session.SetString("UserId", response.UserId);
 
-            HttpContext.Session.SetString( "NomeCompleto", response.NomeCompleto);
+            HttpContext.Session.SetString("NomeCompleto", response.NomeCompleto);
 
-            HttpContext.Session.SetString( "Email", response.Email);
+            HttpContext.Session.SetString("Email", response.Email);
 
-            HttpContext.Session.SetString( "Roles", string.Join(",", response.Roles));
+            HttpContext.Session.SetString("Roles", string.Join(",", response.Roles));
 
             foreach (var role in response.Roles)
             {
-                claims.Add( new Claim(ClaimTypes.Role, role));
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
-            var claimsIdentity = new ClaimsIdentity( claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             var authProperties = new AuthenticationProperties
             {
                 IsPersistent = model.RememberMe
             };
 
-            await HttpContext.SignInAsync( CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
             // Redirecionamento conforme o perfil
             //if (response.Roles.Contains("Admin"))
@@ -121,7 +121,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
             //}
 
 
-            return RedirectToAction( "Index", "Home");
+            return RedirectToAction("Index", "Home");
         }
 
 
@@ -131,9 +131,9 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
         {
             HttpContext.Session.Clear();
 
-            await HttpContext.SignOutAsync( CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            return RedirectToAction( "Index", "Home");
+            return RedirectToAction("Index", "Home");
         }
     }
 }

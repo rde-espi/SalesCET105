@@ -165,9 +165,9 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
             }
             catch (Exception ex)
             {
-                _logger.LogError( ex,"Erro ao criar conversa para o utilizador {UserId}.", userId);
+                _logger.LogError(ex, "Erro ao criar conversa para o utilizador {UserId}.", userId);
 
-                return UseCaseResult<ConversaDTO>.Falha( "Ocorreu um erro ao criar a conversa.");
+                return UseCaseResult<ConversaDTO>.Falha("Ocorreu um erro ao criar a conversa.");
             }
         }
     }

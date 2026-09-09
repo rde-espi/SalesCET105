@@ -2,7 +2,7 @@
 
 namespace ProjetoFinalCet105.API.Entities
 {
-    public class User : IdentityUser 
+    public class User : IdentityUser
     {
         public string NomeCompleto { get; set; }
         public string? Contribuinte { get; set; }

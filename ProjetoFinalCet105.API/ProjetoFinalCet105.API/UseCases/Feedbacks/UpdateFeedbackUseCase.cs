@@ -14,7 +14,7 @@ namespace ProjetoFinalCet105.API.UseCases.Feedbacks
             _feedbackRepository = feedbackRepository;
         }
 
-        public async Task<UseCaseResult<bool>> ExecuteAsync(int id,string userId,bool isAdmin,UpdateFeedbackDTO dto)
+        public async Task<UseCaseResult<bool>> ExecuteAsync(int id, string userId, bool isAdmin, UpdateFeedbackDTO dto)
         {
             var feedback = await _feedbackRepository.GetByIdAsync(id);
 

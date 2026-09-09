@@ -2,7 +2,7 @@
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public interface IConversaRepository:IGenericRepository<Conversa>
+    public interface IConversaRepository : IGenericRepository<Conversa>
     {
         IQueryable<Conversa> GetAllWithDetails();
 

@@ -20,7 +20,7 @@ namespace ProjetoFinalCet105.API.DTOs
         [MaxLength(20)]
         public string? Telefone { get; set; }
 
-        [RegularExpression(@"^\d{9}$",ErrorMessage = "O NIF deve conter exatamente 9 algarismos.")]
+        [RegularExpression(@"^\d{9}$", ErrorMessage = "O NIF deve conter exatamente 9 algarismos.")]
         public string? Contribuinte { get; set; }
         [MaxLength(200)]
         public string? Morada { get; set; }

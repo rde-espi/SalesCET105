@@ -2,7 +2,7 @@
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public interface IMarcacaoRepository:IGenericRepository<Marcacao>
+    public interface IMarcacaoRepository : IGenericRepository<Marcacao>
     {
         IQueryable<Marcacao> GetAllWithDetails();
 
@@ -13,7 +13,7 @@ namespace ProjetoFinalCet105.API.Repositories
             DateTime dataHoraInicio,
             DateTime dataHoraFim,
             int? marcacaoIdIgnorar = null);
-        
-        Task<bool> ClienteJaUsouPromoCodeAsync(string clienteId,int promoCodeId);
+
+        Task<bool> ClienteJaUsouPromoCodeAsync(string clienteId, int promoCodeId);
     }
 }

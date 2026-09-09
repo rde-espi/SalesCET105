@@ -40,7 +40,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             }
         }
 
-        public async Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> operation,IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
+        public async Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> operation, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
         {
             var strategy = _context.Database.CreateExecutionStrategy();
 

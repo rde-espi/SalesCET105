@@ -6,9 +6,9 @@ namespace ProjetoFinalCet105.API.Repositories
 {
     public class HistoricoMarcacaoRepository : GenericRepository<HistoricoMarcacao>, IHistoricoMarcacaoRepository
     {
-        public HistoricoMarcacaoRepository(DataContext context):base(context)
+        public HistoricoMarcacaoRepository(DataContext context) : base(context)
         {
-            
+
         }
 
         public IQueryable<HistoricoMarcacao> GetAllWithDetails()

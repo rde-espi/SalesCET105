@@ -7,6 +7,6 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
         Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
         Task CommitTransactionAsync();
         Task RollbackTransactionAsync();
-        Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> operation,IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
+        Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> operation, IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
     }
 }

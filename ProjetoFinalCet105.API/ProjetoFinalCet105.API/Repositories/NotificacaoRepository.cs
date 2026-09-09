@@ -4,11 +4,11 @@ using ProjetoFinalCet105.API.Entities;
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public class NotificacaoRepository:GenericRepository<Notificacao>,INotificacaoRepository
+    public class NotificacaoRepository : GenericRepository<Notificacao>, INotificacaoRepository
     {
-        public NotificacaoRepository(DataContext context):base(context)
+        public NotificacaoRepository(DataContext context) : base(context)
         {
-            
+
         }
 
         public IQueryable<Notificacao> GetByUserId(string userId)
@@ -18,7 +18,7 @@ namespace ProjetoFinalCet105.API.Repositories
                 .AsNoTracking();
         }
 
-        public async Task<Notificacao?> GetByIdAndUserIdAsync(int id,string userId)
+        public async Task<Notificacao?> GetByIdAndUserIdAsync(int id, string userId)
         {
             return await _context.Notificacoes
                 .FirstOrDefaultAsync(n =>

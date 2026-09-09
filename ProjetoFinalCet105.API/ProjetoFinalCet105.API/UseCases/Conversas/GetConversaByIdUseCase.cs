@@ -13,7 +13,7 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
             _conversaRepository = conversaRepository;
         }
 
-        public async Task<UseCaseResult<ConversaDTO>> ExecuteAsync(int id,string userId, bool isAdmin)
+        public async Task<UseCaseResult<ConversaDTO>> ExecuteAsync(int id, string userId, bool isAdmin)
         {
             var conversa =
                 await _conversaRepository

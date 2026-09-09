@@ -12,7 +12,7 @@ namespace ProjetoFinalCet105.API.UseCases.Notificacoes
             _notificacaoRepository = notificacaoRepository;
         }
 
-        public async Task<UseCaseResult<bool>> ExecuteAsync(int id,string userId)
+        public async Task<UseCaseResult<bool>> ExecuteAsync(int id, string userId)
         {
             var notificacao =
                 await _notificacaoRepository

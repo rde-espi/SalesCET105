@@ -1,6 +1,6 @@
 ﻿namespace ProjetoFinalCet105.API.Entities
 {
-    public class DispositivoUser:IEntity
+    public class DispositivoUser : IEntity
     {
         public int Id { get; set; }
 

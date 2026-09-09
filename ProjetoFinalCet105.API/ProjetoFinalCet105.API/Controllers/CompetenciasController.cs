@@ -16,7 +16,7 @@ namespace ProjetoFinalCet105.API.Controllers
         {
             _competenciaRepository = competenciaRepository;
         }
-        
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Competencia>>> GetAllCompetencias()
         {

@@ -70,12 +70,12 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
 
                 if (funcionarioAutenticado == null)
                 {
-                    return UseCaseResult<bool>.Falha("Funcionário autenticado não encontrado.",TipoErro.Proibido);
+                    return UseCaseResult<bool>.Falha("Funcionário autenticado não encontrado.", TipoErro.Proibido);
                 }
 
                 if (marcacaoAtual.FuncionarioId != funcionarioAutenticado.Id)
                 {
-                    return UseCaseResult<bool>.Falha("Não tem permissão para alterar esta marcação.",TipoErro.Proibido);
+                    return UseCaseResult<bool>.Falha("Não tem permissão para alterar esta marcação.", TipoErro.Proibido);
                 }
 
                 quemAlterou = funcionarioAutenticado.User.NomeCompleto;
@@ -85,7 +85,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             {
                 quemAlterou = "Administrador";
             }
-            
+
             var servicoAnteriorId = marcacaoAtual.ServicoId;
             var dataInicioAnterior = marcacaoAtual.DataHoraInicio;
             var observacoesAnterior = marcacaoAtual.Observacoes;
@@ -238,12 +238,12 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
 
                     if (marcacaoCompleta != null)
                     {
-                        await _googleCalendarSyncService.SincronizarAtualizacaoMarcacaoAsync( marcacaoCompleta);
+                        await _googleCalendarSyncService.SincronizarAtualizacaoMarcacaoAsync(marcacaoCompleta);
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning( ex,"A marcação {MarcacaoId} foi alterada, mas ocorreu uma falha ao sincronizar a alteração com o Google Calendar.",marcacaoAtual.Id);
+                    _logger.LogWarning(ex, "A marcação {MarcacaoId} foi alterada, mas ocorreu uma falha ao sincronizar a alteração com o Google Calendar.", marcacaoAtual.Id);
                 }
 
                 try
@@ -259,7 +259,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex,"A marcação {MarcacaoId} foi alterada, mas ocorreu uma falha ao enviar a notificação.",marcacaoAtual.Id); 
+                    _logger.LogWarning(ex, "A marcação {MarcacaoId} foi alterada, mas ocorreu uma falha ao enviar a notificação.", marcacaoAtual.Id);
                 }
 
                 return UseCaseResult<bool>.Ok(true);

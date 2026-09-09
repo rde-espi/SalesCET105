@@ -4,19 +4,19 @@ using ProjetoFinalCet105.API.Entities;
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public class MarcacaoRepository:GenericRepository<Marcacao>, IMarcacaoRepository
+    public class MarcacaoRepository : GenericRepository<Marcacao>, IMarcacaoRepository
     {
-        public MarcacaoRepository(DataContext context):base(context)
+        public MarcacaoRepository(DataContext context) : base(context)
         {
-            
+
         }
 
         public async Task<bool> ExisteSobreposicaoAsync(int funcionarioId, DateTime dataHoraInicio, DateTime dataHoraFim, int? marcacaoIdIgnorar = null)
         {
             return await _context.Marcacoes.AnyAsync
-                (m =>m.FuncionarioId == funcionarioId &&
+                (m => m.FuncionarioId == funcionarioId &&
            m.EstadoMarcacao.Nome != "Cancelada" &&
-           (!marcacaoIdIgnorar.HasValue ||  m.Id != marcacaoIdIgnorar.Value) &&
+           (!marcacaoIdIgnorar.HasValue || m.Id != marcacaoIdIgnorar.Value) &&
            dataHoraInicio < m.DataHoraFim &&
            dataHoraFim > m.DataHoraInicio);
         }
@@ -46,7 +46,7 @@ namespace ProjetoFinalCet105.API.Repositories
             .FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        public async Task<bool> ClienteJaUsouPromoCodeAsync(string clienteId,int promoCodeId)
+        public async Task<bool> ClienteJaUsouPromoCodeAsync(string clienteId, int promoCodeId)
         {
             return await _context.Marcacoes
                 .AnyAsync(m =>

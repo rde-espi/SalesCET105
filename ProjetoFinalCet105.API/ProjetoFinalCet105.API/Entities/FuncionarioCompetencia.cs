@@ -1,6 +1,6 @@
 ﻿namespace ProjetoFinalCet105.API.Entities
 {
-    public class FuncionarioCompetencia:IEntity
+    public class FuncionarioCompetencia : IEntity
     {
         public int Id { get; set; }
         public int FuncionarioId { get; set; }

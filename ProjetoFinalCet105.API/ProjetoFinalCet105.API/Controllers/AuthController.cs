@@ -35,7 +35,7 @@ namespace ProjetoFinalCet105.API.Controllers
             _reenviarConfirmacaoEmailUseCase = reenviarConfirmacaoEmailUseCase;
             _googleLoginUseCase = googleLoginUseCase;
         }
-        
+
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponseDTO>> Login(LoginDTO dto)

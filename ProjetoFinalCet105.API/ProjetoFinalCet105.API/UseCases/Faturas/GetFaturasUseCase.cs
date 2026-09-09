@@ -34,7 +34,7 @@ namespace ProjetoFinalCet105.API.UseCases.Faturas
             {
                 if (isCliente)
                 {
-                    query = query.Where( f => f.Marcacao.ClienteId == userId);
+                    query = query.Where(f => f.Marcacao.ClienteId == userId);
                 }
                 else if (isFuncionario)
                 {
@@ -45,11 +45,11 @@ namespace ProjetoFinalCet105.API.UseCases.Faturas
                         return UseCaseResult<List<FaturaDTO>>.Falha("Funcionário autenticado não encontrado.", TipoErro.Proibido);
                     }
 
-                    query = query.Where( f => f.Marcacao.FuncionarioId == funcionario.Id);
+                    query = query.Where(f => f.Marcacao.FuncionarioId == funcionario.Id);
                 }
                 else
                 {
-                    return UseCaseResult<List<FaturaDTO>>.Falha( "Não tem permissão para consultar faturas.", TipoErro.Proibido);
+                    return UseCaseResult<List<FaturaDTO>>.Falha("Não tem permissão para consultar faturas.", TipoErro.Proibido);
                 }
             }
 
@@ -62,14 +62,14 @@ namespace ProjetoFinalCet105.API.UseCases.Faturas
             {
                 var limiteFinal = dataFim.Value.Date.AddDays(1);
 
-                query = query.Where( f => f.DataEmissao < limiteFinal);
+                query = query.Where(f => f.DataEmissao < limiteFinal);
             }
 
             if (!string.IsNullOrWhiteSpace(numero))
             {
                 var numeroPesquisa = numero.Trim();
 
-                query = query.Where( f => f.Numero.Contains(numeroPesquisa));
+                query = query.Where(f => f.Numero.Contains(numeroPesquisa));
             }
 
             if (!string.IsNullOrWhiteSpace(estado))

@@ -86,13 +86,13 @@ namespace ProjetoFinalCet105.API.Controllers
         {
             var adminUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var resultado = await _revogarPermissaoAdminTemporariaUseCase.ExecuteAsync(id,adminUserId!);
+            var resultado = await _revogarPermissaoAdminTemporariaUseCase.ExecuteAsync(id, adminUserId!);
 
             if (string.IsNullOrWhiteSpace(adminUserId))
             {
                 return Unauthorized();
             }
-                
+
 
             if (!resultado.Sucesso)
             {

@@ -12,7 +12,7 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
         private readonly IEmailService _emailService;
         private readonly ILogger<RecuperarPasswordUseCase> _logger;
 
-        public RecuperarPasswordUseCase( UserManager<User> userManager,IEmailService emailService, ILogger<RecuperarPasswordUseCase> logger)
+        public RecuperarPasswordUseCase(UserManager<User> userManager, IEmailService emailService, ILogger<RecuperarPasswordUseCase> logger)
         {
             _userManager = userManager;
             _emailService = emailService;
@@ -66,7 +66,7 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
             }
             catch (Exception ex)
             {
-                _logger.LogError( ex, "Erro ao enviar o email de recuperação de password.");
+                _logger.LogError(ex, "Erro ao enviar o email de recuperação de password.");
 
                 return UseCaseResult<bool>.Falha("Não foi possível enviar o email de recuperação.");
             }

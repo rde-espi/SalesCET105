@@ -29,11 +29,11 @@ namespace ProjetoFinalCet105.API.UseCases.Faturas
 
             if (fatura == null)
             {
-                return UseCaseResult<FaturaDTO>.Falha( "Fatura não encontrada.", TipoErro.NaoEncontrado);
+                return UseCaseResult<FaturaDTO>.Falha("Fatura não encontrada.", TipoErro.NaoEncontrado);
             }
 
             if (!isAdmin)
-            {                
+            {
                 if (isCliente)
                 {
                     if (fatura.Marcacao.ClienteId != userId)
@@ -48,17 +48,17 @@ namespace ProjetoFinalCet105.API.UseCases.Faturas
 
                     if (funcionario == null)
                     {
-                        return UseCaseResult<FaturaDTO>.Falha("Funcionário autenticado não encontrado.",TipoErro.Proibido);
+                        return UseCaseResult<FaturaDTO>.Falha("Funcionário autenticado não encontrado.", TipoErro.Proibido);
                     }
 
                     if (fatura.Marcacao.FuncionarioId != funcionario.Id)
                     {
-                        return UseCaseResult<FaturaDTO>.Falha( "Não tem permissão para consultar esta fatura.", TipoErro.Proibido);
+                        return UseCaseResult<FaturaDTO>.Falha("Não tem permissão para consultar esta fatura.", TipoErro.Proibido);
                     }
                 }
                 else
                 {
-                    return UseCaseResult<FaturaDTO>.Falha( "Não tem permissão para consultar faturas.", TipoErro.Proibido);
+                    return UseCaseResult<FaturaDTO>.Falha("Não tem permissão para consultar faturas.", TipoErro.Proibido);
                 }
             }
 

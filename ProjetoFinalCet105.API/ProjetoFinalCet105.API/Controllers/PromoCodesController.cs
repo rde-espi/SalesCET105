@@ -17,7 +17,7 @@ namespace ProjetoFinalCet105.API.Controllers
         private readonly IPromoCodeRepository _promoCodeRepository;
         private readonly ValidarPromoCodeUseCase _validarPromoCodeUseCase;
 
-        public PromoCodesController( IPromoCodeRepository promoCodeRepository, ValidarPromoCodeUseCase validarPromoCodeUseCase)
+        public PromoCodesController(IPromoCodeRepository promoCodeRepository, ValidarPromoCodeUseCase validarPromoCodeUseCase)
         {
             _promoCodeRepository = promoCodeRepository;
             _validarPromoCodeUseCase = validarPromoCodeUseCase;
@@ -85,18 +85,18 @@ namespace ProjetoFinalCet105.API.Controllers
 
             if (dto.PercentagemDesconto <= 0 || dto.PercentagemDesconto > 100)
             {
-                return BadRequest( "A percentagem de desconto deve estar entre 0 e 100.");
+                return BadRequest("A percentagem de desconto deve estar entre 0 e 100.");
             }
 
             if (dto.DataFim <= dto.DataInicio)
             {
-                return BadRequest( "A data final deve ser posterior à data inicial.");
+                return BadRequest("A data final deve ser posterior à data inicial.");
             }
 
             if (dto.LimiteUtilizacoes.HasValue &&
                 dto.LimiteUtilizacoes.Value <= 0)
             {
-                return BadRequest( "O limite de utilizações deve ser superior a zero.");
+                return BadRequest("O limite de utilizações deve ser superior a zero.");
             }
 
             var codigo = dto.Codigo.Trim().ToUpper();
@@ -135,7 +135,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 Ativo = promoCode.Ativo
             };
 
-            return CreatedAtAction( nameof(GetById),new { id = promoCode.Id }, resposta);
+            return CreatedAtAction(nameof(GetById), new { id = promoCode.Id }, resposta);
         }
 
         [Authorize(Roles = "Cliente")]
@@ -161,7 +161,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id,UpdatePromoCodeDTO dto)
+        public async Task<IActionResult> Update(int id, UpdatePromoCodeDTO dto)
         {
             var promoCode = await _promoCodeRepository.GetByIdAsync(id);
 
@@ -177,7 +177,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
             if (dto.PercentagemDesconto <= 0 || dto.PercentagemDesconto > 100)
             {
-                return BadRequest( "A percentagem de desconto deve estar entre 0 e 100.");
+                return BadRequest("A percentagem de desconto deve estar entre 0 e 100.");
             }
 
             if (dto.DataFim <= dto.DataInicio)
@@ -187,7 +187,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
             if (dto.LimiteUtilizacoes.HasValue && dto.LimiteUtilizacoes.Value <= 0)
             {
-                return BadRequest( "O limite de utilizações deve ser superior a zero.");
+                return BadRequest("O limite de utilizações deve ser superior a zero.");
             }
 
             var codigo = dto.Codigo.Trim().ToUpper();
@@ -196,12 +196,12 @@ namespace ProjetoFinalCet105.API.Controllers
 
             if (existente != null && existente.Id != promoCode.Id)
             {
-                return Conflict( "Já existe outro código promocional com este código.");
+                return Conflict("Já existe outro código promocional com este código.");
             }
 
             promoCode.Codigo = codigo;
             promoCode.Descricao = dto.Descricao?.Trim();
-            promoCode.PercentagemDesconto =dto.PercentagemDesconto;
+            promoCode.PercentagemDesconto = dto.PercentagemDesconto;
             promoCode.DataInicio = dto.DataInicio;
             promoCode.DataFim = dto.DataFim;
             promoCode.LimiteUtilizacoes = dto.LimiteUtilizacoes;
@@ -213,7 +213,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPatch("{id:int}/ativo")]
-        public async Task<IActionResult> UpdateAtivo(int id,UpdatePromoCodeAtivoDTO dto)
+        public async Task<IActionResult> UpdateAtivo(int id, UpdatePromoCodeAtivoDTO dto)
         {
             var promoCode = await _promoCodeRepository.GetByIdAsync(id);
 

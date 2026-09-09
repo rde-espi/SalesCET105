@@ -60,7 +60,7 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(resultado.Dados);
         }
 
-        [Authorize(Roles ="Cliente")]
+        [Authorize(Roles = "Cliente")]
         [HttpPost]
         public async Task<ActionResult<FeedbackDTO>> CreateFeedback(NovoFeedbackDTO dto)
         {
@@ -78,7 +78,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 return TratarErroComDados(resultado);
             }
 
-            return CreatedAtAction( nameof(GetFeedbackById), new { id = resultado.Dados!.Id }, resultado.Dados);
+            return CreatedAtAction(nameof(GetFeedbackById), new { id = resultado.Dados!.Id }, resultado.Dados);
         }
 
         [HttpGet("funcionario/{funcionarioId:int}/resumo")]
@@ -96,7 +96,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "FeedbackMarcação")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateFeedback(int id,UpdateFeedbackDTO dto)
+        public async Task<IActionResult> UpdateFeedback(int id, UpdateFeedbackDTO dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

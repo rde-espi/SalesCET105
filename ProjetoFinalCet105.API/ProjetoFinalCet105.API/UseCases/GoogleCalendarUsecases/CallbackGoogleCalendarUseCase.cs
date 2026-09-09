@@ -34,7 +34,7 @@ namespace ProjetoFinalCet105.API.UseCases.GoogleCalendarUsecases
 
             if (tokenGoogle == null || string.IsNullOrWhiteSpace(tokenGoogle.RefreshToken))
             {
-                return UseCaseResult<bool>.Falha( "Não foi possível obter o refresh token do Google.");
+                return UseCaseResult<bool>.Falha("Não foi possível obter o refresh token do Google.");
             }
 
             var conta = await _repository.GetByUserIdAsync(userId);

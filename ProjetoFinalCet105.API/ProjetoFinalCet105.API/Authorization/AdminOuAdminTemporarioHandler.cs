@@ -14,7 +14,7 @@ namespace ProjetoFinalCet105.API.Authorization
             _permissaoRepository = permissaoRepository;
         }
 
-        protected override async Task HandleRequirementAsync( AuthorizationHandlerContext context, AdminOuAdminTemporarioRequirement requirement)
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, AdminOuAdminTemporarioRequirement requirement)
         {
             if (context.User.IsInRole("Admin"))
             {

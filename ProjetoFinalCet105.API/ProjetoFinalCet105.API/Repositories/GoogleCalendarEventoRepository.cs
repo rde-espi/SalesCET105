@@ -19,7 +19,7 @@ namespace ProjetoFinalCet105.API.Repositories
                 g.UserId == userId);
         }
 
-        public async Task<List<GoogleCalendarEvento>> GetByMarcacaoIdAsync( int marcacaoId)
+        public async Task<List<GoogleCalendarEvento>> GetByMarcacaoIdAsync(int marcacaoId)
         {
             return await _context.GoogleCalendarEventos
                 .AsNoTracking()

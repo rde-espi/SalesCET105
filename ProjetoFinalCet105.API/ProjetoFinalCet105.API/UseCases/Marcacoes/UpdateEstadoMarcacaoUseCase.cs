@@ -31,13 +31,13 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             _logger = logger;
         }
 
-        public async Task<UseCaseResult<bool>> ExecuteAsync(int id,string userId,bool isFuncionario,bool isAdmin,UpdateEstadoMarcacaoDTO dto)
+        public async Task<UseCaseResult<bool>> ExecuteAsync(int id, string userId, bool isFuncionario, bool isAdmin, UpdateEstadoMarcacaoDTO dto)
         {
             var marcacao = await _marcacaoRepository.GetByIdAsync(id);
 
             if (marcacao == null)
             {
-                return UseCaseResult<bool>.Falha("Marcação não encontrada.",TipoErro.NaoEncontrado);
+                return UseCaseResult<bool>.Falha("Marcação não encontrada.", TipoErro.NaoEncontrado);
             }
 
             if (isFuncionario && !isAdmin)
@@ -46,12 +46,12 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
 
                 if (funcionarioAutenticado == null)
                 {
-                    return UseCaseResult<bool>.Falha("Funcionário autenticado não encontrado.",TipoErro.Proibido);
+                    return UseCaseResult<bool>.Falha("Funcionário autenticado não encontrado.", TipoErro.Proibido);
                 }
 
                 if (marcacao.FuncionarioId != funcionarioAutenticado.Id)
                 {
-                    return UseCaseResult<bool>.Falha("Não tem permissão para alterar o estado desta marcação.",TipoErro.Proibido);
+                    return UseCaseResult<bool>.Falha("Não tem permissão para alterar o estado desta marcação.", TipoErro.Proibido);
                 }
             }
 
@@ -62,7 +62,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 return UseCaseResult<bool>.Falha("O estado atual da marcação não foi encontrado.", TipoErro.NaoEncontrado);
             }
 
-            var novoEstado =await _estadoMarcacaoRepository.GetByIdAsync(dto.EstadoMarcacaoId);
+            var novoEstado = await _estadoMarcacaoRepository.GetByIdAsync(dto.EstadoMarcacaoId);
 
             if (novoEstado == null)
             {
@@ -121,7 +121,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning( ex, "O estado da marcação {MarcacaoId} foi alterado para {NovoEstado}, mas ocorreu uma falha ao enviar a notificação.",
+                    _logger.LogWarning(ex, "O estado da marcação {MarcacaoId} foi alterado para {NovoEstado}, mas ocorreu uma falha ao enviar a notificação.",
                         marcacao.Id,
                         novoEstado.Nome);
                 }

@@ -43,29 +43,29 @@ namespace ProjetoFinalCet105.API.UseCases.Cliente
             {
                 if (id != userId)
                 {
-                    return UseCaseResult<bool>.Falha( "Não tem permissão para alterar este cliente.", TipoErro.Proibido);
+                    return UseCaseResult<bool>.Falha("Não tem permissão para alterar este cliente.", TipoErro.Proibido);
                 }
             }
 
             // 4. Validar campos obrigatórios
             if (string.IsNullOrWhiteSpace(dto.NomeCompleto))
             {
-                return UseCaseResult<bool>.Falha( "O nome completo é obrigatório.");
+                return UseCaseResult<bool>.Falha("O nome completo é obrigatório.");
             }
 
             if (string.IsNullOrWhiteSpace(dto.Email))
             {
-                return UseCaseResult<bool>.Falha( "O email é obrigatório.");
+                return UseCaseResult<bool>.Falha("O email é obrigatório.");
             }
 
             // 5. Se o email mudou, verificar se já existe
-            if (!string.Equals( cliente.Email, dto.Email, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(cliente.Email, dto.Email, StringComparison.OrdinalIgnoreCase))
             {
                 var userComEmail = await _userManager.FindByEmailAsync(dto.Email);
 
                 if (userComEmail != null && userComEmail.Id != cliente.Id)
                 {
-                    return UseCaseResult<bool>.Falha( "Já existe outro utilizador com este email.", TipoErro.Conflito);
+                    return UseCaseResult<bool>.Falha("Já existe outro utilizador com este email.", TipoErro.Conflito);
                 }
             }
 
@@ -104,7 +104,7 @@ namespace ProjetoFinalCet105.API.UseCases.Cliente
 
                 if (!resultado.Succeeded)
                 {
-                    var erros = string.Join( "; ", resultado.Errors.Select(e => e.Description));
+                    var erros = string.Join("; ", resultado.Errors.Select(e => e.Description));
 
                     return UseCaseResult<bool>.Falha(erros);
                 }

@@ -17,7 +17,7 @@ namespace ProjetoFinalCet105.Web.Services
         {
             return await _httpClient.GetFromJsonAsync<T>(endpoint);
         }
-        public async Task<TResponse?> PostAsync<TRequest, TResponse>( string endpoint, TRequest data)
+        public async Task<TResponse?> PostAsync<TRequest, TResponse>(string endpoint, TRequest data)
         {
             var response = await _httpClient.PostAsJsonAsync(endpoint, data);
 
@@ -41,9 +41,9 @@ namespace ProjetoFinalCet105.Web.Services
                 return default;
             }
 
-            using var request = new HttpRequestMessage( HttpMethod.Get, endpoint);
+            using var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
 
-            request.Headers.Authorization = new AuthenticationHeaderValue( "Bearer", token);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             using var response = await _httpClient.SendAsync(request);
 

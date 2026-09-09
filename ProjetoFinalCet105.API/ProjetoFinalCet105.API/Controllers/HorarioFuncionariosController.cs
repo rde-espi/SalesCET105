@@ -20,7 +20,7 @@ namespace ProjetoFinalCet105.API.Controllers
         private readonly DeleteHorarioFuncionarioUseCase _deleteHorarioFuncionarioUseCase;
 
         public HorarioFuncionariosController(IHorarioFuncionarioRepository horarioFuncionarioRepository, IFuncionarioRepository funcionarioRepository,
-            CreateHorarioFuncionarioUseCase createHorarioFuncionarioUseCase, UpdateHorarioFuncionarioUseCase updateHorarioFuncionarioUseCase, 
+            CreateHorarioFuncionarioUseCase createHorarioFuncionarioUseCase, UpdateHorarioFuncionarioUseCase updateHorarioFuncionarioUseCase,
             DeleteHorarioFuncionarioUseCase deleteHorarioFuncionarioUseCase)
         {
             _horarioFuncionarioRepository = horarioFuncionarioRepository;
@@ -160,7 +160,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "GerirHorario")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateHorarioFuncionario(int id,UpdateHorarioFuncionarioDTO dto)
+        public async Task<IActionResult> UpdateHorarioFuncionario(int id, UpdateHorarioFuncionarioDTO dto)
         {
             var userId =
                 User.FindFirstValue(ClaimTypes.NameIdentifier);

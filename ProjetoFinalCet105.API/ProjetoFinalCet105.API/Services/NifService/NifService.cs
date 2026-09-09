@@ -8,7 +8,7 @@ namespace ProjetoFinalCet105.API.Services.NifService
         private readonly IConfiguration _configuration;
         private readonly ILogger<NifService> _logger;
 
-        public NifService( HttpClient httpClient, IConfiguration configuration, ILogger<NifService> logger)
+        public NifService(HttpClient httpClient, IConfiguration configuration, ILogger<NifService> logger)
         {
             _httpClient = httpClient;
             _configuration = configuration;
@@ -40,18 +40,19 @@ namespace ProjetoFinalCet105.API.Services.NifService
 
             var resto = soma % 11;
 
-            var digitoControlo = resto < 2 ? 0  : 11 - resto;
+            var digitoControlo = resto < 2 ? 0 : 11 - resto;
 
             var ultimoDigito = nif[8] - '0';
 
             return digitoControlo == ultimoDigito;
         }
 
-        public async Task<ResultadoValidacaoNifDTO> ValidarAsync( string nif)
+        public async Task<ResultadoValidacaoNifDTO> ValidarAsync(string nif)
         {
             var resultado = new ResultadoValidacaoNifDTO
             {
-                Nif = nif, FormatoValido = ValidarNifPortugues(nif)
+                Nif = nif,
+                FormatoValido = ValidarNifPortugues(nif)
             };
 
             // Se falhar matematicamente, nem consulta o NIF.PT.
@@ -99,7 +100,7 @@ namespace ProjetoFinalCet105.API.Services.NifService
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex,"Não foi possível consultar o NIF {Nif} no serviço NIF.PT.", nif);
+                _logger.LogWarning(ex, "Não foi possível consultar o NIF {Nif} no serviço NIF.PT.", nif);
 
                 return resultado;
             }

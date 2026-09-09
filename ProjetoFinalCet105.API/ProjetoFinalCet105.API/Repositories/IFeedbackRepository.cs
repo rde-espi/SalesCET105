@@ -2,7 +2,7 @@
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public interface IFeedbackRepository:IGenericRepository<Feedback>
+    public interface IFeedbackRepository : IGenericRepository<Feedback>
     {
         IQueryable<Feedback> GetAllWithDetails();
 

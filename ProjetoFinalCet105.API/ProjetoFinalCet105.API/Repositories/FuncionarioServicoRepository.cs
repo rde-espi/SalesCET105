@@ -4,11 +4,11 @@ using ProjetoFinalCet105.API.Entities;
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public class FuncionarioServicoRepository:GenericRepository<FuncionarioServico>,IFuncionarioServicoRepository
+    public class FuncionarioServicoRepository : GenericRepository<FuncionarioServico>, IFuncionarioServicoRepository
     {
-        public FuncionarioServicoRepository(DataContext context): base(context)
+        public FuncionarioServicoRepository(DataContext context) : base(context)
         {
-            
+
         }
 
         public IQueryable<FuncionarioServico> GetAllWithDetails()

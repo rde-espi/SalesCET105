@@ -16,7 +16,7 @@ namespace ProjetoFinalCet105.API.Controllers
         private readonly GetDashboardClientesUseCase _getDashboardClientesUseCase;
         private readonly GetDashboardEquipaUseCase _getDashboardEquipaUseCase;
 
-        public DashboardController( GetDashboardFinanceiroUseCase getDashboardFinanceiroUseCase, GetDashboardAgendaUseCase getDashboardAgendaUseCase, 
+        public DashboardController(GetDashboardFinanceiroUseCase getDashboardFinanceiroUseCase, GetDashboardAgendaUseCase getDashboardAgendaUseCase,
             GetDashboardClientesUseCase getDashboardClientesUseCase, GetDashboardEquipaUseCase getDashboardEquipaUseCase)
         {
             _getDashboardFinanceiroUseCase = getDashboardFinanceiroUseCase;

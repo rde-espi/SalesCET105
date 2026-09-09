@@ -88,7 +88,7 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogWarning( ex,"Falha ao enviar lembrete de 30 minutos da marcação {MarcacaoId}. Será tentado novamente.", marcacao.Id);
+                            _logger.LogWarning(ex, "Falha ao enviar lembrete de 30 minutos da marcação {MarcacaoId}. Será tentado novamente.", marcacao.Id);
                         }
                     }
 
@@ -138,7 +138,7 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogWarning(ex,"Falha ao enviar lembrete de 24 horas da marcação {MarcacaoId}. Será tentado novamente.", marcacao.Id);
+                            _logger.LogWarning(ex, "Falha ao enviar lembrete de 24 horas da marcação {MarcacaoId}. Será tentado novamente.", marcacao.Id);
                         }
                     }
                 }
@@ -149,12 +149,12 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError( ex,"Erro durante o processamento dos lembretes de marcações.");
+                    _logger.LogError(ex, "Erro durante o processamento dos lembretes de marcações.");
                 }
 
                 try
                 {
-                    await Task.Delay( TimeSpan.FromMinutes(10), stoppingToken);
+                    await Task.Delay(TimeSpan.FromMinutes(10), stoppingToken);
                 }
                 catch (OperationCanceledException)
                     when (stoppingToken.IsCancellationRequested)

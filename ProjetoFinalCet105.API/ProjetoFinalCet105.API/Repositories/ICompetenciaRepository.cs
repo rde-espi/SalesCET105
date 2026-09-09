@@ -2,7 +2,7 @@
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public interface ICompetenciaRepository:IGenericRepository<Competencia>
+    public interface ICompetenciaRepository : IGenericRepository<Competencia>
     {
     }
 }

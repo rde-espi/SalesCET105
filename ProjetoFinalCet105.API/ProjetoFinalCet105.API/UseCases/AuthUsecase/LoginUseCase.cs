@@ -7,51 +7,51 @@ using ProjetoFinalCet105.API.UseCases.Common;
 
 namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
 {
-        public class LoginUseCase
-        {
-            private readonly UserManager<User> _userManager;
-            private readonly IAuthService _authService;
+    public class LoginUseCase
+    {
+        private readonly UserManager<User> _userManager;
+        private readonly IAuthService _authService;
         private readonly IEmailService _emailService;
 
-        public LoginUseCase(UserManager<User> userManager,IAuthService authService, IEmailService emailService)
-            {
-                _userManager = userManager;
-                _authService = authService;
+        public LoginUseCase(UserManager<User> userManager, IAuthService authService, IEmailService emailService)
+        {
+            _userManager = userManager;
+            _authService = authService;
             _emailService = emailService;
         }
 
-            public async Task<UseCaseResult<LoginResponseDTO>> ExecuteAsync(
-                LoginDTO dto)
+        public async Task<UseCaseResult<LoginResponseDTO>> ExecuteAsync(
+            LoginDTO dto)
+        {
+            var user =
+                await _userManager.FindByEmailAsync(dto.Email);
+
+            if (user == null)
             {
-                var user =
-                    await _userManager.FindByEmailAsync(dto.Email);
+                return UseCaseResult<LoginResponseDTO>.Falha(
+                    "Email ou password inválidos.",
+                    TipoErro.NaoAutorizado);
+            }
 
-                if (user == null)
-                {
-                    return UseCaseResult<LoginResponseDTO>.Falha(
-                        "Email ou password inválidos.",
-                        TipoErro.NaoAutorizado);
-                }
+            var passwordValida = await _userManager.CheckPasswordAsync(user, dto.Password);
 
-                var passwordValida = await _userManager.CheckPasswordAsync(user,dto.Password);
+            if (!passwordValida)
+            {
+                return UseCaseResult<LoginResponseDTO>.Falha(
+                    "Email ou password inválidos.",
+                    TipoErro.NaoAutorizado);
+            }
 
-                if (!passwordValida)
-                {
-                    return UseCaseResult<LoginResponseDTO>.Falha(
-                        "Email ou password inválidos.",
-                        TipoErro.NaoAutorizado);
-                }
-
-                if (!user.Ativo)
-                {
-                    return UseCaseResult<LoginResponseDTO>.Falha(
-                        "O utilizador encontra-se desativado.",
-                        TipoErro.NaoAutorizado);
-                }
+            if (!user.Ativo)
+            {
+                return UseCaseResult<LoginResponseDTO>.Falha(
+                    "O utilizador encontra-se desativado.",
+                    TipoErro.NaoAutorizado);
+            }
 
             if (await _userManager.GetTwoFactorEnabledAsync(user))
             {
-                var codigo =await _userManager.GenerateTwoFactorTokenAsync(user,TokenOptions.DefaultEmailProvider);
+                var codigo = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
 
                 await _emailService.EnviarEmailAsync(
                     user.Email!,
@@ -74,10 +74,10 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
                     await _authService
                         .GerarRespostaLoginAsync(user);
 
-                return UseCaseResult<LoginResponseDTO>.Ok(
-                    resposta);
-            }
+            return UseCaseResult<LoginResponseDTO>.Ok(
+                resposta);
         }
+    }
 }
 
 

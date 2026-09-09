@@ -4,11 +4,11 @@ using ProjetoFinalCet105.API.Entities;
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public class ServicoRepository:GenericRepository<Servico>, IServicoRepository
+    public class ServicoRepository : GenericRepository<Servico>, IServicoRepository
     {
         public ServicoRepository(DataContext context) : base(context)
         {
-            
+
         }
 
         public IQueryable<Servico> GetAllWithCategoria()
@@ -21,7 +21,7 @@ namespace ProjetoFinalCet105.API.Repositories
         public async Task<Servico?> GetByIdWithCategoriaAsync(int id)
         {
             return await _context.Servicos
-                .Include (s => s.Categoria)
+                .Include(s => s.Categoria)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.Id == id);
         }

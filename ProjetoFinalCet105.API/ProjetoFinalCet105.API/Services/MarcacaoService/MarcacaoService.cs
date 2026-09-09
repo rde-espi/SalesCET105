@@ -23,7 +23,7 @@ namespace ProjetoFinalCet105.API.Services.MarcacaoService
             _marcacaoRepository = marcacaoRepository;
         }
 
-        public async Task<FuncionarioServico?> GetFuncionarioServicoAsync(int funcionarioId,int servicoId)
+        public async Task<FuncionarioServico?> GetFuncionarioServicoAsync(int funcionarioId, int servicoId)
         {
             return await _funcionarioServicoRepository
                 .GetAll()
@@ -33,7 +33,7 @@ namespace ProjetoFinalCet105.API.Services.MarcacaoService
                     fs.Ativo);
         }
 
-        public async Task<bool> HorarioValidoAsync(int funcionarioId,DateTime inicio,DateTime fim)
+        public async Task<bool> HorarioValidoAsync(int funcionarioId, DateTime inicio, DateTime fim)
         {
             var diaSemana = inicio.DayOfWeek;
 
@@ -47,7 +47,7 @@ namespace ProjetoFinalCet105.API.Services.MarcacaoService
                     fim.TimeOfDay <= h.HoraFim);
         }
 
-        public async Task<bool> ExisteIndisponibilidadeAsync(int funcionarioId,DateTime inicio,DateTime fim)
+        public async Task<bool> ExisteIndisponibilidadeAsync(int funcionarioId, DateTime inicio, DateTime fim)
         {
             return await _indisponibilidadeRepository
                 .GetAll()
@@ -57,7 +57,7 @@ namespace ProjetoFinalCet105.API.Services.MarcacaoService
                     fim > i.DataHoraInicio);
         }
 
-        public async Task<bool> ExisteSobreposicaoAsync(int funcionarioId,DateTime inicio, DateTime fim,int? marcacaoIgnorarId = null)
+        public async Task<bool> ExisteSobreposicaoAsync(int funcionarioId, DateTime inicio, DateTime fim, int? marcacaoIgnorarId = null)
         {
             return await _marcacaoRepository.ExisteSobreposicaoAsync(
                 funcionarioId,

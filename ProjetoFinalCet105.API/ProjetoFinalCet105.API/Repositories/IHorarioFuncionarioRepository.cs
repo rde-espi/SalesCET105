@@ -2,7 +2,7 @@
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public interface IHorarioFuncionarioRepository:IGenericRepository<HorarioFuncionario>
+    public interface IHorarioFuncionarioRepository : IGenericRepository<HorarioFuncionario>
     {
         IQueryable<HorarioFuncionario> GetAllWithFuncionario();
 

@@ -79,7 +79,7 @@ namespace ProjetoFinalCet105.API.Services.HorarioFuncionarioService
             return UseCaseResult<bool>.Ok(true);
         }
 
-        public async Task<bool> ExistemMarcacoesConfirmadasNoHorarioAsync(int funcionarioId,DayOfWeek diaSemana,TimeSpan horaInicio,TimeSpan horaFim)
+        public async Task<bool> ExistemMarcacoesConfirmadasNoHorarioAsync(int funcionarioId, DayOfWeek diaSemana, TimeSpan horaInicio, TimeSpan horaFim)
         {
             var agora = DateTime.Now;
 

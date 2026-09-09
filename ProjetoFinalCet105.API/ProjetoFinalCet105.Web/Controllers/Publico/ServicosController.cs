@@ -15,7 +15,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
         public async Task<IActionResult> Index()
         {
-            var servicos = await _apiService.GetAsync<List<ServicoViewModel>>( "api/Servicos" );
+            var servicos = await _apiService.GetAsync<List<ServicoViewModel>>("api/Servicos");
 
             return View(servicos ?? new List<ServicoViewModel>());
         }

@@ -19,7 +19,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
             _userManager = userManager;
         }
 
-        public async Task<UseCaseResult<bool>> ExecuteAsync(int id,string userId,bool isFuncionario,bool isAdmin,UpdateFuncionarioDTO dto)
+        public async Task<UseCaseResult<bool>> ExecuteAsync(int id, string userId, bool isFuncionario, bool isAdmin, UpdateFuncionarioDTO dto)
         {
             var funcionario = await _funcionarioRepository.GetByIdAsync(id);
 
@@ -51,7 +51,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
                 }
             }
 
-            var user = await _userManager.FindByIdAsync(funcionario.UserId);           
+            var user = await _userManager.FindByIdAsync(funcionario.UserId);
 
             if (user == null)
             {

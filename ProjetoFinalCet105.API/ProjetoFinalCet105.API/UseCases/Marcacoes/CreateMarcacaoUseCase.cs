@@ -57,7 +57,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             _logger = logger;
         }
 
-        public async Task<UseCaseResult<MarcacaoDTO>> ExecuteAsync( string userId,bool isCliente,bool isFuncionario,bool isAdmin,NovaMarcacaoDTO dto)
+        public async Task<UseCaseResult<MarcacaoDTO>> ExecuteAsync(string userId, bool isCliente, bool isFuncionario, bool isAdmin, NovaMarcacaoDTO dto)
         {
             string clienteId;
             int funcionarioId;
@@ -79,7 +79,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
             else
             {
                 return UseCaseResult<MarcacaoDTO>
-                    .Falha("Utilizador sem permissão para criar marcações",TipoErro.Proibido);
+                    .Falha("Utilizador sem permissão para criar marcações", TipoErro.Proibido);
             }
 
             var cliente = await _userManager.FindByIdAsync(clienteId);
@@ -122,7 +122,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 funcionarioId = dto.FuncionarioId.Value;
             }
 
-            var funcionario =await _funcionarioRepository.GetFuncionarioByIdAsync(funcionarioId);
+            var funcionario = await _funcionarioRepository.GetFuncionarioByIdAsync(funcionarioId);
 
             if (funcionario == null)
             {
@@ -211,7 +211,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                 precoFinal = precoOriginal - valorDesconto.Value;
             }
 
-            var horarioValido = await _marcacaoService.HorarioValidoAsync(funcionarioId,dto.DataHoraInicio,dataHoraFim);
+            var horarioValido = await _marcacaoService.HorarioValidoAsync(funcionarioId, dto.DataHoraInicio, dataHoraFim);
 
             if (!horarioValido)
             {
@@ -219,7 +219,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                     .Falha("A marcação está fora do horário de trabalho do funcionário");
             }
 
-            var indisponivel = await _marcacaoService.ExisteIndisponibilidadeAsync(funcionarioId,dto.DataHoraInicio,dataHoraFim);
+            var indisponivel = await _marcacaoService.ExisteIndisponibilidadeAsync(funcionarioId, dto.DataHoraInicio, dataHoraFim);
 
             if (indisponivel)
             {
@@ -227,7 +227,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
                     .Falha("O funcionário está indisponível neste período");
             }
 
-            if (await _marcacaoService.ExisteSobreposicaoAsync(funcionarioId,dto.DataHoraInicio,dataHoraFim))
+            if (await _marcacaoService.ExisteSobreposicaoAsync(funcionarioId, dto.DataHoraInicio, dataHoraFim))
             {
                 return UseCaseResult<MarcacaoDTO>
                     .Falha("Já existe uma marcação para este funcionário neste período", TipoErro.Conflito);

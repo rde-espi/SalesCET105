@@ -16,7 +16,7 @@ namespace ProjetoFinalCet105.API.Controllers
         private readonly CreateClienteUseCase _createClienteUseCase;
         private readonly UpdateClienteUseCase _updateClienteUseCase;
 
-        public ClientesController(UserManager<User> userManager, CreateClienteUseCase createClienteUseCase,UpdateClienteUseCase updateClienteUseCase)
+        public ClientesController(UserManager<User> userManager, CreateClienteUseCase createClienteUseCase, UpdateClienteUseCase updateClienteUseCase)
         {
             _userManager = userManager;
             _createClienteUseCase = createClienteUseCase;
@@ -86,7 +86,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "AlterarCliente")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCliente(string id,UpdateClienteDTO dto)
+        public async Task<IActionResult> UpdateCliente(string id, UpdateClienteDTO dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -95,7 +95,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 return Unauthorized();
             }
 
-            var resultado = await _updateClienteUseCase.ExecuteAsync( id, userId, User.IsInRole("Cliente"), User.IsInRole("Admin"), dto);
+            var resultado = await _updateClienteUseCase.ExecuteAsync(id, userId, User.IsInRole("Cliente"), User.IsInRole("Admin"), dto);
 
             if (!resultado.Sucesso)
             {

@@ -182,7 +182,7 @@ builder.Services.AddAuthorization(options =>
 
 
     //Permissoes temporarias de admin
-    options.AddPolicy("AdminOuAdminTemporario",policy =>
+    options.AddPolicy("AdminOuAdminTemporario", policy =>
     policy.Requirements.Add(new AdminOuAdminTemporarioRequirement()));
 });
 
@@ -221,7 +221,7 @@ builder.Services.Configure<FaturacaoSettings>(builder.Configuration.GetSection(F
 
 
 //Gestao de admin temporario
-builder.Services.AddScoped< IAuthorizationHandler, AdminOuAdminTemporarioHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, AdminOuAdminTemporarioHandler>();
 
 
 //Limitador de chamadas a API NIT.PT devido a custos
@@ -261,13 +261,13 @@ builder.Services.AddScoped<IMensagemRepository, MensagemRepository>();
 builder.Services.AddScoped<INotificacaoRepository, NotificacaoRepository>();
 builder.Services.AddScoped<IPromoCodeRepository, PromoCodeRepository>();
 builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
-builder.Services.AddScoped<IDispositivoUserRepository,DispositivoUserRepository>();
-builder.Services.AddScoped<IGoogleCalendarContaRepository,GoogleCalendarContaRepository>();
-builder.Services.AddScoped<IGoogleCalendarEventoRepository,GoogleCalendarEventoRepository>();
+builder.Services.AddScoped<IDispositivoUserRepository, DispositivoUserRepository>();
+builder.Services.AddScoped<IGoogleCalendarContaRepository, GoogleCalendarContaRepository>();
+builder.Services.AddScoped<IGoogleCalendarEventoRepository, GoogleCalendarEventoRepository>();
 builder.Services.AddScoped<IFaturaRepository, FaturaRepository>();
-builder.Services.AddScoped<IClienteRepository,ClienteRepository>();
-builder.Services.AddScoped<IDespesaRepository,DespesaRepository>();
-builder.Services.AddScoped<IPermissaoAdminTemporariaRepository,PermissaoAdminTemporariaRepository>();
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IDespesaRepository, DespesaRepository>();
+builder.Services.AddScoped<IPermissaoAdminTemporariaRepository, PermissaoAdminTemporariaRepository>();
 
 
 
@@ -282,13 +282,13 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<INotificacaoService, NotificacaoService>();
 builder.Services.AddHostedService<LembreteMarcacoesBackgroundService>();
 builder.Services.AddHostedService<PermissaoAdminTemporariaBackgroundService>();
-builder.Services.AddScoped<IFirebaseService,FirebaseService>();
+builder.Services.AddScoped<IFirebaseService, FirebaseService>();
 builder.Services.AddSignalR();
-builder.Services.AddScoped<IGoogleCalendarService,GoogleCalendarService>();
-builder.Services.AddScoped<IGoogleCalendarSyncService,GoogleCalendarSyncService>();
+builder.Services.AddScoped<IGoogleCalendarService, GoogleCalendarService>();
+builder.Services.AddScoped<IGoogleCalendarSyncService, GoogleCalendarSyncService>();
 builder.Services.AddHttpClient<INifService, NifService>();
 builder.Services.AddScoped<IFaturaPdfService, FaturaPdfService>();
-builder.Services.AddScoped<IOcupacaoAgendaService,OcupacaoAgendaService>();
+builder.Services.AddScoped<IOcupacaoAgendaService, OcupacaoAgendaService>();
 
 //UseCases
 builder.Services.AddScoped<CreateFeedbackUseCase>();

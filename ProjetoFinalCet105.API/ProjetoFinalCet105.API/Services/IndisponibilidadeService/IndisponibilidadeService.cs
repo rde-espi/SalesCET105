@@ -100,13 +100,13 @@ namespace ProjetoFinalCet105.API.Services.IndisponibilidadeService
                     fim,
                     ignorarId);
         }
-                
+
         public UseCaseResult<PeriodoIndisponibilidade> CalcularPeriodo(
-            DateTime dataHoraInicio, 
-            DateTime dataHoraFim, 
-            bool diaCompleto, 
-            bool restoDoDia, 
-            List<HorarioFuncionario> horariosTrabalho, 
+            DateTime dataHoraInicio,
+            DateTime dataHoraFim,
+            bool diaCompleto,
+            bool restoDoDia,
+            List<HorarioFuncionario> horariosTrabalho,
             List<Marcacao> marcacoesConcluidas)
         {
             var inicio = dataHoraInicio;
@@ -168,7 +168,7 @@ namespace ProjetoFinalCet105.API.Services.IndisponibilidadeService
                 // Por defeito, começa agora
                 inicio = DateTime.Now;
 
-                
+
                 if (ultimaConcluida != null &&
                     ultimaConcluida.DataHoraFim > inicio)
                 {

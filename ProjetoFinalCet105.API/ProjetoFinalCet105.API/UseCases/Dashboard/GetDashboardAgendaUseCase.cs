@@ -24,7 +24,7 @@ namespace ProjetoFinalCet105.API.UseCases.Dashboard
 
             var inicioProximoMes = inicioMes.AddMonths(1);
 
-            var ocupacao = await _ocupacaoAgendaService.CalcularAsync(inicioMes,inicioProximoMes);
+            var ocupacao = await _ocupacaoAgendaService.CalcularAsync(inicioMes, inicioProximoMes);
 
             var taxaOcupacao =
                 ocupacao.HorasDisponiveis > 0
@@ -42,7 +42,7 @@ namespace ProjetoFinalCet105.API.UseCases.Dashboard
 
             var totalMarcacoesMes = await marcacoesMes.CountAsync();
 
-            var concluidas = await marcacoesMes.CountAsync(m =>m.EstadoMarcacao.Nome == "Concluida");
+            var concluidas = await marcacoesMes.CountAsync(m => m.EstadoMarcacao.Nome == "Concluida");
 
             var canceladas = await marcacoesMes.CountAsync(m => m.EstadoMarcacao.Nome == "Cancelada");
 
@@ -57,7 +57,7 @@ namespace ProjetoFinalCet105.API.UseCases.Dashboard
                 if (totalMarcacoesMes == 0)
                     return 0;
 
-                return Math.Round((decimal)quantidade / totalMarcacoesMes * 100,2);
+                return Math.Round((decimal)quantidade / totalMarcacoesMes * 100, 2);
             }
 
             return new DashboardAgendaDTO
@@ -73,7 +73,7 @@ namespace ProjetoFinalCet105.API.UseCases.Dashboard
                 HorasDisponiveisMes = ocupacao.HorasDisponiveis,
                 HorasOcupadasMes = ocupacao.HorasOcupadas,
                 TaxaOcupacao = taxaOcupacao,
-                HorasLivresMes = Math.Round(Math.Max(0,ocupacao.HorasDisponiveis -ocupacao.HorasOcupadas),2),
+                HorasLivresMes = Math.Round(Math.Max(0, ocupacao.HorasDisponiveis - ocupacao.HorasOcupadas), 2),
 
                 TaxaConclusao = CalcularTaxa(concluidas),
                 TaxaCancelamento = CalcularTaxa(canceladas),
@@ -81,11 +81,11 @@ namespace ProjetoFinalCet105.API.UseCases.Dashboard
             };
         }
 
-        public async Task<List<HorarioMaiorProcuraDTO>>ExecuteHorariosMaiorProcuraAsync(int limite = 5)
+        public async Task<List<HorarioMaiorProcuraDTO>> ExecuteHorariosMaiorProcuraAsync(int limite = 5)
         {
             var hoje = DateTime.Today;
 
-            var inicioMes = new DateTime( hoje.Year, hoje.Month, 1);
+            var inicioMes = new DateTime(hoje.Year, hoje.Month, 1);
 
             var inicioProximoMes = inicioMes.AddMonths(1);
 
@@ -130,11 +130,11 @@ namespace ProjetoFinalCet105.API.UseCases.Dashboard
                 .ToList();
         }
 
-        public async Task<List<ServicoMaisMarcadoDTO>>ExecuteServicosMaisMarcadosAsync(int limite = 5)
+        public async Task<List<ServicoMaisMarcadoDTO>> ExecuteServicosMaisMarcadosAsync(int limite = 5)
         {
             var hoje = DateTime.Today;
 
-            var inicioMes = new DateTime( hoje.Year, hoje.Month, 1);
+            var inicioMes = new DateTime(hoje.Year, hoje.Month, 1);
 
             var inicioProximoMes = inicioMes.AddMonths(1);
 
@@ -182,7 +182,7 @@ namespace ProjetoFinalCet105.API.UseCases.Dashboard
                 .ToList();
         }
 
-        public async Task<List<DiaSemanaProcuraDTO>>ExecuteDiasMaiorProcuraAsync()
+        public async Task<List<DiaSemanaProcuraDTO>> ExecuteDiasMaiorProcuraAsync()
         {
             var hoje = DateTime.Today;
 

@@ -9,20 +9,20 @@ using System.Text;
 
 namespace ProjetoFinalCet105.API.Services.AuthService
 {
-    public class AuthService:IAuthService
+    public class AuthService : IAuthService
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
 
-        public AuthService(UserManager<User> userManager,IConfiguration configuration,IEmailService emailService)
+        public AuthService(UserManager<User> userManager, IConfiguration configuration, IEmailService emailService)
         {
             _userManager = userManager;
             _configuration = configuration;
             _emailService = emailService;
         }
 
-        public async Task<LoginResponseDTO>GerarRespostaLoginAsync(User user)
+        public async Task<LoginResponseDTO> GerarRespostaLoginAsync(User user)
         {
             var roles = await _userManager.GetRolesAsync(user);
 
@@ -40,7 +40,7 @@ namespace ProjetoFinalCet105.API.Services.AuthService
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
 
-            var credentials = new SigningCredentials(key,SecurityAlgorithms.HmacSha256);
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],

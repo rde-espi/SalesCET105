@@ -1,6 +1,6 @@
 ﻿namespace ProjetoFinalCet105.API.Entities
 {
-    public class Conversa:IEntity
+    public class Conversa : IEntity
     {
         public int Id { get; set; }
 

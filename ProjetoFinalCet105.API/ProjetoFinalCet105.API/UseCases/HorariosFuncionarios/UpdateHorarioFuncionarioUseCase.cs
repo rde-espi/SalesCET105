@@ -144,7 +144,7 @@ namespace ProjetoFinalCet105.API.UseCases.HorariosFuncionarios
             }
         }
 
-        private async Task<UseCaseResult<bool>> ValidarAutorizacaoAsync(HorarioFuncionario horario,string userId,bool isFuncionario,bool isAdmin)
+        private async Task<UseCaseResult<bool>> ValidarAutorizacaoAsync(HorarioFuncionario horario, string userId, bool isFuncionario, bool isAdmin)
         {
             // Admin pode alterar qualquer horário
             if (isAdmin)

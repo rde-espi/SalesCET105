@@ -27,7 +27,7 @@ namespace ProjetoFinalCet105.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NotificacaoDTO>>>GetMinhasNotificacoes()
+        public async Task<ActionResult<IEnumerable<NotificacaoDTO>>> GetMinhasNotificacoes()
         {
             var userId =
                 User.FindFirstValue(
@@ -90,7 +90,7 @@ namespace ProjetoFinalCet105.API.Controllers
         }
 
         [HttpGet("contador-nao-lidas")]
-        public async Task<ActionResult<int>>GetContadorNaoLidas()
+        public async Task<ActionResult<int>> GetContadorNaoLidas()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

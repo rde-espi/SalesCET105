@@ -53,14 +53,14 @@ namespace ProjetoFinalCet105.API.UseCases.Conversas
                 {
                     ConversaId = conversa.Id,
 
-                    
+
                     RemetenteId = userId,
 
                     Texto = dto.Texto.Trim(),
 
                     DataEnvio = DateTime.Now,
 
-                    
+
                     Lida = false,
                     DataLeitura = null
                 };

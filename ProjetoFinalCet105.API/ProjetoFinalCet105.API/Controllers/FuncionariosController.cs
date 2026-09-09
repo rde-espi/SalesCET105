@@ -89,7 +89,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 return Unauthorized();
             }
 
-            if (User.IsInRole("Funcionario") && !User.IsInRole("Admin") &&  authenticatedUserId != userId)
+            if (User.IsInRole("Funcionario") && !User.IsInRole("Admin") && authenticatedUserId != userId)
             {
                 return Forbid();
             }
@@ -127,7 +127,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 return TratarErroComDados(resultado);
             }
 
-            return CreatedAtAction( nameof(GetFuncionarioById), new { id = resultado.Dados!.Id }, resultado.Dados);
+            return CreatedAtAction(nameof(GetFuncionarioById), new { id = resultado.Dados!.Id }, resultado.Dados);
         }
 
         [Authorize(Policy = "AlterarFuncionario")]

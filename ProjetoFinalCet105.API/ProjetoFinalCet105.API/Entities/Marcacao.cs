@@ -1,6 +1,6 @@
 ﻿namespace ProjetoFinalCet105.API.Entities
 {
-    public class Marcacao:IEntity
+    public class Marcacao : IEntity
     {
         public int Id { get; set; }
 
@@ -33,7 +33,7 @@
         public int? PromoCodeId { get; set; }
         public PromoCode? PromoCode { get; set; }
 
-        public decimal? PercentagemDescontoAplicada {  get; set; }
-        public decimal? ValorDesconto {  get; set; }
+        public decimal? PercentagemDescontoAplicada { get; set; }
+        public decimal? ValorDesconto { get; set; }
     }
 }

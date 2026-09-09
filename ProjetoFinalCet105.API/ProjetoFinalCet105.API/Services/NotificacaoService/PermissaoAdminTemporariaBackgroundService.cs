@@ -8,13 +8,13 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<PermissaoAdminTemporariaBackgroundService> _logger;
 
-        public PermissaoAdminTemporariaBackgroundService( IServiceScopeFactory scopeFactory, ILogger<PermissaoAdminTemporariaBackgroundService> logger)
+        public PermissaoAdminTemporariaBackgroundService(IServiceScopeFactory scopeFactory, ILogger<PermissaoAdminTemporariaBackgroundService> logger)
         {
             _scopeFactory = scopeFactory;
             _logger = logger;
         }
 
-        protected override async Task ExecuteAsync( CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -75,7 +75,7 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
 
                 try
                 {
-                    await Task.Delay( TimeSpan.FromMinutes(1), stoppingToken);
+                    await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
                 }
                 catch (OperationCanceledException)
                     when (stoppingToken.IsCancellationRequested)

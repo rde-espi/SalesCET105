@@ -44,7 +44,7 @@ namespace ProjetoFinalCet105.API.Controllers
             bool isFuncionario = User.IsInRole("Funcionario");
 
             var resultado = await _createFaturaUseCase.ExecuteAsync(marcacaoId, userId, isFuncionario, isAdmin);
-            
+
             if (!resultado.Sucesso)
             {
                 return resultado.TipoErro switch
@@ -57,7 +57,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 };
             }
 
-            return CreatedAtAction( nameof(Create), new { marcacaoId }, resultado.Dados);
+            return CreatedAtAction(nameof(Create), new { marcacaoId }, resultado.Dados);
         }
 
         [HttpGet("{id:int}")]
@@ -74,7 +74,7 @@ namespace ProjetoFinalCet105.API.Controllers
             bool isFuncionario = User.IsInRole("Funcionario");
             bool isCliente = User.IsInRole("Cliente");
 
-            var resultado = await _getFaturaByIdUseCase.ExecuteAsync( id,userId,isCliente,isFuncionario,isAdmin);
+            var resultado = await _getFaturaByIdUseCase.ExecuteAsync(id, userId, isCliente, isFuncionario, isAdmin);
 
             if (!resultado.Sucesso)
             {
@@ -173,7 +173,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
             var nomeFicheiro = $"Fatura-{fatura.Numero.Replace("/", "-")}.pdf";
 
-            return File( pdfBytes, "application/pdf", nomeFicheiro);
+            return File(pdfBytes, "application/pdf", nomeFicheiro);
         }
 
         [HttpPatch("{id:int}/anular")]
@@ -182,7 +182,7 @@ namespace ProjetoFinalCet105.API.Controllers
         {
             bool isAdmin = User.IsInRole("Admin");
 
-            var resultado = await _anularFaturaUseCase.ExecuteAsync( id, isAdmin);
+            var resultado = await _anularFaturaUseCase.ExecuteAsync(id, isAdmin);
 
             if (!resultado.Sucesso)
             {

@@ -9,7 +9,7 @@ namespace ProjetoFinalCet105.API.UseCases.Admin
         private readonly IPermissaoAdminTemporariaRepository _permissaoRepository;
         private readonly INotificacaoService _notificacaoService;
 
-        public RevogarPermissaoAdminTemporariaUseCase(IPermissaoAdminTemporariaRepository permissaoRepository,INotificacaoService notificacaoService)
+        public RevogarPermissaoAdminTemporariaUseCase(IPermissaoAdminTemporariaRepository permissaoRepository, INotificacaoService notificacaoService)
         {
             _permissaoRepository = permissaoRepository;
             _notificacaoService = notificacaoService;
@@ -33,7 +33,7 @@ namespace ProjetoFinalCet105.API.UseCases.Admin
 
             if (permissao.DataFim <= agora)
             {
-                return UseCaseResult<bool>.Falha( "Esta permissão temporária já expirou.");
+                return UseCaseResult<bool>.Falha("Esta permissão temporária já expirou.");
             }
 
             permissao.Revogada = true;

@@ -15,14 +15,14 @@ namespace ProjetoFinalCet105.API.UseCases.Admin
             _permissaoRepository;
         private readonly INotificacaoService _notificacaoService;
 
-        public ConcederPermissaoAdminTemporariaUseCase(UserManager<User> userManager, IPermissaoAdminTemporariaRepository permissaoRepository,INotificacaoService notificacaoService)
+        public ConcederPermissaoAdminTemporariaUseCase(UserManager<User> userManager, IPermissaoAdminTemporariaRepository permissaoRepository, INotificacaoService notificacaoService)
         {
             _userManager = userManager;
             _permissaoRepository = permissaoRepository;
             _notificacaoService = notificacaoService;
         }
 
-        public async Task<UseCaseResult<int>> ExecuteAsync( string adminUserId, ConcederPermissaoAdminTemporariaDTO dto)
+        public async Task<UseCaseResult<int>> ExecuteAsync(string adminUserId, ConcederPermissaoAdminTemporariaDTO dto)
         {
             var funcionario = await _userManager.FindByIdAsync(dto.FuncionarioUserId);
 

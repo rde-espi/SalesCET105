@@ -4,11 +4,11 @@ using ProjetoFinalCet105.API.Entities;
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public class GoogleCalendarContaRepository : GenericRepository<GoogleCalendarConta>,IGoogleCalendarContaRepository
+    public class GoogleCalendarContaRepository : GenericRepository<GoogleCalendarConta>, IGoogleCalendarContaRepository
     {
         public GoogleCalendarContaRepository(DataContext context) : base(context)
         {
-            
+
         }
 
         public async Task<GoogleCalendarConta?> GetByUserIdAsync(

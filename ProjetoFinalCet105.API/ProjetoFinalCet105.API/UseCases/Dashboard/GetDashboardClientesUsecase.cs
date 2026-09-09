@@ -19,7 +19,7 @@ namespace ProjetoFinalCet105.API.UseCases.Dashboard
         {
             var hoje = DateTime.Today;
 
-            var inicioMes = new DateTime(hoje.Year,  hoje.Month, 1);
+            var inicioMes = new DateTime(hoje.Year, hoje.Month, 1);
 
             var clientes = await _clienteRepository.GetAllClientesAsync();
 
@@ -53,7 +53,7 @@ namespace ProjetoFinalCet105.API.UseCases.Dashboard
 
             var clientesInativos60Dias = ultimasMarcacoesClientes.Count(c => c.UltimaMarcacao < limite60Dias);
 
-            var clientesInativos90Dias = ultimasMarcacoesClientes.Count(c =>c.UltimaMarcacao < limite90Dias);
+            var clientesInativos90Dias = ultimasMarcacoesClientes.Count(c => c.UltimaMarcacao < limite90Dias);
 
             var taxaRecorrencia =
                 totalClientes > 0

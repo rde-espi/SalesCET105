@@ -29,7 +29,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<FuncionarioCompetenciaDTO>>>GetAllFuncionarioCompetencias()
+        public async Task<ActionResult<IEnumerable<FuncionarioCompetenciaDTO>>> GetAllFuncionarioCompetencias()
         {
             var dados = await _funcionarioCompetenciaRepository
                 .GetAllWithDetails()
@@ -42,14 +42,14 @@ namespace ProjetoFinalCet105.API.Controllers
                     CompetenciaNome = fc.Competencia.Nome,
                     Nivel = fc.Nivel,
                     Certificacao = fc.Certificacao
-                }).ToListAsync();                
+                }).ToListAsync();
 
             return Ok(dados);
         }
 
         [Authorize]
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<FuncionarioCompetenciaDTO>>GetFuncionarioCompetenciaById(int id)
+        public async Task<ActionResult<FuncionarioCompetenciaDTO>> GetFuncionarioCompetenciaById(int id)
         {
             var fc = await _funcionarioCompetenciaRepository
                 .GetByIdWithDetailsAsync(id);
@@ -70,10 +70,10 @@ namespace ProjetoFinalCet105.API.Controllers
                 Certificacao = fc.Certificacao
             });
         }
-        
+
         [Authorize(Policy = "GerirCompetenciasFuncionario")]
         [HttpPost]
-        public async Task<ActionResult<FuncionarioCompetenciaDTO>>CreateFuncionarioCompetencia(FuncionarioCompetenciaDTO dto)
+        public async Task<ActionResult<FuncionarioCompetenciaDTO>> CreateFuncionarioCompetencia(FuncionarioCompetenciaDTO dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -113,7 +113,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 return BadRequest("A competência indicada não existe.");
             }
 
-            if (await _funcionarioCompetenciaRepository.ExisteFuncionarioCompetenciaAsync(funcionarioId,dto.CompetenciaId))
+            if (await _funcionarioCompetenciaRepository.ExisteFuncionarioCompetenciaAsync(funcionarioId, dto.CompetenciaId))
             {
                 return BadRequest(
                     "O funcionário já possui esta competência.");
@@ -155,7 +155,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "GerirCompetenciasFuncionario")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateFuncionarioCompetencia(int id,FuncionarioCompetenciaDTO dto)
+        public async Task<IActionResult> UpdateFuncionarioCompetencia(int id, FuncionarioCompetenciaDTO dto)
         {
             if (id != dto.Id)
             {

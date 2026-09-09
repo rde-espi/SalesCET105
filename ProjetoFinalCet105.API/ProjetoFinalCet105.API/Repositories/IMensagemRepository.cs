@@ -2,7 +2,7 @@
 
 namespace ProjetoFinalCet105.API.Repositories
 {
-    public interface IMensagemRepository:IGenericRepository<Mensagem>
+    public interface IMensagemRepository : IGenericRepository<Mensagem>
     {
         IQueryable<Mensagem> GetByConversaId(int conversaId);
 

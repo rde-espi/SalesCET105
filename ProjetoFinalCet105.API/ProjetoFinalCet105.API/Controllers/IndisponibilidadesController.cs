@@ -20,7 +20,7 @@ namespace ProjetoFinalCet105.API.Controllers
         private readonly UpdateIndisponibilidadeUseCase _updateIndisponibilidadeUseCase;
         private readonly DeleteIndisponibilidadeUseCase _deleteIndisponibilidadeUseCase;
 
-        public IndisponibilidadesController(IIndisponibilidadeRepository indisponibilidadeRepository,IFuncionarioRepository funcionarioRepository,
+        public IndisponibilidadesController(IIndisponibilidadeRepository indisponibilidadeRepository, IFuncionarioRepository funcionarioRepository,
             CreateIndisponibilidadeUseCase createIndisponibilidadeUseCase, UpdateIndisponibilidadeUseCase updateIndisponibilidadeUseCase, DeleteIndisponibilidadeUseCase deleteIndisponibilidadeUseCase)
         {
             _indisponibilidadeRepository = indisponibilidadeRepository;
@@ -32,7 +32,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "ConsultarIndisponibilidades")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<IndisponibilidadeDTO>>>GetAllIndisponibilidadesWithFuncionario()
+        public async Task<ActionResult<IEnumerable<IndisponibilidadeDTO>>> GetAllIndisponibilidadesWithFuncionario()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -79,7 +79,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "ConsultarIndisponibilidades")]
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<IndisponibilidadeDTO>>GetIndisponibilidadeWithFuncionarioById(int id)
+        public async Task<ActionResult<IndisponibilidadeDTO>> GetIndisponibilidadeWithFuncionarioById(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -90,7 +90,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
             var indisponibilidade = await _indisponibilidadeRepository.GetIndisponibilidadeWithFuncionarioByIdAsync(id);
 
-            if(indisponibilidade == null)
+            if (indisponibilidade == null)
             {
                 return NotFound();
             }
@@ -120,7 +120,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 DataHoraFim = indisponibilidade.DataHoraFim,
                 Motivo = indisponibilidade.Motivo,
                 DiaCompleto = indisponibilidade.DiaCompleto,
-                RestoDoDia= indisponibilidade.RestoDoDia
+                RestoDoDia = indisponibilidade.RestoDoDia
             });
         }
 
@@ -155,7 +155,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "GerirIndisponibilidades")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateIndisponibilidade( int id, UpdateIndisponibilidadeDTO dto)
+        public async Task<IActionResult> UpdateIndisponibilidade(int id, UpdateIndisponibilidadeDTO dto)
         {
             var userId =
                 User.FindFirstValue(ClaimTypes.NameIdentifier);

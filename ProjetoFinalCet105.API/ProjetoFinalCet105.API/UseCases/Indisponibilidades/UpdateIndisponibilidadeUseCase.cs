@@ -23,7 +23,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
             _indisponibilidadeService = indisponibilidadeService;
         }
 
-        public async Task<UseCaseResult<bool>> ExecuteAsync(int id,string userId,bool isFuncionario,bool isAdmin,UpdateIndisponibilidadeDTO dto)
+        public async Task<UseCaseResult<bool>> ExecuteAsync(int id, string userId, bool isFuncionario, bool isAdmin, UpdateIndisponibilidadeDTO dto)
         {
             // 1. Verificar se a indisponibilidade existe
             var indisponibilidade =
@@ -88,7 +88,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
 
             // 5. Obter horário de trabalho
             var horariosTrabalho = await _indisponibilidadeService.ObterHorariosTrabalhoAsync(funcionarioId, dto.DataHoraInicio);
-           
+
 
             if (!horariosTrabalho.Any())
             {
@@ -98,8 +98,8 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
 
 
             // 6. Obter marcações do dia
-            var marcacoesDoDia = await _indisponibilidadeService.ObterMarcacoesDoDiaAsync(funcionarioId,dto.DataHoraInicio);
-                
+            var marcacoesDoDia = await _indisponibilidadeService.ObterMarcacoesDoDiaAsync(funcionarioId, dto.DataHoraInicio);
+
             var marcacoesConfirmadas = marcacoesDoDia
                 .Where(m => m.EstadoMarcacao.Nome == "Confirmada")
                 .ToList();
@@ -187,7 +187,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
             }
         }
 
-        private async Task<UseCaseResult<int>> ObterFuncionarioIdAsync(Indisponibilidade indisponibilidade,string userId,bool isFuncionario,bool isAdmin,int? funcionarioIdDto)
+        private async Task<UseCaseResult<int>> ObterFuncionarioIdAsync(Indisponibilidade indisponibilidade, string userId, bool isFuncionario, bool isAdmin, int? funcionarioIdDto)
         {
             // Funcionário só pode alterar as próprias indisponibilidades
             if (isFuncionario && !isAdmin)

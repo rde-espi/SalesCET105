@@ -1,6 +1,6 @@
 ﻿namespace ProjetoFinalCet105.API.Entities
 {
-    public class Mensagem:IEntity
+    public class Mensagem : IEntity
     {
         public int Id { get; set; }
 

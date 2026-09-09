@@ -798,12 +798,40 @@
                 <small>Faturação mensal</small>
             </article>
 
-            <article class="ib-finance-main-card ib-finance-result">
-                <span class="ib-finance-label">Resultado do mês</span>
+            @{
+                var classeResultado = Model.Financeiro.ResultadoMes switch
+                {
+                    > 0 => "positive",
+                    < 0 => "negative",
+                    _ => "neutral"
+                };
+            }
+
+            <article class="ib-finance-main-card ib-finance-result @classeResultado">
+
+                <span class="ib-finance-label">
+                    Resultado do mês
+                </span>
+
                 <strong>
                     @Model.Financeiro.ResultadoMes.ToString("N2", cultura) €
                 </strong>
-                <small>Faturação após despesas</small>
+
+                <small>
+                    @if (Model.Financeiro.ResultadoMes > 0)
+                    {
+                        <text>Resultado positivo após despesas</text>
+                    }
+                    else if (Model.Financeiro.ResultadoMes < 0)
+                    {
+                        <text>Despesas superiores à faturação</text>
+                    }
+                    else
+                    {
+                        <text>Faturação e despesas equilibradas</text>
+                    }
+                </small>
+
             </article>
 
         </div>
@@ -1065,62 +1093,932 @@
 </section>
 
 
-<section class="ib-dashboard-tab-content"
-         data-dashboard-content="agenda">
+<section class="ib-dashboard-tab-content" data-dashboard-content="agenda">
 
-    <div class="ib-dashboard-section-header">
-        <div>
-            <span class="ib-section-eyebrow">Gestão operacional</span>
-            <h2>Agenda</h2>
-            <p>
-                Analise marcações, ocupação e padrões de procura.
-            </p>
+    @if (Model.Agenda != null)
+    {
+        <!-- RESUMO PRINCIPAL -->
+        <div class="ib-agenda-main-grid">
+
+            <article class="ib-agenda-main-card">
+                <span class="ib-agenda-kpi-label">Marcações este mês</span>
+
+                <strong>
+                    @Model.Agenda.TotalMarcacoesMes
+                </strong>
+
+                <small>
+                    Total de marcações registadas
+                </small>
+            </article>
+
+
+            <article class="ib-agenda-main-card">
+                <span class="ib-agenda-kpi-label">Horas ocupadas</span>
+
+                <strong>
+                    @Model.Agenda.HorasOcupadasMes.ToString("N1", cultura) h
+                </strong>
+
+                <small>
+                    Tempo efetivamente reservado
+                </small>
+            </article>
+
+
+            <article class="ib-agenda-main-card">
+                <span class="ib-agenda-kpi-label">Concluídas</span>
+
+                <strong>
+                    @Model.Agenda.MarcacoesConcluidasMes
+                </strong>
+
+                <small>
+                    @Model.Agenda.TaxaConclusao.ToString("N1", cultura)% das marcações
+                </small>
+            </article>
+
+
+            <article class="ib-agenda-main-card ib-agenda-highlight">
+                <span class="ib-agenda-kpi-label">Taxa de ocupação</span>
+
+                <strong>
+                    @Model.Agenda.TaxaOcupacao.ToString("N1", cultura)%
+                </strong>
+
+                <small>
+                    Utilização da disponibilidade mensal
+                </small>
+            </article>
+
         </div>
-    </div>
 
-    <div class="ib-dashboard-coming">
-        Área da agenda
-    </div>
+
+        <!-- ESTADOS DAS MARCAÇÕES -->
+        <div class="ib-agenda-status-grid">
+
+            <article class="ib-agenda-status-card">
+                <span>Confirmadas</span>
+                <strong>@Model.Agenda.MarcacoesConfirmadasMes</strong>
+            </article>
+
+            <article class="ib-agenda-status-card">
+                <span>Pendentes</span>
+                <strong>@Model.Agenda.MarcacoesPendentesMes</strong>
+            </article>
+
+            <article class="ib-agenda-status-card">
+                <span>Canceladas</span>
+                <strong>@Model.Agenda.MarcacoesCanceladasMes</strong>
+            </article>
+
+            <article class="ib-agenda-status-card">
+                <span>Não compareceu</span>
+                <strong>@Model.Agenda.NaoCompareceuMes</strong>
+            </article>
+
+        </div>
+
+
+        <!-- UTILIZAÇÃO E INDICADORES -->
+        <div class="ib-agenda-metrics-grid">
+
+            <article class="ib-dashboard-panel">
+
+                <div class="ib-panel-header">
+                    <div>
+                        <h2>Utilização da agenda</h2>
+                        <span>Distribuição das horas do mês</span>
+                    </div>
+                </div>
+
+                @{
+                    var ocupacao = Model.Agenda.TaxaOcupacao;
+
+                    if (ocupacao < 0)
+                    {
+                        ocupacao = 0;
+                    }
+
+                    if (ocupacao > 100)
+                    {
+                        ocupacao = 100;
+                    }
+
+                    var ocupacaoVisual =
+                        ocupacao > 0 && ocupacao < 2
+                            ? 2
+                            : ocupacao;
+                }
+
+                <div class="ib-agenda-hours">
+
+                    <div class="ib-agenda-hours-row">
+                        <span>Horas disponíveis</span>
+                        <strong>
+                            @Model.Agenda.HorasDisponiveisMes.ToString("N1", cultura) h
+                        </strong>
+                    </div>
+
+                    <div class="ib-agenda-hours-row">
+                        <span>Horas ocupadas</span>
+                        <strong>
+                            @Model.Agenda.HorasOcupadasMes.ToString("N1", cultura) h
+                        </strong>
+                    </div>
+
+                    <div class="ib-agenda-hours-row">
+                        <span>Horas livres</span>
+                        <strong>
+                            @Model.Agenda.HorasLivresMes.ToString("N1", cultura) h
+                        </strong>
+                    </div>
+
+
+                    <div class="ib-agenda-occupancy-bar">
+                        <span style="width:@ocupacaoVisual.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%">
+                        </span>
+                    </div>
+
+                    <small class="ib-agenda-occupancy-caption">
+                        @Model.Agenda.TaxaOcupacao.ToString("N1", cultura)% de ocupação
+                    </small>
+
+                </div>
+
+            </article>
+
+
+            <article class="ib-dashboard-panel">
+
+                <div class="ib-panel-header">
+                    <div>
+                        <h2>Indicadores da agenda</h2>
+                        <span>Desempenho das marcações no mês</span>
+                    </div>
+                </div>
+
+                <div class="ib-agenda-rate-list">
+
+                    <div class="ib-agenda-rate-row">
+                        <div>
+                            <strong>Taxa de conclusão</strong>
+                            <span>Marcações concluídas</span>
+                        </div>
+
+                        <strong>
+                            @Model.Agenda.TaxaConclusao.ToString("N1", cultura)%
+                        </strong>
+                    </div>
+
+
+                    <div class="ib-agenda-rate-row">
+                        <div>
+                            <strong>Taxa de cancelamento</strong>
+                            <span>Marcações canceladas</span>
+                        </div>
+
+                        <strong>
+                            @Model.Agenda.TaxaCancelamento.ToString("N1", cultura)%
+                        </strong>
+                    </div>
+
+
+                    <div class="ib-agenda-rate-row">
+                        <div>
+                            <strong>Taxa de não comparência</strong>
+                            <span>Clientes que não compareceram</span>
+                        </div>
+
+                        <strong>
+                            @Model.Agenda.TaxaNaoComparecimento.ToString("N1", cultura)%
+                        </strong>
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+
+
+        <!-- ANÁLISE DE PROCURA -->
+        <div class="ib-agenda-analysis-header">
+            <span class="ib-section-eyebrow">
+                Tendências de procura
+            </span>
+
+            <h2>
+                Análise da agenda
+            </h2>
+        </div>
+
+
+        <div class="ib-agenda-analysis-grid">
+
+            <!-- SERVIÇOS -->
+            <article class="ib-dashboard-panel">
+
+                <div class="ib-panel-header">
+                    <div>
+                        <h2>Serviços mais marcados</h2>
+                        <span>Serviços com maior procura</span>
+                    </div>
+                </div>
+
+                @if (Model.ServicosMaisMarcados.Any())
+                {
+                    <div class="ib-agenda-ranking-list">
+
+                        @foreach (var servico in Model.ServicosMaisMarcados)
+                        {
+                            <div class="ib-agenda-ranking-row">
+
+                                <div class="ib-agenda-ranking-head">
+                                    <strong>
+                                        @servico.NomeServico
+                                    </strong>
+
+                                    <span>
+                                        @servico.QuantidadeMarcacoes
+                                        @(servico.QuantidadeMarcacoes == 1 ? "marcação" : "marcações")
+                                    </span>
+                                </div>
+
+                                <div class="ib-agenda-ranking-bar">
+                                    <span style="width:@servico.Percentagem.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%">
+                                    </span>
+                                </div>
+
+                                <small>
+                                    @servico.Percentagem.ToString("N1", cultura)% das marcações
+                                </small>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+                else
+                {
+                    <div class="ib-dashboard-empty">
+                        Ainda não existem dados de procura por serviço.
+                    </div>
+                }
+
+            </article>
+
+
+            <!-- HORÁRIOS -->
+            <article class="ib-dashboard-panel">
+
+                <div class="ib-panel-header">
+                    <div>
+                        <h2>Horários de maior procura</h2>
+                        <span>Faixas horárias mais procuradas</span>
+                    </div>
+                </div>
+
+                @if (Model.HorariosMaiorProcura.Any())
+                {
+                    <div class="ib-agenda-ranking-list">
+
+                        @foreach (var horario in Model.HorariosMaiorProcura)
+                        {
+                            <div class="ib-agenda-ranking-row">
+
+                                <div class="ib-agenda-ranking-head">
+                                    <strong>
+                                        @horario.FaixaHoraria
+                                    </strong>
+
+                                    <span>
+                                        @horario.QuantidadeMarcacoes
+                                        @(horario.QuantidadeMarcacoes == 1 ? "marcação" : "marcações")
+                                    </span>
+                                </div>
+
+                                <div class="ib-agenda-ranking-bar">
+                                    <span style="width:@horario.Percentagem.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%">
+                                    </span>
+                                </div>
+
+                                <small>
+                                    @horario.Percentagem.ToString("N1", cultura)% da procura
+                                </small>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+                else
+                {
+                    <div class="ib-dashboard-empty">
+                        Ainda não existem dados de procura por horário.
+                    </div>
+                }
+
+            </article>
+
+
+            <!-- DIAS -->
+            <article class="ib-dashboard-panel">
+
+                <div class="ib-panel-header">
+                    <div>
+                        <h2>Dias de maior procura</h2>
+                        <span>Distribuição das marcações</span>
+                    </div>
+                </div>
+
+                @if (Model.DiasMaiorProcura.Any())
+                {
+                    <div class="ib-agenda-ranking-list">
+
+                        @foreach (var dia in Model.DiasMaiorProcura)
+                        {
+                            <div class="ib-agenda-ranking-row">
+
+                                <div class="ib-agenda-ranking-head">
+                                    <strong>
+                                        @dia.NomeDia
+                                    </strong>
+
+                                    <span>
+                                        @dia.QuantidadeMarcacoes
+                                        @(dia.QuantidadeMarcacoes == 1 ? "marcação" : "marcações")
+                                    </span>
+                                </div>
+
+                                <div class="ib-agenda-ranking-bar">
+                                    <span style="width:@dia.Percentagem.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%">
+                                    </span>
+                                </div>
+
+                                <small>
+                                    @dia.Percentagem.ToString("N1", cultura)% da procura
+                                </small>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+                else
+                {
+                    <div class="ib-dashboard-empty">
+                        Ainda não existem dados de procura por dia.
+                    </div>
+                }
+
+            </article>
+
+        </div>
+    }
+    else
+    {
+        <div class="ib-dashboard-empty">
+            Não foi possível carregar os dados da agenda.
+        </div>
+    }
 
 </section>
 
 
-<section class="ib-dashboard-tab-content"
-         data-dashboard-content="clients">
+<section class="ib-dashboard-tab-content" data-dashboard-content="clients">
 
-    <div class="ib-dashboard-section-header">
-        <div>
-            <span class="ib-section-eyebrow">Base de clientes</span>
-            <h2>Clientes</h2>
-            <p>
-                Acompanhe crescimento, recorrência e atividade dos clientes.
-            </p>
+    @if (Model.Clientes != null)
+    {
+        <!-- KPI PRINCIPAIS -->
+        <div class="ib-client-main-grid">
+
+            <article class="ib-client-main-card">
+                <span class="ib-client-kpi-label">
+                    Total de clientes
+                </span>
+
+                <strong>
+                    @Model.Clientes.TotalClientes
+                </strong>
+
+                <small>
+                    Clientes registados
+                </small>
+            </article>
+
+
+            <article class="ib-client-main-card">
+                <span class="ib-client-kpi-label">
+                    Novos este mês
+                </span>
+
+                <strong>
+                    @Model.Clientes.NovosClientesMes
+                </strong>
+
+                <small>
+                    Novos clientes registados no mês
+                </small>
+            </article>
+
+
+            <article class="ib-client-main-card">
+                <span class="ib-client-kpi-label">
+                    Clientes recorrentes
+                </span>
+
+                <strong>
+                    @Model.Clientes.ClientesRecorrentes
+                </strong>
+
+                <small>
+                    Clientes que voltaram a marcar
+                </small>
+            </article>
+
+
+            <article class="ib-client-main-card ib-client-highlight">
+                <span class="ib-client-kpi-label">
+                    Taxa de recorrência
+                </span>
+
+                <strong>
+                    @Model.Clientes.TaxaRecorrencia.ToString("N1", cultura)%
+                </strong>
+
+                <small>
+                    Fidelização da base de clientes
+                </small>
+            </article>
+
         </div>
-    </div>
 
-    <div class="ib-dashboard-coming">
-        Área de clientes
-    </div>
+
+        <!-- RETENÇÃO -->
+        <div class="ib-client-retention-grid">
+
+            <article class="ib-dashboard-panel">
+
+                <div class="ib-panel-header">
+                    <div>
+                        <h2>Retenção de clientes</h2>
+                        <span>
+                            Indicadores de atividade da base de clientes
+                        </span>
+                    </div>
+                </div>
+
+                <div class="ib-client-retention-list">
+
+                    <div class="ib-client-retention-row">
+
+                        <div>
+                            <strong>Clientes recorrentes</strong>
+                            <span>
+                                Clientes com novas marcações
+                            </span>
+                        </div>
+
+                        <strong>
+                            @Model.Clientes.ClientesRecorrentes
+                        </strong>
+
+                    </div>
+
+
+                    <div class="ib-client-retention-row">
+
+                        <div>
+                            <strong>Inativos há 60 dias</strong>
+                            <span>
+                                Sem atividade recente
+                            </span>
+                        </div>
+
+                        <strong>
+                            @Model.Clientes.ClientesInativos60Dias
+                        </strong>
+
+                    </div>
+
+
+                    <div class="ib-client-retention-row">
+
+                        <div>
+                            <strong>Inativos há 90 dias</strong>
+                            <span>
+                                Clientes com inatividade prolongada
+                            </span>
+                        </div>
+
+                        <strong>
+                            @Model.Clientes.ClientesInativos90Dias
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- TAXA DE RECORRÊNCIA -->
+            <article class="ib-dashboard-panel">
+
+                <div class="ib-panel-header">
+                    <div>
+                        <h2>Recorrência</h2>
+                        <span>
+                            Fidelização dos clientes
+                        </span>
+                    </div>
+                </div>
+
+                @{
+                    var recorrencia = Model.Clientes.TaxaRecorrencia;
+
+                    if (recorrencia < 0)
+                    {
+                        recorrencia = 0;
+                    }
+
+                    if (recorrencia > 100)
+                    {
+                        recorrencia = 100;
+                    }
+
+                    var recorrenciaVisual =
+                        recorrencia > 0 && recorrencia < 2
+                            ? 2
+                            : recorrencia;
+                }
+
+                <div class="ib-client-recurrence">
+
+                    <div class="ib-client-recurrence-value">
+                        <strong>
+                            @Model.Clientes.TaxaRecorrencia.ToString("N1", cultura)%
+                        </strong>
+
+                        <span>
+                            Taxa de recorrência
+                        </span>
+                    </div>
+
+                    <div class="ib-client-recurrence-bar">
+                        <span style="width:@recorrenciaVisual.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%">
+                        </span>
+                    </div>
+
+                    <div class="ib-client-recurrence-footer">
+
+                        <span>
+                            @Model.Clientes.ClientesRecorrentes recorrentes
+                        </span>
+
+                        <span>
+                            @Model.Clientes.TotalClientes total
+                        </span>
+
+                    </div>
+                    <div class="ib-client-recurrence-summary">
+
+                        <div>
+                            <strong>@Model.Clientes.ClientesRecorrentes</strong>
+                            <span>Recorrentes</span>
+                        </div>
+
+                        <div>
+                            <strong>
+                                @(Model.Clientes.TotalClientes - Model.Clientes.ClientesRecorrentes)
+                            </strong>
+                            <span>Não recorrentes</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
+
+
+        <!-- CLIENTES RECENTES -->
+        <div class="ib-client-section-header">
+
+            <div>
+                <span class="ib-section-eyebrow">
+                    Base de clientes
+                </span>
+
+                <h2>
+                    Novos Clientes
+                </h2>
+            </div>
+
+        </div>
+
+
+        <article class="ib-dashboard-panel ib-client-recent-panel">
+
+            @if (Model.UltimosClientes.Any())
+            {
+                <div class="ib-client-table">
+
+                    <div class="ib-client-table-header">
+                        <span>Cliente</span>
+                        <span>Email</span>
+                        <span>Registo</span>
+                        <span>Estado</span>
+                    </div>
+
+
+                    @foreach (var cliente in Model.UltimosClientes)
+                    {
+                        <div class="ib-client-table-row">
+
+                            <div class="ib-client-identity">
+
+                                <div class="ib-client-avatar">
+                                    @cliente.NomeCompleto.Substring(0, 1).ToUpper()
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        @cliente.NomeCompleto
+                                    </strong>
+
+                                    <span>
+                                        Cliente
+                                    </span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="ib-client-email">
+                                @cliente.Email
+                            </div>
+
+
+                            <div class="ib-client-date">
+                                @cliente.DataCriacao.ToString("dd/MM/yyyy")
+                            </div>
+
+
+                            <div>
+                                @if (cliente.Ativo)
+                                {
+                                    <span class="ib-client-status active">
+                                        Ativo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="ib-client-status inactive">
+                                        Inativo
+                                    </span>
+                                }
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class="ib-dashboard-empty">
+                    Ainda não existem clientes registados.
+                </div>
+            }
+
+        </article>
+    }
+    else
+    {
+        <div class="ib-dashboard-empty">
+            Não foi possível carregar os dados dos clientes.
+        </div>
+    }
 
 </section>
 
 
-<section class="ib-dashboard-tab-content"
-         data-dashboard-content="team">
+<section class="ib-dashboard-tab-content" data-dashboard-content="team">
 
-    <div class="ib-dashboard-section-header">
-        <div>
-            <span class="ib-section-eyebrow">Desempenho</span>
-            <h2>Equipa</h2>
+    @if (Model.Equipa != null && Model.Equipa.Any())
+{
+    
+        var totalProfissionais = Model.Equipa.Count;
+
+        var totalMarcacoesEquipa =
+            Model.Equipa.Sum(f => f.MarcacoesConcluidas);
+
+        var faturacaoEquipa =
+            Model.Equipa.Sum(f => f.TotalFaturado);
+
+        var funcionariosComAvaliacao =
+            Model.Equipa.Where(f => f.AvaliacaoMedia > 0).ToList();
+
+        var avaliacaoMediaEquipa =
+            funcionariosComAvaliacao.Any()
+                ? funcionariosComAvaliacao.Average(f => f.AvaliacaoMedia)
+                : 0;    
+
+    <!-- KPI PRINCIPAIS -->
+    <div class="ib-team-main-grid">
+
+        <article class="ib-team-main-card">
+
+            <span class="ib-team-kpi-label">
+                Profissionais
+            </span>
+
+            <strong>
+                @totalProfissionais
+            </strong>
+
+            <small>
+                Profissionais com atividade
+            </small>
+
+        </article>
+
+
+        <article class="ib-team-main-card">
+
+            <span class="ib-team-kpi-label">
+                Marcações concluídas
+            </span>
+
+            <strong>
+                @totalMarcacoesEquipa
+            </strong>
+
+            <small>
+                Total realizado pela equipa
+            </small>
+
+        </article>
+
+
+        <article class="ib-team-main-card">
+
+            <span class="ib-team-kpi-label">
+                Avaliação média
+            </span>
+
+                <strong>
+                    @(funcionariosComAvaliacao.Any()
+                        ? avaliacaoMediaEquipa.ToString("N1", cultura)
+                        : "—")
+                </strong>
+
+                <small>
+                    @(funcionariosComAvaliacao.Any()
+                        ? "Média das avaliações recebidas"
+                        : "Sem avaliações registadas")
+                </small>
+
+        </article>
+
+
+            <article class="ib-team-main-card ib-team-highlight">
+
+                <span class="ib-team-kpi-label">
+                    Faturação da equipa
+                </span>
+
+                <strong>
+                    @faturacaoEquipa.ToString("N2", cultura) €
+                </strong>
+
+                <small>
+                    Valor gerado pelos profissionais
+                </small>
+
+            </article>
+
+    </div>
+
+
+    <!-- DESEMPENHO -->
+        <div class="ib-team-section-header">
+
+            <span class="ib-section-eyebrow">
+                Desempenho
+            </span>
+
+            <h2>
+                Desempenho por profissional
+            </h2>
+
             <p>
-                Consulte o desempenho e produtividade dos profissionais.
+                Comparação das marcações concluídas, avaliação e faturação gerada
             </p>
-        </div>
-    </div>
 
-    <div class="ib-dashboard-coming">
-        Área da equipa
+        </div>
+
+
+    
+
+
+    <!-- RANKING -->
+    <article class="ib-dashboard-panel ib-team-ranking-panel">
+
+            <div class="ib-panel-header">
+
+                <div>
+                    <h2>Profissionais</h2>
+
+                    <span>
+                        Ordenado pela faturação gerada
+                    </span>
+                </div>
+
+            </div>
+
+
+        <div class="ib-team-ranking">
+
+            <div class="ib-team-ranking-header">
+
+                <span>#</span>
+                <span>Profissional</span>
+                <span>Concluídas</span>
+                <span>Avaliação</span>
+                <span>Faturação</span>
+
+            </div>
+
+            @{
+                var posicao = 1;
+            }
+
+            @foreach (var funcionario in Model.Equipa
+                .OrderByDescending(f => f.TotalFaturado))
+            {
+                <div class="ib-team-ranking-row">
+
+                    <span class="ib-team-position">
+                        @posicao
+                    </span>
+
+
+                    <div class="ib-team-ranking-person">
+
+                        <div class="ib-team-ranking-avatar">
+                            @(string.IsNullOrWhiteSpace(funcionario.NomeFuncionario)
+                                ? "?"
+                                : funcionario.NomeFuncionario.Substring(0, 1).ToUpper())
+                        </div>
+
+                        <strong>
+                            @funcionario.NomeFuncionario
+                        </strong>
+
+                    </div>
+
+
+                    <span>
+                        @funcionario.MarcacoesConcluidas
+                    </span>
+
+
+                    <span>
+                        @if (funcionario.AvaliacaoMedia > 0)
+                        {
+                            <text>@funcionario.AvaliacaoMedia.ToString("N1", cultura)</text>
+                        }
+                        else
+                        {
+                            <text>—</text>
+                        }
+                    </span>
+
+
+                    <strong class="ib-team-ranking-revenue">
+                        @funcionario.TotalFaturado.ToString("N2", cultura) €
+                    </strong>
+
+                </div>
+
+                posicao++;
+            }
+
+        </div>
+
+    </article>
+}
+else
+{
+    <div class="ib-dashboard-empty">
+        Ainda não existem dados de desempenho da equipa.
     </div>
+}
 
 </section>
 
@@ -1461,7 +2359,26 @@
                                 stepSize: 1,
                                 padding: 8,
                                 color: '#777168',
-                                callback: value => formatCurrency(value, 0)
+                                callback: function(value) {
+
+                                    if (value >= 1000000) {
+                                        return (value / 1000000)
+                                            .toLocaleString('pt-PT', {
+                                                maximumFractionDigits: 1
+                                            }) + ' M€';
+                                    }
+
+                                    if (value >= 1000) {
+                                        return (value / 1000)
+                                            .toLocaleString('pt-PT', {
+                                                maximumFractionDigits: 1
+                                            }) + ' mil €';
+                                    }
+
+                                    return value.toLocaleString('pt-PT', {
+                                        maximumFractionDigits: 0
+                                    }) + ' €';
+                                }
                             }
                         }
                     }
