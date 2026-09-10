@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Data;
+
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.Services.Faturacao;
 using ProjetoFinalCet105.API.UseCases.Common;
 using ProjetoFinalCet105.API.UseCases.Marcacoes;
-using System.Data;
 
 namespace ProjetoFinalCet105.API.UseCases.Faturas
 {

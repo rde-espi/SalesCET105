@@ -1,12 +1,18 @@
 
+using System.Text;
+using System.Threading.RateLimiting;
+
 using FirebaseAdmin;
+
 using Google.Apis.Auth.OAuth2;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+
 using ProjetoFinalCet105.API.Authorization;
 using ProjetoFinalCet105.API.Data;
 using ProjetoFinalCet105.API.Entities;
@@ -37,8 +43,6 @@ using ProjetoFinalCet105.API.UseCases.Indisponibilidades;
 using ProjetoFinalCet105.API.UseCases.Marcacoes;
 using ProjetoFinalCet105.API.UseCases.Notificacoes;
 using ProjetoFinalCet105.API.UseCases.PromoCodes;
-using System.Text;
-using System.Threading.RateLimiting;
 
 
 

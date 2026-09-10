@@ -1,7 +1,9 @@
+using System.Diagnostics;
+
 using Microsoft.AspNetCore.Mvc;
+
 using ProjetoFinalCet105.Web.Models;
 using ProjetoFinalCet105.Web.Services;
-using System.Diagnostics;
 
 namespace ProjetoFinalCet105.Web.Controllers.Publico
 {

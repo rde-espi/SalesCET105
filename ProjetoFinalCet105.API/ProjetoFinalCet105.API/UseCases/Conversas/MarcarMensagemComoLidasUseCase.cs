@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+
 using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.UseCases.Common;
 using ProjetoFinalCet105.API.UseCases.Conversas.SignalR.Hubs;

@@ -1,6 +1,8 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
-using ProjetoFinalCet105.Web.Services;
 using System.Globalization;
+
+using Microsoft.AspNetCore.Authentication.Cookies;
+
+using ProjetoFinalCet105.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

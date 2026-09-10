@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+
 using ProjetoFinalCet105.API.UseCases.Common;
 
 namespace ProjetoFinalCet105.API

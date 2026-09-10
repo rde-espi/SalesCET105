@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
 using ProjetoFinalCet105.API.Services.Faturacao;
 using ProjetoFinalCet105.API.UseCases.Common;
 using ProjetoFinalCet105.API.UseCases.Faturas;
-using System.Security.Claims;
 
 namespace ProjetoFinalCet105.API.Controllers
 {

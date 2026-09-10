@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+
 using ProjetoFinalCet105.API.Entities;
 
 namespace ProjetoFinalCet105.API.Data

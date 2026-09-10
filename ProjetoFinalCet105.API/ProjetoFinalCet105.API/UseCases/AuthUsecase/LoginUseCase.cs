@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Services.AuthService;
@@ -79,5 +80,3 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
         }
     }
 }
-
-

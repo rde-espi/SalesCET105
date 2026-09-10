@@ -52,7 +52,7 @@ namespace ProjetoFinalCet105.Web.Services
             return await response.Content.ReadFromJsonAsync<T>();
         }
 
-        public async Task<HttpResponseMessage> SendAuthenticatedMultipartAsync( HttpMethod method, string endpoint, MultipartFormDataContent content)
+        public async Task<HttpResponseMessage> SendAuthenticatedMultipartAsync(HttpMethod method, string endpoint, MultipartFormDataContent content)
         {
             var token = _httpContextAccessor
                 .HttpContext?
@@ -74,7 +74,7 @@ namespace ProjetoFinalCet105.Web.Services
             return await _httpClient.SendAsync(request);
         }
 
-        public async Task<HttpResponseMessage?> GetResponseAsync( string endpoint)
+        public async Task<HttpResponseMessage?> GetResponseAsync(string endpoint)
         {
             try
             {
@@ -109,4 +109,3 @@ namespace ProjetoFinalCet105.Web.Services
         }
     }
 }
-

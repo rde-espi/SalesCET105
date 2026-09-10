@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Services.GoogleCalendarService;
 using ProjetoFinalCet105.API.UseCases.GoogleCalendarUsecases;
-using System.Security.Claims;
 
 namespace ProjetoFinalCet105.API.Controllers
 {

@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Data;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+
 using ProjetoFinalCet105.API.Data;
-using System.Data;
 
 namespace ProjetoFinalCet105.API.UseCases.Marcacoes
 {

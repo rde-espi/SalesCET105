@@ -68,7 +68,7 @@ public class CategoriasController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create( CategoriaFormViewModel model)
+    public async Task<IActionResult> Create(CategoriaFormViewModel model)
     {
         if (!ModelState.IsValid)
         {

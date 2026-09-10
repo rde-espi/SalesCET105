@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Services.NifService;
 

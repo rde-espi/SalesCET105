@@ -1,14 +1,17 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using System.Net.Http.Headers;
+
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Calendar.v3;
 using Google.Apis.Calendar.v3.Data;
 using Google.Apis.Services;
+
 using Microsoft.AspNetCore.DataProtection;
+
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
-using System.Net.Http.Headers;
 
 namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
 {

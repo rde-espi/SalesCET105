@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Globalization;
+
+using Microsoft.EntityFrameworkCore;
+
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Repositories;
-using System.Globalization;
 
 namespace ProjetoFinalCet105.API.UseCases.Dashboard
 {

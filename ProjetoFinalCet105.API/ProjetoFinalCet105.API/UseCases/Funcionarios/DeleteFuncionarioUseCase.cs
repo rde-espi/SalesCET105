@@ -2,6 +2,7 @@
 using global::ProjetoFinalCet105.API.Entities;
 using global::ProjetoFinalCet105.API.Repositories;
 using global::ProjetoFinalCet105.API.UseCases.Common;
+
 using Microsoft.AspNetCore.Identity;
 
 
@@ -85,4 +86,3 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
         }
     }
 }
-

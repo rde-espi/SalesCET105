@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using System.Text.RegularExpressions;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+
 using ProjetoFinalCet105.API.Repositories;
-using System.Security.Claims;
-using System.Text.RegularExpressions;
 
 namespace ProjetoFinalCet105.API.UseCases.Conversas.SignalR.Hubs
 {

@@ -1,9 +1,12 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Globalization;
+
+using Microsoft.Extensions.Options;
+
 using ProjetoFinalCet105.API.DTOs;
+
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System.Globalization;
 
 namespace ProjetoFinalCet105.API.Services.Faturacao
 {

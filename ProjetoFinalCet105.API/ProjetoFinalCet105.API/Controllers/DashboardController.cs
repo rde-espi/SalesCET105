@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+
 using ProjetoFinalCet105.API.UseCases.Dashboard;
 
 namespace ProjetoFinalCet105.API.Controllers

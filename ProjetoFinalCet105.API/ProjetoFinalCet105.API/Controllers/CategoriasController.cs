@@ -101,7 +101,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateCategoria( int id, [FromForm] CategoriaFormModel model)
+        public async Task<IActionResult> UpdateCategoria(int id, [FromForm] CategoriaFormModel model)
         {
             var categoria = await _categoriaRepository.GetByIdAsync(id);
 
