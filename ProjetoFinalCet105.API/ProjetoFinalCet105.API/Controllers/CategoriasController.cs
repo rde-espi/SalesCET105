@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using ProjetoFinalCet105.API.Entities;
+using ProjetoFinalCet105.API.Models;
 using ProjetoFinalCet105.API.Repositories;
 
 namespace ProjetoFinalCet105.API.Controllers
@@ -34,16 +36,62 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(categoria);
         }
 
+        [HttpGet("{id:int}/imagem")]
+        public async Task<IActionResult> GetImagemCategoria(int id)
+        {
+            var categoria = await _categoriaRepository.GetByIdAsync(id);
+
+            if (categoria == null)
+            {
+                return NotFound();
+            }
+
+            if (categoria.Imagem == null ||
+                categoria.Imagem.Length == 0 ||
+                string.IsNullOrWhiteSpace(categoria.ImagemContentType))
+            {
+                return NotFound();
+            }
+
+            return File(
+                categoria.Imagem,
+                categoria.ImagemContentType);
+        }
+
         [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPost]
-        public async Task<ActionResult<Categoria>> CreateCategoria(Categoria categoria)
+        public async Task<ActionResult<Categoria>> CreateCategoria([FromForm] CategoriaFormModel model)
         {
             try
             {
-                categoria.Ativa = true;
+                byte[]? imagemBytes = null;
+                string? imagemContentType = null;
+
+                if (model.Imagem != null && model.Imagem.Length > 0)
+                {
+                    using var memoryStream = new MemoryStream();
+
+                    await model.Imagem.CopyToAsync(memoryStream);
+
+                    imagemBytes = memoryStream.ToArray();
+                    imagemContentType = model.Imagem.ContentType;
+                }
+
+                var categoria = new Categoria
+                {
+                    Nome = model.Nome,
+                    Descricao = model.Descricao,
+                    Imagem = imagemBytes,
+                    ImagemContentType = imagemContentType,
+                    Ativa = true
+                };
+
                 await _categoriaRepository.CreateAsync(categoria);
 
-                return CreatedAtAction(nameof(GetCategoriaById), new { id = categoria.Id }, categoria);
+                return CreatedAtAction(
+                    nameof(GetCategoriaById),
+                    new { id = categoria.Id },
+                    categoria);
             }
             catch (Exception)
             {
@@ -53,26 +101,39 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateCategoria(int id, Categoria categoria)
+        public async Task<IActionResult> UpdateCategoria( int id, [FromForm] CategoriaFormModel model)
         {
-            if (id != categoria.Id)
-            {
-                return BadRequest();
-            }
-            if (!await _categoriaRepository.ExistAsync(id))
+            var categoria = await _categoriaRepository.GetByIdAsync(id);
+
+            if (categoria == null)
             {
                 return NotFound();
             }
 
             try
             {
+                categoria.Nome = model.Nome;
+                categoria.Descricao = model.Descricao;
+
+                // Só altera a imagem se for enviado um novo ficheiro
+                if (model.Imagem != null && model.Imagem.Length > 0)
+                {
+                    using var memoryStream = new MemoryStream();
+
+                    await model.Imagem.CopyToAsync(memoryStream);
+
+                    categoria.Imagem = memoryStream.ToArray();
+                    categoria.ImagemContentType = model.Imagem.ContentType;
+                }
+
                 await _categoriaRepository.UpdateAsync(categoria);
+
+                return NoContent();
             }
             catch (Exception)
             {
                 return BadRequest();
             }
-            return NoContent();
         }
 
         [Authorize(Policy = "AdminOuAdminTemporario")]

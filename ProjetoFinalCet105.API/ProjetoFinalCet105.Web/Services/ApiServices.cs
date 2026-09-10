@@ -51,6 +51,62 @@ namespace ProjetoFinalCet105.Web.Services
 
             return await response.Content.ReadFromJsonAsync<T>();
         }
+
+        public async Task<HttpResponseMessage> SendAuthenticatedMultipartAsync( HttpMethod method, string endpoint, MultipartFormDataContent content)
+        {
+            var token = _httpContextAccessor
+                .HttpContext?
+                .Session
+                .GetString("JwtToken");
+
+            var request = new HttpRequestMessage(method, endpoint);
+
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                request.Headers.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue(
+                        "Bearer",
+                        token);
+            }
+
+            request.Content = content;
+
+            return await _httpClient.SendAsync(request);
+        }
+
+        public async Task<HttpResponseMessage?> GetResponseAsync( string endpoint)
+        {
+            try
+            {
+                return await _httpClient.GetAsync(endpoint);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public async Task<HttpResponseMessage> SendAuthenticatedAsync(HttpMethod method, string endpoint)
+        {
+            var token = _httpContextAccessor
+                .HttpContext?
+                .Session
+                .GetString("JwtToken");
+
+            using var request =
+                new HttpRequestMessage(
+                    method,
+                    endpoint);
+
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                request.Headers.Authorization =
+                    new AuthenticationHeaderValue(
+                        "Bearer",
+                        token);
+            }
+
+            return await _httpClient.SendAsync(request);
+        }
     }
 }
 

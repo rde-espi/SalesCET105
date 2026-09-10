@@ -136,11 +136,13 @@
 
                         <div class="ib-home-category-image">
 
-                            @if (!string.IsNullOrWhiteSpace(categoria.ImagemUrl))
-                            {
-                                <img src="@categoria.ImagemUrl"
-                                     alt="@categoria.Nome" />
-                            }
+                            <img src="@Url.Action(
+                                        "Imagem",
+                                        "Categorias",
+                                        new { id = categoria.Id })"
+                                 alt="@categoria.Nome"
+                                 onerror="this.style.display='none';" />
+                            C:\Users\reina\OneDrive\Desktop\CET 105\Programação web-Server side\SalesCET105\ProjetoFinalCet105.API\ProjetoFinalCet105.Web\Views\Home\Index.cshtml
                             else
                             {
                                 <div class="ib-home-category-placeholder">

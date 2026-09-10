@@ -1,0 +1,369 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.CategoriaViewModel>
+
+@{
+    ViewData["Title"] = "Categorias";
+    Layout = "_AdminLayout";
+
+    var totalCategorias = Model?.Count ?? 0;
+    var categoriasAtivas = Model?.Count(c => c.Ativa) ?? 0;
+    var categoriasInativas = Model?.Count(c => !c.Ativa) ?? 0;
+}
+
+<div class="ib-categories-page">
+
+    <!-- Cabeçalho -->
+    <section class="ib-categories-heading">
+        <div>
+            <span class="ib-section-eyebrow">CATÁLOGO</span>
+            <h1>Gestão de Categorias</h1>
+            <p>
+                Organize as categorias utilizadas para agrupar
+                os serviços do Infinity Beauty.
+            </p>
+        </div>
+
+        <a asp-controller="Categorias"
+           asp-action="Create"
+           class="ib-category-create-btn">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 5v14M5 12h14"></path>
+            </svg>            Nova categoria
+        </a>
+    </section>
+
+    <!-- KPI -->
+    <section class="ib-category-kpi-grid">
+
+        <!-- Total -->
+        <article class="ib-category-kpi-card">
+            <div class="ib-category-kpi-icon">
+                <svg viewBox="0 0 24 24">
+                    <rect x="4" y="3" width="16" height="18" rx="2"></rect>
+                    <path d="M8 8h8M8 12h8M8 16h5"></path>
+                </svg>
+            </div>
+
+            <div class="ib-category-kpi-content">
+                <span>Total de categorias</span>
+                <strong>@totalCategorias</strong>
+                <small>Categorias registadas</small>
+            </div>
+        </article>
+
+        <!-- Ativas -->
+        <article class="ib-category-kpi-card">
+            <div class="ib-category-kpi-icon">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M8 12l3 3 5-6"></path>
+                </svg>
+            </div>
+
+            <div class="ib-category-kpi-content">
+                <span>Categorias ativas</span>
+                <strong>@categoriasAtivas</strong>
+                <small>Disponíveis no catálogo</small>
+            </div>
+        </article>
+
+        <!-- Inativas -->
+        <article class="ib-category-kpi-card ib-category-kpi-highlight">
+            <div class="ib-category-kpi-icon">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M8 8l8 8M16 8l-8 8"></path>
+                </svg>
+            </div>
+
+            <div class="ib-category-kpi-content">
+                <span>Categorias inativas</span>
+                <strong>@categoriasInativas</strong>
+                <small>Ocultas do catálogo</small>
+            </div>
+        </article>
+
+    </section>
+
+    <!-- Mensagens -->
+    @if (TempData["Sucesso"] != null)
+    {
+        <div class="ib-category-alert success">
+            <svg class="ib-category-alert-icon"
+                 viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M8 12l3 3 5-6"></path>
+            </svg>
+            <span>@TempData["Sucesso"]</span>
+        </div>
+    }
+
+    @if (TempData["Erro"] != null)
+    {
+        <div class="ib-category-alert error">
+            <span class="material-symbols-outlined">
+                error
+            </span>
+            <span>@TempData["Erro"]</span>
+        </div>
+    }
+
+    <!-- Listagem -->
+    <section class="ib-category-panel">
+
+        <header class="ib-category-panel-header">
+
+            <div>
+                <span class="ib-section-eyebrow">CATEGORIAS</span>
+                <h2>Categorias de serviços</h2>
+                <p>
+                    Consulte e faça a gestão das categorias existentes.
+                </p>
+            </div>
+
+            <div class="ib-category-search">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="M20 20l-4-4"></path>
+                </svg>
+
+                <input type="search"
+                       id="categorySearch"
+                       placeholder="Pesquisar categoria..."
+                       autocomplete="off" />
+            </div>
+
+        </header>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="ib-category-table">
+
+                <div class="ib-category-table-header">
+                    <span>Imagem</span>
+                    <span>Categoria</span>
+                    <span>Descrição</span>
+                    <span>Estado</span>
+                    <span></span>
+                </div>
+
+                <div id="categoryRows">
+
+                    @foreach (var categoria in Model.OrderBy(c => c.Nome))
+                    {
+                        <div class="ib-category-row"
+                             data-category-row
+                             data-search="@($"{categoria.Nome} {categoria.Descricao}")">
+
+                            <div class="ib-category-image">
+
+                                <img src="@Url.Action(
+                                                                              "Imagem",
+                                                                              "Categorias",
+                                                                              new { id = categoria.Id })"
+                                     alt="@categoria.Nome"
+                                     loading="lazy"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+
+                                <div class="ib-category-image-fallback">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M12 21c0-6 3-10 8-12-1 6-4 10-8 12z"></path>
+                                        <path d="M12 21c0-6-3-10-8-12 1 6 4 10 8 12z"></path>
+                                        <path d="M12 20V5"></path>
+                                    </svg>
+                                </div>
+
+                            </div>
+
+                            <div class="ib-category-name">
+                                <strong>@categoria.Nome</strong>
+                                <small>Categoria #@categoria.Id</small>
+                            </div>
+
+                            <div class="ib-category-description">
+                                @if (!string.IsNullOrWhiteSpace(categoria.Descricao))
+                                {
+                                    <span>@categoria.Descricao</span>
+                                }
+                                else
+                                {
+                                    <span class="ib-category-empty">
+                                        Sem descrição
+                                    </span>
+                                }
+                            </div>
+
+                            <div>
+                                @if (categoria.Ativa)
+                                {
+                                    <span class="ib-category-status active">
+                                        <i></i>
+                                        Ativa
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="ib-category-status inactive">
+                                        <i></i>
+                                        Inativa
+                                    </span>
+                                }
+                            </div>
+
+                            <div class="ib-category-actions">
+
+                                <a asp-controller="Categorias"
+                                   asp-action="Editar"
+                                   asp-route-id="@categoria.Id"
+                                   class="ib-category-action-btn"
+                                   title="Editar categoria">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M4 20h4l11-11-4-4L4 16v4z"></path>
+                                        <path d="M13.5 6.5l4 4"></path>
+                                    </svg>
+                                </a>
+
+                                @if (categoria.Ativa)
+                                {
+                                    <form asp-controller="Categorias"
+                                          asp-action="Desativar"
+                                          asp-route-id="@categoria.Id"
+                                          method="post"
+                                          onsubmit="return confirm('Pretende desativar a categoria «@categoria.Nome»?');">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit"
+                                                class="ib-category-action-btn danger"
+                                                title="Desativar categoria">
+                                            <svg viewBox="0 0 24 24">
+                                                <circle cx="12" cy="12" r="9"></circle>
+                                                <path d="M6 6l12 12"></path>
+                                            </svg>
+                                        </button>
+
+                                    </form>
+                                }
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+
+                <div id="categoryNoResults"
+                     class="ib-category-no-results"
+                     style="display:none;">
+                    <span class="material-symbols-outlined">
+                        search_off
+                    </span>
+                    <strong>Nenhuma categoria encontrada</strong>
+                    <p>
+                        Experimente pesquisar por outro nome ou descrição.
+                    </p>
+                </div>
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-category-empty-state">
+                <span class="material-symbols-outlined">
+                    category
+                </span>
+
+                <h3>Ainda não existem categorias</h3>
+
+                <p>
+                    Crie a primeira categoria para começar
+                    a organizar os serviços.
+                </p>
+
+                <a asp-controller="Categorias"
+                   asp-action="Criar"
+                   class="ib-category-create-btn">
+                    Nova categoria
+                </a>
+            </div>
+        }
+
+    </section>
+
+</div>
+
+@section Scripts
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const input =
+                document.getElementById("categorySearch");
+
+            const rows =
+                Array.from(
+                    document.querySelectorAll("[data-category-row]")
+                );
+
+            const noResults =
+                document.getElementById("categoryNoResults");
+
+            if (!input || rows.length === 0) {
+                return;
+            }
+
+            function normalizeText(value) {
+                return (value || "")
+                    .toString()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "")
+                    .toLocaleLowerCase("pt-PT")
+                    .trim();
+            }
+
+            function filterCategories() {
+
+                const searchTerm =
+                    normalizeText(input.value);
+
+                let visibleCount = 0;
+
+                rows.forEach(function(row) {
+
+                    const searchableText =
+                        normalizeText(
+                            row.getAttribute("data-search")
+                        );
+
+                    const isVisible =
+                        searchTerm === "" ||
+                        searchableText.includes(searchTerm);
+
+                    /*
+                     * Não usamos apenas row.hidden porque
+                     * .ib-category-row tem display:grid no CSS.
+                     */
+                    row.style.display =
+                        isVisible ? "grid" : "none";
+
+                    if (isVisible) {
+                        visibleCount++;
+                    }
+                });
+
+                if (noResults) {
+                    noResults.style.display =
+                        visibleCount === 0
+                            ? "block"
+                            : "none";
+                }
+            }
+
+            input.addEventListener(
+                "input",
+                filterCategories
+            );
+
+            filterCategories();
+        });
+    </script>
+}

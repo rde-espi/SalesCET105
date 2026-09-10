@@ -1,0 +1,447 @@
+﻿@model ProjetoFinalCet105.Web.Models.CategoriaFormViewModel
+
+@{
+    ViewData["Title"] = "Nova Categoria";
+    Layout = "_AdminLayout";
+}
+
+<div class="ib-category-form-page">
+
+    <section class="ib-category-form-heading">
+
+        <div>
+            <span class="ib-section-eyebrow">CATÁLOGO</span>
+
+            <h1>Nova Categoria</h1>
+
+            <p>
+                Crie uma nova categoria para organizar os serviços
+                disponíveis no Infinity Beauty.
+            </p>
+        </div>
+
+        <a asp-controller="Categorias"
+           asp-action="Index"
+           class="ib-category-back-btn">
+
+            <svg viewBox="0 0 24 24">
+                <path d="M15 18l-6-6 6-6"></path>
+            </svg>
+
+            Voltar às categorias
+        </a>
+
+    </section>
+
+
+    <form asp-controller="Categorias"
+          asp-action="Create"
+          method="post"
+          enctype="multipart/form-data"
+          class="ib-category-form">
+
+        @Html.AntiForgeryToken()
+
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="ModelOnly"
+                 class="ib-category-form-validation">
+            </div>
+        }
+
+
+        <div class="ib-category-form-grid">
+
+            <!-- COLUNA ESQUERDA -->
+            <section class="ib-category-form-card">
+
+                <header class="ib-category-form-card-header">
+
+                    <div class="ib-category-form-card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="4"
+                                  y="3"
+                                  width="16"
+                                  height="18"
+                                  rx="2">
+                            </rect>
+
+                            <path d="M8 8h8M8 12h8M8 16h5"></path>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <span class="ib-section-eyebrow">
+                            INFORMAÇÃO
+                        </span>
+
+                        <h2>Dados da categoria</h2>
+
+                        <p>
+                            Defina o nome e a descrição
+                            apresentados no catálogo.
+                        </p>
+                    </div>
+
+                </header>
+
+
+                <div class="ib-category-field">
+
+                    <label asp-for="Nome">
+                        Nome da categoria
+                        <span>*</span>
+                    </label>
+
+                    <input asp-for="Nome"
+                           placeholder="Ex.: Massagens"
+                           maxlength="100"
+                           autocomplete="off" />
+
+                    <span asp-validation-for="Nome"
+                          class="ib-field-validation">
+                    </span>
+
+                </div>
+
+
+                <div class="ib-category-field">
+
+                    <div class="ib-category-field-label">
+
+                        <label asp-for="Descricao">
+                            Descrição
+                        </label>
+
+                        <span id="descriptionCounter">
+                            0 / 300
+                        </span>
+
+                    </div>
+
+                    <textarea asp-for="Descricao"
+                              id="categoryDescription"
+                              rows="6"
+                              maxlength="300"
+                              placeholder="Descreva brevemente esta categoria...">
+                    </textarea>
+
+                    <span asp-validation-for="Descricao"
+                          class="ib-field-validation">
+                    </span>
+
+                    <small>
+                        Esta descrição poderá ser apresentada
+                        aos clientes no catálogo de serviços.
+                    </small>
+
+                </div>
+
+            </section>
+
+
+            <!-- COLUNA DIREITA -->
+            <section class="ib-category-image-card">
+
+                <header>
+                    <span class="ib-section-eyebrow">
+                        IMAGEM
+                    </span>
+
+                    <h2>Imagem da categoria</h2>
+
+                    <p>
+                        Escolha uma imagem representativa
+                        para identificar visualmente a categoria.
+                    </p>
+                </header>
+
+
+                <div class="ib-category-upload"
+                     id="categoryUploadArea">
+
+                    <input asp-for="Imagem"
+                           type="file"
+                           accept="image/jpeg,image/png,image/webp"
+                           id="categoryImageInput"
+                           hidden />
+
+
+                    <div class="ib-category-upload-placeholder"
+                         id="categoryUploadPlaceholder">
+
+                        <div class="ib-category-upload-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 16V4"></path>
+                                <path d="M7 9l5-5 5 5"></path>
+                                <path d="M5 14v5h14v-5"></path>
+                            </svg>
+                        </div>
+
+                        <strong>
+                            Adicionar imagem
+                        </strong>
+
+                        <span>
+                            Clique para selecionar uma imagem
+                        </span>
+
+                        <small>
+                            JPG, PNG ou WebP
+                        </small>
+
+                    </div>
+
+
+                    <img id="categoryImagePreview"
+                         class="ib-category-image-preview"
+                         alt="Pré-visualização da categoria"
+                         hidden />
+
+                </div>
+
+
+                <div class="ib-category-upload-actions">
+
+                    <button type="button"
+                            id="categoryChooseImage"
+                            class="ib-category-image-button">
+
+                        <svg viewBox="0 0 24 24">
+                            <path d="M4 5h16v14H4z"></path>
+                            <circle cx="9"
+                                    cy="10"
+                                    r="2">
+                            </circle>
+                            <path d="M4 16l4-4 3 3 3-4 6 5"></path>
+                        </svg>
+
+                        Escolher imagem
+                    </button>
+
+
+                    <button type="button"
+                            id="categoryRemoveImage"
+                            class="ib-category-image-button secondary"
+                            hidden>
+
+                        <svg viewBox="0 0 24 24">
+                            <path d="M5 5l14 14"></path>
+                            <path d="M19 5L5 19"></path>
+                        </svg>
+
+                        Remover
+                    </button>
+
+                </div>
+
+
+                <div class="ib-category-image-note">
+
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12"
+                                cy="12"
+                                r="9">
+                        </circle>
+
+                        <path d="M12 11v5"></path>
+                        <path d="M12 8h.01"></path>
+                    </svg>
+
+                    <p>
+                        Prefira imagens horizontais e de boa qualidade.
+                        A imagem será armazenada diretamente na base de dados.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <footer class="ib-category-form-footer">
+
+            <a asp-controller="Categorias"
+               asp-action="Index"
+               class="ib-category-cancel-btn">
+                Cancelar
+            </a>
+
+            <button type="submit"
+                    class="ib-category-save-btn">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M5 12l4 4L19 6"></path>
+                </svg>
+
+                Criar categoria
+            </button>
+
+        </footer>
+
+    </form>
+
+</div>
+
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const imageInput =
+                document.getElementById("categoryImageInput");
+
+            const uploadArea =
+                document.getElementById("categoryUploadArea");
+
+            const chooseButton =
+                document.getElementById("categoryChooseImage");
+
+            const removeButton =
+                document.getElementById("categoryRemoveImage");
+
+            const placeholder =
+                document.getElementById("categoryUploadPlaceholder");
+
+            const preview =
+                document.getElementById("categoryImagePreview");
+
+            const description =
+                document.getElementById("categoryDescription");
+
+            const descriptionCounter =
+                document.getElementById("descriptionCounter");
+
+
+            function openFilePicker() {
+                imageInput.click();
+            }
+
+
+            chooseButton.addEventListener(
+                "click",
+                openFilePicker
+            );
+
+
+            uploadArea.addEventListener(
+                "click",
+                function(event) {
+
+                    if (event.target === preview) {
+                        return;
+                    }
+
+                    openFilePicker();
+                }
+            );
+
+
+            imageInput.addEventListener(
+                "change",
+                function() {
+
+                    const file =
+                        imageInput.files[0];
+
+                    if (!file) {
+                        resetImage();
+                        return;
+                    }
+
+
+                    const validTypes = [
+                        "image/jpeg",
+                        "image/png",
+                        "image/webp"
+                    ];
+
+
+                    if (!validTypes.includes(file.type)) {
+
+                        alert(
+                            "Selecione uma imagem JPG, PNG ou WebP."
+                        );
+
+                        resetImage();
+
+                        return;
+                    }
+
+
+                    const reader =
+                        new FileReader();
+
+
+                    reader.onload =
+                        function(event) {
+
+                            preview.src =
+                                event.target.result;
+
+                            preview.hidden = false;
+                            placeholder.hidden = true;
+                            removeButton.hidden = false;
+
+                            uploadArea.classList.add(
+                                "has-image"
+                            );
+                        };
+
+
+                    reader.readAsDataURL(file);
+                }
+            );
+
+
+            removeButton.addEventListener(
+                "click",
+                function() {
+
+                    resetImage();
+                }
+            );
+
+
+            function resetImage() {
+
+                imageInput.value = "";
+
+                preview.src = "";
+                preview.hidden = true;
+
+                placeholder.hidden = false;
+                removeButton.hidden = true;
+
+                uploadArea.classList.remove(
+                    "has-image"
+                );
+            }
+
+
+            function updateDescriptionCounter() {
+
+                const length =
+                    description.value.length;
+
+                descriptionCounter.textContent =
+                    `${length} / 300`;
+            }
+
+
+            description.addEventListener(
+                "input",
+                updateDescriptionCounter
+            );
+
+
+            updateDescriptionCounter();
+
+        });
+    </script>
+}
