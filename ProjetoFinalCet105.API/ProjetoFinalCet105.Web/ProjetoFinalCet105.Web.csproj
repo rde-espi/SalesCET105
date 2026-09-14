@@ -9,6 +9,7 @@
   <ItemGroup>
     <Folder Include="Controllers\Cliente\" />
     <Folder Include="Controllers\Funcionario\" />
+    <Folder Include="Views\Funcionarios\" />
   </ItemGroup>
 
 </Project>

@@ -15,9 +15,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
         private readonly IAuthService _authService;
         private readonly ILogger<CreateFuncionarioUseCase> _logger;
 
-        public CreateFuncionarioUseCase(
-            IFuncionarioRepository funcionarioRepository,
-            UserManager<User> userManager, IAuthService authService, ILogger<CreateFuncionarioUseCase> logger)
+        public CreateFuncionarioUseCase( IFuncionarioRepository funcionarioRepository, UserManager<User> userManager, IAuthService authService, ILogger<CreateFuncionarioUseCase> logger)
         {
             _funcionarioRepository = funcionarioRepository;
             _userManager = userManager;
@@ -25,17 +23,25 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
             _logger = logger;
         }
 
-        public async Task<UseCaseResult<FuncionarioDTO>> ExecuteAsync(
-            NovoFuncionarioDTO dto)
+        public async Task<UseCaseResult<FuncionarioDTO>> ExecuteAsync(    NovoFuncionarioDTO dto)
         {
-            var userExistente =
-                await _userManager.FindByEmailAsync(dto.Email);
+            var userExistente = await _userManager.FindByEmailAsync(dto.Email);
 
             if (userExistente != null)
             {
-                return UseCaseResult<FuncionarioDTO>.Falha(
-                    "Já existe um utilizador com este email.",
-                    TipoErro.Conflito);
+                return UseCaseResult<FuncionarioDTO>.Falha( "Já existe um utilizador com este email.", TipoErro.Conflito);
+            }
+
+            byte[]? fotografia = null;
+            string? fotografiaContentType = null;
+
+            if (dto.Fotografia != null && dto.Fotografia.Length > 0)
+            {
+                using var memoryStream = new MemoryStream();
+                await dto.Fotografia.CopyToAsync(memoryStream);
+
+                fotografia = memoryStream.ToArray();
+                fotografiaContentType = dto.Fotografia.ContentType;
             }
 
             var user = new User
@@ -44,13 +50,13 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
                 UserName = dto.Email,
                 Email = dto.Email,
                 PhoneNumber = dto.Telefone,
-                FotografiaUrl = dto.FotografiaUrl,
+                Fotografia = fotografia,
+                FotografiaContentType = fotografiaContentType,
                 Ativo = true,
                 DataCriacao = DateTime.Now
             };
 
-            var resultadoUser =
-                await _userManager.CreateAsync(user, dto.Password);
+            var resultadoUser = await _userManager.CreateAsync(user);
 
             if (!resultadoUser.Succeeded)
             {
@@ -61,10 +67,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
                 return UseCaseResult<FuncionarioDTO>.Falha(erros);
             }
 
-            var resultadoRole =
-                await _userManager.AddToRoleAsync(
-                    user,
-                    "Funcionario");
+            var resultadoRole = await _userManager.AddToRoleAsync(user, "Funcionario");
 
             if (!resultadoRole.Succeeded)
             {
@@ -96,8 +99,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
             {
                 await _userManager.DeleteAsync(user);
 
-                return UseCaseResult<FuncionarioDTO>.Falha(
-                    "Ocorreu um erro ao criar o funcionário.");
+                return UseCaseResult<FuncionarioDTO>.Falha( "Ocorreu um erro ao criar o funcionário.");
             }
 
             var resposta = new FuncionarioDTO
@@ -107,7 +109,6 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
                 NomeCompleto = user.NomeCompleto,
                 Email = user.Email,
                 Telefone = user.PhoneNumber,
-                FotografiaUrl = user.FotografiaUrl,
                 Biografia = funcionario.Biografia,
                 DataAdmissao = funcionario.DataAdmissao,
                 Disponivel = funcionario.Disponivel,
@@ -117,8 +118,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
 
             try
             {
-                await _authService
-                    .EnviarConfirmacaoEmailAsync(user);
+                await _authService.EnviarConviteFuncionarioAsync(user);
             }
             catch (Exception ex)
             {

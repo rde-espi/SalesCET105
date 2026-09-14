@@ -47,7 +47,6 @@ namespace ProjetoFinalCet105.API.Controllers
                     NomeCompleto = f.User.NomeCompleto,
                     Email = f.User.Email,
                     Telefone = f.User.PhoneNumber,
-                    FotografiaUrl = f.User.FotografiaUrl,
                     Biografia = f.Biografia,
                     DataAdmissao = f.DataAdmissao,
                     Disponivel = f.Disponivel,
@@ -72,7 +71,6 @@ namespace ProjetoFinalCet105.API.Controllers
                 NomeCompleto = funcionario.User.NomeCompleto,
                 Email = funcionario.User.Email,
                 Telefone = funcionario.User.PhoneNumber,
-                FotografiaUrl = funcionario.User.FotografiaUrl,
                 Biografia = funcionario.Biografia,
                 DataAdmissao = funcionario.DataAdmissao,
                 Disponivel = funcionario.Disponivel,
@@ -110,7 +108,6 @@ namespace ProjetoFinalCet105.API.Controllers
                 NomeCompleto = funcionario.User.NomeCompleto,
                 Email = funcionario.User.Email,
                 Telefone = funcionario.User.PhoneNumber,
-                FotografiaUrl = funcionario.User.FotografiaUrl,
                 Biografia = funcionario.Biografia,
                 DataAdmissao = funcionario.DataAdmissao,
                 Disponivel = funcionario.Disponivel,
@@ -120,7 +117,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<FuncionarioDTO>> CreateFuncionario(NovoFuncionarioDTO dto)
+        public async Task<ActionResult<FuncionarioDTO>> CreateFuncionario([FromForm] NovoFuncionarioDTO dto)
         {
             var resultado = await _createFuncionarioUseCase.ExecuteAsync(dto);
 
@@ -134,7 +131,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "AlterarFuncionario")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateFuncionario(int id, UpdateFuncionarioDTO dto)
+        public async Task<IActionResult> UpdateFuncionario(int id, [FromForm] UpdateFuncionarioDTO dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -196,7 +193,6 @@ namespace ProjetoFinalCet105.API.Controllers
                     NomeCompleto = fs.Funcionario.User.NomeCompleto,
                     Email = fs.Funcionario.User.Email,
                     Telefone = fs.Funcionario.User.PhoneNumber,
-                    FotografiaUrl = fs.Funcionario.User.FotografiaUrl,
                     Biografia = fs.Funcionario.Biografia,
                     DataAdmissao = fs.Funcionario.DataAdmissao,
                     Disponivel = fs.Funcionario.Disponivel,
@@ -205,6 +201,26 @@ namespace ProjetoFinalCet105.API.Controllers
                 .ToListAsync();
 
             return Ok(funcionarios);
+        }
+
+        [HttpGet("{id:int}/fotografia")]
+        public async Task<IActionResult> GetFotografiaFuncionario(int id)
+        {
+            var funcionario = await _funcionarioRepository.GetFuncionarioByIdAsync(id);
+
+            if (funcionario == null)
+            {
+                return NotFound();
+            }
+
+            if (funcionario.User.Fotografia == null ||
+                funcionario.User.Fotografia.Length == 0 ||
+                string.IsNullOrWhiteSpace(funcionario.User.FotografiaContentType))
+            {
+                return NotFound();
+            }
+
+            return File(funcionario.User.Fotografia, funcionario.User.FotografiaContentType);
         }
     }
 }

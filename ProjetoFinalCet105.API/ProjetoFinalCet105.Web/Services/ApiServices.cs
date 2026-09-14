@@ -107,5 +107,21 @@ namespace ProjetoFinalCet105.Web.Services
 
             return await _httpClient.SendAsync(request);
         }
+
+        public async Task<HttpResponseMessage> SendAuthenticatedJsonAsync<T>( HttpMethod method, string endpoint, T data)
+        {
+            var token = _httpContextAccessor.HttpContext?.Session.GetString("JwtToken");
+
+            using var request = new HttpRequestMessage(method, endpoint);
+
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            request.Content = JsonContent.Create(data);
+
+            return await _httpClient.SendAsync(request);
+        }
     }
 }

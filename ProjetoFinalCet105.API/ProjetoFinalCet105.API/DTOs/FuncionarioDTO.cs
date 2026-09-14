@@ -9,8 +9,6 @@
         public string NomeCompleto { get; set; } = string.Empty;
         public string? Email { get; set; }
         public string? Telefone { get; set; }
-        public string? FotografiaUrl { get; set; }
-
         public string? Biografia { get; set; }
         public DateTime? DataAdmissao { get; set; }
 

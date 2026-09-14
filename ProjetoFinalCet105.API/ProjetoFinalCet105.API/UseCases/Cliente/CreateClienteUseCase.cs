@@ -42,6 +42,18 @@ namespace ProjetoFinalCet105.API.UseCases.Cliente
                 }
             }
 
+            byte[]? fotografia = null;
+            string? fotografiaContentType = null;
+
+            if (dto.Fotografia != null && dto.Fotografia.Length > 0)
+            {
+                using var memoryStream = new MemoryStream();
+                await dto.Fotografia.CopyToAsync(memoryStream);
+
+                fotografia = memoryStream.ToArray();
+                fotografiaContentType = dto.Fotografia.ContentType;
+            }
+
 
             var user = new User
             {
@@ -53,7 +65,8 @@ namespace ProjetoFinalCet105.API.UseCases.Cliente
                 Morada = dto.Morada,
                 CodigoPostal = dto.CodigoPostal,
                 Localidade = dto.Localidade,
-                FotografiaUrl = dto.FotografiaUrl,
+                Fotografia = fotografia,
+                FotografiaContentType = fotografiaContentType,
                 Ativo = true,
                 DataCriacao = DateTime.Now
             };
@@ -90,7 +103,6 @@ namespace ProjetoFinalCet105.API.UseCases.Cliente
                 Morada = user.Morada,
                 CodigoPostal = user.CodigoPostal,
                 Localidade = user.Localidade,
-                FotografiaUrl = user.FotografiaUrl,
                 Ativo = user.Ativo,
                 DataCriacao = user.DataCriacao,
                 DataAtualizacao = user.DataAtualizacao

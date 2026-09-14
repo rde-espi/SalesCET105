@@ -8,5 +8,6 @@ namespace ProjetoFinalCet105.API.Services.AuthService
         Task<LoginResponseDTO> GerarRespostaLoginAsync(User user);
 
         Task EnviarConfirmacaoEmailAsync(User user);
+        Task EnviarConviteFuncionarioAsync(User user);
     }
 }

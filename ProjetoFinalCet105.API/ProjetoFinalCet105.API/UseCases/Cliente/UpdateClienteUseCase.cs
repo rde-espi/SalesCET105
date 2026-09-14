@@ -92,7 +92,17 @@ namespace ProjetoFinalCet105.API.UseCases.Cliente
                 cliente.Morada = dto.Morada;
                 cliente.CodigoPostal = dto.CodigoPostal;
                 cliente.Localidade = dto.Localidade;
-                cliente.FotografiaUrl = dto.FotografiaUrl;
+
+                if (dto.Fotografia != null && dto.Fotografia.Length > 0)
+                {
+                    using var memoryStream = new MemoryStream();
+                    await dto.Fotografia.CopyToAsync(memoryStream);
+
+                    cliente.Fotografia = memoryStream.ToArray();
+                    cliente.FotografiaContentType = dto.Fotografia.ContentType;
+                }
+
+
                 cliente.DataAtualizacao = DateTime.Now;
 
                 // 7. Só Admin pode ativar/desativar cliente

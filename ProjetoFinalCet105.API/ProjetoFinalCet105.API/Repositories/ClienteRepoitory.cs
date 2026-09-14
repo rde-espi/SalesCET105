@@ -8,16 +8,14 @@ namespace ProjetoFinalCet105.API.Repositories
     {
         private readonly UserManager<User> _userManager;
 
-        public ClienteRepository(
-            UserManager<User> userManager)
+        public ClienteRepository(UserManager<User> userManager)
         {
             _userManager = userManager;
         }
 
         public async Task<IList<User>> GetAllClientesAsync()
         {
-            return await _userManager
-                .GetUsersInRoleAsync("Cliente");
+            return await _userManager.GetUsersInRoleAsync("Cliente");
         }
     }
 }

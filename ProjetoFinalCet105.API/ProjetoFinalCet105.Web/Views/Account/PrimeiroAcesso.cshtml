@@ -1,0 +1,123 @@
+﻿@model ProjetoFinalCet105.Web.Models.PrimeiroAcessoFuncionarioViewModel
+
+@{
+    ViewData["Title"] = "Ativar conta";
+    Layout = "_PublicLayout";
+}
+
+<section class="ib-login-page">
+
+    <div class="ib-login-container">
+
+        <div class="ib-login-panel">
+
+            <div class="ib-login-heading">
+
+                <span>PRIMEIRO ACESSO</span>
+
+                <h1>
+                    Ative a sua conta.
+                </h1>
+
+                <p>
+                    Defina a sua palavra-passe para concluir
+                    a ativação da conta Infinity Beauty.
+                </p>
+
+            </div>
+
+
+            <form asp-controller="Account"
+                  asp-action="PrimeiroAcesso"
+                  method="post"
+                  class="ib-login-form">
+
+                @Html.AntiForgeryToken()
+
+                <input asp-for="Email" type="hidden" />
+                <input asp-for="TokenConfirmacao" type="hidden" />
+                <input asp-for="TokenPassword" type="hidden" />
+
+
+                <div asp-validation-summary="ModelOnly"
+                     class="ib-login-error">
+                </div>
+
+
+                <div class="ib-form-group">
+
+                    <label asp-for="NovaPassword">
+                        Nova palavra-passe
+                    </label>
+
+                    <input asp-for="NovaPassword"
+                           type="password"
+                           placeholder="Introduza a sua palavra-passe"
+                           autocomplete="new-password" />
+
+                    <span asp-validation-for="NovaPassword"
+                          class="ib-field-error">
+                    </span>
+
+                </div>
+
+
+                <div class="ib-form-group">
+
+                    <label asp-for="ConfirmarPassword">
+                        Confirmar palavra-passe
+                    </label>
+
+                    <input asp-for="ConfirmarPassword"
+                           type="password"
+                           placeholder="Repita a sua palavra-passe"
+                           autocomplete="new-password" />
+
+                    <span asp-validation-for="ConfirmarPassword"
+                          class="ib-field-error">
+                    </span>
+
+                </div>
+
+
+                <button type="submit"
+                        class="ib-login-submit">
+
+                    Ativar conta
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <div class="ib-login-image">
+
+            <div class="ib-login-image-overlay"></div>
+
+            <div class="ib-login-image-copy">
+
+                <span>INFINITY BEAUTY</span>
+
+                <h2>
+                    Bem-vindo<br />
+                    à equipa.
+                </h2>
+
+                <p>
+                    Conclua a ativação da sua conta para aceder
+                    à plataforma Infinity Beauty.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

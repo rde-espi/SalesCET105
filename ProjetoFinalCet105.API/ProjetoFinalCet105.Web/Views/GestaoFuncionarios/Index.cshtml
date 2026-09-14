@@ -1,0 +1,293 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.FuncionarioViewModel>
+
+@{
+    ViewData["Title"] = "Gestão de Funcionários";
+    Layout = "_AdminLayout";
+
+    var totalFuncionarios = Model.Count;
+    var ativos = Model.Count(f => f.Ativo);
+    var disponiveis = Model.Count(f => f.Ativo && f.Disponivel);
+}
+
+<div class="ib-categories-page">
+
+    <div class="ib-categories-heading">
+        <div>
+            <span class="ib-section-eyebrow">Equipa</span>
+            <h1>Gestão de Funcionários</h1>
+            <p>Consulte, adicione e faça a gestão dos profissionais da Infinity Beauty.</p>
+        </div>
+
+        <a asp-controller="GestaoFuncionarios" asp-action="Criar" class="ib-category-create-btn">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 5v14M5 12h14"></path>
+            </svg>
+            Novo funcionário
+        </a>
+    </div>
+
+
+    <div class="ib-category-kpi-grid">
+
+        <div class="ib-category-kpi-card">
+            <div class="ib-category-kpi-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+            </div>
+
+            <div>
+                <span>Total</span>
+                <strong>@totalFuncionarios</strong>
+                <small>Funcionários registados</small>
+            </div>
+        </div>
+
+
+        <div class="ib-category-kpi-card">
+            <div class="ib-category-kpi-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 6 9 17l-5-5"></path>
+                </svg>
+            </div>
+
+            <div>
+                <span>Ativos</span>
+                <strong>@ativos</strong>
+                <small>Funcionários ativos</small>
+            </div>
+        </div>
+
+
+        <div class="ib-category-kpi-card ib-category-kpi-highlight">
+            <div class="ib-category-kpi-icon">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M8 12l2.5 2.5L16 9"></path>
+                </svg>
+            </div>
+
+            <div>
+                <span>Disponíveis</span>
+                <strong>@disponiveis</strong>
+                <small>Disponíveis para marcações</small>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+            <div>
+                <span class="ib-section-eyebrow">Profissionais</span>
+                <h2>Equipa Infinity Beauty</h2>
+                <p>Consulte os dados, disponibilidade e estado dos funcionários.</p>
+            </div>
+
+            <div class="ib-category-search">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="m20 20-4-4"></path>
+                </svg>
+
+                <input id="pesquisaFuncionario" type="search" placeholder="Pesquisar funcionário..." />
+            </div>
+        </div>
+
+
+        @if (!Model.Any())
+        {
+            <div class="ib-category-empty-state">
+                <svg viewBox="0 0 24 24" width="35" height="35">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                </svg>
+
+                <h3>Ainda não existem funcionários</h3>
+                <p>Adicione o primeiro profissional à equipa Infinity Beauty.</p>
+
+                <a asp-controller="GestaoFuncionarios" asp-action="Criar" class="ib-category-create-btn">
+                    Novo funcionário
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="ib-employee-table">
+
+                <div class="ib-employee-table-header">
+                    <span>Funcionário</span>
+                    <span>Contacto</span>
+                    <span>Admissão</span>
+                    <span>Disponibilidade</span>
+                    <span>Estado</span>
+                    <span></span>
+                </div>
+
+                <div id="funcionariosTable">
+
+                    @foreach (var funcionario in Model)
+                    {
+                        var nomes = funcionario.NomeCompleto
+                            .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                        var iniciais = string.Join("", nomes
+                            .Take(2)
+                            .Select(n => char.ToUpper(n[0])));
+
+                        <div class="ib-employee-row funcionario-row"
+                             data-pesquisa="@($"{funcionario.NomeCompleto} {funcionario.Email} {funcionario.Telefone}".ToLower())">
+
+                            <div class="ib-employee-person">
+                                <div class="ib-employee-avatar">
+                                    <span class="ib-employee-initials">@iniciais</span>
+
+                                    <img src="@Url.Action("Fotografia", "GestaoFuncionarios", new { id = funcionario.Id })"
+                                         alt="@funcionario.NomeCompleto"
+                                         class="ib-employee-photo"
+                                         onload="this.previousElementSibling.style.display='none';"
+                                         onerror="this.style.display='none';" />
+                                </div>
+
+                                <div class="ib-category-name">
+                                    <strong>@funcionario.NomeCompleto</strong>
+
+                                    @if (!string.IsNullOrWhiteSpace(funcionario.Biografia))
+                                    {
+                                        <small>@funcionario.Biografia</small>
+                                    }
+                                    else
+                                    {
+                                        <small>Profissional Infinity Beauty</small>
+                                    }
+                                </div>
+                            </div>
+
+
+                            <div class="ib-employee-contact">
+                                <strong>@funcionario.Email</strong>
+
+                                @if (!string.IsNullOrWhiteSpace(funcionario.Telefone))
+                                {
+                                    <span>@funcionario.Telefone</span>
+                                }
+                                else
+                                {
+                                    <span class="ib-category-empty">Sem telefone</span>
+                                }
+                            </div>
+
+
+                            <div class="ib-employee-date">
+                                @if (funcionario.DataAdmissao.HasValue)
+                                {
+                                    <span>@funcionario.DataAdmissao.Value.ToString("dd/MM/yyyy")</span>
+                                }
+                                else
+                                {
+                                    <span class="ib-category-empty">—</span>
+                                }
+                            </div>
+
+
+                            <div>
+                                @if (funcionario.Disponivel)
+                                {
+                                    <span class="ib-category-status available">
+                                        <i></i>
+                                        Disponível
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="ib-category-status unavailable">
+                                        <i></i>
+                                        Indisponível
+                                    </span>
+                                }
+                            </div>
+
+
+                            <div>
+                                @if (funcionario.Ativo)
+                                {
+                                    <span class="ib-category-status active">
+                                        <i></i>
+                                        Ativo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="ib-category-status inactive">
+                                        <i></i>
+                                        Inativo
+                                    </span>
+                                }
+                            </div>
+
+
+                            <div class="ib-category-actions">
+                                <a asp-controller="GestaoFuncionarios"
+                                   asp-action="Editar"
+                                   asp-route-id="@funcionario.Id"
+                                   class="ib-category-action-btn"
+                                   title="Editar funcionário">
+
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M12 20h9"></path>
+                                        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                                    </svg>
+                                </a>
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+
+
+                <div id="semResultadosFuncionarios" class="ib-category-no-results" style="display:none;">
+                    <strong>Nenhum funcionário encontrado</strong>
+                    <p>Experimente pesquisar por outro nome, email ou contacto.</p>
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+    <script>
+        const pesquisaFuncionario = document.getElementById('pesquisaFuncionario');
+        const linhasFuncionarios = document.querySelectorAll('.funcionario-row');
+        const semResultados = document.getElementById('semResultadosFuncionarios');
+
+        if (pesquisaFuncionario) {
+            pesquisaFuncionario.addEventListener('input', function() {
+                const termo = this.value.toLowerCase().trim();
+                let encontrados = 0;
+
+                linhasFuncionarios.forEach(row => {
+                    const conteudo = row.dataset.pesquisa || '';
+                    const visivel = conteudo.includes(termo);
+
+                    row.style.display = visivel ? '' : 'none';
+
+                    if (visivel) encontrados++;
+                });
+
+                if (semResultados) {
+                    semResultados.style.display = encontrados === 0 ? 'block' : 'none';
+                }
+            });
+        }
+    </script>
+}

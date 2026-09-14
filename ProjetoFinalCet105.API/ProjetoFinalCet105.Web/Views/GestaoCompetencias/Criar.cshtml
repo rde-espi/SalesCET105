@@ -1,0 +1,148 @@
+﻿@model ProjetoFinalCet105.Web.Models.CompetenciaFormViewModel
+
+@{
+    ViewData["Title"] = "Nova Competência";
+    Layout = "_AdminLayout";
+}
+
+<div class="ib-category-form-page">
+
+    <section class="ib-category-form-heading">
+        <div>
+            <span class="ib-section-eyebrow">EQUIPA</span>
+            <h1>Nova Competência</h1>
+            <p>Crie uma nova competência profissional para associação aos funcionários.</p>
+        </div>
+
+        <a asp-controller="GestaoCompetencias"
+           asp-action="Index"
+           class="ib-category-back-btn">
+
+            <svg viewBox="0 0 24 24">
+                <path d="M19 12H5"></path>
+                <path d="M11 6l-6 6 6 6"></path>
+            </svg>
+
+            Voltar às competências
+        </a>
+    </section>
+
+    <form asp-controller="GestaoCompetencias"
+          asp-action="Criar"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly"
+             class="ib-category-form-validation"></div>
+
+        <div class="ib-category-form-grid">
+
+            <section class="ib-category-form-card">
+
+                <header class="ib-category-form-card-header">
+
+                    <div class="ib-category-form-card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="8"></circle>
+                            <path d="M12 8v8"></path>
+                            <path d="M8 12h8"></path>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <span class="ib-section-eyebrow">INFORMAÇÃO</span>
+                        <h2>Dados da competência</h2>
+                        <p>Defina o nome e a descrição da competência profissional.</p>
+                    </div>
+
+                </header>
+
+                <div class="ib-category-field">
+                    <label asp-for="Nome">
+                        Nome <span>*</span>
+                    </label>
+
+                    <input asp-for="Nome"
+                           placeholder="Ex.: Massagem terapêutica" />
+
+                    <span asp-validation-for="Nome"
+                          class="ib-field-validation"></span>
+                </div>
+
+                <div class="ib-category-field">
+
+                    <div class="ib-category-field-label">
+                        <label asp-for="Descricao">Descrição</label>
+                        <span>Opcional</span>
+                    </div>
+
+                    <textarea asp-for="Descricao"
+                              rows="6"
+                              placeholder="Descrição da competência..."></textarea>
+
+                    <span asp-validation-for="Descricao"
+                          class="ib-field-validation"></span>
+                </div>
+
+            </section>
+
+            <section class="ib-category-image-card">
+
+                <header>
+                    <span class="ib-section-eyebrow">ESTADO</span>
+                    <h2>Disponibilidade</h2>
+                    <p>A nova competência ficará automaticamente ativa.</p>
+                </header>
+
+                <div class="ib-employee-edit-info">
+
+                    <div class="ib-employee-edit-info-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M8 12l2.5 2.5L16 9"></path>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <strong>Competência ativa</strong>
+                        <p>
+                            Depois de criada, ficará disponível para associação
+                            aos profissionais.
+                        </p>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <footer class="ib-category-form-footer">
+
+            <a asp-controller="GestaoCompetencias"
+               asp-action="Index"
+               class="ib-category-cancel-btn">
+                Cancelar
+            </a>
+
+            <button type="submit"
+                    class="ib-category-save-btn">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M5 12l4 4L19 6"></path>
+                </svg>
+
+                Criar competência
+            </button>
+
+        </footer>
+
+    </form>
+
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

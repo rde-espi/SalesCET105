@@ -1,0 +1,284 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.CompetenciaViewModel>
+
+@{
+    ViewData["Title"] = "Competências";
+    Layout = "_AdminLayout";
+
+    var total = Model.Count;
+    var ativas = Model.Count(c => c.Ativa);
+    var inativas = Model.Count(c => !c.Ativa);
+}
+
+<div class="ib-categories-page">
+
+    <section class="ib-categories-heading">
+        <div>
+            <span class="ib-section-eyebrow">EQUIPA</span>
+            <h1>Competências</h1>
+            <p>Gerir as competências profissionais disponíveis para associação aos funcionários.</p>
+        </div>
+
+        <a asp-controller="GestaoCompetencias"
+           asp-action="Criar"
+           class="ib-category-create-btn">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 5v14"></path>
+                <path d="M5 12h14"></path>
+            </svg>
+            Nova competência
+        </a>
+    </section>
+
+
+    <!-- KPI -->
+    <section class="ib-category-kpi-grid">
+
+        <div class="ib-category-kpi-card">
+            <div class="ib-category-kpi-icon">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="8"></circle>
+                    <path d="M8 12h8"></path>
+                    <path d="M12 8v8"></path>
+                </svg>
+            </div>
+
+            <div>
+                <span>Total</span>
+                <strong>@total</strong>
+                <small>Competências registadas</small>
+            </div>
+        </div>
+
+        <div class="ib-category-kpi-card">
+            <div class="ib-category-kpi-icon">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="8"></circle>
+                    <path d="M8.5 12l2.2 2.2 4.8-5"></path>
+                </svg>
+            </div>
+
+            <div>
+                <span>Ativas</span>
+                <strong>@ativas</strong>
+                <small>Disponíveis para utilização</small>
+            </div>
+        </div>
+
+        <div class="ib-category-kpi-card ib-category-kpi-highlight">
+            <div class="ib-category-kpi-icon">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="8"></circle>
+                    <path d="M8 12h8"></path>
+                </svg>
+            </div>
+
+            <div>
+                <span>Inativas</span>
+                <strong>@inativas</strong>
+                <small>Competências desativadas</small>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- PAINEL -->
+    <section class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+            <div>
+                <span class="ib-section-eyebrow">CATÁLOGO</span>
+                <h2>Lista de competências</h2>
+                <p>Consulte e gira as competências profissionais.</p>
+            </div>
+
+            <div class="ib-category-search">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="M20 20l-3.5-3.5"></path>
+                </svg>
+
+                <input type="text"
+                       id="pesquisaCompetencias"
+                       placeholder="Pesquisar competência..." />
+            </div>
+        </div>
+
+
+        @if (Model.Any())
+        {
+            <div class="ib-category-table">
+
+                <div class="ib-category-table-header"
+                     style="grid-template-columns:minmax(180px,.9fr) minmax(280px,1.5fr) 105px 90px;">
+
+                    <span>Competência</span>
+                    <span>Descrição</span>
+                    <span>Estado</span>
+                    <span></span>
+                </div>
+
+                <div id="listaCompetencias">
+
+                    @foreach (var competencia in Model)
+                    {
+                        <div class="ib-category-row ib-competencia-row"
+                             style="grid-template-columns:minmax(180px,.9fr) minmax(280px,1.5fr) 105px 90px;"
+                             data-pesquisa="@($"{competencia.Nome} {competencia.Descricao}".ToLowerInvariant())">
+
+                            <div class="ib-category-name">
+                                <strong>@competencia.Nome</strong>
+                                <small>Competência profissional</small>
+                            </div>
+
+                            <div class="ib-category-description">
+                                @if (string.IsNullOrWhiteSpace(competencia.Descricao))
+                                {
+                                    <span class="ib-category-empty">
+                                        Sem descrição
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span>@competencia.Descricao</span>
+                                }
+                            </div>
+
+                            <div>
+                                @if (competencia.Ativa)
+                                {
+                                    <span class="ib-category-status active">
+                                        <i></i>
+                                        Ativa
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="ib-category-status inactive">
+                                        <i></i>
+                                        Inativa
+                                    </span>
+                                }
+                            </div>
+
+                            <div class="ib-category-actions">
+                                <a asp-controller="GestaoCompetencias"
+                                   asp-action="Editar"
+                                   asp-route-id="@competencia.Id"
+                                   class="ib-category-action-btn"
+                                   title="Editar competência">
+
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M4 20h4L19 9l-4-4L4 16v4z"></path>
+                                        <path d="M13.5 6.5l4 4"></path>
+                                    </svg>
+                                </a>
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+
+
+                <!-- PESQUISA SEM RESULTADOS -->
+                <div id="semCompetenciasEncontradas"
+                     class="ib-category-no-results"
+                     style="display:none;">
+
+                    <svg viewBox="0 0 24 24"
+                         style="width:35px;height:35px;fill:none;stroke:currentColor;stroke-width:1.4;">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <path d="M20 20l-3.5-3.5"></path>
+                    </svg>
+
+                    <strong>Nenhuma competência encontrada</strong>
+                    <p>Tente pesquisar por outro nome ou descrição.</p>
+                </div>
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-category-empty-state">
+
+                <svg viewBox="0 0 24 24"
+                     style="width:35px;height:35px;fill:none;stroke:currentColor;stroke-width:1.4;">
+                    <circle cx="12" cy="12" r="8"></circle>
+                    <path d="M12 8v8"></path>
+                    <path d="M8 12h8"></path>
+                </svg>
+
+                <h3>Ainda não existem competências</h3>
+
+                <p>
+                    Crie a primeira competência profissional para começar
+                    a associá-la aos funcionários.
+                </p>
+
+                <a asp-controller="GestaoCompetencias"
+                   asp-action="Criar"
+                   class="ib-category-create-btn">
+                    Nova competência
+                </a>
+
+            </div>
+        }
+
+    </section>
+
+</div>
+
+
+@section Scripts
+{
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const pesquisa =
+                document.getElementById("pesquisaCompetencias");
+
+            const linhas =
+                document.querySelectorAll(".ib-competencia-row");
+
+            const semResultados =
+                document.getElementById("semCompetenciasEncontradas");
+
+            if (!pesquisa) {
+                return;
+            }
+
+            pesquisa.addEventListener("input", function() {
+
+                const termo =
+                    this.value.trim().toLowerCase();
+
+                let encontrados = 0;
+
+                linhas.forEach(function(linha) {
+
+                    const texto =
+                        linha.dataset.pesquisa || "";
+
+                    const corresponde =
+                        texto.includes(termo);
+
+                    linha.style.display =
+                        corresponde ? "grid" : "none";
+
+                    if (corresponde) {
+                        encontrados++;
+                    }
+                });
+
+                if (semResultados) {
+                    semResultados.style.display =
+                        encontrados === 0
+                            ? "block"
+                            : "none";
+                }
+            });
+
+        });
+    </script>
+}

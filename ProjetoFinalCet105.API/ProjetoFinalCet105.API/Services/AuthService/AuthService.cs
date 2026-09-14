@@ -67,8 +67,7 @@ namespace ProjetoFinalCet105.API.Services.AuthService
         {
             if (string.IsNullOrWhiteSpace(user.Email))
             {
-                throw new InvalidOperationException(
-                    "O utilizador não possui um email válido.");
+                throw new InvalidOperationException( "O utilizador não possui um email válido.");
             }
 
             if (user.EmailConfirmed)
@@ -76,8 +75,7 @@ namespace ProjetoFinalCet105.API.Services.AuthService
                 return;
             }
 
-            var token =
-                await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
             var mensagem = $@"
         <h2>Confirmação de email</h2>
@@ -94,10 +92,60 @@ namespace ProjetoFinalCet105.API.Services.AuthService
         <p>Se não efetuou este registo,
         ignore esta mensagem.</p>";
 
-            await _emailService.EnviarEmailAsync(
-                user.Email,
-                "Confirmação de email",
-                mensagem);
+            await _emailService.EnviarEmailAsync( user.Email,"Confirmação de email", mensagem);
+        }
+
+        public async Task EnviarConviteFuncionarioAsync(User user)
+        {
+            if (string.IsNullOrWhiteSpace(user.Email))
+            {
+                throw new InvalidOperationException("O funcionário não possui um email válido.");
+            }
+
+            var tokenConfirmacao = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var tokenPassword = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            var webBaseUrl = _configuration["WebSettings:BaseUrl"];
+
+            if (string.IsNullOrWhiteSpace(webBaseUrl))
+            {
+                throw new InvalidOperationException("A configuração WebSettings:BaseUrl não foi definida.");
+            }
+
+            var emailCodificado = Uri.EscapeDataString(user.Email);
+            var tokenConfirmacaoCodificado = Uri.EscapeDataString(tokenConfirmacao);
+            var tokenPasswordCodificado = Uri.EscapeDataString(tokenPassword);
+
+            var link = $"{webBaseUrl}/Account/PrimeiroAcesso?email={emailCodificado}&tokenConfirmacao={tokenConfirmacaoCodificado}&tokenPassword={tokenPasswordCodificado}";
+            var mensagem = $@"
+        <h2>Bem-vindo(a) à Infinity Beauty</h2>
+
+        <p>Olá {user.NomeCompleto},</p>
+
+        <p>Foi criada uma conta de funcionário para si na plataforma Infinity Beauty.</p>
+
+        <p>Para ativar a sua conta, confirme o seu endereço de email e escolha a sua palavra-passe através do botão abaixo:</p>
+
+        <p style=""margin: 30px 0;"">
+            <a href=""{link}""
+               style=""background-color:#191919;
+                      color:#D8B071;
+                      padding:14px 24px;
+                      text-decoration:none;
+                      border-radius:4px;
+                      font-weight:bold;"">
+                Ativar a minha conta
+            </a>
+        </p>
+
+        <p>Por motivos de segurança, não partilhe este link.</p>
+
+        <p>Se não estava à espera desta mensagem, contacte a administração da Infinity Beauty.</p>
+
+        <p>Infinity Beauty<br>
+        CENTER | SPA | WELLNESS</p>";
+
+            await _emailService.EnviarEmailAsync( user.Email, "Ativação da sua conta - Infinity Beauty", mensagem);
         }
 
     }

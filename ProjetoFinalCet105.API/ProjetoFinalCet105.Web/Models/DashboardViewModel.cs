@@ -180,8 +180,6 @@
 
         public string Email { get; set; } = string.Empty;
 
-        public string? FotografiaUrl { get; set; }
-
         public bool Ativo { get; set; }
 
         public DateTime DataCriacao { get; set; }

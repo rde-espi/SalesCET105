@@ -1101,7 +1101,10 @@ namespace ProjetoFinalCet105.API.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FotografiaUrl")
+                    b.Property<byte[]>("Fotografia")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("FotografiaContentType")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GoogleId")

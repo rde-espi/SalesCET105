@@ -73,6 +73,33 @@ namespace ProjetoFinalCet105.API.Controllers
             });
         }
 
+        [Authorize]
+        [HttpGet("funcionario/{funcionarioId:int}")]
+        public async Task<ActionResult<IEnumerable<FuncionarioCompetenciaDTO>>> GetByFuncionario(int funcionarioId)
+        {
+            if (!await _funcionarioRepository.ExistAsync(funcionarioId))
+            {
+                return NotFound("O funcionário indicado não existe.");
+            }
+
+            var dados = await _funcionarioCompetenciaRepository
+                .GetAllWithDetails()
+                .Where(fc => fc.FuncionarioId == funcionarioId)
+                .Select(fc => new FuncionarioCompetenciaDTO
+                {
+                    Id = fc.Id,
+                    FuncionarioId = fc.FuncionarioId,
+                    FuncionarioNome = fc.Funcionario.User.NomeCompleto,
+                    CompetenciaId = fc.CompetenciaId,
+                    CompetenciaNome = fc.Competencia.Nome,
+                    Nivel = fc.Nivel,
+                    Certificacao = fc.Certificacao
+                })
+                .ToListAsync();
+
+            return Ok(dados);
+        }
+
         [Authorize(Policy = "GerirCompetenciasFuncionario")]
         [HttpPost]
         public async Task<ActionResult<FuncionarioCompetenciaDTO>> CreateFuncionarioCompetencia(FuncionarioCompetenciaDTO dto)
@@ -89,9 +116,7 @@ namespace ProjetoFinalCet105.API.Controllers
             if (User.IsInRole("Funcionario") &&
                 !User.IsInRole("Admin"))
             {
-                var funcionarioAutenticado =
-                    await _funcionarioRepository
-                        .GetFuncionarioByUserIdAsync(userId);
+                var funcionarioAutenticado = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
 
                 if (funcionarioAutenticado == null)
                 {
@@ -117,8 +142,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
             if (await _funcionarioCompetenciaRepository.ExisteFuncionarioCompetenciaAsync(funcionarioId, dto.CompetenciaId))
             {
-                return BadRequest(
-                    "O funcionário já possui esta competência.");
+                return BadRequest( "O funcionário já possui esta competência.");
             }
             try
             {
@@ -134,20 +158,15 @@ namespace ProjetoFinalCet105.API.Controllers
 
                 dto.Id = fc.Id;
 
-                var funcionario = await _funcionarioRepository
-                    .GetFuncionarioByIdAsync(funcionarioId);
+                var funcionario = await _funcionarioRepository.GetFuncionarioByIdAsync(funcionarioId);
 
-                var competencia = await _competenciaRepository
-                    .GetByIdAsync(dto.CompetenciaId);
+                var competencia = await _competenciaRepository.GetByIdAsync(dto.CompetenciaId);
 
                 dto.FuncionarioId = funcionarioId;
                 dto.FuncionarioNome = funcionario!.User.NomeCompleto;
                 dto.CompetenciaNome = competencia!.Nome;
 
-                return CreatedAtAction(
-                    nameof(GetFuncionarioCompetenciaById),
-                    new { id = fc.Id },
-                    dto);
+                return CreatedAtAction(nameof(GetFuncionarioCompetenciaById), new { id = fc.Id }, dto);
             }
             catch (Exception)
             {

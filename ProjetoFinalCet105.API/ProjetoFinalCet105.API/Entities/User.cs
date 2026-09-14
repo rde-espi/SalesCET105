@@ -10,7 +10,8 @@ namespace ProjetoFinalCet105.API.Entities
         public string? Morada { get; set; }
         public string? CodigoPostal { get; set; }
         public string? Localidade { get; set; }
-        public string? FotografiaUrl { get; set; }
+        public byte[]? Fotografia { get; set; }
+        public string? FotografiaContentType { get; set; }
         public bool Ativo { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime? DataAtualizacao { get; set; }

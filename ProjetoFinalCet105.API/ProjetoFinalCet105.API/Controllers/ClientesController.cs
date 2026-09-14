@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
+using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.UseCases.Cliente;
 
 namespace ProjetoFinalCet105.API.Controllers
@@ -26,7 +27,7 @@ namespace ProjetoFinalCet105.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ClienteDTO>> CreateCliente(NovoClienteDTO dto)
+        public async Task<ActionResult<ClienteDTO>> CreateCliente([FromForm] NovoClienteDTO dto)
         {
             var resultado = await _createClienteUseCase.ExecuteAsync(dto);
 
@@ -79,7 +80,6 @@ namespace ProjetoFinalCet105.API.Controllers
                 Morada = user.Morada,
                 CodigoPostal = user.CodigoPostal,
                 Localidade = user.Localidade,
-                FotografiaUrl = user.FotografiaUrl,
                 Ativo = user.Ativo,
                 DataCriacao = user.DataCriacao,
                 DataAtualizacao = user.DataAtualizacao
@@ -88,7 +88,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "AlterarCliente")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCliente(string id, UpdateClienteDTO dto)
+        public async Task<IActionResult> UpdateCliente(string id, [FromForm] UpdateClienteDTO dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -125,7 +125,6 @@ namespace ProjetoFinalCet105.API.Controllers
                     Morada = user.Morada,
                     CodigoPostal = user.CodigoPostal,
                     Localidade = user.Localidade,
-                    FotografiaUrl = user.FotografiaUrl,
                     Ativo = user.Ativo,
                     DataCriacao = user.DataCriacao,
                     DataAtualizacao = user.DataAtualizacao
@@ -134,6 +133,31 @@ namespace ProjetoFinalCet105.API.Controllers
                 .ToList();
 
             return Ok(resultado);
+        }
+
+        [HttpGet("{id}/fotografia")]
+        public async Task<IActionResult> GetFotografiaCliente(string id)
+        {
+            var cliente = await _userManager.FindByIdAsync(id);
+
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+
+            if (!await _userManager.IsInRoleAsync(cliente, "Cliente"))
+            {
+                return NotFound();
+            }
+
+            if (cliente.Fotografia == null ||
+                cliente.Fotografia.Length == 0 ||
+                string.IsNullOrWhiteSpace(cliente.FotografiaContentType))
+            {
+                return NotFound();
+            }
+
+            return File(cliente.Fotografia, cliente.FotografiaContentType);
         }
     }
 }

@@ -12,9 +12,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
         private readonly IFuncionarioRepository _funcionarioRepository;
         private readonly UserManager<User> _userManager;
 
-        public UpdateFuncionarioUseCase(
-            IFuncionarioRepository funcionarioRepository,
-            UserManager<User> userManager)
+        public UpdateFuncionarioUseCase( IFuncionarioRepository funcionarioRepository, UserManager<User> userManager)
         {
             _funcionarioRepository = funcionarioRepository;
             _userManager = userManager;
@@ -26,29 +24,21 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
 
             if (funcionario == null)
             {
-                return UseCaseResult<bool>.Falha(
-                    "Funcionário não encontrado.",
-                    TipoErro.NaoEncontrado);
+                return UseCaseResult<bool>.Falha("Funcionário não encontrado.", TipoErro.NaoEncontrado);
             }
 
             if (isFuncionario && !isAdmin)
             {
-                var funcionarioAutenticado =
-                    await _funcionarioRepository
-                        .GetFuncionarioByUserIdAsync(userId);
+                var funcionarioAutenticado = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
 
                 if (funcionarioAutenticado == null)
                 {
-                    return UseCaseResult<bool>.Falha(
-                        "Funcionário autenticado não encontrado.",
-                        TipoErro.Proibido);
+                    return UseCaseResult<bool>.Falha("Funcionário autenticado não encontrado.", TipoErro.Proibido);
                 }
 
                 if (funcionarioAutenticado.Id != funcionario.Id)
                 {
-                    return UseCaseResult<bool>.Falha(
-                        "Não tem permissão para alterar este funcionário.",
-                        TipoErro.Proibido);
+                    return UseCaseResult<bool>.Falha("Não tem permissão para alterar este funcionário.", TipoErro.Proibido);
                 }
             }
 
@@ -56,35 +46,27 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
 
             if (user == null)
             {
-                return UseCaseResult<bool>.Falha(
-                    "Utilizador associado ao funcionário não encontrado.",
-                    TipoErro.NaoEncontrado);
+                return UseCaseResult<bool>.Falha("Utilizador associado ao funcionário não encontrado.", TipoErro.NaoEncontrado);
             }
 
             if (string.IsNullOrWhiteSpace(dto.Email))
             {
-                return UseCaseResult<bool>.Falha(
-                    "O email é obrigatório.");
+                return UseCaseResult<bool>.Falha( "O email é obrigatório.");
             }
 
             if (string.IsNullOrWhiteSpace(dto.NomeCompleto))
             {
-                return UseCaseResult<bool>.Falha(
-                    "O nome completo é obrigatório.");
+                return UseCaseResult<bool>.Falha("O nome completo é obrigatório.");
             }
 
             // Se o email foi alterado, verificar se já pertence a outro utilizador
             if (!string.Equals(user.Email, dto.Email, StringComparison.OrdinalIgnoreCase))
             {
-                var userComEmail =
-                    await _userManager.FindByEmailAsync(dto.Email);
+                var userComEmail = await _userManager.FindByEmailAsync(dto.Email);
 
-                if (userComEmail != null &&
-                    userComEmail.Id != user.Id)
+                if (userComEmail != null && userComEmail.Id != user.Id)
                 {
-                    return UseCaseResult<bool>.Falha(
-                        "Já existe outro utilizador com este email.",
-                        TipoErro.Conflito);
+                    return UseCaseResult<bool>.Falha( "Já existe outro utilizador com este email.", TipoErro.Conflito);
                 }
             }
 
@@ -94,8 +76,16 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
                 user.Email = dto.Email;
                 user.UserName = dto.Email;
                 user.PhoneNumber = dto.Telefone;
-                user.FotografiaUrl = dto.FotografiaUrl;
                 user.DataAtualizacao = DateTime.Now;
+
+                if (dto.Fotografia != null && dto.Fotografia.Length > 0)
+                {
+                    using var memoryStream = new MemoryStream();
+                    await dto.Fotografia.CopyToAsync(memoryStream);
+
+                    user.Fotografia = memoryStream.ToArray();
+                    user.FotografiaContentType = dto.Fotografia.ContentType;
+                }
 
                 funcionario.Biografia = dto.Biografia;
 
@@ -117,11 +107,16 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
                     if (dto.Ativo.HasValue)
                     {
                         funcionario.Ativo = dto.Ativo.Value;
+                        user.Ativo = dto.Ativo.Value;
+
+                        if (!dto.Ativo.Value)
+                        {
+                            funcionario.Disponivel = false;
+                        }
                     }
                 }
 
-                var resultadoUser =
-                    await _userManager.UpdateAsync(user);
+                var resultadoUser = await _userManager.UpdateAsync(user);
 
                 if (!resultadoUser.Succeeded)
                 {
@@ -138,8 +133,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
             }
             catch (Exception)
             {
-                return UseCaseResult<bool>.Falha(
-                    "Ocorreu um erro ao alterar o funcionário.");
+                return UseCaseResult<bool>.Falha("Ocorreu um erro ao alterar o funcionário.");
             }
         }
     }

@@ -26,9 +26,7 @@ namespace ProjetoFinalCet105.API.DTOs
 
         [MaxLength(100)]
         public string? Localidade { get; set; }
-
-        [MaxLength(500)]
-        public string? FotografiaUrl { get; set; }
+        public IFormFile? Fotografia { get; set; }
 
         public bool? Ativo { get; set; }
     }

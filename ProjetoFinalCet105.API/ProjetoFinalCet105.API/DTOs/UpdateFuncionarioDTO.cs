@@ -16,8 +16,7 @@ namespace ProjetoFinalCet105.API.DTOs
         [MaxLength(20)]
         public string? Telefone { get; set; }
 
-        [MaxLength(500)]
-        public string? FotografiaUrl { get; set; }
+        public IFormFile? Fotografia { get; set; }
 
         [MaxLength(1000)]
         public string? Biografia { get; set; }

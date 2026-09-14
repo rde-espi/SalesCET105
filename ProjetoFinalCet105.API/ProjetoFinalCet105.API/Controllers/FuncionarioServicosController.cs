@@ -48,6 +48,34 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(funcionarioServicos);
         }
 
+        [HttpGet("funcionario/{funcionarioId:int}")]
+        public async Task<ActionResult<IEnumerable<FuncionarioServicoDTO>>> GetByFuncionario(int funcionarioId)
+        {
+            if (!await _funcionarioRepository.ExistAsync(funcionarioId))
+            {
+                return NotFound("O funcionário indicado não existe.");
+            }
+
+            var funcionarioServicos = await _funcionarioServicoRepository
+                .GetAllWithDetails()
+                .Where(fs => fs.FuncionarioId == funcionarioId)
+                .Select(fs => new FuncionarioServicoDTO
+                {
+                    Id = fs.Id,
+                    FuncionarioId = fs.FuncionarioId,
+                    FuncionarioNome = fs.Funcionario.User.NomeCompleto,
+                    ServicoId = fs.ServicoId,
+                    ServicoNome = fs.Servico.Nome,
+                    PrecoPersonalizado = fs.PrecoPersonalizado,
+                    DuracaoPersonalizadaMinutos = fs.DuracaoPersonalizadaMinutos,
+                    Ativo = fs.Ativo
+                })
+                .ToListAsync();
+
+            return Ok(funcionarioServicos);
+        }
+
+
         [HttpGet("{id:int}")]
         public async Task<ActionResult<FuncionarioServicoDTO>> GetFuncionarioServicoById(int id)
         {

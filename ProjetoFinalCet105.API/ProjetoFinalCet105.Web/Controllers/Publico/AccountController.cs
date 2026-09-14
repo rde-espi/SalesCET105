@@ -126,6 +126,69 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpGet]
+        public IActionResult PrimeiroAcesso(string email, string tokenConfirmacao, string tokenPassword)
+        {
+            if (string.IsNullOrWhiteSpace(email) ||
+                string.IsNullOrWhiteSpace(tokenConfirmacao) ||
+                string.IsNullOrWhiteSpace(tokenPassword))
+            {
+                return RedirectToAction("Login");
+            }
+
+            var model = new PrimeiroAcessoFuncionarioViewModel
+            {
+                Email = email,
+                TokenConfirmacao = tokenConfirmacao,
+                TokenPassword = tokenPassword
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PrimeiroAcesso(PrimeiroAcessoFuncionarioViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var confirmarEmailRequest = new
+            {
+                Email = model.Email,
+                Token = model.TokenConfirmacao
+            };
+
+            var confirmacao = await _apiService.PostAsync<object, object>( "api/Auth/confirmar-email", confirmarEmailRequest);
+
+            if (confirmacao == null)
+            {
+                ModelState.AddModelError(string.Empty, "Não foi possível confirmar o email. O link poderá ser inválido ou ter expirado.");
+                return View(model);
+            }
+
+            var definirPasswordRequest = new
+            {
+                Email = model.Email,
+                Token = model.TokenPassword,
+                NovaPassword = model.NovaPassword
+            };
+
+            var password = await _apiService.PostAsync<object, object>( "api/Auth/reset-password",definirPasswordRequest);
+
+            if (password == null)
+            {
+                ModelState.AddModelError(string.Empty, "O email foi confirmado, mas não foi possível definir a palavra-passe.");
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Conta ativada com sucesso. Já pode iniciar sessão.";
+
+            return RedirectToAction("Login");
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
