@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
+using ProjetoFinalCet105.API.Models;
 using ProjetoFinalCet105.API.Repositories;
 
 namespace ProjetoFinalCet105.API.Controllers
@@ -35,7 +36,6 @@ namespace ProjetoFinalCet105.API.Controllers
                     Descricao = s.Descricao,
                     Preco = s.Preco,
                     DuracaoMinutos = s.DuracaoMinutos,
-                    ImagemUrl = s.ImagemUrl,
                     Disponivel = s.Disponivel,
                     DataCriacao = s.DataCriacao,
                     DataAtualizacao = s.DataAtualizacao
@@ -62,59 +62,99 @@ namespace ProjetoFinalCet105.API.Controllers
                 Descricao = servico.Descricao,
                 Preco = servico.Preco,
                 DuracaoMinutos = servico.DuracaoMinutos,
-                ImagemUrl = servico.ImagemUrl,
                 Disponivel = servico.Disponivel,
                 DataCriacao = servico.DataCriacao,
                 DataAtualizacao = servico.DataAtualizacao
             });
         }
 
+        [HttpGet("{id:int}/imagem")]
+        public async Task<IActionResult> GetImagemServico(int id)
+        {
+            var servico = await _servicoRepository.GetByIdAsync(id);
+
+            if (servico == null)
+            {
+                return NotFound();
+            }
+
+            if (servico.Imagem == null ||
+                servico.Imagem.Length == 0 ||
+                string.IsNullOrWhiteSpace(servico.ImagemContentType))
+            {
+                return NotFound();
+            }
+
+            return File(servico.Imagem, servico.ImagemContentType);
+        }
+
         [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPost]
-        public async Task<ActionResult<ServicoDTO>> CreateServico(ServicoDTO dto)
+        public async Task<ActionResult<ServicoDTO>> CreateServico([FromFormAttribute] ServicoFormModel model)
         {
-            if (!await _categoriaRepository.ExistAsync(dto.CategoriaId))
+            if (!await _categoriaRepository.ExistAsync(model.CategoriaId))
             {
                 return BadRequest("Categoria indicada não existe");
             }
 
-            if (dto.Preco < 0)
+            if (model.Preco < 0)
             {
                 return BadRequest("O preço do serviço não pode ser negativo.");
             }
 
-            if (dto.DuracaoMinutos <= 0)
+            if (model.DuracaoMinutos <= 0)
             {
                 return BadRequest("A duração do serviço deve ser superior a zero.");
             }
 
-            if (string.IsNullOrWhiteSpace(dto.Nome))
+            if (string.IsNullOrWhiteSpace(model.Nome))
             {
                 return BadRequest("O nome do serviço é obrigatório.");
             }
 
             try
             {
+                byte[]? imagemBytes = null;
+                string? imagemContentType = null;
+
+                if (model.Imagem != null && model.Imagem.Length > 0)
+                {
+                    using var memoryStream = new MemoryStream();
+                    await model.Imagem.CopyToAsync(memoryStream);
+
+                    imagemBytes = memoryStream.ToArray();
+                    imagemContentType = model.Imagem.ContentType;
+                }
+
                 var servico = new Servico
                 {
-                    CategoriaId = dto.CategoriaId,
-                    Nome = dto.Nome,
-                    Descricao = dto.Descricao,
-                    Preco = dto.Preco,
-                    DuracaoMinutos = dto.DuracaoMinutos,
-                    ImagemUrl = dto.ImagemUrl,
-                    Disponivel = dto.Disponivel,
+                    CategoriaId = model.CategoriaId,
+                    Nome = model.Nome,
+                    Descricao = model.Descricao,
+                    Preco = model.Preco,
+                    DuracaoMinutos = model.DuracaoMinutos,
+                    Imagem = imagemBytes,
+                    ImagemContentType = imagemContentType,
+                    Disponivel = true,
                     DataCriacao = DateTime.Now
                 };
 
                 await _servicoRepository.CreateAsync(servico);
 
-                dto.Id = servico.Id;
-                dto.DataCriacao = servico.DataCriacao;
-
                 var categoria = await _categoriaRepository.GetByIdAsync(servico.CategoriaId);
 
-                dto.CategoriaNome = categoria!.Nome;
+                var dto = new ServicoDTO
+                {
+                    Id = servico.Id,
+                    CategoriaId = servico.CategoriaId,
+                    CategoriaNome = categoria!.Nome,
+                    Nome = servico.Nome,
+                    Descricao = servico.Descricao,
+                    Preco = servico.Preco,
+                    DuracaoMinutos = servico.DuracaoMinutos,
+                    Disponivel = servico.Disponivel,
+                    DataCriacao = servico.DataCriacao
+                };
 
                 return CreatedAtAction(nameof(GetServicoByIdWithCategoria), new { id = servico.Id }, dto);
             }
@@ -126,32 +166,29 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Policy = "AdminOuAdminTemporario")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateServico(ServicoDTO dto, int id)
+        public async Task<IActionResult> UpdateServico([FromForm] ServicoFormModel model, int id)
         {
-            if (id != dto.Id)
-            {
-                return BadRequest();
-            }
             if (!await _servicoRepository.ExistAsync(id))
             {
                 return NotFound();
             }
-            if (!await _categoriaRepository.ExistAsync(dto.CategoriaId))
+
+            if (!await _categoriaRepository.ExistAsync(model.CategoriaId))
             {
                 return BadRequest("A categoria indicada não existe");
             }
 
-            if (dto.Preco < 0)
+            if (model.Preco < 0)
             {
                 return BadRequest("O preço do serviço não pode ser negativo.");
             }
 
-            if (dto.DuracaoMinutos <= 0)
+            if (model.DuracaoMinutos <= 0)
             {
                 return BadRequest("A duração do serviço deve ser superior a zero.");
             }
 
-            if (string.IsNullOrWhiteSpace(dto.Nome))
+            if (string.IsNullOrWhiteSpace(model.Nome))
             {
                 return BadRequest("O nome do serviço é obrigatório.");
             }
@@ -159,31 +196,36 @@ namespace ProjetoFinalCet105.API.Controllers
             try
             {
                 var servicoAtual = await _servicoRepository.GetByIdAsync(id);
+
                 if (servicoAtual == null)
                 {
                     return NotFound();
                 }
-                var servico = new Servico
+
+                servicoAtual.CategoriaId = model.CategoriaId;
+                servicoAtual.Nome = model.Nome;
+                servicoAtual.Descricao = model.Descricao;
+                servicoAtual.Preco = model.Preco;
+                servicoAtual.DuracaoMinutos = model.DuracaoMinutos;
+                servicoAtual.DataAtualizacao = DateTime.Now;
+
+                if (model.Imagem != null && model.Imagem.Length > 0)
                 {
-                    Id = id,
-                    CategoriaId = dto.CategoriaId,
-                    Nome = dto.Nome,
-                    Descricao = dto.Descricao,
-                    Preco = dto.Preco,
-                    DuracaoMinutos = dto.DuracaoMinutos,
-                    ImagemUrl = dto.ImagemUrl,
-                    Disponivel = dto.Disponivel,
-                    DataCriacao = servicoAtual.DataCriacao,
-                    DataAtualizacao = DateTime.Now
-                };
-                await _servicoRepository.UpdateAsync(servico);
+                    using var memoryStream = new MemoryStream();
+                    await model.Imagem.CopyToAsync(memoryStream);
+
+                    servicoAtual.Imagem = memoryStream.ToArray();
+                    servicoAtual.ImagemContentType = model.Imagem.ContentType;
+                }
+
+                await _servicoRepository.UpdateAsync(servicoAtual);
+
                 return NoContent();
             }
             catch (Exception)
             {
                 return BadRequest();
             }
-
         }
 
         [Authorize(Policy = "AdminOuAdminTemporario")]
@@ -205,6 +247,37 @@ namespace ProjetoFinalCet105.API.Controllers
             try
             {
                 servico.Disponivel = false;
+                servico.DataAtualizacao = DateTime.Now;
+
+                await _servicoRepository.UpdateAsync(servico);
+
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [Authorize(Policy = "AdminOuAdminTemporario")]
+        [HttpPatch("{id:int}/ativar")]
+        public async Task<IActionResult> AtivarServico(int id)
+        {
+            var servico = await _servicoRepository.GetByIdAsync(id);
+
+            if (servico == null)
+            {
+                return NotFound();
+            }
+
+            if (servico.Disponivel)
+            {
+                return BadRequest("O serviço já se encontra disponível.");
+            }
+
+            try
+            {
+                servico.Disponivel = true;
                 servico.DataAtualizacao = DateTime.Now;
 
                 await _servicoRepository.UpdateAsync(servico);

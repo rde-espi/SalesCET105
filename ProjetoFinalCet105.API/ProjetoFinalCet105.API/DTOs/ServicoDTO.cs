@@ -26,9 +26,6 @@ namespace ProjetoFinalCet105.API.DTOs
             ErrorMessage = "A duração do serviço deve ser superior a zero.")]
         public int DuracaoMinutos { get; set; }
 
-        [MaxLength(500)]
-        public string? ImagemUrl { get; set; }
-
         public bool Disponivel { get; set; }
 
         public DateTime DataCriacao { get; set; }

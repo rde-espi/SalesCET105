@@ -11,7 +11,8 @@
         public string? Descricao { get; set; }
         public decimal Preco { get; set; }
         public int DuracaoMinutos { get; set; }
-        public string? ImagemUrl { get; set; }
+        public byte[]? Imagem { get; set; }
+        public string? ImagemContentType { get; set; }
         public bool Disponivel { get; set; }
 
         public DateTime DataCriacao { get; set; }

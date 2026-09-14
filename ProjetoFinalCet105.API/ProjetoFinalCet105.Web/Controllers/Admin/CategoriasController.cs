@@ -61,8 +61,7 @@ public class CategoriasController : Controller
     [HttpGet]
     public IActionResult Create()
     {
-        return View(
-            new CategoriaFormViewModel());
+        return View(new CategoriaFormViewModel());
     }
 
 
@@ -75,55 +74,34 @@ public class CategoriasController : Controller
             return View(model);
         }
 
-        using var content =
-            new MultipartFormDataContent();
+        using var content = new MultipartFormDataContent();
 
-        content.Add(
-            new StringContent(model.Nome),
-            "Nome");
+        content.Add(new StringContent(model.Nome), "Nome");
 
         if (!string.IsNullOrWhiteSpace(model.Descricao))
         {
-            content.Add(
-                new StringContent(model.Descricao),
-                "Descricao");
+            content.Add(new StringContent(model.Descricao), "Descricao");
         }
 
-        if (model.Imagem != null &&
-            model.Imagem.Length > 0)
+        if (model.Imagem != null && model.Imagem.Length > 0)
         {
-            var streamContent =
-                new StreamContent(
-                    model.Imagem.OpenReadStream());
+            var streamContent = new StreamContent(model.Imagem.OpenReadStream());
 
-            streamContent.Headers.ContentType =
-                new MediaTypeHeaderValue(
-                    model.Imagem.ContentType);
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue(model.Imagem.ContentType);
 
-            content.Add(
-                streamContent,
-                "Imagem",
-                model.Imagem.FileName);
+            content.Add(streamContent, "Imagem", model.Imagem.FileName);
         }
 
-        using var response =
-            await _apiService
-                .SendAuthenticatedMultipartAsync(
-                    HttpMethod.Post,
-                    "api/Categorias",
-                    content);
+        using var response = await _apiService.SendAuthenticatedMultipartAsync(HttpMethod.Post, "api/Categorias", content);
 
         if (!response.IsSuccessStatusCode)
         {
-            ModelState.AddModelError(
-                string.Empty,
-                "Não foi possível criar a categoria.");
+            ModelState.AddModelError(string.Empty, "Não foi possível criar a categoria.");
 
             return View(model);
         }
 
-        TempData["Sucesso"] =
-            "Categoria criada com sucesso.";
+        TempData["Sucesso"] = "Categoria criada com sucesso.";
 
         return RedirectToAction(nameof(Index));
     }
@@ -136,24 +114,24 @@ public class CategoriasController : Controller
     [HttpGet]
     public async Task<IActionResult> Editar(int id)
     {
-        var categoria =
-            await _apiService
-                .GetAuthenticatedAsync<CategoriaViewModel>(
-                    $"api/Categorias/{id}");
+        var categoria = await _apiService.GetAuthenticatedAsync<CategoriaViewModel>($"api/Categorias/{id}");
 
         if (categoria == null)
         {
             return NotFound();
         }
 
-        var model =
-            new CategoriaFormViewModel
-            {
-                Id = categoria.Id,
-                Nome = categoria.Nome,
-                Descricao = categoria.Descricao,
-                TemImagem = true
-            };
+        var imagemResponse = await _apiService.GetResponseAsync($"api/Categorias/{id}/imagem");
+
+        var model = new CategoriaFormViewModel
+        {
+            Id = categoria.Id,
+            Nome = categoria.Nome,
+            Descricao = categoria.Descricao,
+            TemImagem = imagemResponse != null && imagemResponse.IsSuccessStatusCode
+        };
+
+        imagemResponse?.Dispose();
 
         return View(model);
     }
@@ -237,25 +215,53 @@ public class CategoriasController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Desativar(int id)
     {
-        var response =
-            await _apiService
-                .SendAuthenticatedAsync(
-                    HttpMethod.Delete,
-                    $"api/Categorias/{id}");
+        var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Delete, $"api/Categorias/{id}");
 
-        if (response.IsSuccessStatusCode)
+        if (!response.IsSuccessStatusCode)
         {
-            TempData["Sucesso"] =
-                "Categoria desativada com sucesso.";
-        }
-        else
-        {
-            TempData["Erro"] =
-                "Não foi possível desativar a categoria.";
+            response.Dispose();
+
+            return Json(new
+            {
+                sucesso = false,
+                mensagem = "Não foi possível desativar a categoria."
+            });
         }
 
         response.Dispose();
 
-        return RedirectToAction(nameof(Index));
+        return Json(new
+        {
+            sucesso = true,
+            ativa = false,
+            mensagem = "Categoria desativada com sucesso."
+        });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Ativar(int id)
+    {
+        var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Patch, $"api/Categorias/{id}/ativar");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            response.Dispose();
+
+            return Json(new
+            {
+                sucesso = false,
+                mensagem = "Não foi possível reativar a categoria."
+            });
+        }
+
+        response.Dispose();
+
+        return Json(new
+        {
+            sucesso = true,
+            ativa = true,
+            mensagem = "Categoria reativada com sucesso."
+        });
     }
 }

@@ -61,7 +61,7 @@
 
             <div class="ib-category-kpi-content">
                 <span>Categorias ativas</span>
-                <strong>@categoriasAtivas</strong>
+                <strong id="activeCategoriesCount">@categoriasAtivas</strong>
                 <small>Disponíveis no catálogo</small>
             </div>
         </article>
@@ -77,7 +77,7 @@
 
             <div class="ib-category-kpi-content">
                 <span>Categorias inativas</span>
-                <strong>@categoriasInativas</strong>
+                <strong id="inactiveCategoriesCount">@categoriasInativas</strong>
                 <small>Ocultas do catálogo</small>
             </div>
         </article>
@@ -152,12 +152,13 @@
                     {
                         <div class="ib-category-row"
                              data-category-row
+                             data-category-id="@categoria.Id"
+                             data-category-active="@categoria.Ativa.ToString().ToLower()"
                              data-search="@($"{categoria.Nome} {categoria.Descricao}")">
 
                             <div class="ib-category-image">
 
-                                <img src="@Url.Action(
-                                                                              "Imagem",
+                                <img src="@Url.Action(    "Imagem",
                                                                               "Categorias",
                                                                               new { id = categoria.Id })"
                                      alt="@categoria.Nome"
@@ -193,20 +194,10 @@
                             </div>
 
                             <div>
-                                @if (categoria.Ativa)
-                                {
-                                    <span class="ib-category-status active">
-                                        <i></i>
-                                        Ativa
-                                    </span>
-                                }
-                                else
-                                {
-                                    <span class="ib-category-status inactive">
-                                        <i></i>
-                                        Inativa
-                                    </span>
-                                }
+                                <span class="ib-category-status @(categoria.Ativa ? "active" : "inactive")" data-category-status>
+                                    <i></i>
+                                    <span data-category-status-text>@(categoria.Ativa ? "Ativa" : "Inativa")</span>
+                                </span>
                             </div>
 
                             <div class="ib-category-actions">
@@ -228,19 +219,38 @@
                                           asp-action="Desativar"
                                           asp-route-id="@categoria.Id"
                                           method="post"
-                                          onsubmit="return confirm('Pretende desativar a categoria «@categoria.Nome»?');">
+                                          class="ib-category-status-form"
+                                          data-category-action="deactivate"
+                                          data-category-name="@categoria.Nome">
 
                                         @Html.AntiForgeryToken()
 
-                                        <button type="submit"
-                                                class="ib-category-action-btn danger"
-                                                title="Desativar categoria">
+                                        <button type="submit" class="ib-category-action-btn danger" title="Desativar categoria">
                                             <svg viewBox="0 0 24 24">
                                                 <circle cx="12" cy="12" r="9"></circle>
                                                 <path d="M6 6l12 12"></path>
                                             </svg>
                                         </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-controller="Categorias"
+                                          asp-action="Ativar"
+                                          asp-route-id="@categoria.Id"
+                                          method="post"
+                                          class="ib-category-status-form"
+                                          data-category-action="activate"
+                                          data-category-name="@categoria.Nome">
 
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit" class="ib-category-action-btn activate" title="Reativar categoria">
+                                            <svg viewBox="0 0 24 24">
+                                                <path d="M4 12a8 8 0 1 0 2.3-5.7"></path>
+                                                <path d="M4 5v5h5"></path>
+                                            </svg>
+                                        </button>
                                     </form>
                                 }
 
@@ -254,9 +264,11 @@
                 <div id="categoryNoResults"
                      class="ib-category-no-results"
                      style="display:none;">
-                    <span class="material-symbols-outlined">
-                        search_off
-                    </span>
+                    <svg class="ib-empty-icon" viewBox="0 0 24 24">
+                        <circle cx="10" cy="10" r="6"></circle>
+                        <path d="M14.5 14.5L20 20"></path>
+                        <path d="M7 7l6 6"></path>
+                    </svg>
                     <strong>Nenhuma categoria encontrada</strong>
                     <p>
                         Experimente pesquisar por outro nome ou descrição.
@@ -269,7 +281,7 @@
         {
             <div class="ib-category-empty-state">
                 <span class="material-symbols-outlined">
-                    category
+                    Categorias
                 </span>
 
                 <h3>Ainda não existem categorias</h3>
@@ -296,16 +308,11 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
-            const input =
-                document.getElementById("categorySearch");
+            const input = document.getElementById("categorySearch");
 
-            const rows =
-                Array.from(
-                    document.querySelectorAll("[data-category-row]")
-                );
+            const rows = Array.from(document.querySelectorAll("[data-category-row]"));
 
-            const noResults =
-                document.getElementById("categoryNoResults");
+            const noResults = document.getElementById("categoryNoResults");
 
             if (!input || rows.length === 0) {
                 return;
@@ -322,8 +329,7 @@
 
             function filterCategories() {
 
-                const searchTerm =
-                    normalizeText(input.value);
+                const searchTerm = normalizeText(input.value);
 
                 let visibleCount = 0;
 
@@ -358,12 +364,140 @@
                 }
             }
 
+            function updateCategoryState(row, form, isActive) {
+
+                const status = row.querySelector("[data-category-status]");
+                const statusText = row.querySelector("[data-category-status-text]");
+                const button = form.querySelector("button");
+                const activeCount = document.getElementById("activeCategoriesCount");
+                const inactiveCount = document.getElementById("inactiveCategoriesCount");
+
+                row.dataset.categoryActive = isActive.toString();
+
+                status.classList.toggle("active", isActive);
+                status.classList.toggle("inactive", !isActive);
+                statusText.textContent = isActive ? "Ativa" : "Inativa";
+
+                if (activeCount && inactiveCount) {
+                    let active = Number(activeCount.textContent);
+                    let inactive = Number(inactiveCount.textContent);
+
+                    activeCount.textContent = isActive ? active + 1 : active - 1;
+                    inactiveCount.textContent = isActive ? inactive - 1 : inactive + 1;
+                }
+
+                if (isActive) {
+                    form.action = `/Categorias/Desativar/${row.dataset.categoryId}`;
+                    form.dataset.categoryAction = "deactivate";
+
+                    button.classList.remove("activate");
+                    button.classList.add("danger");
+                    button.title = "Desativar categoria";
+
+                    button.querySelector("svg").innerHTML = `
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M6 6l12 12"></path>
+                `;
+                }
+                else {
+                    form.action = `/Categorias/Ativar/${row.dataset.categoryId}`;
+                    form.dataset.categoryAction = "activate";
+
+                    button.classList.remove("danger");
+                    button.classList.add("activate");
+                    button.title = "Reativar categoria";
+
+                    button.querySelector("svg").innerHTML = `
+                    <path d="M4 12a8 8 0 1 0 2.3-5.7"></path>
+                    <path d="M4 5v5h5"></path>
+                `;
+                }
+            }
+
+            function showCategoryMessage(message, success) {
+
+                let alertBox = document.getElementById("categoryAjaxAlert");
+
+                if (!alertBox) {
+                    alertBox = document.createElement("div");
+                    alertBox.id = "categoryAjaxAlert";
+
+                    const panel = document.querySelector(".ib-category-panel");
+                    panel.parentNode.insertBefore(alertBox, panel);
+                }
+
+                alertBox.className = success
+                    ? "ib-category-alert success"
+                    : "ib-category-alert error";
+
+                alertBox.innerHTML = `
+                <span>${message}</span>
+            `;
+
+                clearTimeout(window.categoryAlertTimeout);
+
+                window.categoryAlertTimeout = setTimeout(function() {
+                    alertBox.remove();
+                }, 3500);
+            }
+
+
             input.addEventListener(
                 "input",
                 filterCategories
             );
 
             filterCategories();
+            const statusForms = document.querySelectorAll(".ib-category-status-form");
+
+            statusForms.forEach(function(form) {
+
+                form.addEventListener("submit", async function(event) {
+
+                    event.preventDefault();
+
+                    const row = form.closest("[data-category-row]");
+                    const button = form.querySelector("button");
+                    const action = form.dataset.categoryAction;
+                    const categoryName = form.dataset.categoryName;
+
+                    const message = action === "activate"
+                        ? `Pretende reativar a categoria «${categoryName}»?`
+                        : `Pretende desativar a categoria «${categoryName}»?`;
+
+                    if (!confirm(message)) {
+                        return;
+                    }
+
+                    button.disabled = true;
+
+                    try {
+                        const response = await fetch(form.action, {
+                            method: "POST",
+                            body: new FormData(form)
+                        });
+
+                        if (!response.ok) {
+                            const error = await response.json();
+                            alert(error.mensagem || "Não foi possível alterar o estado da categoria.");
+                            return;
+                        }
+
+                        const result = await response.json();
+                        const isActivating = action === "activate";
+
+                        updateCategoryState(row, form, isActivating);
+                        showCategoryMessage(result.mensagem, true);
+                    }
+                    catch (error) {
+                        console.error(error);
+                        showCategoryMessage("Ocorreu um erro ao alterar o estado da categoria.", false);
+                    }
+                    finally {
+                        button.disabled = false;
+                    }
+                });
+            });
         });
     </script>
 }

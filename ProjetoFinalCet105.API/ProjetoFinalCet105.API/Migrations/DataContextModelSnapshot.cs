@@ -1044,7 +1044,10 @@ namespace ProjetoFinalCet105.API.Migrations
                     b.Property<int>("DuracaoMinutos")
                         .HasColumnType("int");
 
-                    b.Property<string>("ImagemUrl")
+                    b.Property<byte[]>("Imagem")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ImagemContentType")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Nome")

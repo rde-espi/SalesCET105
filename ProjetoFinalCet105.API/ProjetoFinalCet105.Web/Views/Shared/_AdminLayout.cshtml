@@ -4,26 +4,19 @@
 <head>
     <meta charset="utf-8" />
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>@ViewData["Title"] - Infinity Beauty</title>
 
-    <link rel="preconnect"
-          href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
-    <link rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@400;500;600&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 
     
 
-    <link rel="stylesheet"
-          href="~/css/infinity-admin.css"
-          asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/infinity-admin.css" asp-append-version="true" />
 </head>
 
 <body>
@@ -110,8 +103,7 @@
                 </a>
 
 
-                <a href="/Admin/Servicos"
-                   class="ib-admin-menu-item">
+                <a asp-controller="GestaoServicos" asp-action="Index" class="ib-admin-menu-item @(currentController == "GestaoServicos" ? "active" : "")">
 
                     <svg viewBox="0 0 24 24">
                         <circle cx="12" cy="12" r="3"></circle>

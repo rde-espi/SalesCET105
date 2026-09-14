@@ -165,5 +165,34 @@ namespace ProjetoFinalCet105.API.Controllers
                 return BadRequest();
             }
         }
+
+        [Authorize(Policy = "AdminOuAdminTemporario")]
+        [HttpPatch("{id:int}/ativar")]
+        public async Task<IActionResult> AtivarCategoria(int id)
+        {
+            var categoria = await _categoriaRepository.GetByIdAsync(id);
+
+            if (categoria == null)
+            {
+                return NotFound();
+            }
+
+            if (categoria.Ativa)
+            {
+                return BadRequest("A categoria já se encontra ativa.");
+            }
+
+            try
+            {
+                categoria.Ativa = true;
+                await _categoriaRepository.UpdateAsync(categoria);
+
+                return NoContent();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
     }
 }

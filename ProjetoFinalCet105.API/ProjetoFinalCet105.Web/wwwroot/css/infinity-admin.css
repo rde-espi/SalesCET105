@@ -4023,3 +4023,202 @@ body,
     stroke-linecap: round;
     stroke-linejoin: round;
 }
+
+
+/*Edit categoria*/
+
+
+.ib-category-current-image {
+    margin-top: 13px;
+    padding: 11px 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    border: 1px solid rgba(216, 176, 113, .18);
+    border-radius: 9px;
+    background: rgba(248, 245, 239, .65);
+}
+
+    .ib-category-current-image span {
+        color: #535333;
+        font-size: .68rem;
+        font-weight: 600;
+    }
+
+    .ib-category-current-image small {
+        color: #918b82;
+        font-size: .62rem;
+    }
+.ib-category-action-btn.activate {
+    color: #4d7655;
+}
+
+    .ib-category-action-btn.activate:hover {
+        border-color: rgba(83, 133, 92, .30);
+        background: rgba(83, 133, 92, .08);
+        color: #3f6f49;
+    }
+
+
+/* =========================
+   GESTÃO DE SERVIÇOS
+========================= */
+
+.ib-service-table-header,
+.ib-service-admin-row {
+    display: grid;
+    grid-template-columns: 80px minmax(150px, 1.2fr) minmax(120px, .9fr) 105px 90px 105px 90px;
+    align-items: center;
+    column-gap: 16px;
+}
+
+.ib-service-table-header {
+    min-height: 39px;
+    padding: 0 10px;
+    border-bottom: 1px solid rgba(216, 176, 113, .18);
+}
+
+    .ib-service-table-header span {
+        color: #918b82;
+        font-size: .65rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+    }
+
+.ib-service-admin-row {
+    min-height: 91px;
+    padding: 11px 10px;
+    border-bottom: 1px solid rgba(216, 176, 113, .13);
+    transition: background .18s ease;
+}
+
+    .ib-service-admin-row:hover {
+        background: rgba(248, 245, 239, .55);
+    }
+
+    .ib-service-admin-row:last-child {
+        border-bottom: 0;
+    }
+
+.ib-service-category {
+    min-width: 0;
+    color: #6f6961;
+    font-size: .75rem;
+}
+
+    .ib-service-category span {
+        overflow: hidden;
+        display: block;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+.ib-service-price strong {
+    color: #24231f;
+    font-size: .78rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.ib-service-duration {
+    color: #6f6961;
+    font-size: .74rem;
+    white-space: nowrap;
+}
+
+.ib-category-image-fallback svg {
+    width: 25px;
+    height: 25px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@media (max-width: 1100px) {
+
+    .ib-service-table {
+        overflow-x: auto;
+    }
+
+    .ib-service-table-header,
+    .ib-service-admin-row {
+        min-width: 980px;
+    }
+}
+
+.ib-alert-icon {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.ib-category-no-results > svg,
+.ib-category-empty-state > svg {
+    width: 36px !important;
+    height: 36px !important;
+    margin: 0 auto 10px;
+    display: block;
+    fill: none !important;
+    stroke: #D8B071 !important;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.ib-service-form-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.ib-input-suffix {
+    position: relative;
+}
+
+    .ib-input-suffix input {
+        padding-right: 52px;
+    }
+
+    .ib-input-suffix > span {
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        color: #817a70;
+        font-size: .75rem;
+        pointer-events: none;
+    }
+
+@media (max-width: 680px) {
+    .ib-service-form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.ib-service-select {
+    width: 100%;
+    min-height: 44px;
+    padding: 12px 38px 12px 13px;
+    border: 1px solid rgba(216, 176, 113, .25);
+    border-radius: 9px;
+    outline: none;
+    background: #F8F5EF;
+    color: #24231f;
+    font-family: "Montserrat", sans-serif;
+    font-size: .76rem;
+    cursor: pointer;
+    transition: .18s ease;
+}
+
+    .ib-service-select:focus {
+        border-color: #D8B071;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(216, 176, 113, .08);
+    }

@@ -16,8 +16,6 @@
 
         public int DuracaoMinutos { get; set; }
 
-        public string? ImagemUrl { get; set; }
-
         public bool Disponivel { get; set; }
 
         public DateTime DataCriacao { get; set; }
