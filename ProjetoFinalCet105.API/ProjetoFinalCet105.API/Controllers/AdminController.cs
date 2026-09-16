@@ -151,5 +151,7 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(permissoes);
         }
 
+        
+
     }
 }

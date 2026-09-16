@@ -4,46 +4,42 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 using ProjetoFinalCet105.API.Repositories;
+using ProjetoFinalCet105.API.Services.AdminTemporario;
 
 namespace ProjetoFinalCet105.API.Authorization
 {
-    public class AdminOuAdminTemporarioHandler : AuthorizationHandler<AdminOuAdminTemporarioRequirement>
+    public class AdminOuAdminTemporarioHandler
+         : AuthorizationHandler<AdminOuAdminTemporarioRequirement>
     {
-        private readonly IPermissaoAdminTemporariaRepository _permissaoRepository;
+        private readonly AdminTemporarioService _adminTemporarioService;
 
-        public AdminOuAdminTemporarioHandler(IPermissaoAdminTemporariaRepository permissaoRepository)
+        public AdminOuAdminTemporarioHandler( AdminTemporarioService adminTemporarioService)
         {
-            _permissaoRepository = permissaoRepository;
+            _adminTemporarioService = adminTemporarioService;
         }
 
-        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, AdminOuAdminTemporarioRequirement requirement)
+        protected override async Task HandleRequirementAsync( AuthorizationHandlerContext context, AdminOuAdminTemporarioRequirement requirement)
         {
+            if (context.User.Identity?.IsAuthenticated != true)
+                return;
+
+            // Administrador permanente
             if (context.User.IsInRole("Admin"))
             {
                 context.Succeed(requirement);
                 return;
             }
 
+            // Apenas Funcionário pode ter acesso administrativo temporário
             if (!context.User.IsInRole("Funcionario"))
                 return;
 
-            var userId = context.User.FindFirstValue(
-                ClaimTypes.NameIdentifier);
+            var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (string.IsNullOrWhiteSpace(userId))
                 return;
 
-            var agora = DateTime.UtcNow;
-
-            var temPermissaoAtiva = await _permissaoRepository
-                .GetAllWithUsers()
-                .AnyAsync(p =>
-                    p.FuncionarioUserId == userId &&
-                    !p.Revogada &&
-                    p.DataInicio <= agora &&
-                    p.DataFim > agora);
-
-            if (temPermissaoAtiva)
+            if (await _adminTemporarioService.TemPermissaoAtivaAsync(userId))
                 context.Succeed(requirement);
         }
     }

@@ -1,0 +1,281 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.ClienteViewModel>
+
+@{
+    ViewData["Title"] = "Gestão de Clientes";
+    Layout = "_AdminLayout";
+
+    var totalClientes = Model.Count;
+    var ativos = Model.Count(c => c.Ativo);
+    var inativos = Model.Count(c => !c.Ativo);
+}
+
+<div class="ib-categories-page">
+
+    <div class="ib-categories-heading">
+        <div>
+            <span class="ib-section-eyebrow">Clientes</span>
+            <h1>Gestão de Clientes</h1>
+            <p>Consulte e acompanhe os clientes registados na Infinity Beauty.</p>
+        </div>
+    </div>
+
+    <div class="ib-category-kpi-grid">
+
+        <div class="ib-category-kpi-card">
+            <div class="ib-category-kpi-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+            </div>
+
+            <div>
+                <span>Total</span>
+                <strong>@totalClientes</strong>
+                <small>Clientes registados</small>
+            </div>
+        </div>
+
+        <div class="ib-category-kpi-card ib-category-kpi-highlight">
+            <div class="ib-category-kpi-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 6 9 17l-5-5"></path>
+                </svg>
+            </div>
+
+            <div>
+                <span>Ativos</span>
+                <strong>@ativos</strong>
+                <small>Clientes ativos</small>
+            </div>
+        </div>
+
+        <div class="ib-category-kpi-card">
+            <div class="ib-category-kpi-icon">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M9 9l6 6M15 9l-6 6"></path>
+                </svg>
+            </div>
+
+            <div>
+                <span>Inativos</span>
+                <strong>@inativos</strong>
+                <small>Clientes inativos</small>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+            <div>
+                <span class="ib-section-eyebrow">Diretório</span>
+                <h2>Clientes Infinity Beauty</h2>
+                <p>Consulte os dados de contacto, registo e estado dos clientes.</p>
+            </div>
+
+            <div class="ib-category-search">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="m20 20-4-4"></path>
+                </svg>
+
+                <input id="pesquisaCliente"
+                       type="search"
+                       placeholder="Pesquisar cliente..." />
+            </div>
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="ib-category-empty-state">
+                <svg viewBox="0 0 24 24" width="35" height="35">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                </svg>
+
+                <h3>Ainda não existem clientes</h3>
+                <p>Os clientes registados na Infinity Beauty serão apresentados aqui.</p>
+            </div>
+        }
+        else
+        {
+            <div class="ib-employee-table">
+
+                <div class="ib-employee-table-header">
+                    <span>Cliente</span>
+                    <span>Contacto</span>
+                    <span>Localidade</span>
+                    <span>Registo</span>
+                    <span>Estado</span>
+                    <span></span>
+                </div>
+
+                <div id="clientesTable">
+
+                    @foreach (var cliente in Model)
+                    {
+                        var nomes = cliente.NomeCompleto
+                            .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                        var iniciais = string.Join("", nomes
+                            .Take(2)
+                            .Select(n => char.ToUpper(n[0])));
+
+                        <div class="ib-employee-row cliente-row"
+                             data-pesquisa="@($"{cliente.NomeCompleto} {cliente.Email} {cliente.Telefone} {cliente.Localidade}".ToLower())">
+
+                            <div class="ib-employee-person">
+
+                                <div class="ib-employee-avatar">
+                                    <span class="ib-employee-initials">
+                                        @iniciais
+                                    </span>
+                                </div>
+
+                                <div class="ib-category-name">
+                                    <strong>@cliente.NomeCompleto</strong>
+                                    <small>@cliente.Email</small>
+                                </div>
+
+                            </div>
+
+                            <div class="ib-employee-contact">
+                                @if (!string.IsNullOrWhiteSpace(cliente.Telefone))
+                                {
+                                    <strong>@cliente.Telefone</strong>
+                                }
+                                else
+                                {
+                                    <span class="ib-category-empty">
+                                        Sem telefone
+                                    </span>
+                                }
+                            </div>
+
+                            <div class="ib-employee-date">
+                                @if (!string.IsNullOrWhiteSpace(cliente.Localidade))
+                                {
+                                    <span>@cliente.Localidade</span>
+                                }
+                                else
+                                {
+                                    <span class="ib-category-empty">—</span>
+                                }
+                            </div>
+
+                            <div class="ib-employee-date">
+                                @if (cliente.DataCriacao.Year > 1)
+                                {
+                                    <span>
+                                        @cliente.DataCriacao.ToString("dd/MM/yyyy")
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="ib-category-empty">—</span>
+                                }
+                            </div>
+
+                            <div>
+                                @if (cliente.Ativo)
+                                {
+                                    <span class="ib-category-status active">
+                                        <i></i>
+                                        Ativo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="ib-category-status inactive">
+                                        <i></i>
+                                        Inativo
+                                    </span>
+                                }
+                            </div>
+
+                            <div class="ib-category-actions">
+
+                                <a asp-controller="GestaoClientes"
+                                   asp-action="Detalhes"
+                                   asp-route-id="@cliente.Id"
+                                   class="ib-category-action-btn"
+                                   title="Ver cliente">
+
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12Z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+
+                                </a>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+
+                <div id="semResultadosClientes"
+                     class="ib-category-no-results"
+                     style="display:none;">
+
+                    <strong>Nenhum cliente encontrado</strong>
+                    <p>Experimente pesquisar por outro nome, email, contacto ou localidade.</p>
+
+                </div>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        const pesquisaCliente =
+            document.getElementById('pesquisaCliente');
+
+        const linhasClientes =
+            document.querySelectorAll('.cliente-row');
+
+        const semResultados =
+            document.getElementById('semResultadosClientes');
+
+        if (pesquisaCliente) {
+            pesquisaCliente.addEventListener('input', function () {
+                const termo = this.value
+                    .toLowerCase()
+                    .trim();
+
+                let encontrados = 0;
+
+                linhasClientes.forEach(row => {
+                    const conteudo =
+                        row.dataset.pesquisa || '';
+
+                    const visivel =
+                        conteudo.includes(termo);
+
+                    row.style.display =
+                        visivel ? '' : 'none';
+
+                    if (visivel)
+                        encontrados++;
+                });
+
+                if (semResultados) {
+                    semResultados.style.display =
+                        encontrados === 0
+                            ? 'block'
+                            : 'none';
+                }
+            });
+        }
+    </script>
+}

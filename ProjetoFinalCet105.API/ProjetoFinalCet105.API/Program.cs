@@ -17,6 +17,7 @@ using ProjetoFinalCet105.API.Authorization;
 using ProjetoFinalCet105.API.Data;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
+using ProjetoFinalCet105.API.Services.AdminTemporario;
 using ProjetoFinalCet105.API.Services.AuthService;
 using ProjetoFinalCet105.API.Services.DashboardService;
 using ProjetoFinalCet105.API.Services.EmailService;
@@ -226,6 +227,7 @@ builder.Services.Configure<FaturacaoSettings>(builder.Configuration.GetSection(F
 
 //Gestao de admin temporario
 builder.Services.AddScoped<IAuthorizationHandler, AdminOuAdminTemporarioHandler>();
+builder.Services.AddScoped<AdminTemporarioService>();
 
 
 //Limitador de chamadas a API NIT.PT devido a custos

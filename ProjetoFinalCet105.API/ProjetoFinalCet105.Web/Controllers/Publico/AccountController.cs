@@ -106,21 +106,21 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-            // Redirecionamento conforme o perfil
-            //if (response.Roles.Contains("Admin"))
-            //{
-            //    return RedirectToAction( "Index", "Dashboard", new { area = "Admin" });
-            //}
+            //Redirecionamento conforme o perfil
+            if (response.Roles.Contains("Admin"))
+            {
+                return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+            }
 
-            //if (response.Roles.Contains("Funcionario"))
-            //{
-            //    return RedirectToAction("Index","Dashboard", new { area = "Funcionario" });
-            //}
+            if (response.Roles.Contains("Funcionario"))
+            {
+                return RedirectToAction("Index", "Funcionarios", new { area = "Funcionario" });
+            }
 
-            //if (response.Roles.Contains("Cliente"))
-            //{
-            //    return RedirectToAction( "Index", "Dashboard", new { area = "Cliente" });
-            //}
+            if (response.Roles.Contains("Cliente"))
+            {
+                return RedirectToAction("Index", "Dashboard", new { area = "Cliente" });
+            }
 
 
             return RedirectToAction("Index", "Home");

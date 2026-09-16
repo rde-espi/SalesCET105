@@ -33,4 +33,9 @@ public class FuncionarioFormViewModel
     public List<CompetenciaViewModel> CompetenciasDisponiveis { get; set; } = new();
 
     public List<FuncionarioCompetenciaViewModel> CompetenciasFuncionario { get; set; } = new();
+    public string UserId { get; set; } = string.Empty;
+
+    public string RoleAtual { get; set; } = "Funcionario";
+
+    public PermissaoAdminTemporariaViewModel? PermissaoAdminTemporariaAtiva { get; set; }
 }

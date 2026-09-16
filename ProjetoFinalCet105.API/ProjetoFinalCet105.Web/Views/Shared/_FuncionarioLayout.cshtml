@@ -1,0 +1,285 @@
+﻿<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Infinity Beauty</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
+    
+
+    <link rel="stylesheet" href="~/css/infinity-admin.css" asp-append-version="true" />
+</head>
+
+<body>
+    @{
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    }
+
+    <div class="ib-admin">
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+
+        <aside class="ib-admin-sidebar" id="adminSidebar">
+
+            <a asp-controller="Funcionarios" asp-action="Index" class="ib-admin-logo">
+                <img src="~/images/logo-symbol.png"
+                     alt="Infinity Beauty" />
+
+                <div>
+                    <strong>INFINITY BEAUTY</strong>
+
+                    <span>
+                        CENTER | SPA | WELLNESS
+                    </span>
+                </div>
+
+            </a>
+
+
+            <nav class="ib-admin-menu">
+
+                <a asp-controller="Funcionario"
+                   asp-action="Index"
+                   class="ib-admin-menu-item @(currentController == "Funcionario" ? "active" : "")">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 11L12 3l9 8"></path>
+                        <path d="M5 10v11h14V10"></path>
+                        <path d="M9 21v-7h6v7"></path>
+                    </svg>
+
+                    <span>Início</span>
+                </a>
+
+                <a href="#"
+                   class="ib-admin-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="8" r="4"></circle>
+                        <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path>
+                    </svg>
+
+                    <span>Meu Perfil</span>
+                </a>
+
+                <div id="adminTemporarioMenu" style="display:none;">
+
+                    <div class="ib-admin-menu-section">
+                        <span>ADMIN TEMPORÁRIO</span>
+                        <small id="adminTemporarioTempo"></small>
+                    </div>
+
+                    <a asp-controller="Dashboard"
+                       asp-action="Index"
+                       class="ib-admin-menu-item">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
+
+                    <a asp-controller="GestaoServicos"
+                       asp-action="Index"
+                       class="ib-admin-menu-item">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 3v18"></path>
+                            <path d="M3 12h18"></path>
+                            <circle cx="12" cy="12" r="9"></circle>
+                        </svg>
+                        <span>Serviços</span>
+                    </a>
+
+                    <a asp-controller="Categorias"
+                       asp-action="Index"
+                       class="ib-admin-menu-item">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="7" height="7"></rect>
+                            <rect x="14" y="4" width="7" height="7"></rect>
+                            <rect x="3" y="15" width="7" height="6"></rect>
+                            <rect x="14" y="15" width="7" height="6"></rect>
+                        </svg>
+                        <span>Categorias</span>
+                    </a>
+
+                </div>
+
+            </nav>
+
+
+            <div class="ib-admin-sidebar-footer">
+
+                <span class="ib-admin-signature">
+                    Beleza,<br />
+                    bem-estar, sempre.
+                </span>
+
+                <a asp-controller="Home"
+                   asp-action="Index">
+
+                    ← Voltar ao site
+                </a>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN
+        ========================== -->
+
+        <div class="ib-admin-main">
+
+            <!-- TOPBAR -->
+
+            <header class="ib-admin-topbar">
+
+                <button type="button"
+                        class="ib-admin-menu-toggle"
+                        id="adminMenuToggle"
+                        aria-label="Abrir menu"
+                        aria-expanded="false">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </button>
+
+
+                <div class="ib-admin-search">
+
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <path d="M20 20l-4-4"></path>
+                    </svg>
+
+                    <input type="search"
+                           placeholder="Pesquisar clientes, serviços, marcações..." />
+
+                </div>
+
+
+                <div class="ib-admin-topbar-actions">
+
+                    @await Component.InvokeAsync("NotificationBell")
+
+
+                    <span class="ib-admin-topbar-divider"></span>
+
+
+                    <div class="ib-admin-profile">
+
+                        <div class="ib-admin-avatar">
+                            @{
+                                var nome = User.Identity?.Name ?? "A";
+                                var inicial = nome.Substring(0, 1).ToUpper();
+                            }
+
+                            @inicial
+                        </div>
+
+                        <div class="ib-admin-profile-info">
+
+                            <strong>
+                                @User.Identity?.Name
+                            </strong>
+
+                            <span>
+                                Profissional
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <form asp-controller="Account"
+                          asp-action="Logout"
+                          method="post"
+                          class="ib-admin-logout">
+
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit">
+                            Sair
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </header>
+
+
+            <!-- PAGE CONTENT -->
+
+            <main class="ib-admin-content">
+
+                @RenderBody()
+
+            </main>
+
+
+            <!-- FOOTER -->
+
+            <footer class="ib-admin-footer">
+
+                <span>
+                    © @DateTime.Now.Year Infinity Beauty.
+                    Todos os direitos reservados.
+                </span>
+
+                <div>
+                    <a href="#">Política de Privacidade</a>
+                    <a href="#">Termos e Condições</a>
+                    <a href="#">Suporte</a>
+                </div>
+
+            </footer>
+
+        </div>
+
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    
+    <script>
+            const menuToggle = document.getElementById("adminMenuToggle");
+
+            const sidebar = document.getElementById("adminSidebar");
+
+            if (menuToggle && sidebar) {
+
+                menuToggle.addEventListener("click", function () {
+
+                    sidebar.classList.toggle("open");
+
+                    const isOpen =
+                        sidebar.classList.contains("open");
+
+                    menuToggle.setAttribute(
+                        "aria-expanded",
+                        isOpen
+                    );
+                });
+            }
+    </script>
+    <script src="~/js/admin-temporario-monitor.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

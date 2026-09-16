@@ -4878,3 +4878,224 @@ body,
         border-color: rgba(216, 176, 113, .22);
         background: rgba(216, 176, 113, .08);
     }
+/* =========================================================
+   FUNCIONÁRIOS — PERFIL E PERMISSÕES
+   ========================================================= */
+
+.ib-employee-permissions-card {
+    margin-top: 24px;
+}
+
+.ib-employee-permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    padding: 28px;
+}
+
+.ib-employee-permission-block {
+    min-width: 0;
+    padding: 26px;
+    border: 1px solid rgba(216, 176, 113, .22);
+    border-radius: 16px;
+    background: #fcfaf6;
+}
+
+.ib-employee-permission-title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 16px;
+}
+
+    .ib-employee-permission-title h4 {
+        margin: 5px 0 0;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 24px;
+        font-weight: 600;
+        color: #191919;
+    }
+
+.ib-employee-permission-description {
+    margin: 0 0 22px;
+    color: #817a70;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+/* Perfil atual */
+
+.ib-employee-role-badge,
+.ib-employee-temp-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    min-height: 30px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(216, 176, 113, .35);
+    background: rgba(216, 176, 113, .10);
+    color: #9c783d;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .03em;
+}
+
+.ib-employee-temp-badge {
+    border-color: #ddd8cf;
+    background: #f4f1eb;
+    color: #817a70;
+}
+
+    .ib-employee-temp-badge.is-active {
+        border-color: rgba(54, 126, 79, .22);
+        background: rgba(54, 126, 79, .09);
+        color: #367e4f;
+    }
+
+/* Selects */
+
+.ib-employee-permission-block .ib-category-field {
+    margin-bottom: 18px;
+}
+
+    .ib-employee-permission-block .ib-category-field > label,
+    .ib-employee-permission-block .ib-category-field-label label {
+        display: block;
+        margin-bottom: 8px;
+        color: #535333;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+.ib-employee-permission-block select {
+    width: 100%;
+    height: 44px;
+    padding: 0 38px 0 13px;
+    border: 1px solid #e5dfd5;
+    border-radius: 9px;
+    background: #fff;
+    color: #191919;
+    font-family: "Montserrat", sans-serif;
+    font-size: 12px;
+    outline: none;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+    .ib-employee-permission-block select:focus {
+        border-color: #d8b071;
+        box-shadow: 0 0 0 3px rgba(216, 176, 113, .10);
+    }
+
+/* Aviso da alteração permanente */
+
+.ib-employee-permission-warning {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 5px 0 20px;
+    padding: 13px 15px;
+    border-left: 3px solid #d8b071;
+    border-radius: 0 8px 8px 0;
+    background: rgba(216, 176, 113, .08);
+    color: #817a70;
+    font-size: 11px;
+    line-height: 1.55;
+}
+
+    .ib-employee-permission-warning strong {
+        color: #9c783d;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: .07em;
+    }
+
+/* Textarea */
+
+.ib-employee-permission-block textarea {
+    width: 100%;
+    min-height: 94px;
+    resize: vertical;
+    padding: 12px 14px;
+    border: 1px solid #e5dfd5;
+    border-radius: 9px;
+    background: #fff;
+    color: #191919;
+    font-family: "Montserrat", sans-serif;
+    font-size: 12px;
+    line-height: 1.6;
+    outline: none;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+    .ib-employee-permission-block textarea:focus {
+        border-color: #d8b071;
+        box-shadow: 0 0 0 3px rgba(216, 176, 113, .10);
+    }
+
+    .ib-employee-permission-block textarea::placeholder {
+        color: #aaa399;
+    }
+
+/* Permissão temporária ativa */
+
+.ib-employee-temp-active {
+    padding: 18px;
+    border: 1px solid rgba(54, 126, 79, .18);
+    border-radius: 12px;
+    background: rgba(54, 126, 79, .05);
+}
+
+    .ib-employee-temp-active > strong {
+        display: block;
+        margin-bottom: 10px;
+        color: #367e4f;
+        font-size: 13px;
+    }
+
+    .ib-employee-temp-active p {
+        margin: 5px 0;
+        color: #535333;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .ib-employee-temp-active form {
+        margin-top: 18px;
+    }
+
+/* Botões dentro da secção */
+
+.ib-employee-permission-block .ib-category-save-btn,
+.ib-employee-permission-block .ib-category-cancel-btn {
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 9px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* Responsivo */
+
+@media (max-width: 900px) {
+    .ib-employee-permissions-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .ib-employee-permissions-grid {
+        padding: 18px;
+    }
+
+    .ib-employee-permission-block {
+        padding: 20px;
+    }
+
+    .ib-employee-permission-title {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

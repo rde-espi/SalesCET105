@@ -389,6 +389,213 @@
 
     </form>
 
+    <!-- PERFIL E PERMISSÕES -->
+    <section class="ib-category-form-card ib-employee-permissions-card">
+
+        <div class="ib-category-form-card-header">
+            <div>
+                <span class="ib-section-eyebrow">ACESSO</span>
+                <h3>Perfil e Permissões</h3>
+                <p>Gerir o perfil permanente e o acesso administrativo deste utilizador.</p>
+            </div>
+        </div>
+
+        <div class="ib-employee-permissions-grid">
+
+            <!-- PERFIL PERMANENTE -->
+            <div class="ib-employee-permission-block">
+
+                <div class="ib-employee-permission-title">
+                    <div>
+                        <span class="ib-section-eyebrow">PERFIL PERMANENTE</span>
+                        <h4>Perfil do utilizador</h4>
+                    </div>
+
+                    <span class="ib-employee-role-badge">
+                        @Model.RoleAtual
+                    </span>
+                </div>
+
+                <p class="ib-employee-permission-description">
+                    O perfil determina permanentemente as funcionalidades
+                    disponíveis para este utilizador.
+                </p>
+
+                <form asp-controller="GestaoFuncionarios"
+                      asp-action="AlterarRole"
+                      method="post"
+                      id="formAlterarRole">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="userId" value="@Model.UserId" />
+                    <input type="hidden" name="funcionarioId" value="@Model.Id" />
+
+                    <div class="ib-category-field">
+                        <label for="novaRole">Alterar perfil para</label>
+
+                        <select id="novaRole" name="novaRole">
+                            <option value="">Selecione o novo perfil</option>
+                            <option value="Admin">Administrador</option>
+                            <option value="Cliente">Cliente</option>
+                        </select>
+                    </div>
+
+                    <div class="ib-employee-permission-warning">
+                        <strong>Atenção</strong>
+                        <span>
+                            Esta alteração é permanente e modifica as permissões
+                            deste utilizador no sistema.
+                        </span>
+                    </div>
+
+                    <button type="submit"
+                            class="ib-category-save-btn"
+                            id="btnAlterarRole">
+                        Alterar perfil
+                    </button>
+
+                </form>
+
+            </div>
+
+            <!-- ADMIN TEMPORÁRIO -->
+            <div class="ib-employee-permission-block">
+
+                <div class="ib-employee-permission-title">
+                    <div>
+                        <span class="ib-section-eyebrow">ACESSO TEMPORÁRIO</span>
+                        <h4>Administrador temporário</h4>
+                    </div>
+
+                    @if (Model.PermissaoAdminTemporariaAtiva != null)
+                    {
+                        <span class="ib-employee-temp-badge is-active">
+                            Ativo
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="ib-employee-temp-badge">
+                            Sem acesso
+                        </span>
+                    }
+                </div>
+
+                @if (Model.PermissaoAdminTemporariaAtiva != null)
+                {
+                    <div class="ib-employee-temp-active">
+
+                        <strong>Acesso administrativo temporário ativo</strong>
+
+                        <p>
+                            Válido até
+                            <strong>
+                                @Model.PermissaoAdminTemporariaAtiva.DataFim.ToLocalTime().ToString("dd/MM/yyyy 'às' HH:mm")
+                            </strong>
+                        </p>
+
+                        @if (!string.IsNullOrWhiteSpace(
+                            Model.PermissaoAdminTemporariaAtiva.Motivo))
+                        {
+                            <p>
+                                Motivo:
+                                @Model.PermissaoAdminTemporariaAtiva.Motivo
+                            </p>
+                        }
+
+                        <form asp-controller="GestaoFuncionarios"
+                              asp-action="RevogarAdminTemporario"
+                              method="post"
+                              onsubmit="return confirm('Pretende revogar o acesso administrativo temporário deste funcionário?');">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="permissaoId"
+                                   value="@Model.PermissaoAdminTemporariaAtiva.Id" />
+
+                            <input type="hidden"
+                                   name="funcionarioId"
+                                   value="@Model.Id" />
+
+                            <button type="submit"
+                                    class="ib-category-cancel-btn">
+                                Revogar acesso
+                            </button>
+
+                        </form>
+
+                    </div>
+                }
+                else
+                {
+                    <p class="ib-employee-permission-description">
+                        Conceda acesso às funcionalidades administrativas durante
+                        um período limitado, sem alterar o perfil permanente.
+                    </p>
+
+                    <form asp-controller="GestaoFuncionarios"
+                          asp-action="ConcederAdminTemporario"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden"
+                               name="FuncionarioUserId"
+                               value="@Model.UserId" />
+
+                        <input type="hidden"
+                               name="funcionarioId"
+                               value="@Model.Id" />
+
+                        <div class="ib-category-field">
+                            <label for="DuracaoMinutos">
+                                Duração do acesso
+                            </label>
+
+                            <select id="DuracaoMinutos"
+                                    name="DuracaoMinutos">
+                                <option value="5">5 minutos</option>
+                                <option value="10">10 minutos</option>
+                                <option value="15">15 minutos</option>
+                                <option value="30">30 minutos</option>
+                                <option value="60">1 hora</option>
+                                <option value="120">2 horas</option>
+                                <option value="240">4 horas</option>
+                                <option value="480">8 horas</option>
+                                <option value="720">12 horas</option>
+                                <option value="1440">24 horas</option>
+                            </select>
+                        </div>
+
+                        <div class="ib-category-field">
+                            <div class="ib-category-field-label">
+                                <label for="Motivo">Motivo</label>
+                                <span>Opcional</span>
+                            </div>
+
+                            <textarea id="Motivo"
+                                      name="Motivo"
+                                      rows="3"
+                                      maxlength="500"
+                                      placeholder="Ex.: substituição temporária da administração"></textarea>
+                        </div>
+
+                        <button type="submit"
+                                class="ib-category-save-btn">
+                            Conceder acesso temporário
+                        </button>
+
+                    </form>
+                }
+
+            </div>
+
+        </div>
+
+    </section>
+
 </div>
 
 @section Scripts
@@ -397,6 +604,29 @@
 
     <script>
     document.addEventListener("DOMContentLoaded", function () {
+                const formAlterarRole = document.getElementById("formAlterarRole");
+
+        if (formAlterarRole) {
+            formAlterarRole.addEventListener("submit", function (event) {
+                const role = document.getElementById("novaRole").value;
+
+                if (!role) {
+                    event.preventDefault();
+                    alert("Selecione o novo perfil do utilizador.");
+                    return;
+                }
+
+                const confirmar = confirm(
+                    "Pretende alterar permanentemente o perfil deste utilizador para "
+                    + role
+                    + "?"
+                );
+
+                if (!confirmar) {
+                    event.preventDefault();
+                }
+            });
+        }
 
         // =====================================================
         // PESQUISA DE SERVIÇOS

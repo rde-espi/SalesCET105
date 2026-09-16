@@ -123,6 +123,17 @@ public class GestaoFuncionariosController : Controller
             return NotFound();
         }
 
+        var permissoesTemporarias = await _apiService.GetAuthenticatedAsync<List<PermissaoAdminTemporariaViewModel>>( "api/Admin/permissoes-temporarias");
+
+        permissoesTemporarias ??= new List<PermissaoAdminTemporariaViewModel>();
+
+        var permissaoAtiva = permissoesTemporarias
+            .Where(p =>
+            p.FuncionarioUserId == funcionario.UserId &&
+            p.Estado == "Ativa")
+            .OrderByDescending(p => p.DataFim)
+            .FirstOrDefault();
+
         var servicos = await _apiService.GetAuthenticatedAsync<List<ServicoViewModel>>("api/Servicos");
 
         var associacoes = await _apiService.GetAuthenticatedAsync<List<FuncionarioServicoViewModel>>( $"api/FuncionarioServicos/funcionario/{id}");
@@ -147,6 +158,9 @@ public class GestaoFuncionariosController : Controller
             DataAdmissao = funcionario.DataAdmissao,
             Disponivel = funcionario.Disponivel,
             Ativo = funcionario.Ativo,
+            UserId = funcionario.UserId,
+            RoleAtual = "Funcionario",
+            PermissaoAdminTemporariaAtiva = permissaoAtiva,
 
             Servicos = servicos
                 .Where(s => s.Disponivel || associacoes.Any(a => a.ServicoId == s.Id))
@@ -387,6 +401,93 @@ public class GestaoFuncionariosController : Controller
         {
             sucesso = true
         });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AlterarRole( string userId,string novaRole, int funcionarioId)
+    {
+        if (string.IsNullOrWhiteSpace(userId) ||
+            string.IsNullOrWhiteSpace(novaRole))
+        {
+            return BadRequest();
+        }
+
+        var model = new AlterarRoleViewModel
+        {
+            NovaRole = novaRole
+        };
+
+        using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Patch, $"api/Admin/users/{userId}/role", model);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var erro = await response.Content.ReadAsStringAsync();
+
+            TempData["ErrorMessage"] =
+                string.IsNullOrWhiteSpace(erro)
+                    ? "Não foi possível alterar o perfil do utilizador."
+                    : erro;
+
+            return RedirectToAction(nameof(Editar), new { id = funcionarioId });
+        }
+
+        TempData["SuccessMessage"] = $"Perfil alterado para {novaRole} com sucesso.";
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ConcederAdminTemporario( ConcederPermissaoTemporariaViewModel model,int funcionarioId)
+    {
+        if (!ModelState.IsValid)
+        {
+            TempData["ErrorMessage"] = "Indique uma duração válida para o acesso temporário.";
+
+            return RedirectToAction(nameof(Editar), new { id = funcionarioId });
+        }
+
+        using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Admin/permissoes-temporarias", model);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var erro = await response.Content.ReadAsStringAsync();
+
+            TempData["ErrorMessage"] =
+                string.IsNullOrWhiteSpace(erro)
+                    ? "Não foi possível conceder o acesso administrativo temporário."
+                    : erro;
+
+            return RedirectToAction(nameof(Editar), new { id = funcionarioId });
+        }
+
+        TempData["SuccessMessage"] = "Acesso administrativo temporário concedido com sucesso.";
+
+        return RedirectToAction(nameof(Editar), new { id = funcionarioId });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RevogarAdminTemporario( int permissaoId, int funcionarioId)
+    {
+        using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Patch, $"api/Admin/permissoes-temporarias/{permissaoId}/revogar", new { });
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var erro = await response.Content.ReadAsStringAsync();
+
+            TempData["ErrorMessage"] =
+                string.IsNullOrWhiteSpace(erro)
+                    ? "Não foi possível revogar o acesso administrativo temporário."
+                    : erro;
+
+            return RedirectToAction(nameof(Editar), new { id = funcionarioId });
+        }
+
+        TempData["SuccessMessage"] = "Acesso administrativo temporário revogado com sucesso.";
+
+        return RedirectToAction(nameof(Editar), new { id = funcionarioId });
     }
 
 }

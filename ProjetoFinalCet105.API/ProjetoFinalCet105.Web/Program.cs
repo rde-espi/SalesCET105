@@ -1,5 +1,6 @@
 using System.Globalization;
 
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 using ProjetoFinalCet105.Web.Services;
@@ -60,6 +61,32 @@ app.UseRouting();
 
 app.UseSession();
 app.UseAuthentication();
+
+app.Use(async (context, next) =>
+{
+    if (context.User.Identity?.IsAuthenticated == true)
+    {
+        var jwtToken = context.Session.GetString("JwtToken");
+
+        if (string.IsNullOrWhiteSpace(jwtToken))
+        {
+            await context.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme);
+
+            context.Session.Clear();
+
+            var path = context.Request.Path;
+
+            if (!path.StartsWithSegments("/Account/Login"))
+            {
+                context.Response.Redirect("/Account/Login");
+                return;
+            }
+        }
+    }
+
+    await next();
+});
 
 app.UseAuthorization();
 
