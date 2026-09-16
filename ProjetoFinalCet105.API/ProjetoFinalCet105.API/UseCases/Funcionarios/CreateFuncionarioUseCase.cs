@@ -15,7 +15,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
         private readonly IAuthService _authService;
         private readonly ILogger<CreateFuncionarioUseCase> _logger;
 
-        public CreateFuncionarioUseCase( IFuncionarioRepository funcionarioRepository, UserManager<User> userManager, IAuthService authService, ILogger<CreateFuncionarioUseCase> logger)
+        public CreateFuncionarioUseCase(IFuncionarioRepository funcionarioRepository, UserManager<User> userManager, IAuthService authService, ILogger<CreateFuncionarioUseCase> logger)
         {
             _funcionarioRepository = funcionarioRepository;
             _userManager = userManager;
@@ -23,13 +23,13 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
             _logger = logger;
         }
 
-        public async Task<UseCaseResult<FuncionarioDTO>> ExecuteAsync(    NovoFuncionarioDTO dto)
+        public async Task<UseCaseResult<FuncionarioDTO>> ExecuteAsync(NovoFuncionarioDTO dto)
         {
             var userExistente = await _userManager.FindByEmailAsync(dto.Email);
 
             if (userExistente != null)
             {
-                return UseCaseResult<FuncionarioDTO>.Falha( "Já existe um utilizador com este email.", TipoErro.Conflito);
+                return UseCaseResult<FuncionarioDTO>.Falha("Já existe um utilizador com este email.", TipoErro.Conflito);
             }
 
             byte[]? fotografia = null;
@@ -99,7 +99,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
             {
                 await _userManager.DeleteAsync(user);
 
-                return UseCaseResult<FuncionarioDTO>.Falha( "Ocorreu um erro ao criar o funcionário.");
+                return UseCaseResult<FuncionarioDTO>.Falha("Ocorreu um erro ao criar o funcionário.");
             }
 
             var resposta = new FuncionarioDTO

@@ -15,7 +15,7 @@ public class EstadoAdminTemporarioController : ControllerBase
 {
     private readonly AdminTemporarioService _adminTemporarioService;
 
-    public EstadoAdminTemporarioController( AdminTemporarioService adminTemporarioService)
+    public EstadoAdminTemporarioController(AdminTemporarioService adminTemporarioService)
     {
         _adminTemporarioService = adminTemporarioService;
     }

@@ -45,7 +45,7 @@ public class GestaoClientesController : Controller
 
         try
         {
-            var cliente = await _apiService.GetAuthenticatedAsync<ClienteViewModel>( $"api/Clientes/{id}");
+            var cliente = await _apiService.GetAuthenticatedAsync<ClienteViewModel>($"api/Clientes/{id}");
 
             if (cliente == null)
             {
@@ -53,7 +53,7 @@ public class GestaoClientesController : Controller
                 return RedirectToAction(nameof(Index));
             }
 
-            var marcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoClienteViewModel>>( $"api/Marcacoes/cliente/{id}");
+            var marcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoClienteViewModel>>($"api/Marcacoes/cliente/{id}");
 
             marcacoes ??= new List<MarcacaoClienteViewModel>();
 

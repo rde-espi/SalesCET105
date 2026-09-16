@@ -67,7 +67,7 @@ namespace ProjetoFinalCet105.API.Services.AuthService
         {
             if (string.IsNullOrWhiteSpace(user.Email))
             {
-                throw new InvalidOperationException( "O utilizador não possui um email válido.");
+                throw new InvalidOperationException("O utilizador não possui um email válido.");
             }
 
             if (user.EmailConfirmed)
@@ -92,7 +92,7 @@ namespace ProjetoFinalCet105.API.Services.AuthService
         <p>Se não efetuou este registo,
         ignore esta mensagem.</p>";
 
-            await _emailService.EnviarEmailAsync( user.Email,"Confirmação de email", mensagem);
+            await _emailService.EnviarEmailAsync(user.Email, "Confirmação de email", mensagem);
         }
 
         public async Task EnviarConviteFuncionarioAsync(User user)
@@ -145,7 +145,7 @@ namespace ProjetoFinalCet105.API.Services.AuthService
         <p>Infinity Beauty<br>
         CENTER | SPA | WELLNESS</p>";
 
-            await _emailService.EnviarEmailAsync( user.Email, "Ativação da sua conta - Infinity Beauty", mensagem);
+            await _emailService.EnviarEmailAsync(user.Email, "Ativação da sua conta - Infinity Beauty", mensagem);
         }
 
     }

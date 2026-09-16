@@ -13,12 +13,12 @@ namespace ProjetoFinalCet105.API.Authorization
     {
         private readonly AdminTemporarioService _adminTemporarioService;
 
-        public AdminOuAdminTemporarioHandler( AdminTemporarioService adminTemporarioService)
+        public AdminOuAdminTemporarioHandler(AdminTemporarioService adminTemporarioService)
         {
             _adminTemporarioService = adminTemporarioService;
         }
 
-        protected override async Task HandleRequirementAsync( AuthorizationHandlerContext context, AdminOuAdminTemporarioRequirement requirement)
+        protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, AdminOuAdminTemporarioRequirement requirement)
         {
             if (context.User.Identity?.IsAuthenticated != true)
                 return;

@@ -21,7 +21,7 @@ public class EstadoAdminTemporarioController : Controller
     {
         try
         {
-            var estado = await _apiService.GetAuthenticatedAsync<EstadoAdminTemporarioViewModel>( "api/EstadoAdminTemporario/me");
+            var estado = await _apiService.GetAuthenticatedAsync<EstadoAdminTemporarioViewModel>("api/EstadoAdminTemporario/me");
 
             if (estado == null)
             {

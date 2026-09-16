@@ -161,7 +161,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                 Token = model.TokenConfirmacao
             };
 
-            var confirmacao = await _apiService.PostAsync<object, object>( "api/Auth/confirmar-email", confirmarEmailRequest);
+            var confirmacao = await _apiService.PostAsync<object, object>("api/Auth/confirmar-email", confirmarEmailRequest);
 
             if (confirmacao == null)
             {
@@ -176,7 +176,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                 NovaPassword = model.NovaPassword
             };
 
-            var password = await _apiService.PostAsync<object, object>( "api/Auth/reset-password",definirPasswordRequest);
+            var password = await _apiService.PostAsync<object, object>("api/Auth/reset-password", definirPasswordRequest);
 
             if (password == null)
             {

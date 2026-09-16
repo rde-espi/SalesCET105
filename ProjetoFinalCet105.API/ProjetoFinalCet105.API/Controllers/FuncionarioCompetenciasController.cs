@@ -142,7 +142,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
             if (await _funcionarioCompetenciaRepository.ExisteFuncionarioCompetenciaAsync(funcionarioId, dto.CompetenciaId))
             {
-                return BadRequest( "O funcionário já possui esta competência.");
+                return BadRequest("O funcionário já possui esta competência.");
             }
             try
             {

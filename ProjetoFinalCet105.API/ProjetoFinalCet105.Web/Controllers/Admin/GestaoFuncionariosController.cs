@@ -87,12 +87,12 @@ public class GestaoFuncionariosController : Controller
 
         if (model.DataAdmissao.HasValue)
         {
-            content.Add( new StringContent(model.DataAdmissao.Value.ToString("yyyy-MM-dd")), "DataAdmissao");
+            content.Add(new StringContent(model.DataAdmissao.Value.ToString("yyyy-MM-dd")), "DataAdmissao");
         }
 
-        content.Add( new StringContent(model.Disponivel.ToString().ToLowerInvariant()), "Disponivel");
+        content.Add(new StringContent(model.Disponivel.ToString().ToLowerInvariant()), "Disponivel");
 
-        using var response = await _apiService.SendAuthenticatedMultipartAsync( HttpMethod.Post, "api/Funcionarios", content);
+        using var response = await _apiService.SendAuthenticatedMultipartAsync(HttpMethod.Post, "api/Funcionarios", content);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -123,7 +123,7 @@ public class GestaoFuncionariosController : Controller
             return NotFound();
         }
 
-        var permissoesTemporarias = await _apiService.GetAuthenticatedAsync<List<PermissaoAdminTemporariaViewModel>>( "api/Admin/permissoes-temporarias");
+        var permissoesTemporarias = await _apiService.GetAuthenticatedAsync<List<PermissaoAdminTemporariaViewModel>>("api/Admin/permissoes-temporarias");
 
         permissoesTemporarias ??= new List<PermissaoAdminTemporariaViewModel>();
 
@@ -136,7 +136,7 @@ public class GestaoFuncionariosController : Controller
 
         var servicos = await _apiService.GetAuthenticatedAsync<List<ServicoViewModel>>("api/Servicos");
 
-        var associacoes = await _apiService.GetAuthenticatedAsync<List<FuncionarioServicoViewModel>>( $"api/FuncionarioServicos/funcionario/{id}");
+        var associacoes = await _apiService.GetAuthenticatedAsync<List<FuncionarioServicoViewModel>>($"api/FuncionarioServicos/funcionario/{id}");
 
         var competencias = await _apiService.GetAuthenticatedAsync<List<CompetenciaViewModel>>("api/Competencias");
 
@@ -184,7 +184,7 @@ public class GestaoFuncionariosController : Controller
             .Where(c => c.Ativa)
             .OrderBy(c => c.Nome)
             .ToList(),
-            
+
             CompetenciasFuncionario = competenciasFuncionario
             .OrderBy(c => c.CompetenciaNome)
             .ToList()
@@ -232,7 +232,7 @@ public class GestaoFuncionariosController : Controller
         content.Add(new StringContent(model.Disponivel.ToString().ToLowerInvariant()), "Disponivel");
         content.Add(new StringContent(model.Ativo.ToString().ToLowerInvariant()), "Ativo");
 
-        using var response = await _apiService.SendAuthenticatedMultipartAsync( HttpMethod.Put, $"api/Funcionarios/{model.Id}", content);
+        using var response = await _apiService.SendAuthenticatedMultipartAsync(HttpMethod.Put, $"api/Funcionarios/{model.Id}", content);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -247,11 +247,11 @@ public class GestaoFuncionariosController : Controller
             return View(model);
         }
 
-        var servicosAtualizados = await AtualizarServicosFuncionarioAsync( model.Id, model.Servicos);
+        var servicosAtualizados = await AtualizarServicosFuncionarioAsync(model.Id, model.Servicos);
 
         if (!servicosAtualizados)
         {
-            ModelState.AddModelError( string.Empty, "Os dados do funcionário foram atualizados, mas ocorreu um erro ao atualizar os serviços.");
+            ModelState.AddModelError(string.Empty, "Os dados do funcionário foram atualizados, mas ocorreu um erro ao atualizar os serviços.");
 
             return View(model);
         }
@@ -276,7 +276,7 @@ public class GestaoFuncionariosController : Controller
                     Ativo = true
                 };
 
-                using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/FuncionarioServicos",  dto);
+                using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/FuncionarioServicos", dto);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -292,7 +292,7 @@ public class GestaoFuncionariosController : Controller
                 continue;
             }
 
-            var associacao = await _apiService.GetAuthenticatedAsync<FuncionarioServicoViewModel>( $"api/FuncionarioServicos/{servico.FuncionarioServicoId.Value}");
+            var associacao = await _apiService.GetAuthenticatedAsync<FuncionarioServicoViewModel>($"api/FuncionarioServicos/{servico.FuncionarioServicoId.Value}");
 
             if (associacao == null)
             {
@@ -325,7 +325,7 @@ public class GestaoFuncionariosController : Controller
             // Existia, estava ativa e foi desmarcada -> DESATIVAR
             if (!servico.Selecionado && associacao.Ativo)
             {
-                using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Delete, $"api/FuncionarioServicos/{associacao.Id}");
+                using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Delete, $"api/FuncionarioServicos/{associacao.Id}");
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -340,7 +340,7 @@ public class GestaoFuncionariosController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AdicionarCompetencia( [FromBody] FuncionarioCompetenciaRequestViewModel model)
+    public async Task<IActionResult> AdicionarCompetencia([FromBody] FuncionarioCompetenciaRequestViewModel model)
     {
         if (model.FuncionarioId <= 0 || model.CompetenciaId <= 0)
         {
@@ -350,7 +350,7 @@ public class GestaoFuncionariosController : Controller
             });
         }
 
-        using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/FuncionarioCompetencias", model);
+        using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/FuncionarioCompetencias", model);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -383,7 +383,7 @@ public class GestaoFuncionariosController : Controller
             });
         }
 
-        using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Delete, $"api/FuncionarioCompetencias/{id}");
+        using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Delete, $"api/FuncionarioCompetencias/{id}");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -405,7 +405,7 @@ public class GestaoFuncionariosController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AlterarRole( string userId,string novaRole, int funcionarioId)
+    public async Task<IActionResult> AlterarRole(string userId, string novaRole, int funcionarioId)
     {
         if (string.IsNullOrWhiteSpace(userId) ||
             string.IsNullOrWhiteSpace(novaRole))
@@ -418,7 +418,7 @@ public class GestaoFuncionariosController : Controller
             NovaRole = novaRole
         };
 
-        using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Patch, $"api/Admin/users/{userId}/role", model);
+        using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Patch, $"api/Admin/users/{userId}/role", model);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -439,7 +439,7 @@ public class GestaoFuncionariosController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ConcederAdminTemporario( ConcederPermissaoTemporariaViewModel model,int funcionarioId)
+    public async Task<IActionResult> ConcederAdminTemporario(ConcederPermissaoTemporariaViewModel model, int funcionarioId)
     {
         if (!ModelState.IsValid)
         {
@@ -448,7 +448,7 @@ public class GestaoFuncionariosController : Controller
             return RedirectToAction(nameof(Editar), new { id = funcionarioId });
         }
 
-        using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Admin/permissoes-temporarias", model);
+        using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Admin/permissoes-temporarias", model);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -469,9 +469,9 @@ public class GestaoFuncionariosController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> RevogarAdminTemporario( int permissaoId, int funcionarioId)
+    public async Task<IActionResult> RevogarAdminTemporario(int permissaoId, int funcionarioId)
     {
-        using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Patch, $"api/Admin/permissoes-temporarias/{permissaoId}/revogar", new { });
+        using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Patch, $"api/Admin/permissoes-temporarias/{permissaoId}/revogar", new { });
 
         if (!response.IsSuccessStatusCode)
         {

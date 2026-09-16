@@ -1,0 +1,517 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.MarcacaoClienteViewModel>
+
+@{
+    ViewData["Title"] = "Calendário";
+    Layout = "_AdminLayout";
+
+    var funcionarios =
+        ViewBag.Funcionarios as List<ProjetoFinalCet105.Web.Models.FuncionarioViewModel>
+        ?? new();
+
+    int? funcionarioSelecionado =
+        ViewBag.FuncionarioId as int?;
+        var vista =  ViewBag.Vista as string ?? "semana";
+
+        
+
+
+
+    var hoje = DateTime.Today;
+
+var dataReferencia =
+    ViewBag.DataReferencia is DateTime referencia
+        ? referencia
+        : hoje;
+                var diaSelecionado = dataReferencia.Date;
+
+var diferenca =
+    ((int)dataReferencia.DayOfWeek + 6) % 7;
+
+    var marcacoesDia = Model
+    .Where(m => m.DataHoraInicio.Date == diaSelecionado)
+    .OrderBy(m => m.DataHoraInicio)
+    .ToList();
+
+var inicioSemana =
+    dataReferencia.AddDays(-diferenca);
+
+var fimSemana = inicioSemana.AddDays(6);
+var dataAnterior = vista switch
+{
+    "dia" => dataReferencia.AddDays(-1),
+    "mes" => dataReferencia.AddMonths(-1),
+    _ => inicioSemana.AddDays(-7)
+};
+
+var dataSeguinte = vista switch
+{
+    "dia" => dataReferencia.AddDays(1),
+    "mes" => dataReferencia.AddMonths(1),
+    _ => inicioSemana.AddDays(7)
+};
+
+    var horas = Enumerable
+        .Range(8, 13) // 08:00 até 20:00
+        .SelectMany(h => new[]
+        {
+            new TimeSpan(h, 0, 0),
+            new TimeSpan(h, 30, 0)
+        })
+        .Where(h => h <= new TimeSpan(20, 0, 0))
+        .ToList();
+
+    string EstadoClasse(string? estado)
+    {
+        return estado?.ToLowerInvariant() switch
+        {
+            "pendente" => "pending",
+            "confirmada" => "confirmed",
+            "concluida" => "completed",
+            "concluída" => "completed",
+            "cancelada" => "cancelled",
+            "não compareceu" => "noshow",
+            "nao compareceu" => "noshow",
+            _ => "default"
+        };
+    }
+
+    var inicioMes = new DateTime(
+    dataReferencia.Year,
+    dataReferencia.Month,
+    1);
+
+var fimMes = inicioMes.AddMonths(1).AddDays(-1);
+
+// A grelha mensal começa sempre numa segunda-feira
+var diferencaInicioMes =
+    ((int)inicioMes.DayOfWeek + 6) % 7;
+
+var inicioGrelhaMes =
+    inicioMes.AddDays(-diferencaInicioMes);
+
+// E termina num domingo
+var diferencaFimMes =
+    6 - (((int)fimMes.DayOfWeek + 6) % 7);
+
+var fimGrelhaMes =
+    fimMes.AddDays(diferencaFimMes);
+
+var diasGrelhaMes =
+    Enumerable.Range(
+        0,
+        (fimGrelhaMes - inicioGrelhaMes).Days + 1)
+    .Select(i => inicioGrelhaMes.AddDays(i))
+    .ToList();
+}
+
+<div class="ib-calendar-page">
+
+    <div class="ib-categories-heading">
+        <div>
+            <span class="ib-section-eyebrow">CALENDÁRIO</span>
+            <h1>Agenda</h1>
+            <p>
+                Consulte e acompanhe as marcações da equipa.
+            </p>
+        </div>
+    </div>
+
+    <div class="ib-calendar-panel">
+
+        <div class="ib-calendar-toolbar">            
+
+            <div class="ib-calendar-navigation">
+
+                <a asp-controller="Calendario" asp-action="Index" asp-route-data="@dataAnterior.ToString("yyyy-MM-dd")" asp-route-vista="@vista"
+                class="ib-calendar-nav-btn" asp-route-funcionarioId="@funcionarioSelecionado" aria-label="Semana anterior">
+    <svg viewBox="0 0 24 24">
+        <path d="m15 18-6-6 6-6"></path>
+    </svg>
+</a>
+
+                <div class="ib-calendar-period">
+                    @if (vista == "dia")
+{
+    <strong>
+        @dataReferencia.ToString(
+            "dd MMMM yyyy",
+            new System.Globalization.CultureInfo("pt-PT"))
+    </strong>
+
+    <span>
+        @dataReferencia.ToString(
+            "dddd",
+            new System.Globalization.CultureInfo("pt-PT"))
+    </span>
+}
+else if (vista == "mes")
+{
+    <strong>
+        @dataReferencia.ToString(
+            "MMMM yyyy",
+            new System.Globalization.CultureInfo("pt-PT"))
+    </strong>
+
+    <span>Vista mensal</span>
+}
+else
+{
+    <strong>
+        @inicioSemana.ToString("dd")
+        —
+        @fimSemana.ToString(
+            "dd MMMM yyyy",
+            new System.Globalization.CultureInfo("pt-PT"))
+    </strong>
+
+    <span>Semana</span>
+}
+                </div>
+
+                <a asp-controller="Calendario" asp-action="Index" asp-route-data="@dataSeguinte.ToString("yyyy-MM-dd")"asp-route-vista="@vista" asp-route-funcionarioId="@funcionarioSelecionado"
+                class="ib-calendar-nav-btn"
+                aria-label="Semana seguinte">
+                <svg viewBox="0 0 24 24">
+                    <path d="m9 18 6-6-6-6"></path>
+                    </svg>
+                    </a>
+                    
+                    <a asp-controller="Calendario" asp-route-funcionarioId="@funcionarioSelecionado" asp-action="Index" asp-route-vista="@vista"
+                    asp-route-data="@DateTime.Today.ToString("yyyy-MM-dd")" class="ib-calendar-today-btn">
+                    Hoje
+                </a>
+
+            </div>
+
+            <div class="ib-calendar-professional-filter">
+
+    <span>Profissional</span>
+
+    <select id="filtroProfissional">
+        <option value="">Todos os profissionais</option>
+
+        @foreach (var funcionario in funcionarios)
+        {
+            if (funcionarioSelecionado == funcionario.Id)
+            {
+                <option value="@funcionario.Id" selected>
+                    @funcionario.NomeCompleto
+                </option>
+            }
+            else
+            {
+                <option value="@funcionario.Id">
+                    @funcionario.NomeCompleto
+                </option>
+            }
+        }
+    </select>
+
+</div>
+
+            <div class="ib-calendar-view-switch">
+
+    <a asp-controller="Calendario"
+       asp-action="Index"
+       asp-route-data="@dataReferencia.ToString("yyyy-MM-dd")"
+       asp-route-funcionarioId="@funcionarioSelecionado"
+       asp-route-vista="dia"
+       class="@(vista == "dia" ? "active" : "")">
+        Dia
+    </a>
+
+    <a asp-controller="Calendario"
+       asp-action="Index"
+       asp-route-data="@dataReferencia.ToString("yyyy-MM-dd")"
+       asp-route-funcionarioId="@funcionarioSelecionado"
+       asp-route-vista="semana"
+       class="@(vista == "semana" ? "active" : "")">
+        Semana
+    </a>
+
+    <a asp-controller="Calendario"
+       asp-action="Index"
+       asp-route-data="@dataReferencia.ToString("yyyy-MM-dd")"
+       asp-route-funcionarioId="@funcionarioSelecionado"
+       asp-route-vista="mes"
+       class="@(vista == "mes" ? "active" : "")">
+        Mês
+    </a>
+
+</div>
+
+        </div>
+
+        <div class="ib-calendar-scroll">
+
+    @if (vista == "dia")
+    {
+        <div class="ib-calendar-day-view">
+
+            <div class="ib-calendar-day-title">
+                <div>
+                    <span>
+                        @diaSelecionado.ToString(
+                            "dddd",
+                            new System.Globalization.CultureInfo("pt-PT"))
+                    </span>
+
+                    <strong>
+                        @diaSelecionado.ToString(
+                            "dd MMMM yyyy",
+                            new System.Globalization.CultureInfo("pt-PT"))
+                    </strong>
+                </div>
+
+                <small>
+                    @marcacoesDia.Count
+                    @(marcacoesDia.Count == 1 ? "marcação" : "marcações")
+                </small>
+            </div>
+
+            <div class="ib-calendar-day-grid">
+
+                @foreach (var hora in horas)
+                {
+                    var marcacoesSlot = marcacoesDia
+                        .Where(m =>
+                            m.DataHoraInicio.Hour == hora.Hours &&
+                            m.DataHoraInicio.Minute == hora.Minutes)
+                        .ToList();
+
+                    <div class="ib-calendar-day-time">
+                        @hora.ToString(@"hh\:mm")
+                    </div>
+
+                    <div class="ib-calendar-day-slot">
+
+                        @foreach (var marcacao in marcacoesSlot)
+                        {
+                            <a asp-controller="GestaoMarcacoes"
+                               asp-action="Detalhes"
+                               asp-route-id="@marcacao.Id"
+                               class="ib-calendar-day-booking">
+
+                                <div class="ib-calendar-day-booking-hour">
+                                    @marcacao.DataHoraInicio.ToString("HH:mm")
+
+                                    @if (marcacao.DataHoraFim > marcacao.DataHoraInicio)
+                                    {
+                                        <span>
+                                            — @marcacao.DataHoraFim.ToString("HH:mm")
+                                        </span>
+                                    }
+                                </div>
+
+                                <div class="ib-calendar-day-booking-main">
+
+                                    <strong>@marcacao.ClienteNome</strong>
+
+                                    <span>@marcacao.ServicoNome</span>
+
+                                </div>
+
+                                <div class="ib-calendar-day-booking-professional">
+
+                                    <span>Profissional</span>
+
+                                    <strong>
+                                        @marcacao.FuncionarioNome
+                                    </strong>
+
+                                </div>
+
+                            </a>
+                        }
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+    }
+    else if (vista == "semana")
+    {
+        <div class="ib-calendar-week">
+
+            <div class="ib-calendar-corner"></div>
+
+            @for (var i = 0; i < 7; i++)
+            {
+                var dia = inicioSemana.AddDays(i);
+                var eHoje = dia.Date == hoje;
+
+                <div class="ib-calendar-day-header @(eHoje ? "today" : "")">
+
+                    <span>
+                        @dia.ToString( "ddd", new System.Globalization.CultureInfo("pt-PT"))
+                    </span>
+
+                    <strong>@dia.Day</strong>
+
+                </div>
+            }
+
+            @foreach (var hora in horas)
+            {
+                <div class="ib-calendar-time">
+                    @hora.ToString(@"hh\:mm")
+                </div>
+
+                @for (var i = 0; i < 7; i++)
+                {
+                    var dia = inicioSemana.AddDays(i);
+                    var eHoje = dia.Date == hoje;
+
+                    var marcacoesSlot = Model
+                        .Where(m =>
+                            m.DataHoraInicio.Date == dia.Date &&
+                            m.DataHoraInicio.Hour == hora.Hours &&
+                            m.DataHoraInicio.Minute == hora.Minutes)
+                        .OrderBy(m => m.DataHoraInicio)
+                        .ToList();
+
+                    <div class="ib-calendar-cell @(eHoje ? "today" : "")">
+
+                        @foreach (var marcacao in marcacoesSlot)
+                        {
+                            <a asp-controller="GestaoMarcacoes"
+                               asp-action="Detalhes"
+                               asp-route-id="@marcacao.Id"
+                               class="ib-calendar-booking">
+
+                                <div class="ib-calendar-booking-time">
+                                    @marcacao.DataHoraInicio.ToString("HH:mm")
+                                </div>
+
+                                <strong>@marcacao.ClienteNome</strong>
+                                <span>@marcacao.ServicoNome</span>
+                                <small>@marcacao.FuncionarioNome</small>
+
+                            </a>
+                        }
+
+                    </div>
+                }
+            }
+
+        </div>
+    }
+    else if (vista == "mes")
+{
+    <div class="ib-calendar-month">
+
+        <div class="ib-calendar-month-weekdays">
+            <span>SEG</span>
+            <span>TER</span>
+            <span>QUA</span>
+            <span>QUI</span>
+            <span>SEX</span>
+            <span>SÁB</span>
+            <span>DOM</span>
+        </div>
+
+        <div class="ib-calendar-month-grid">
+
+            @foreach (var dia in diasGrelhaMes)
+            {
+                var pertenceMes =
+                    dia.Month == dataReferencia.Month;
+
+                var eHoje =
+                    dia.Date == hoje;
+
+                var marcacoesDoDia = Model
+                    .Where(m => m.DataHoraInicio.Date == dia.Date)
+                    .OrderBy(m => m.DataHoraInicio)
+                    .ToList();
+
+                var marcacoesVisiveis =
+                    marcacoesDoDia.Take(3).ToList();
+
+                var restantes =
+                    marcacoesDoDia.Count - marcacoesVisiveis.Count;
+
+                <div class="ib-calendar-month-day
+                            @(!pertenceMes ? "outside" : "")
+                            @(eHoje ? "today" : "")">
+
+                    <div class="ib-calendar-month-day-number">
+                        <span>@dia.Day</span>
+
+                        @if (marcacoesDoDia.Any())
+                        {
+                            <small>
+                                @marcacoesDoDia.Count
+                            </small>
+                        }
+                    </div>
+
+                    <div class="ib-calendar-month-bookings">
+
+                        @foreach (var marcacao in marcacoesVisiveis)
+                        {
+                            <a asp-controller="GestaoMarcacoes"
+                               asp-action="Detalhes"
+                               asp-route-id="@marcacao.Id"
+                               class="ib-calendar-month-booking">
+
+                                <strong>
+                                    @marcacao.DataHoraInicio.ToString("HH:mm")
+                                </strong>
+
+                                <span>
+                                    @marcacao.ClienteNome
+                                </span>
+
+                                <small>
+                                    @marcacao.ServicoNome
+                                </small>
+
+                            </a>
+                        }
+
+                        @if (restantes > 0)
+                        {
+                            <div class="ib-calendar-month-more">
+                                + @restantes
+                                @(restantes == 1
+                                    ? "marcação"
+                                    : "marcações")
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+}
+
+</div>
+
+    </div>
+
+</div>
+@section Scripts {
+    <script>
+        document.getElementById("filtroProfissional")
+            ?.addEventListener("change", function () {
+
+                const url = new URL(window.location.href);
+
+                if (this.value) {
+                    url.searchParams.set("funcionarioId", this.value);
+                }
+                else {
+                    url.searchParams.delete("funcionarioId");
+                }
+
+                window.location.href = url.toString();
+            });
+    </script>
+}

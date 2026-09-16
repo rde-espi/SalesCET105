@@ -12,7 +12,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
         private readonly IFuncionarioRepository _funcionarioRepository;
         private readonly UserManager<User> _userManager;
 
-        public UpdateFuncionarioUseCase( IFuncionarioRepository funcionarioRepository, UserManager<User> userManager)
+        public UpdateFuncionarioUseCase(IFuncionarioRepository funcionarioRepository, UserManager<User> userManager)
         {
             _funcionarioRepository = funcionarioRepository;
             _userManager = userManager;
@@ -51,7 +51,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
 
             if (string.IsNullOrWhiteSpace(dto.Email))
             {
-                return UseCaseResult<bool>.Falha( "O email é obrigatório.");
+                return UseCaseResult<bool>.Falha("O email é obrigatório.");
             }
 
             if (string.IsNullOrWhiteSpace(dto.NomeCompleto))
@@ -66,7 +66,7 @@ namespace ProjetoFinalCet105.API.UseCases.Funcionarios
 
                 if (userComEmail != null && userComEmail.Id != user.Id)
                 {
-                    return UseCaseResult<bool>.Falha( "Já existe outro utilizador com este email.", TipoErro.Conflito);
+                    return UseCaseResult<bool>.Falha("Já existe outro utilizador com este email.", TipoErro.Conflito);
                 }
             }
 

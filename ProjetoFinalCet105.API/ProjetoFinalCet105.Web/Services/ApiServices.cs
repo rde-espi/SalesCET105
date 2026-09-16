@@ -108,7 +108,7 @@ namespace ProjetoFinalCet105.Web.Services
             return await _httpClient.SendAsync(request);
         }
 
-        public async Task<HttpResponseMessage> SendAuthenticatedJsonAsync<T>( HttpMethod method, string endpoint, T data)
+        public async Task<HttpResponseMessage> SendAuthenticatedJsonAsync<T>(HttpMethod method, string endpoint, T data)
         {
             var token = _httpContextAccessor.HttpContext?.Session.GetString("JwtToken");
 

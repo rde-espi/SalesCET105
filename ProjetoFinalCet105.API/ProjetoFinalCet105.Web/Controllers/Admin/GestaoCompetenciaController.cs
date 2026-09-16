@@ -19,7 +19,7 @@ public class GestaoCompetenciasController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var competencias = await _apiService.GetAuthenticatedAsync<List<CompetenciaViewModel>>( "api/Competencias");
+        var competencias = await _apiService.GetAuthenticatedAsync<List<CompetenciaViewModel>>("api/Competencias");
 
         competencias ??= new List<CompetenciaViewModel>();
 
@@ -57,7 +57,7 @@ public class GestaoCompetenciasController : Controller
             Ativa = true
         };
 
-        using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post,"api/Competencias", competencia);
+        using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Competencias", competencia);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -80,7 +80,7 @@ public class GestaoCompetenciasController : Controller
     [HttpGet]
     public async Task<IActionResult> Editar(int id)
     {
-        var competencia = await _apiService.GetAuthenticatedAsync<CompetenciaViewModel>( $"api/Competencias/{id}");
+        var competencia = await _apiService.GetAuthenticatedAsync<CompetenciaViewModel>($"api/Competencias/{id}");
 
         if (competencia == null)
         {
@@ -120,7 +120,7 @@ public class GestaoCompetenciasController : Controller
             Ativa = model.Ativa
         };
 
-        using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Put, $"api/Competencias/{model.Id}", competencia);
+        using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Put, $"api/Competencias/{model.Id}", competencia);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -144,7 +144,7 @@ public class GestaoCompetenciasController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Desativar(int id)
     {
-        using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Delete, $"api/Competencias/{id}");
+        using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Delete, $"api/Competencias/{id}");
 
         if (!response.IsSuccessStatusCode)
         {
