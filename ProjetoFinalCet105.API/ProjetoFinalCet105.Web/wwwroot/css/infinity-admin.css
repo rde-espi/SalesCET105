@@ -5099,3 +5099,655 @@ body,
         gap: 10px;
     }
 }
+/* =========================================================
+   CLIENTE - DETALHES
+   ========================================================= */
+
+.ib-client-profile {
+    display: grid;
+    grid-template-columns: 210px minmax(0, 1fr);
+    min-height: 220px;
+}
+
+.ib-client-profile-identity {
+    padding: 26px;
+    border-right: 1px solid rgba(216, 176, 113, 0.22);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.ib-client-profile-avatar {
+    width: 82px;
+    height: 82px;
+    margin-bottom: 16px;
+    font-size: 1.35rem;
+}
+
+.ib-client-since {
+    margin-top: 22px;
+    padding-top: 18px;
+    width: 100%;
+    border-top: 1px solid rgba(216, 176, 113, 0.18);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+    .ib-client-since span {
+        color: #817a70;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .ib-client-since strong {
+        color: #24231f;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+
+/* CONTEÚDO PRINCIPAL */
+
+.ib-client-profile-content {
+    padding: 28px 36px;
+}
+
+.ib-client-profile-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.18);
+}
+
+    .ib-client-profile-header h2 {
+        margin: 0 0 5px;
+        color: #191919;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 2rem;
+        font-weight: 600;
+    }
+
+.ib-client-email {
+    color: #817a70;
+    font-size: 0.86rem;
+}
+
+
+/* INFORMAÇÃO */
+
+.ib-client-info-grid {
+    display: grid;
+    grid-template-columns: minmax(180px, 0.7fr) minmax(260px, 1.3fr);
+    gap: 50px;
+    padding-top: 26px;
+}
+
+.ib-client-info-group {
+    min-width: 0;
+}
+
+.ib-client-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 15px;
+}
+
+    .ib-client-info-item > span {
+        color: #817a70;
+        font-size: 0.76rem;
+    }
+
+    .ib-client-info-item strong {
+        color: #35332f;
+        font-size: 0.9rem;
+        font-weight: 500;
+        line-height: 1.55;
+    }
+
+        .ib-client-info-item strong span {
+            color: #817a70;
+            font-weight: 400;
+        }
+
+
+/* =========================================================
+   HISTÓRICO DO CLIENTE
+   ========================================================= */
+
+.ib-client-history {
+    width: 100%;
+}
+
+.ib-client-history-header,
+.ib-client-history-row {
+    display: grid;
+    grid-template-columns: minmax(130px, 0.8fr) minmax(190px, 1.4fr) minmax(170px, 1.2fr) minmax(120px, 0.8fr) minmax(100px, 0.6fr);
+    align-items: center;
+    column-gap: 20px;
+}
+
+.ib-client-history-header {
+    padding: 14px 24px;
+    background: #f8f5ef;
+    border-top: 1px solid rgba(216, 176, 113, 0.18);
+    border-bottom: 1px solid rgba(216, 176, 113, 0.18);
+}
+
+    .ib-client-history-header span {
+        color: #817a70;
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+.ib-client-history-row {
+    padding: 18px 24px;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.14);
+    transition: background 0.2s ease;
+}
+
+    .ib-client-history-row:hover {
+        background: rgba(248, 245, 239, 0.55);
+    }
+
+    .ib-client-history-row > div {
+        min-width: 0;
+    }
+
+    .ib-client-history-row strong {
+        display: block;
+        color: #35332f;
+        font-size: 0.86rem;
+        font-weight: 600;
+    }
+
+    .ib-client-history-row span {
+        color: #535333;
+        font-size: 0.82rem;
+    }
+
+    .ib-client-history-row small {
+        display: block;
+        margin-top: 4px;
+        color: #817a70;
+        font-size: 0.7rem;
+    }
+
+.ib-client-history-date {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.ib-client-history-price {
+    text-align: right;
+}
+
+    .ib-client-history-price strong {
+        color: #191919;
+    }
+
+
+/* SEM HISTÓRICO */
+
+.ib-client-empty {
+    min-height: 150px;
+    padding: 35px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+    .ib-client-empty strong {
+        margin-bottom: 5px;
+        color: #35332f;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.25rem;
+    }
+
+    .ib-client-empty span {
+        color: #817a70;
+        font-size: 0.82rem;
+    }
+
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 1050px) {
+    .ib-client-profile {
+        grid-template-columns: 190px minmax(0, 1fr);
+    }
+
+    .ib-client-profile-content {
+        padding: 28px;
+    }
+
+    .ib-client-info-grid {
+        gap: 28px;
+    }
+}
+
+@media (max-width: 800px) {
+    .ib-client-profile {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-client-profile-identity {
+        border-right: 0;
+        border-bottom: 1px solid rgba(216, 176, 113, 0.22);
+    }
+
+    .ib-client-info-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .ib-client-history {
+        overflow-x: auto;
+    }
+
+    .ib-client-history-header,
+    .ib-client-history-row {
+        min-width: 780px;
+    }
+}
+
+@media (max-width: 560px) {
+    .ib-client-profile-content {
+        padding: 24px 20px;
+    }
+
+    .ib-client-profile-header {
+        flex-direction: column;
+    }
+
+        .ib-client-profile-header h2 {
+            font-size: 1.7rem;
+        }
+}
+
+/* ESTADOS DAS MARCAÇÕES */
+
+.ib-booking-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 88px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+    /* Pendente */
+    .ib-booking-status.pending {
+        color: #8a6a2d;
+        background: #faf3df;
+    }
+
+    /* Confirmada */
+    .ib-booking-status.confirmed {
+        color: #47616a;
+        background: #edf3f4;
+    }
+
+    /* Concluída */
+    .ib-booking-status.completed {
+        color: #52705a;
+        background: #edf4ee;
+    }
+
+    /* Cancelada */
+    .ib-booking-status.cancelled {
+        color: #8b5555;
+        background: #f8eded;
+    }
+
+    /* Não compareceu */
+    .ib-booking-status.no-show {
+        color: #6d6260;
+        background: #f1eeee;
+    }
+
+    /* Estado futuro/desconhecido */
+    .ib-booking-status.default {
+        color: #6f685f;
+        background: #f3f0eb;
+    }
+
+/* =========================================================
+   GESTÃO DE MARCAÇÕES
+   ========================================================= */
+
+.ib-bookings-toolbar {
+    display: grid;
+    grid-template-columns: minmax(280px, 1fr) 190px 170px;
+    gap: 12px;
+    padding: 18px 24px;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+.ib-bookings-filter {
+    width: 100%;
+    height: 42px;
+    padding: 0 36px 0 14px;
+    border: 1px solid rgba(216, 176, 113, 0.28);
+    border-radius: 8px;
+    outline: none;
+    background: #fff;
+    color: #535333;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.76rem;
+    cursor: pointer;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+    .ib-bookings-filter:focus {
+        border-color: #D8B071;
+        box-shadow: 0 0 0 3px rgba(216, 176, 113, 0.10);
+    }
+
+
+/* TABELA */
+
+.ib-bookings-table {
+    width: 100%;
+}
+
+.ib-bookings-table-header,
+.ib-bookings-row {
+    display: grid;
+    grid-template-columns: minmax(125px, .85fr) minmax(170px, 1.2fr) minmax(190px, 1.35fr) minmax(160px, 1.1fr) minmax(125px, .85fr) minmax(90px, .55fr);
+    align-items: center;
+    column-gap: 18px;
+}
+
+.ib-bookings-table-header {
+    padding: 13px 24px;
+    background: #F8F5EF;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.18);
+}
+
+    .ib-bookings-table-header span {
+        color: #817a70;
+        font-size: .67rem;
+        font-weight: 600;
+        letter-spacing: .075em;
+        text-transform: uppercase;
+    }
+
+        .ib-bookings-table-header span:last-child {
+            text-align: right;
+        }
+
+.ib-bookings-row {
+    min-height: 72px;
+    padding: 14px 24px;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.13);
+    transition: background .2s ease;
+}
+
+    .ib-bookings-row:last-child {
+        border-bottom: 0;
+    }
+
+    .ib-bookings-row:hover {
+        background: rgba(248, 245, 239, .52);
+    }
+
+    .ib-bookings-row > div {
+        min-width: 0;
+    }
+
+    .ib-bookings-row strong {
+        display: block;
+        color: #35332f;
+        font-size: .82rem;
+        font-weight: 600;
+    }
+
+    .ib-bookings-row span {
+        color: #535333;
+        font-size: .79rem;
+    }
+
+    .ib-bookings-row small {
+        display: block;
+        margin-top: 4px;
+        color: #817a70;
+        font-size: .68rem;
+    }
+
+
+/* DATA */
+
+.ib-bookings-date {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+    .ib-bookings-date span {
+        color: #817a70;
+        font-size: .72rem;
+    }
+
+
+/* CLIENTE */
+
+.ib-bookings-person strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* SERVIÇO */
+
+.ib-bookings-service strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* VALOR */
+
+.ib-bookings-price {
+    text-align: right;
+}
+
+    .ib-bookings-price strong {
+        color: #191919;
+    }
+
+    .ib-bookings-price small {
+        color: #9a7a45;
+    }
+
+
+/* RESPONSIVO */
+
+@media (max-width: 1150px) {
+    .ib-bookings-table {
+        overflow-x: auto;
+    }
+
+    .ib-bookings-table-header,
+    .ib-bookings-row {
+        min-width: 1000px;
+    }
+}
+
+@media (max-width: 850px) {
+    .ib-bookings-toolbar {
+        grid-template-columns: 1fr 1fr;
+    }
+
+        .ib-bookings-toolbar .ib-category-search {
+            grid-column: 1 / -1;
+        }
+}
+
+@media (max-width: 560px) {
+    .ib-bookings-toolbar {
+        grid-template-columns: 1fr;
+        padding: 16px;
+    }
+
+        .ib-bookings-toolbar .ib-category-search {
+            grid-column: auto;
+        }
+}
+
+/* =========================================================
+   PAGINAÇÃO
+   ========================================================= */
+
+.ib-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 24px;
+    border-top: 1px solid rgba(216, 176, 113, 0.16);
+    background: #fff;
+}
+
+.ib-pagination-info {
+    color: #817a70;
+    font-size: .72rem;
+}
+
+    .ib-pagination-info strong {
+        color: #535333;
+        font-weight: 600;
+    }
+
+.ib-pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.ib-pagination-size {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #817a70;
+    font-size: .71rem;
+}
+
+    .ib-pagination-size select {
+        height: 32px;
+        min-width: 58px;
+        padding: 0 8px;
+        border: 1px solid rgba(216, 176, 113, .28);
+        border-radius: 7px;
+        background: #fff;
+        color: #535333;
+        font-family: "Montserrat", sans-serif;
+        font-size: .72rem;
+        outline: none;
+        cursor: pointer;
+    }
+
+        .ib-pagination-size select:focus {
+            border-color: #D8B071;
+        }
+
+.ib-pagination-pages {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ib-pagination-numbers {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ib-pagination-number,
+.ib-pagination-arrow {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid rgba(216, 176, 113, .25);
+    border-radius: 7px;
+    background: #fff;
+    color: #535333;
+    font-family: "Montserrat", sans-serif;
+    font-size: .72rem;
+    cursor: pointer;
+    transition: background .18s ease, color .18s ease, border-color .18s ease;
+}
+
+    .ib-pagination-number:hover,
+    .ib-pagination-arrow:hover:not(:disabled) {
+        border-color: #D8B071;
+        color: #BEA256;
+        background: #F8F5EF;
+    }
+
+    .ib-pagination-number.active {
+        border-color: #D8B071;
+        background: #191919;
+        color: #D8B071;
+    }
+
+.ib-pagination-arrow {
+    font-size: 1rem;
+}
+
+    .ib-pagination-arrow:disabled {
+        opacity: .35;
+        cursor: default;
+    }
+
+@media (max-width: 700px) {
+    .ib-pagination {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ib-pagination-controls {
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 480px) {
+    .ib-pagination-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ib-pagination-pages {
+        justify-content: center;
+    }
+
+    .ib-pagination-size {
+        justify-content: center;
+    }
+
+    .ib-pagination-info {
+        text-align: center;
+    }
+}

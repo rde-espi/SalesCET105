@@ -257,6 +257,54 @@
                 </div>
 
             </div>
+
+            <div class="ib-pagination" id="paginacaoFuncionarios">
+
+    <div class="ib-pagination-info">
+        A mostrar
+        <strong id="funcionarioPaginaInicio">0</strong>–<strong id="funcionarioPaginaFim">0</strong>
+        de
+        <strong id="funcionarioTotalFiltrado">0</strong>
+    </div>
+
+    <div class="ib-pagination-controls">
+
+        <label class="ib-pagination-size">
+            <span>Itens por página</span>
+
+            <select id="funcionariosPorPagina">
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+            </select>
+        </label>
+
+        <div class="ib-pagination-pages">
+
+            <button type="button"
+                    id="funcionarioPaginaAnterior"
+                    class="ib-pagination-arrow"
+                    aria-label="Página anterior">
+                ‹
+            </button>
+
+            <div id="funcionarioNumerosPaginas"
+                 class="ib-pagination-numbers">
+            </div>
+
+            <button type="button"
+                    id="funcionarioPaginaSeguinte"
+                    class="ib-pagination-arrow"
+                    aria-label="Página seguinte">
+                ›
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
         }
 
     </div>
@@ -266,28 +314,233 @@
 
 @section Scripts {
     <script>
-        const pesquisaFuncionario = document.getElementById('pesquisaFuncionario');
-        const linhasFuncionarios = document.querySelectorAll('.funcionario-row');
-        const semResultados = document.getElementById('semResultadosFuncionarios');
+        document.addEventListener("DOMContentLoaded", function () {
 
-        if (pesquisaFuncionario) {
-            pesquisaFuncionario.addEventListener('input', function() {
-                const termo = this.value.toLowerCase().trim();
-                let encontrados = 0;
+            const pesquisa =
+                document.getElementById("pesquisaFuncionario");
 
-                linhasFuncionarios.forEach(row => {
-                    const conteudo = row.dataset.pesquisa || '';
-                    const visivel = conteudo.includes(termo);
+            const linhas =
+                Array.from(document.querySelectorAll(".funcionario-row"));
 
-                    row.style.display = visivel ? '' : 'none';
+            const semResultados =
+                document.getElementById("semResultadosFuncionarios");
 
-                    if (visivel) encontrados++;
+            const paginacao =
+                document.getElementById("paginacaoFuncionarios");
+
+            const seletor =
+                document.getElementById("funcionariosPorPagina");
+
+            const anterior =
+                document.getElementById("funcionarioPaginaAnterior");
+
+            const seguinte =
+                document.getElementById("funcionarioPaginaSeguinte");
+
+            const numeros =
+                document.getElementById("funcionarioNumerosPaginas");
+
+            const inicio =
+                document.getElementById("funcionarioPaginaInicio");
+
+            const fim =
+                document.getElementById("funcionarioPaginaFim");
+
+            const total =
+                document.getElementById("funcionarioTotalFiltrado");
+
+
+            if (!pesquisa || linhas.length === 0)
+                return;
+
+
+            let paginaAtual = 1;
+            let itensPorPagina = 10;
+            let linhasFiltradas = [...linhas];
+
+
+            function criarNumerosPaginas(totalPaginas) {
+
+                numeros.innerHTML = "";
+
+                if (totalPaginas <= 1)
+                    return;
+
+                for (let numero = 1; numero <= totalPaginas; numero++) {
+
+                    const botao =
+                        document.createElement("button");
+
+                    botao.type = "button";
+                    botao.textContent = numero;
+                    botao.className = "ib-pagination-number";
+
+                    if (numero === paginaAtual)
+                        botao.classList.add("active");
+
+                    botao.addEventListener("click", function () {
+                        paginaAtual = numero;
+                        mostrarPagina();
+                    });
+
+                    numeros.appendChild(botao);
+                }
+            }
+
+
+            function mostrarPagina() {
+
+                linhas.forEach(function (linha) {
+                    linha.style.display = "none";
                 });
 
+
+                const totalItens =
+                    linhasFiltradas.length;
+
+                const totalPaginas =
+                    Math.max(
+                        1,
+                        Math.ceil(totalItens / itensPorPagina)
+                    );
+
+
+                if (paginaAtual > totalPaginas)
+                    paginaAtual = totalPaginas;
+
+
+                const primeiro =
+                    (paginaAtual - 1) * itensPorPagina;
+
+                const ultimo =
+                    Math.min(
+                        primeiro + itensPorPagina,
+                        totalItens
+                    );
+
+
+                linhasFiltradas
+                    .slice(primeiro, ultimo)
+                    .forEach(function (linha) {
+                        linha.style.display = "";
+                    });
+
+
+                total.textContent =
+                    totalItens;
+
+                inicio.textContent =
+                    totalItens === 0
+                        ? 0
+                        : primeiro + 1;
+
+                fim.textContent =
+                    ultimo;
+
+
+                anterior.disabled =
+                    paginaAtual <= 1;
+
+                seguinte.disabled =
+                    paginaAtual >= totalPaginas;
+
+
+                criarNumerosPaginas(totalPaginas);
+
+
                 if (semResultados) {
-                    semResultados.style.display = encontrados === 0 ? 'block' : 'none';
+                    semResultados.style.display =
+                        totalItens === 0
+                            ? "block"
+                            : "none";
                 }
-            });
-        }
+
+
+                if (paginacao) {
+                    paginacao.style.display =
+                        linhas.length > 10
+                            ? "flex"
+                            : "none";
+                }
+            }
+
+
+            function aplicarPesquisa() {
+
+                const termo =
+                    pesquisa.value
+                        .toLowerCase()
+                        .trim();
+
+
+                linhasFiltradas =
+                    linhas.filter(function (linha) {
+
+                        const conteudo =
+                            linha.dataset.pesquisa || "";
+
+                        return !termo ||
+                            conteudo.includes(termo);
+                    });
+
+
+                paginaAtual = 1;
+
+                mostrarPagina();
+            }
+
+
+            pesquisa.addEventListener(
+                "input",
+                aplicarPesquisa
+            );
+
+
+            seletor.addEventListener(
+                "change",
+                function () {
+
+                    itensPorPagina =
+                        parseInt(this.value);
+
+                    paginaAtual = 1;
+
+                    mostrarPagina();
+                }
+            );
+
+
+            anterior.addEventListener(
+                "click",
+                function () {
+
+                    if (paginaAtual > 1) {
+                        paginaAtual--;
+                        mostrarPagina();
+                    }
+                }
+            );
+
+
+            seguinte.addEventListener(
+                "click",
+                function () {
+
+                    const totalPaginas =
+                        Math.ceil(
+                            linhasFiltradas.length /
+                            itensPorPagina
+                        );
+
+                    if (paginaAtual < totalPaginas) {
+                        paginaAtual++;
+                        mostrarPagina();
+                    }
+                }
+            );
+
+
+            mostrarPagina();
+        });
     </script>
 }

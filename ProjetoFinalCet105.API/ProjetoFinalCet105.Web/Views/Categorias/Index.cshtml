@@ -276,6 +276,54 @@
                 </div>
 
             </div>
+
+            <div class="ib-pagination" id="paginacaoCategorias">
+
+    <div class="ib-pagination-info">
+        A mostrar
+        <strong id="categoriaPaginaInicio">0</strong>–<strong id="categoriaPaginaFim">0</strong>
+        de
+        <strong id="categoriaTotalFiltrado">0</strong>
+    </div>
+
+    <div class="ib-pagination-controls">
+
+        <label class="ib-pagination-size">
+            <span>Itens por página</span>
+
+            <select id="categoriasPorPagina">
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+            </select>
+        </label>
+
+        <div class="ib-pagination-pages">
+
+            <button type="button"
+                    id="categoriaPaginaAnterior"
+                    class="ib-pagination-arrow"
+                    aria-label="Página anterior">
+                ‹
+            </button>
+
+            <div id="categoriaNumerosPaginas"
+                 class="ib-pagination-numbers">
+            </div>
+
+            <button type="button"
+                    id="categoriaPaginaSeguinte"
+                    class="ib-pagination-arrow"
+                    aria-label="Página seguinte">
+                ›
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
         }
         else
         {
@@ -313,6 +361,33 @@
             const rows = Array.from(document.querySelectorAll("[data-category-row]"));
 
             const noResults = document.getElementById("categoryNoResults");
+            const paginacao =
+    document.getElementById("paginacaoCategorias");
+
+const seletorPagina =
+    document.getElementById("categoriasPorPagina");
+
+const paginaAnterior =
+    document.getElementById("categoriaPaginaAnterior");
+
+const paginaSeguinte =
+    document.getElementById("categoriaPaginaSeguinte");
+
+const numerosPaginas =
+    document.getElementById("categoriaNumerosPaginas");
+
+const paginaInicio =
+    document.getElementById("categoriaPaginaInicio");
+
+const paginaFim =
+    document.getElementById("categoriaPaginaFim");
+
+const totalFiltrado =
+    document.getElementById("categoriaTotalFiltrado");
+
+let paginaAtual = 1;
+let itensPorPagina = 10;
+let rowsFiltradas = [...rows];
 
             if (!input || rows.length === 0) {
                 return;
@@ -327,42 +402,120 @@
                     .trim();
             }
 
-            function filterCategories() {
+            function criarPaginas(totalPaginas) {
 
-                const searchTerm = normalizeText(input.value);
+    numerosPaginas.innerHTML = "";
 
-                let visibleCount = 0;
+    if (totalPaginas <= 1)
+        return;
 
-                rows.forEach(function(row) {
+    for (let numero = 1; numero <= totalPaginas; numero++) {
 
-                    const searchableText =
-                        normalizeText(
-                            row.getAttribute("data-search")
-                        );
+        const botao = document.createElement("button");
 
-                    const isVisible =
-                        searchTerm === "" ||
-                        searchableText.includes(searchTerm);
+        botao.type = "button";
+        botao.textContent = numero;
+        botao.className = "ib-pagination-number";
 
-                    /*
-                     * Não usamos apenas row.hidden porque
-                     * .ib-category-row tem display:grid no CSS.
-                     */
-                    row.style.display =
-                        isVisible ? "grid" : "none";
+        if (numero === paginaAtual)
+            botao.classList.add("active");
 
-                    if (isVisible) {
-                        visibleCount++;
-                    }
-                });
+        botao.addEventListener("click", function() {
+            paginaAtual = numero;
+            mostrarPaginaCategorias();
+        });
 
-                if (noResults) {
-                    noResults.style.display =
-                        visibleCount === 0
-                            ? "block"
-                            : "none";
-                }
-            }
+        numerosPaginas.appendChild(botao);
+    }
+}
+
+
+function mostrarPaginaCategorias() {
+
+    rows.forEach(function(row) {
+        row.style.display = "none";
+    });
+
+    const totalItens = rowsFiltradas.length;
+
+    const totalPaginas =
+        Math.max(
+            1,
+            Math.ceil(totalItens / itensPorPagina)
+        );
+
+    if (paginaAtual > totalPaginas)
+        paginaAtual = totalPaginas;
+
+    const primeiro =
+        (paginaAtual - 1) * itensPorPagina;
+
+    const ultimo =
+        Math.min(
+            primeiro + itensPorPagina,
+            totalItens
+        );
+
+    rowsFiltradas
+        .slice(primeiro, ultimo)
+        .forEach(function(row) {
+            row.style.display = "grid";
+        });
+
+    totalFiltrado.textContent = totalItens;
+
+    paginaInicio.textContent =
+        totalItens === 0
+            ? 0
+            : primeiro + 1;
+
+    paginaFim.textContent = ultimo;
+
+    paginaAnterior.disabled =
+        paginaAtual <= 1;
+
+    paginaSeguinte.disabled =
+        paginaAtual >= totalPaginas;
+
+    criarPaginas(totalPaginas);
+
+    if (noResults) {
+        noResults.style.display =
+            totalItens === 0
+                ? "block"
+                : "none";
+    }
+
+    if (paginacao) {
+        paginacao.style.display =
+            rows.length > 10
+                ? "flex"
+                : "none";
+    }
+}
+
+
+function filterCategories() {
+
+    const searchTerm =
+        normalizeText(input.value);
+
+    rowsFiltradas =
+        rows.filter(function(row) {
+
+            const searchableText =
+                normalizeText(
+                    row.getAttribute("data-search")
+                );
+
+            return searchTerm === "" ||
+                searchableText.includes(searchTerm);
+        });
+
+    paginaAtual = 1;
+
+    mostrarPaginaCategorias();
+}
 
             function updateCategoryState(row, form, isActive) {
 
@@ -443,12 +596,68 @@
 
 
             input.addEventListener(
-                "input",
-                filterCategories
-            );
+    "input",
+    filterCategories
+);
 
-            filterCategories();
-            const statusForms = document.querySelectorAll(".ib-category-status-form");
+
+if (seletorPagina) {
+
+    seletorPagina.addEventListener(
+        "change",
+        function() {
+
+            itensPorPagina =
+                parseInt(this.value);
+
+            paginaAtual = 1;
+
+            mostrarPaginaCategorias();
+        }
+    );
+}
+
+
+if (paginaAnterior) {
+
+    paginaAnterior.addEventListener(
+        "click",
+        function() {
+
+            if (paginaAtual > 1) {
+                paginaAtual--;
+                mostrarPaginaCategorias();
+            }
+        }
+    );
+}
+
+
+if (paginaSeguinte) {
+
+    paginaSeguinte.addEventListener(
+        "click",
+        function() {
+
+            const totalPaginas =
+                Math.ceil(
+                    rowsFiltradas.length /
+                    itensPorPagina
+                );
+
+            if (paginaAtual < totalPaginas) {
+                paginaAtual++;
+                mostrarPaginaCategorias();
+            }
+        }
+    );
+}
+
+
+filterCategories();
+
+const statusForms =
+    document.querySelectorAll(".ib-category-status-form");
 
             statusForms.forEach(function(form) {
 

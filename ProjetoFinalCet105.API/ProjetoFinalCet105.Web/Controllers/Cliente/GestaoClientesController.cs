@@ -53,11 +53,23 @@ public class GestaoClientesController : Controller
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(cliente);
+            var marcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoClienteViewModel>>( $"api/Marcacoes/cliente/{id}");
+
+            marcacoes ??= new List<MarcacaoClienteViewModel>();
+
+            var model = new ClienteDetalhesViewModel
+            {
+                Cliente = cliente,
+                Marcacoes = marcacoes
+                    .OrderByDescending(m => m.DataHoraInicio)
+                    .ToList()
+            };
+
+            return View(model);
         }
         catch (Exception)
         {
-            TempData["ErrorMessage"] = "Não foi possível carregar os dados do cliente.";
+            TempData["ErrorMessage"] = "Não foi possível carregar os detalhes do cliente.";
 
             return RedirectToAction(nameof(Index));
         }

@@ -386,6 +386,48 @@
                 </div>
 
             </div>
+            <div class="ib-pagination" id="paginacaoServicos">
+
+    <div class="ib-pagination-info">
+        A mostrar
+        <strong id="servicoPaginaInicio">0</strong>–<strong id="servicoPaginaFim">0</strong>
+        de
+        <strong id="servicoTotalFiltrado">0</strong>
+    </div>
+
+    <div class="ib-pagination-controls">
+
+        <label class="ib-pagination-size">
+            <span>Itens por página</span>
+
+            <select id="servicosPorPagina">
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+            </select>
+        </label>
+
+        <div class="ib-pagination-pages">
+
+            <button type="button"
+                    id="servicoPaginaAnterior"
+                    class="ib-pagination-arrow"
+                    aria-label="Página anterior">‹</button>
+
+            <div id="servicoNumerosPaginas"
+                 class="ib-pagination-numbers"></div>
+
+            <button type="button"
+                    id="servicoPaginaSeguinte"
+                    class="ib-pagination-arrow"
+                    aria-label="Página seguinte">›</button>
+
+        </div>
+
+    </div>
+
+</div>
         }
         else
         {
@@ -434,6 +476,39 @@
             const message =
                 document.getElementById("serviceMessage");
 
+                const rows =
+    Array.from(
+        document.querySelectorAll("[data-service-row]")
+    );
+
+const paginacao =
+    document.getElementById("paginacaoServicos");
+
+const seletorPagina =
+    document.getElementById("servicosPorPagina");
+
+const paginaAnterior =
+    document.getElementById("servicoPaginaAnterior");
+
+const paginaSeguinte =
+    document.getElementById("servicoPaginaSeguinte");
+
+const numerosPaginas =
+    document.getElementById("servicoNumerosPaginas");
+
+const paginaInicio =
+    document.getElementById("servicoPaginaInicio");
+
+const paginaFim =
+    document.getElementById("servicoPaginaFim");
+
+const totalFiltrado =
+    document.getElementById("servicoTotalFiltrado");
+
+let paginaAtual = 1;
+let itensPorPagina = 10;
+let rowsFiltradas = [...rows];
+
 
             function normalizeText(value) {
 
@@ -446,52 +521,128 @@
             }
 
 
-            function filterServices() {
+           function criarPaginas(totalPaginas) {
 
-                if (!input) {
-                    return;
-                }
+    numerosPaginas.innerHTML = "";
 
-                const rows =
-                    Array.from(
-                        document.querySelectorAll(
-                            "[data-service-row]"
-                        )
-                    );
+    if (totalPaginas <= 1)
+        return;
 
-                const searchTerm =
-                    normalizeText(input.value);
+    for (let numero = 1; numero <= totalPaginas; numero++) {
 
-                let visibleCount = 0;
+        const botao = document.createElement("button");
 
-                rows.forEach(function(row) {
+        botao.type = "button";
+        botao.textContent = numero;
+        botao.className = "ib-pagination-number";
 
-                    const searchableText =
-                        normalizeText(
-                            row.getAttribute("data-search")
-                        );
+        if (numero === paginaAtual)
+            botao.classList.add("active");
 
-                    const isVisible =
-                        searchTerm === "" ||
-                        searchableText.includes(searchTerm);
+        botao.addEventListener("click", function() {
+            paginaAtual = numero;
+            mostrarPaginaServicos();
+        });
 
-                    row.style.display =
-                        isVisible ? "grid" : "none";
-
-                    if (isVisible) {
-                        visibleCount++;
-                    }
-                });
+        numerosPaginas.appendChild(botao);
+    }
+}
 
 
-                if (noResults) {
+function mostrarPaginaServicos() {
 
-                    noResults.style.display =
-                        visibleCount === 0
-                            ? "block"
-                            : "none";
-                }
-            }
+    rows.forEach(function(row) {
+        row.style.display = "none";
+    });
+
+    const totalItens = rowsFiltradas.length;
+
+    const totalPaginas =
+        Math.max(
+            1,
+            Math.ceil(totalItens / itensPorPagina)
+        );
+
+    if (paginaAtual > totalPaginas)
+        paginaAtual = totalPaginas;
+
+    const primeiro =
+        (paginaAtual - 1) * itensPorPagina;
+
+    const ultimo =
+        Math.min(
+            primeiro + itensPorPagina,
+            totalItens
+        );
+
+    rowsFiltradas
+        .slice(primeiro, ultimo)
+        .forEach(function(row) {
+            row.style.display = "grid";
+        });
+
+
+    totalFiltrado.textContent = totalItens;
+
+    paginaInicio.textContent =
+        totalItens === 0
+            ? 0
+            : primeiro + 1;
+
+    paginaFim.textContent = ultimo;
+
+
+    paginaAnterior.disabled =
+        paginaAtual <= 1;
+
+    paginaSeguinte.disabled =
+        paginaAtual >= totalPaginas;
+
+
+    criarPaginas(totalPaginas);
+
+
+    if (noResults) {
+        noResults.style.display =
+            totalItens === 0
+                ? "block"
+                : "none";
+    }
+
+
+    if (paginacao) {
+        paginacao.style.display =
+            rows.length > 10
+                ? "flex"
+                : "none";
+    }
+}
+
+
+function filterServices() {
+
+    if (!input)
+        return;
+
+    const searchTerm =
+        normalizeText(input.value);
+
+    rowsFiltradas =
+        rows.filter(function(row) {
+
+            const searchableText =
+                normalizeText(
+                    row.getAttribute("data-search")
+                );
+
+            return searchTerm === "" ||
+                searchableText.includes(searchTerm);
+        });
+
+    paginaAtual = 1;
+
+    mostrarPaginaServicos();
+}
 
 
             function showMessage(text, success) {
@@ -727,7 +878,57 @@
                                                       `;
                                 }
 
+                                if (seletorPagina) {
 
+    seletorPagina.addEventListener(
+        "change",
+        function() {
+
+            itensPorPagina =
+                parseInt(this.value);
+
+            paginaAtual = 1;
+
+            mostrarPaginaServicos();
+        }
+    );
+}
+
+
+if (paginaAnterior) {
+
+    paginaAnterior.addEventListener(
+        "click",
+        function() {
+
+            if (paginaAtual > 1) {
+                paginaAtual--;
+                mostrarPaginaServicos();
+            }
+        }
+    );
+}
+
+
+if (paginaSeguinte) {
+
+    paginaSeguinte.addEventListener(
+        "click",
+        function() {
+
+            const totalPaginas =
+                Math.ceil(
+                    rowsFiltradas.length /
+                    itensPorPagina
+                );
+
+            if (paginaAtual < totalPaginas) {
+                paginaAtual++;
+                mostrarPaginaServicos();
+            }
+        }
+    );
+}
                                 updateCounters();
 
                                 showMessage(
