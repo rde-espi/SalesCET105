@@ -1,0 +1,344 @@
+﻿@model ProjetoFinalCet105.Web.Models.MarcacaoDetalhesViewModel
+
+@{
+    ViewData["Title"] = "Detalhes da Marcação";
+    Layout = "_AdminLayout";
+
+    var marcacao = Model.Marcacao;
+
+    var estadoClasse = marcacao.EstadoMarcacaoNome
+        ?.Trim()
+        .ToLowerInvariant() switch
+    {
+        "pendente" => "pending",
+        "confirmada" => "confirmed",
+        "concluida" => "completed",
+        "concluída" => "completed",
+        "cancelada" => "cancelled",
+        "não compareceu" => "no-show",
+        "nao compareceu" => "no-show",
+        _ => "default"
+    };
+
+    var duracao = marcacao.DataHoraFim - marcacao.DataHoraInicio;
+    var estaPendente = string.Equals( marcacao.EstadoMarcacaoNome,"Pendente",StringComparison.OrdinalIgnoreCase);
+    var estaConfirmada = string.Equals( marcacao.EstadoMarcacaoNome, "Confirmada", StringComparison.OrdinalIgnoreCase);
+    var podeCancelar = estaPendente || estaConfirmada;
+}
+
+<div class="ib-categories-page">
+
+    <div class="ib-categories-heading">
+        <div>
+            <span class="ib-section-eyebrow">AGENDA</span>
+            <h1>Detalhes da Marcação</h1>
+            <p>Consulta da informação e histórico da marcação.</p>
+        </div>
+
+        <a asp-controller="GestaoMarcacoes"
+           asp-action="Index"
+           class="ib-category-back-btn">
+            <svg viewBox="0 0 24 24">
+                <path d="M19 12H5"></path>
+                <path d="M11 6l-6 6 6 6"></path>
+            </svg>
+            Voltar às marcações
+        </a>
+    </div>
+
+
+    <div class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+
+            <div>
+                <span class="ib-section-eyebrow">
+                    MARCAÇÃO #@marcacao.Id
+                </span>
+
+                <h2>@marcacao.ServicoNome</h2>
+
+                <p>
+                    @marcacao.DataHoraInicio.ToString("dddd, dd 'de' MMMM 'de' yyyy")
+                </p>
+            </div>
+
+            <div class="ib-booking-detail-actions">
+
+    <span class="ib-booking-status @estadoClasse">
+        @marcacao.EstadoMarcacaoNome
+    </span>
+
+    @if (estaPendente)
+    {
+        <form asp-controller="GestaoMarcacoes"
+              asp-action="Confirmar"
+              asp-route-id="@marcacao.Id"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <button type="submit"
+        class="ib-booking-confirm-btn">
+    Confirmar marcação
+</button>
+
+        </form>
+    }
+    @if (estaConfirmada)
+{
+    <form asp-controller="GestaoMarcacoes"
+          asp-action="Concluir"
+          asp-route-id="@marcacao.Id"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <button type="submit"
+                class="ib-booking-confirm-btn">
+            Concluir
+        </button>
+    </form>
+
+    <form asp-controller="GestaoMarcacoes"
+          asp-action="NaoCompareceu"
+          asp-route-id="@marcacao.Id"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <button type="submit"
+                class="ib-booking-secondary-btn">
+            Não compareceu
+        </button>
+    </form>
+}
+@if (podeCancelar)
+{
+    <a asp-controller="GestaoMarcacoes"
+       asp-action="Editar"
+       asp-route-id="@marcacao.Id"
+       class="ib-booking-secondary-btn">
+        Editar / Reagendar
+    </a>
+}
+
+@if (podeCancelar)
+{
+    <form asp-controller="GestaoMarcacoes"
+          asp-action="Cancelar"
+          asp-route-id="@marcacao.Id"
+          method="post"
+          onsubmit="return confirm('Tem a certeza de que pretende cancelar esta marcação?');">
+
+        @Html.AntiForgeryToken()
+
+        <button type="submit"
+                class="ib-booking-cancel-btn">
+            Cancelar
+        </button>
+    </form>
+}
+
+</div>
+
+        </div>
+
+
+        <div class="ib-category-kpi-grid">
+
+            <div class="ib-category-kpi-card">
+                <span>Data</span>
+                <strong>
+                    @marcacao.DataHoraInicio.ToString("dd/MM/yyyy")
+                </strong>
+                <small>
+                    @marcacao.DataHoraInicio.ToString("dddd")
+                </small>
+            </div>
+
+            <div class="ib-category-kpi-card">
+                <span>Horário</span>
+                <strong>
+                    @marcacao.DataHoraInicio.ToString("HH:mm")
+                    –
+                    @marcacao.DataHoraFim.ToString("HH:mm")
+                </strong>
+                <small>
+                    @duracao.TotalMinutes.ToString("0") min
+                </small>
+            </div>
+
+            <div class="ib-category-kpi-card">
+                <span>Valor</span>
+                <strong>
+                    @marcacao.Preco.ToString("C")
+                </strong>
+
+                @if (marcacao.ValorDesconto.HasValue &&
+                     marcacao.ValorDesconto.Value > 0)
+                {
+                    <small>
+                        Desconto:
+                        @marcacao.ValorDesconto.Value.ToString("C")
+                    </small>
+                }
+                else
+                {
+                    <small>Sem desconto</small>
+                }
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+            <div>
+                <span class="ib-section-eyebrow">INFORMAÇÃO</span>
+                <h2>Dados da marcação</h2>
+            </div>
+        </div>
+
+
+        <div class="ib-employee-table">
+
+            <div class="ib-employee-row">
+                <div>
+                    <span class="ib-section-eyebrow">CLIENTE</span>
+                    <strong class="ib-category-name">
+                        @marcacao.ClienteNome
+                    </strong>
+                </div>
+            </div>
+
+            <div class="ib-employee-row">
+                <div>
+                    <span class="ib-section-eyebrow">SERVIÇO</span>
+                    <strong class="ib-category-name">
+                        @marcacao.ServicoNome
+                    </strong>
+                </div>
+            </div>
+
+            <div class="ib-employee-row">
+                <div>
+                    <span class="ib-section-eyebrow">PROFISSIONAL</span>
+                    <strong class="ib-category-name">
+                        @marcacao.FuncionarioNome
+                    </strong>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(marcacao.PromoCode))
+            {
+                <div class="ib-employee-row">
+                    <div>
+                        <span class="ib-section-eyebrow">
+                            CÓDIGO PROMOCIONAL
+                        </span>
+
+                        <strong class="ib-category-name">
+                            @marcacao.PromoCode
+                        </strong>
+
+                        @if (marcacao.PercentagemDescontoAplicada.HasValue)
+                        {
+                            <small>
+                                @marcacao.PercentagemDescontoAplicada.Value.ToString("0.##")%
+                                de desconto
+                            </small>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(marcacao.Observacoes))
+            {
+                <div class="ib-employee-row">
+                    <div>
+                        <span class="ib-section-eyebrow">
+                            OBSERVAÇÕES
+                        </span>
+
+                        <p>
+                            @marcacao.Observacoes
+                        </p>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+
+    <div class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+            <div>
+                <span class="ib-section-eyebrow">REGISTO</span>
+                <h2>Histórico da marcação</h2>
+                <p>
+                    Alterações registadas ao longo do ciclo da marcação.
+                </p>
+            </div>
+        </div>
+
+
+        @if (Model.Historico != null && Model.Historico.Any())
+        {
+            <div class="ib-employee-table">
+
+                @foreach (var item in Model.Historico)
+                {
+                    <div class="ib-employee-row">
+
+                        <div>
+                            <span class="ib-section-eyebrow">
+                                @item.DataAlteracao.ToString("dd/MM/yyyy · HH:mm")
+                            </span>
+
+                            <strong class="ib-category-name">
+                                @item.Acao
+                            </strong>
+
+                            @if (!string.IsNullOrWhiteSpace(item.Descricao))
+                            {
+                                <p>@item.Descricao</p>
+                            }
+                        </div>
+
+                        <div>
+                            <span class="ib-section-eyebrow">
+                                RESPONSÁVEL
+                            </span>
+
+                            <strong>
+                                @(string.IsNullOrWhiteSpace(item.UserNome)
+                                    ? "Sistema"
+                                    : item.UserNome)
+                            </strong>
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-category-no-results">
+                <strong>Sem histórico disponível</strong>
+                <p>
+                    Ainda não existem alterações registadas para esta marcação.
+                </p>
+            </div>
+        }
+
+    </div>
+
+</div>

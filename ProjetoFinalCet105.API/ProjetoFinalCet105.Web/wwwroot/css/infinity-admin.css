@@ -5751,3 +5751,423 @@ body,
         text-align: center;
     }
 }
+
+/* =========================================================
+   DETALHE DA MARCAÇÃO - AÇÕES
+   ========================================================= */
+
+.ib-booking-detail-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+    .ib-booking-detail-actions form {
+        margin: 0;
+    }
+
+.ib-booking-confirm-btn {
+    min-height: 36px;
+    padding: 0 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #191919;
+    border-radius: 8px;
+    background: #191919;
+    color: #D8B071;
+    font-family: "Montserrat", sans-serif;
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background .18s ease, color .18s ease, border-color .18s ease, transform .18s ease;
+}
+
+    .ib-booking-confirm-btn:hover {
+        background: #24231f;
+        border-color: #D8B071;
+        color: #D8B071;
+        transform: translateY(-1px);
+    }
+
+@media (max-width: 600px) {
+    .ib-booking-detail-actions {
+        align-items: flex-end;
+        flex-direction: column;
+    }
+}
+
+.ib-booking-secondary-btn {
+    min-height: 36px;
+    padding: 0 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(25, 25, 25, .18);
+    border-radius: 8px;
+    background: #fff;
+    color: #535333;
+    font-family: "Montserrat", sans-serif;
+    font-size: .7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: .18s ease;
+}
+
+    .ib-booking-secondary-btn:hover {
+        border-color: #D8B071;
+        background: #F8F5EF;
+        color: #BEA256;
+    }
+
+.ib-booking-cancel-btn {
+    min-height: 36px;
+    padding: 0 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(181, 77, 70, .35);
+    border-radius: 8px;
+    background: transparent;
+    color: #b54d46;
+    font-family: "Montserrat", sans-serif;
+    font-size: .7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: .18s ease;
+}
+
+    .ib-booking-cancel-btn:hover {
+        border-color: #b54d46;
+        background: rgba(181, 77, 70, .07);
+    }
+
+/* =========================================================
+   EDITAR MARCAÇÃO
+   ========================================================= */
+
+.ib-booking-edit-context {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+    padding: 18px 20px;
+    border: 1px solid rgba(216, 176, 113, .22);
+    border-radius: 10px;
+    background: #F8F5EF;
+}
+
+    .ib-booking-edit-context div {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .ib-booking-edit-context span {
+        font-family: "Montserrat", sans-serif;
+        font-size: .66rem;
+        font-weight: 600;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: #817a70;
+    }
+
+    .ib-booking-edit-context strong {
+        font-family: "Montserrat", sans-serif;
+        font-size: .84rem;
+        font-weight: 600;
+        color: #191919;
+    }
+
+.ib-booking-edit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.ib-booking-edit-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+@media (max-width: 700px) {
+    .ib-booking-edit-context,
+    .ib-booking-edit-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-booking-edit-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+        .ib-booking-edit-actions a,
+        .ib-booking-edit-actions button {
+            width: 100%;
+        }
+}
+
+/* =========================================================
+   EDITAR MARCAÇÃO - HORÁRIOS DISPONÍVEIS
+   ========================================================= */
+
+.ib-booking-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    min-height: 42px;
+    align-items: center;
+}
+
+.ib-booking-slot {
+    min-width: 68px;
+    height: 38px;
+    padding: 0 14px;
+    border: 1px solid rgba(216, 176, 113, .38);
+    border-radius: 9px;
+    background: #F8F5EF;
+    color: #535333;
+    font-family: "Montserrat", sans-serif;
+    font-size: .73rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .18s ease;
+}
+
+    .ib-booking-slot:hover {
+        border-color: #D8B071;
+        background: #fff;
+        color: #191919;
+        transform: translateY(-1px);
+        box-shadow: 0 5px 14px rgba(25, 25, 25, .07);
+    }
+
+    .ib-booking-slot.selected {
+        background: #191919;
+        border-color: #191919;
+        color: #D8B071;
+        box-shadow: 0 5px 14px rgba(25, 25, 25, .12);
+    }
+
+.ib-booking-slots-loading,
+.ib-booking-slots-empty {
+    width: 100%;
+    padding: 13px 15px;
+    border: 1px dashed rgba(216, 176, 113, .38);
+    border-radius: 9px;
+    background: rgba(248, 245, 239, .55);
+    color: #817a70;
+    font-family: "Montserrat", sans-serif;
+    font-size: .72rem;
+}
+
+@media (max-width: 700px) {
+    .ib-booking-slot {
+        flex: 1 0 70px;
+    }
+}
+
+/* =========================================================
+   INFINITY BEAUTY - DATEPICKER
+   ========================================================= */
+
+.ib-datepicker {
+    position: relative;
+}
+
+.ib-datepicker-trigger {
+    width: 100%;
+    min-height: 45px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 14px;
+    border: 1px solid rgba(216,176,113,.35);
+    border-radius: 9px;
+    background: #F8F5EF;
+    color: #24231f;
+    font-family: "Montserrat", sans-serif;
+    font-size: .76rem;
+    cursor: pointer;
+    transition: .18s ease;
+}
+
+    .ib-datepicker-trigger:hover,
+    .ib-datepicker.open .ib-datepicker-trigger {
+        border-color: #D8B071;
+        background: #fff;
+    }
+
+    .ib-datepicker-trigger > svg:first-child {
+        width: 19px;
+        height: 19px;
+        fill: none;
+        stroke: #BEA256;
+        stroke-width: 1.7;
+    }
+
+.ib-datepicker-chevron {
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+    fill: none;
+    stroke: #535333;
+    stroke-width: 1.7;
+    transition: transform .2s ease;
+}
+
+.ib-datepicker.open .ib-datepicker-chevron {
+    transform: rotate(180deg);
+}
+
+.ib-datepicker-popup {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 100;
+    width: 330px;
+    padding: 20px;
+    border: 1px solid rgba(216,176,113,.30);
+    border-radius: 13px;
+    background: #fff;
+    box-shadow: 0 18px 45px rgba(25,25,25,.14);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-5px);
+    transition: .18s ease;
+}
+
+.ib-datepicker.open .ib-datepicker-popup {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.ib-datepicker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+    .ib-datepicker-header strong {
+        color: #191919;
+        font-family: "Montserrat", sans-serif;
+        font-size: .82rem;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+
+.ib-datepicker-nav {
+    display: flex;
+    gap: 5px;
+}
+
+    .ib-datepicker-nav button {
+        width: 32px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        cursor: pointer;
+        transition: .18s ease;
+    }
+
+        .ib-datepicker-nav button:hover {
+            background: #F8F5EF;
+        }
+
+    .ib-datepicker-nav svg {
+        width: 17px;
+        height: 17px;
+        fill: none;
+        stroke: #191919;
+        stroke-width: 1.7;
+    }
+
+.ib-datepicker-weekdays,
+.ib-datepicker-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+}
+
+.ib-datepicker-weekdays {
+    margin-bottom: 7px;
+}
+
+    .ib-datepicker-weekdays span {
+        color: #817a70;
+        font-family: "Montserrat", sans-serif;
+        font-size: .65rem;
+        font-weight: 600;
+    }
+
+.ib-datepicker-day {
+    width: 34px;
+    height: 34px;
+    margin: 2px auto;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #24231f;
+    font-family: "Montserrat", sans-serif;
+    font-size: .69rem;
+    cursor: pointer;
+    transition: .15s ease;
+}
+
+    .ib-datepicker-day:hover:not(:disabled) {
+        background: #F8F5EF;
+        color: #BEA256;
+    }
+
+    .ib-datepicker-day.selected {
+        background: #D8B071;
+        color: #191919;
+        font-weight: 700;
+        box-shadow: 0 4px 10px rgba(216,176,113,.25);
+    }
+
+    .ib-datepicker-day.today:not(.selected) {
+        border: 1px solid #D8B071;
+    }
+
+    .ib-datepicker-day:disabled {
+        color: #c8c4bd;
+        cursor: default;
+    }
+
+.ib-datepicker-empty {
+    width: 34px;
+    height: 34px;
+}
+
+.ib-datepicker-footer {
+    margin-top: 15px;
+    padding-top: 13px;
+    border-top: 1px solid rgba(216,176,113,.20);
+}
+
+    .ib-datepicker-footer button {
+        border: 0;
+        background: transparent;
+        color: #BEA256;
+        font-family: "Montserrat", sans-serif;
+        font-size: .7rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
