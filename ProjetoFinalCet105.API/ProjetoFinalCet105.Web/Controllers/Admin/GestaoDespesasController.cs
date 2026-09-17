@@ -22,7 +22,7 @@ public class GestaoDespesasController : Controller
     {
         try
         {
-            var despesas = await _apiService.GetAuthenticatedAsync<List<DespesaViewModel>>( "api/Despesas") ?? new List<DespesaViewModel>();
+            var despesas = await _apiService.GetAuthenticatedAsync<List<DespesaViewModel>>("api/Despesas") ?? new List<DespesaViewModel>();
 
             despesas = despesas
                 .OrderByDescending(d => d.DataDespesa)
@@ -78,7 +78,7 @@ public class GestaoDespesasController : Controller
 
         try
         {
-            var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post,"api/Despesas", model);
+            var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Despesas", model);
 
             if (response.IsSuccessStatusCode)
             {
@@ -87,11 +87,11 @@ public class GestaoDespesasController : Controller
                 return RedirectToAction(nameof(Index));
             }
 
-            ModelState.AddModelError( string.Empty, await ObterMensagemErroApi(response));
+            ModelState.AddModelError(string.Empty, await ObterMensagemErroApi(response));
         }
         catch (Exception)
         {
-            ModelState.AddModelError( string.Empty, "Não foi possível registar a despesa.");
+            ModelState.AddModelError(string.Empty, "Não foi possível registar a despesa.");
         }
 
         return View(model);
@@ -105,7 +105,7 @@ public class GestaoDespesasController : Controller
 
             if (json != null)
             {
-                if (json.TryGetValue("erro", out var erro) &&  erro != null)
+                if (json.TryGetValue("erro", out var erro) && erro != null)
                 {
                     return erro.ToString()!;
                 }
@@ -186,20 +186,20 @@ public class GestaoDespesasController : Controller
 
         try
         {
-            var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Put, $"api/Despesas/{id}", model);
+            var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Put, $"api/Despesas/{id}", model);
 
             if (response.IsSuccessStatusCode)
             {
                 TempData["SuccessMessage"] = "Despesa atualizada com sucesso.";
 
-                return RedirectToAction( nameof(Detalhes), new { id });
+                return RedirectToAction(nameof(Detalhes), new { id });
             }
 
             ModelState.AddModelError(string.Empty, await ObterMensagemErroApi(response));
         }
         catch (Exception)
         {
-            ModelState.AddModelError( string.Empty, "Não foi possível atualizar a despesa.");
+            ModelState.AddModelError(string.Empty, "Não foi possível atualizar a despesa.");
         }
 
         return View(model);
@@ -211,7 +211,7 @@ public class GestaoDespesasController : Controller
     {
         try
         {
-            var response = await _apiService.SendAuthenticatedJsonAsync<object>( HttpMethod.Delete, $"api/Despesas/{id}", null);
+            var response = await _apiService.SendAuthenticatedJsonAsync<object>(HttpMethod.Delete, $"api/Despesas/{id}", null);
 
             if (response.IsSuccessStatusCode)
             {
@@ -227,6 +227,6 @@ public class GestaoDespesasController : Controller
             TempData["ErrorMessage"] = "Não foi possível eliminar a despesa.";
         }
 
-        return RedirectToAction( nameof(Detalhes), new { id });
+        return RedirectToAction(nameof(Detalhes), new { id });
     }
 }

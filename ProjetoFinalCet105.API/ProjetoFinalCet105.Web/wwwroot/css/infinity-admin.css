@@ -7715,3 +7715,78 @@ body,
         margin: 0;
         line-height: 1.7;
     }
+
+.ib-promocoes-table-header,
+.ib-promocoes-row {
+    display: grid;
+    grid-template-columns: minmax(210px, 1.7fr) minmax(100px, .7fr) minmax(180px, 1.2fr) minmax(120px, .8fr) minmax(110px, .7fr) 80px;
+    align-items: center;
+    gap: 18px;
+}
+
+.ib-promocoes-table-header {
+    padding: 13px 22px;
+    background: #f8f6f1;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--admin-gray);
+}
+
+.ib-promocoes-row {
+    padding: 16px 22px;
+    border-bottom: 1px solid rgba(0, 0, 0, .06);
+}
+
+.ib-promocao-desconto {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--admin-gold);
+}
+
+.ib-promocao-validade,
+.ib-promocao-utilizacoes {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+    .ib-promocao-validade strong,
+    .ib-promocao-utilizacoes strong {
+        font-size: 12px;
+    }
+
+    .ib-promocao-validade small,
+    .ib-promocao-utilizacoes small {
+        color: var(--admin-gray);
+        font-size: 10px;
+    }
+
+.ib-promocao-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 76px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+    .ib-promocao-status.active {
+        background: #edf5ef;
+        color: #53735b;
+    }
+
+    .ib-promocao-status.inactive {
+        background: #f2f0ec;
+        color: #77716a;
+    }
+
+    .ib-promocao-status.expired {
+        background: #f8eeee;
+        color: #9a5d5d;
+    }
+

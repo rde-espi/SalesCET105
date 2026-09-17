@@ -1,0 +1,138 @@
+﻿@model ProjetoFinalCet105.Web.Models.PromoCodeViewModel
+
+
+@{
+    ViewData["Title"] = "Editar promoção";
+    Layout = "_AdminLayout";
+}
+
+<div class="ib-categories-page">
+
+    <div class="ib-categories-heading">
+        <div>
+            <span class="ib-section-eyebrow">MARKETING</span>
+<h1>Editar promoção</h1>
+<p>Atualize os dados do código promocional.</p>
+        </div>
+
+        <a asp-controller="GestaoPromocoes"
+           asp-action="Index"
+           class="ib-category-back-btn">
+            ← Voltar
+        </a>
+    </div>
+
+   <form asp-controller="GestaoPromocoes"
+      asp-action="Editar"
+      asp-route-id="@Model.Id"
+      method="post">
+
+    @Html.AntiForgeryToken()
+    <input asp-for="Id" type="hidden" />
+
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger"></div>
+
+        <div class="ib-fatura-detail-card">
+
+            <div class="ib-fatura-detail-card-header">
+                <div>
+                    <span class="ib-section-eyebrow">PROMOÇÃO</span>
+                    <h2>Dados do código promocional</h2>
+                    <p>Defina o desconto, período de validade e limite de utilização.</p>
+                </div>
+            </div>
+
+            <div class="ib-despesa-form-grid">
+
+                <div class="ib-despesa-field">
+                    <label asp-for="Codigo">Código *</label>
+                    <input asp-for="Codigo"
+                           class="ib-despesa-input"
+                           placeholder="Ex.: BEAUTY20"
+                           style="text-transform:uppercase" />
+                    <span asp-validation-for="Codigo"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="ib-despesa-field">
+                    <label asp-for="PercentagemDesconto">Desconto (%) *</label>
+                    <input asp-for="PercentagemDesconto"
+                           type="number"
+                           step="0.01"
+                           min="0.01"
+                           max="100"
+                           class="ib-despesa-input" />
+                    <span asp-validation-for="PercentagemDesconto"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="ib-despesa-field ib-despesa-field-full">
+                    <label asp-for="Descricao">Descrição</label>
+                    <input asp-for="Descricao"
+                           class="ib-despesa-input"
+                           placeholder="Ex.: 20% de desconto em marcações" />
+                    <span asp-validation-for="Descricao"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="ib-despesa-field">
+                    <label asp-for="DataInicio">Data de início *</label>
+                    <input asp-for="DataInicio"
+                           type="date"
+                           class="ib-despesa-input" />
+                    <span asp-validation-for="DataInicio"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="ib-despesa-field">
+                    <label asp-for="DataFim">Data de fim *</label>
+                    <input asp-for="DataFim"
+                           type="date"
+                           class="ib-despesa-input" />
+                    <span asp-validation-for="DataFim"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="ib-despesa-field ib-despesa-field-full">
+                    <label asp-for="LimiteUtilizacoes">
+                        Limite de utilizações
+                    </label>
+
+                    <input asp-for="LimiteUtilizacoes"
+                           type="number"
+                           min="1"
+                           class="ib-despesa-input"
+                           placeholder="Deixe vazio para não definir limite" />
+
+                    <span asp-validation-for="LimiteUtilizacoes"
+                          class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="ib-despesa-form-actions">
+
+                <a asp-controller="GestaoPromocoes"
+                   asp-action="Index"
+                   class="ib-category-back-btn">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+        class="ib-fatura-emitir-btn">
+    Guardar alterações
+</button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

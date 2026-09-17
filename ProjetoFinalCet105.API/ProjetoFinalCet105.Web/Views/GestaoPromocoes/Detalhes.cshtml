@@ -1,0 +1,150 @@
+﻿@model ProjetoFinalCet105.Web.Models.PromoCodeViewModel
+
+@{
+    ViewData["Title"] = "Detalhes da promoção";
+    Layout = "_AdminLayout";
+
+    var agora = DateTime.Now;
+    var expirada = Model.DataFim < agora;
+
+    var ativa =
+        Model.Ativo &&
+        Model.DataInicio <= agora &&
+        Model.DataFim >= agora;
+}
+
+<div class="ib-categories-page">
+
+    <div class="ib-categories-heading">
+        <div>
+            <span class="ib-section-eyebrow">MARKETING</span>
+            <h1>Detalhes da promoção</h1>
+            <p>Consulte os dados e utilização do código promocional.</p>
+        </div>
+
+        <a asp-controller="GestaoPromocoes"
+           asp-action="Index"
+           class="ib-category-back-btn">
+            ← Voltar
+        </a>
+    </div>
+
+    <div class="ib-fatura-detail-card">
+
+        <div class="ib-fatura-detail-card-header">
+
+            <div>
+                <span class="ib-section-eyebrow">CÓDIGO PROMOCIONAL</span>
+                <h2>@Model.Codigo</h2>
+
+                @if (expirada)
+                {
+                    <span class="ib-promocao-status expired">
+                        Expirada
+                    </span>
+                }
+                else if (ativa)
+                {
+                    <span class="ib-promocao-status active">
+                        Ativa
+                    </span>
+                }
+                else
+                {
+                    <span class="ib-promocao-status inactive">
+                        Inativa
+                    </span>
+                }
+            </div>
+
+            <strong class="ib-despesa-detail-value">
+                @Model.PercentagemDesconto.ToString("0.##")%
+            </strong>
+
+        </div>
+
+        <div class="ib-fatura-detail-info-grid">
+
+            <div>
+                <span>Data de início</span>
+                <strong>@Model.DataInicio.ToString("dd/MM/yyyy")</strong>
+            </div>
+
+            <div>
+                <span>Data de fim</span>
+                <strong>@Model.DataFim.ToString("dd/MM/yyyy")</strong>
+            </div>
+
+            <div>
+                <span>Utilizações</span>
+                <strong>
+                    @Model.NumeroUtilizacoes
+                    @if (Model.LimiteUtilizacoes.HasValue)
+                    {
+                        <text> / @Model.LimiteUtilizacoes.Value</text>
+                    }
+                </strong>
+            </div>
+
+           <div>
+    <span>Limite de utilizações</span>
+
+    @if (Model.LimiteUtilizacoes.HasValue)
+    {
+        <strong>@Model.LimiteUtilizacoes.Value</strong>
+    }
+    else
+    {
+        <strong>Sem limite</strong>
+    }
+</div>
+
+        </div>
+
+        <div class="ib-despesa-detail-observacoes">
+
+            <span>Descrição</span>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Descricao))
+            {
+                <p>@Model.Descricao</p>
+            }
+            else
+            {
+                <p>Sem descrição registada.</p>
+            }
+
+        </div>
+
+        <div class="ib-despesa-form-actions">
+
+            <form asp-controller="GestaoPromocoes"
+      asp-action="AlterarEstado"
+      asp-route-id="@Model.Id"
+      method="post"
+      class="ib-fatura-cancel-form"
+      onsubmit="return confirm('Tem a certeza de que pretende @(Model.Ativo ? "desativar" : "ativar") esta promoção?');">
+
+    @Html.AntiForgeryToken()
+    <input type="hidden"
+       name="ativoAtual"
+       value="@Model.Ativo.ToString().ToLowerInvariant()" />
+    <button type="submit"
+            class="ib-category-back-btn">
+        @(Model.Ativo ? "Desativar promoção" : "Ativar promoção")
+    </button>
+
+</form>
+
+            <a asp-controller="GestaoPromocoes"
+   asp-action="Editar"
+   asp-route-id="@Model.Id"
+   class="ib-fatura-emitir-btn">
+    Editar promoção
+</a>
+
+        </div>
+
+    </div>
+
+</div>

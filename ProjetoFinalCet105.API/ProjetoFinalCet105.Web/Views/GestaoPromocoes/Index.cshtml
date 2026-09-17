@@ -1,0 +1,188 @@
+﻿@model ProjetoFinalCet105.Web.Models.GestaoPromocoesViewModel
+
+@{
+    ViewData["Title"] = "Promoções";
+    Layout = "_AdminLayout";
+
+    var agora = DateTime.Now;
+}
+
+<div class="ib-categories-page">
+
+    <div class="ib-categories-heading">
+
+        <div>
+            <span class="ib-section-eyebrow">MARKETING</span>
+            <h1>Promoções</h1>
+            <p>Crie e acompanhe os códigos promocionais da Infinity Beauty.</p>
+        </div>
+
+        <a asp-controller="GestaoPromocoes"
+   asp-action="Criar"
+   class="ib-fatura-emitir-btn">
+
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 5v14"></path>
+        <path d="M5 12h14"></path>
+    </svg>
+
+    Nova promoção
+</a>
+
+    </div>
+
+    <div class="ib-category-kpi-grid">
+
+        <div class="ib-category-kpi-card">
+            <span>Total de promoções</span>
+            <strong>@Model.Total</strong>
+            <small>Códigos registados</small>
+        </div>
+
+        <div class="ib-category-kpi-card">
+            <span>Ativas</span>
+            <strong>@Model.Ativas</strong>
+            <small>Disponíveis atualmente</small>
+        </div>
+
+        <div class="ib-category-kpi-card">
+            <span>Expiradas</span>
+            <strong>@Model.Expiradas</strong>
+            <small>Fora da validade</small>
+        </div>
+
+        <div class="ib-category-kpi-card ib-category-kpi-highlight">
+            <span>Utilizações</span>
+            <strong>@Model.Utilizacoes</strong>
+            <small>Total acumulado</small>
+        </div>
+
+    </div>
+
+    <div class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+            <div>
+                <span class="ib-section-eyebrow">PROMOÇÕES</span>
+                <h2>Códigos promocionais</h2>
+                <p>Consulte a validade, utilização e estado dos códigos.</p>
+            </div>
+        </div>
+
+        @if (Model.Promocoes.Any())
+        {
+            <div class="ib-faturas-table-wrap">
+
+                <div class="ib-promocoes-table-header">
+                    <span>Código</span>
+                    <span>Desconto</span>
+                    <span>Validade</span>
+                    <span>Utilizações</span>
+                    <span>Estado</span>
+                    <span>Ações</span>
+                </div>
+
+                @foreach (var promocao in Model.Promocoes)
+                {
+                    var expirada = promocao.DataFim < agora;
+
+                    var ativa =
+                        promocao.Ativo &&
+                        promocao.DataInicio <= agora &&
+                        promocao.DataFim >= agora;
+
+                    <div class="ib-promocoes-row">
+
+                        <div class="ib-category-name">
+                            <strong>@promocao.Codigo</strong>
+
+                            @if (!string.IsNullOrWhiteSpace(promocao.Descricao))
+                            {
+                                <small>@promocao.Descricao</small>
+                            }
+                        </div>
+
+                        <div class="ib-promocao-desconto">
+                            @promocao.PercentagemDesconto.ToString("0.##")%
+                        </div>
+
+                        <div class="ib-promocao-validade">
+                            <strong>
+                                @promocao.DataInicio.ToString("dd/MM/yyyy")
+                            </strong>
+                            <small>
+                                até @promocao.DataFim.ToString("dd/MM/yyyy")
+                            </small>
+                        </div>
+
+                        <div class="ib-promocao-utilizacoes">
+                            <strong>@promocao.NumeroUtilizacoes</strong>
+
+                            @if (promocao.LimiteUtilizacoes.HasValue)
+                            {
+                                <small>
+                                    de @promocao.LimiteUtilizacoes.Value
+                                </small>
+                            }
+                            else
+                            {
+                                <small>Sem limite</small>
+                            }
+                        </div>
+
+                        <div>
+                            @if (expirada)
+                            {
+                                <span class="ib-promocao-status expired">
+                                    Expirada
+                                </span>
+                            }
+                            else if (ativa)
+                            {
+                                <span class="ib-promocao-status active">
+                                    Ativa
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="ib-promocao-status inactive">
+                                    Inativa
+                                </span>
+                            }
+                        </div>
+
+                        <div class="ib-category-actions">
+
+                            <a asp-controller="GestaoPromocoes"
+   asp-action="Detalhes"
+   asp-route-id="@promocao.Id"
+   class="ib-category-action-btn"
+   title="Ver detalhes"
+   aria-label="Ver detalhes da promoção">
+
+    <svg viewBox="0 0 24 24">
+        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"></path>
+        <circle cx="12" cy="12" r="2.5"></circle>
+    </svg>
+</a>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-faturas-empty">
+                <strong>Ainda não existem promoções.</strong>
+                <p>
+                    Utilize “Nova promoção” para criar o primeiro código promocional.
+                </p>
+            </div>
+        }
+
+    </div>
+
+</div>
