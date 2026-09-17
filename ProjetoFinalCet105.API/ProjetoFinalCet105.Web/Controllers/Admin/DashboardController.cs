@@ -6,7 +6,7 @@ using ProjetoFinalCet105.Web.Services;
 
 namespace ProjetoFinalCet105.Web.Controllers.Admin
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class DashboardController : Controller
     {
         private readonly ApiService _apiService;
@@ -26,20 +26,16 @@ namespace ProjetoFinalCet105.Web.Controllers.Admin
             var servicosMaisFaturados = await _apiService.GetAuthenticatedAsync<List<ServicoFaturacaoViewModel>>("api/Dashboard/financeiro/servicos?limite=5");
             var faturacaoPorCategoria = await _apiService.GetAuthenticatedAsync<List<FaturacaoCategoriaViewModel>>("api/Dashboard/financeiro/categorias");
             var todasMarcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoDashboardViewModel>>("api/Marcacoes");
-            var todosClientes = await _apiService.GetAuthenticatedAsync<List<ClienteRecenteViewModel>>("api/Clientes");
+            var ultimosClientes = await _apiService.GetAuthenticatedAsync<List<ClienteRecenteViewModel>>("api/Dashboard/clientes/recentes?limite=5"); 
             var todasNotificacoes = await _apiService.GetAuthenticatedAsync<List<NotificacaoDashboardViewModel>>("api/Notificacoes");
             var equipa = await _apiService.GetAuthenticatedAsync<List<DesempenhoFuncionarioViewModel>>("api/Dashboard/equipa");
 
             var anoAtual = DateTime.Today.Year;
             var anoAnterior = anoAtual - 1;
 
-            var evolucaoAnoAtual =
-                await _apiService.GetAuthenticatedAsync<List<FaturacaoMensalViewModel>>(
-                    $"api/Dashboard/financeiro/evolucao-mensal?ano={anoAtual}");
+            var evolucaoAnoAtual = await _apiService.GetAuthenticatedAsync<List<FaturacaoMensalViewModel>>($"api/Dashboard/financeiro/evolucao-mensal?ano={anoAtual}");
 
-            var evolucaoAnoAnterior =
-                await _apiService.GetAuthenticatedAsync<List<FaturacaoMensalViewModel>>(
-                    $"api/Dashboard/financeiro/evolucao-mensal?ano={anoAnterior}");
+            var evolucaoAnoAnterior = await _apiService.GetAuthenticatedAsync<List<FaturacaoMensalViewModel>>( $"api/Dashboard/financeiro/evolucao-mensal?ano={anoAnterior}");
 
             var evolucaoMensalCompleta =
                 (evolucaoAnoAnterior ?? new List<FaturacaoMensalViewModel>())
@@ -48,8 +44,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Admin
                     .ThenBy(x => x.Mes)
                     .ToList();
 
-            var evolucaoMensal =
-                evolucaoAnoAtual ?? new List<FaturacaoMensalViewModel>();
+            var evolucaoMensal = evolucaoAnoAtual ?? new List<FaturacaoMensalViewModel>();
 
             var notificacoesRecentes =
                 todasNotificacoes?
@@ -59,13 +54,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Admin
 
             var notificacoesNaoLidas = await _apiService.GetAuthenticatedAsync<int>("api/Notificacoes/contador-nao-lidas");
 
-            var ultimosClientes =
-                todosClientes?
-                .OrderByDescending(c => c.DataCriacao)
-                .Take(5)
-                .ToList()
-                ?? new List<ClienteRecenteViewModel>();
-
+           
             var hoje = DateTime.Today;
 
             var marcacoesHoje =
@@ -77,20 +66,11 @@ namespace ProjetoFinalCet105.Web.Controllers.Admin
                 ?? new List<MarcacaoDashboardViewModel>();
 
 
-            var servicosMaisMarcados =
-    await _apiService
-        .GetAuthenticatedAsync<List<ServicoMaisMarcadoViewModel>>(
-            "api/Dashboard/agenda/servicos?limite=5");
+            var servicosMaisMarcados = await _apiService.GetAuthenticatedAsync<List<ServicoMaisMarcadoViewModel>>("api/Dashboard/agenda/servicos?limite=5");
 
-            var horariosMaiorProcura =
-                await _apiService
-                    .GetAuthenticatedAsync<List<HorarioMaiorProcuraViewModel>>(
-                        "api/Dashboard/agenda/horarios-procura?limite=5");
+            var horariosMaiorProcura = await _apiService.GetAuthenticatedAsync<List<HorarioMaiorProcuraViewModel>>( "api/Dashboard/agenda/horarios-procura?limite=5");
 
-            var diasMaiorProcura =
-                await _apiService
-                    .GetAuthenticatedAsync<List<DiaSemanaProcuraViewModel>>(
-                        "api/Dashboard/agenda/dias-procura");
+            var diasMaiorProcura = await _apiService.GetAuthenticatedAsync<List<DiaSemanaProcuraViewModel>>("api/Dashboard/agenda/dias-procura");
 
             var model = new DashboardViewModel
             {

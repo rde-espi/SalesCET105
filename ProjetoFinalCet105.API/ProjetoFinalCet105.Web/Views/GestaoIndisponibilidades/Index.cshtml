@@ -2,7 +2,9 @@
 
 @{
     ViewData["Title"] = "Indisponibilidades";
-    Layout = "_AdminLayout";
+    Layout = User.IsInRole("Admin")
+    ? "_AdminLayout"
+    : "_FuncionarioLayout";
 }
 
 <div class="ib-categories-page">

@@ -372,6 +372,160 @@
             </div>
         </div>
 
+        <div class="ib-category-form-card">
+
+    <div class="ib-category-form-card-header">
+        <div>
+            <span class="ib-section-eyebrow">AGENDA</span>
+            <h3>Horário de trabalho</h3>
+            <p>Consulte e configure o horário semanal deste profissional.</p>
+        </div>
+    </div>
+
+  <div class="ib-employee-schedule-create"
+     id="horarioCreateArea"
+     data-funcionario-id="@Model.Id">
+
+    <div class="ib-employee-schedule-grid">
+
+        <div class="ib-category-field">
+            <label for="horarioDiaSemana">Dia da semana</label>
+
+            <select id="horarioDiaSemana">
+                <option value="">Selecionar dia</option>
+                <option value="1">Segunda-feira</option>
+                <option value="2">Terça-feira</option>
+                <option value="3">Quarta-feira</option>
+                <option value="4">Quinta-feira</option>
+                <option value="5">Sexta-feira</option>
+                <option value="6">Sábado</option>
+                <option value="0">Domingo</option>
+            </select>
+        </div>
+
+        <div class="ib-category-field">
+            <label for="horarioHoraInicio">Hora de início</label>
+
+            <input id="horarioHoraInicio"
+                   type="time" />
+        </div>
+
+        <div class="ib-category-field">
+            <label for="horarioHoraFim">Hora de fim</label>
+
+            <input id="horarioHoraFim"
+                   type="time" />
+        </div>
+
+        <div class="ib-employee-schedule-action">
+            <button type="button"
+                    id="btnAdicionarHorario"
+                    class="ib-category-save-btn">
+                + Adicionar horário
+            </button>
+        </div>
+
+    </div>
+
+    <div id="horarioMensagem"
+         class="mt-3"
+         style="display:none;">
+    </div>
+</div>
+
+@if (TempData["HorarioSucesso"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["HorarioSucesso"]
+    </div>
+}
+
+@if (TempData["HorarioErro"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["HorarioErro"]
+    </div>
+}
+
+    <div id="horariosLista"
+     class="ib-employee-schedule-list">
+
+    @if (Model.Horarios != null && Model.Horarios.Any())
+    {
+        @foreach (var horario in Model.Horarios)
+        {
+            <div class="ib-employee-schedule-item"
+     data-horario-id="@horario.Id"
+     data-dia-semana="@((int)horario.DiaSemana)"
+     data-hora-inicio="@horario.HoraInicio.ToString(@"hh\:mm")"
+                             data-hora-fim="@horario.HoraFim.ToString(@"hh\:mm")">
+
+                <div class="ib-employee-schedule-day">
+                    <strong>
+                        @(horario.DiaSemana switch
+                        {
+                            DayOfWeek.Monday => "Segunda-feira",
+                            DayOfWeek.Tuesday => "Terça-feira",
+                            DayOfWeek.Wednesday => "Quarta-feira",
+                            DayOfWeek.Thursday => "Quinta-feira",
+                            DayOfWeek.Friday => "Sexta-feira",
+                            DayOfWeek.Saturday => "Sábado",
+                            DayOfWeek.Sunday => "Domingo",
+                            _ => horario.DiaSemana.ToString()
+                        })
+                    </strong>
+
+                    <span>
+                        @horario.HoraInicio.ToString(@"hh\:mm")
+                        –
+                        @horario.HoraFim.ToString(@"hh\:mm")
+                    </span>
+                </div>
+
+                            <div class="ib-employee-schedule-actions">
+
+                                <button type="button"
+                                        class="ib-employee-schedule-edit"
+                                        data-horario-id="@horario.Id"
+                                        title="Editar horário"
+                                        aria-label="Editar horário">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M12 20h9"></path>
+                                        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"></path>
+                                    </svg>
+                                </button>
+
+                                <button type="button"
+                                        class="ib-employee-schedule-delete"
+                                        data-horario-id="@horario.Id"
+                                        title="Eliminar horário"
+                                        aria-label="Eliminar horário">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M3 6h18"></path>
+                                        <path d="M8 6V4h8v2"></path>
+                                        <path d="M19 6l-1 14H6L5 6"></path>
+                                        <path d="M10 11v5"></path>
+                                        <path d="M14 11v5"></path>
+                                    </svg>
+                                </button>
+
+                            </div>
+
+            </div>
+        }
+    }
+    else
+    {
+        <div id="horariosEmpty"
+             class="ib-employee-services-empty">
+            Este funcionário ainda não possui horário de trabalho definido.
+        </div>
+    }
+
+</div>
+
+</div>
+
         <footer class="ib-category-form-footer">
 
             <a asp-controller="GestaoFuncionarios" asp-action="Index" class="ib-category-cancel-btn">
@@ -879,6 +1033,515 @@
         });
 
     });
+
+    const btnAdicionarHorario =
+    document.getElementById("btnAdicionarHorario");
+
+if (btnAdicionarHorario) {
+
+    btnAdicionarHorario.addEventListener("click", async function () {
+
+        const area = document.getElementById("horarioCreateArea");
+        const mensagem = document.getElementById("horarioMensagem");
+
+        const funcionarioId =
+            parseInt(area.dataset.funcionarioId);
+
+        const diaSemana =
+            document.getElementById("horarioDiaSemana").value;
+
+        const horaInicio =
+            document.getElementById("horarioHoraInicio").value;
+
+        const horaFim =
+            document.getElementById("horarioHoraFim").value;
+
+        if (diaSemana === "" || !horaInicio || !horaFim) {
+            mensagem.style.display = "block";
+            mensagem.textContent =
+                "Preencha o dia da semana, a hora de início e a hora de fim.";
+            return;
+        }
+
+        btnAdicionarHorario.disabled = true;
+        btnAdicionarHorario.textContent = "A adicionar...";
+
+        try {
+
+            const token =
+                document.querySelector(
+                    'input[name="__RequestVerificationToken"]'
+                )?.value;
+
+            const formData = new FormData();
+
+            formData.append("FuncionarioId", funcionarioId);
+            formData.append("DiaSemana", diaSemana);
+            formData.append("HoraInicio", horaInicio);
+            formData.append("HoraFim", horaFim);
+
+            const response = await fetch(
+                '@Url.Action("AdicionarHorario", "GestaoFuncionarios")',
+                {
+                    method: "POST",
+                    headers: {
+                        "RequestVerificationToken": token
+                    },
+                    body: formData
+                });
+
+            const resultado = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    resultado.mensagem ||
+                    "Não foi possível adicionar o horário."
+                );
+            }
+
+            mensagem.style.display = "block";
+            mensagem.textContent = resultado.mensagem || "Horário adicionado com sucesso.";
+
+            if (resultado.horario) {
+
+    const horario = resultado.horario;
+    const lista = document.getElementById("horariosLista");
+
+    const vazio = document.getElementById("horariosEmpty");
+    if (vazio) {
+        vazio.remove();
+    }
+
+    const nomesDias = {
+        0: "Domingo",
+        1: "Segunda-feira",
+        2: "Terça-feira",
+        3: "Quarta-feira",
+        4: "Quinta-feira",
+        5: "Sexta-feira",
+        6: "Sábado"
+    };
+
+    const item = document.createElement("div");
+
+    item.className = "ib-employee-schedule-item";
+    item.dataset.horarioId = horario.id;
+
+            item.innerHTML = `
+            <div class="ib-employee-schedule-day">
+                <strong>${nomesDias[horario.diaSemana]}</strong>
+                <span>${horario.horaInicio} – ${horario.horaFim}</span>
+            </div>
+
+            <div class="ib-employee-schedule-actions">
+
+                <button type="button"
+                        class="ib-employee-schedule-edit"
+                        data-horario-id="${horario.id}"
+                        title="Editar horário"
+                        aria-label="Editar horário">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 20h9"></path>
+                        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"></path>
+                    </svg>
+                </button>
+
+                <button type="button"
+                        class="ib-employee-schedule-delete"
+                        data-horario-id="${horario.id}"
+                        title="Eliminar horário"
+                        aria-label="Eliminar horário">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 6h18"></path>
+                        <path d="M8 6V4h8v2"></path>
+                        <path d="M19 6l-1 14H6L5 6"></path>
+                        <path d="M10 11v5"></path>
+                        <path d="M14 11v5"></path>
+                    </svg>
+                </button>
+
+            </div>
+        `;
+    item.dataset.diaSemana = horario.diaSemana;
+    item.dataset.horaInicio = horario.horaInicio;
+        item.dataset.horaFim = horario.horaFim;
+    lista.appendChild(item);
+
+const itens = Array.from(
+    lista.querySelectorAll(".ib-employee-schedule-item")
+);
+
+itens.sort((a, b) => {
+
+    const ordemDia = dia => {
+        const valor = Number(dia);
+        return valor === 0 ? 7 : valor;
+    };
+
+    const diaA = ordemDia(a.dataset.diaSemana);
+    const diaB = ordemDia(b.dataset.diaSemana);
+
+    if (diaA !== diaB) {
+        return diaA - diaB;
+    }
+
+    return (a.dataset.horaInicio || "")
+        .localeCompare(b.dataset.horaInicio || "");
+});
+
+itens.forEach(x => lista.appendChild(x));
+}
+
+
+            document.getElementById("horarioDiaSemana").value = "";
+            document.getElementById("horarioHoraInicio").value = "";
+            document.getElementById("horarioHoraFim").value = "";
+
+        }
+        catch (erro) {
+
+            mensagem.style.display = "block";
+            mensagem.textContent = erro.message;
+
+        }
+        finally {
+
+            btnAdicionarHorario.disabled = false;
+            btnAdicionarHorario.textContent = "+ Adicionar horário";
+        }
+    });
+}
+
+const horariosLista =
+    document.getElementById("horariosLista");
+
+if (horariosLista) {
+
+    horariosLista.addEventListener("click", async function (event) {
+                const botaoEditar =
+            event.target.closest(".ib-employee-schedule-edit");
+
+        if (botaoEditar) {
+            const item =
+                botaoEditar.closest(".ib-employee-schedule-item");
+
+            if (!item) return;
+
+            const diaSemana = item.dataset.diaSemana;
+            const horaInicio = item.dataset.horaInicio;
+            const horaFim = item.dataset.horaFim;
+
+            const conteudo =
+                item.querySelector(".ib-employee-schedule-day");
+
+            const acoes =
+                item.querySelector(".ib-employee-schedule-actions");
+
+            conteudo.innerHTML = `
+                <select class="ib-schedule-edit-day">
+                    <option value="1">Segunda-feira</option>
+                    <option value="2">Terça-feira</option>
+                    <option value="3">Quarta-feira</option>
+                    <option value="4">Quinta-feira</option>
+                    <option value="5">Sexta-feira</option>
+                    <option value="6">Sábado</option>
+                    <option value="0">Domingo</option>
+                </select>
+
+                <input type="time"
+                       class="ib-schedule-edit-start"
+                       value="${horaInicio}" />
+
+                <input type="time"
+                       class="ib-schedule-edit-end"
+                       value="${horaFim}" />
+            `;
+
+            conteudo
+                .querySelector(".ib-schedule-edit-day")
+                .value = diaSemana;
+
+            acoes.innerHTML = `
+                <button type="button"
+                        class="ib-schedule-edit-save">
+                    Guardar
+                </button>
+
+                <button type="button"
+                        class="ib-schedule-edit-cancel">
+                    Cancelar
+                </button>
+            `;
+
+            return;
+        }
+                // CANCELAR EDIÇÃO
+        const botaoCancelar =
+            event.target.closest(".ib-schedule-edit-cancel");
+
+        if (botaoCancelar) {
+            const item =
+                botaoCancelar.closest(".ib-employee-schedule-item");
+
+            if (!item) return;
+
+            const nomesDias = {
+                0: "Domingo",
+                1: "Segunda-feira",
+                2: "Terça-feira",
+                3: "Quarta-feira",
+                4: "Quinta-feira",
+                5: "Sexta-feira",
+                6: "Sábado"
+            };
+
+            item.querySelector(".ib-employee-schedule-day").innerHTML = `
+                <strong>${nomesDias[item.dataset.diaSemana]}</strong>
+                <span>${item.dataset.horaInicio} – ${item.dataset.horaFim}</span>
+            `;
+
+            item.querySelector(".ib-employee-schedule-actions").innerHTML = `
+                <button type="button"
+                        class="ib-employee-schedule-edit"
+                        data-horario-id="${item.dataset.horarioId}"
+                        title="Editar horário"
+                        aria-label="Editar horário">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 20h9"></path>
+                        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"></path>
+                    </svg>
+                </button>
+
+                <button type="button"
+                        class="ib-employee-schedule-delete"
+                        data-horario-id="${item.dataset.horarioId}"
+                        title="Eliminar horário"
+                        aria-label="Eliminar horário">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 6h18"></path>
+                        <path d="M8 6V4h8v2"></path>
+                        <path d="M19 6l-1 14H6L5 6"></path>
+                        <path d="M10 11v5"></path>
+                        <path d="M14 11v5"></path>
+                    </svg>
+                </button>
+            `;
+
+            return;
+        }
+
+
+        // GUARDAR EDIÇÃO
+        const botaoGuardar =
+            event.target.closest(".ib-schedule-edit-save");
+
+        if (botaoGuardar) {
+            const item =
+                botaoGuardar.closest(".ib-employee-schedule-item");
+
+            if (!item) return;
+
+            const horarioId = item.dataset.horarioId;
+            const funcionarioId =
+                document.getElementById("horarioCreateArea").dataset.funcionarioId;
+
+            const diaSemana =
+                item.querySelector(".ib-schedule-edit-day").value;
+
+            const horaInicio =
+                item.querySelector(".ib-schedule-edit-start").value;
+
+            const horaFim =
+                item.querySelector(".ib-schedule-edit-end").value;
+
+            if (!horaInicio || !horaFim) return;
+
+            botaoGuardar.disabled = true;
+            botaoGuardar.textContent = "A guardar...";
+
+            try {
+                const token =
+                    document.querySelector(
+                        'input[name="__RequestVerificationToken"]'
+                    )?.value;
+
+                const formData = new FormData();
+
+                formData.append("id", horarioId);
+                formData.append("funcionarioId", funcionarioId);
+                formData.append("diaSemana", diaSemana);
+                formData.append("horaInicio", horaInicio);
+                formData.append("horaFim", horaFim);
+
+                const response = await fetch(
+                    '@Url.Action("EditarHorario", "GestaoFuncionarios")',
+                    {
+                        method: "POST",
+                        headers: {
+                            "RequestVerificationToken": token
+                        },
+                        body: formData
+                    });
+
+                const resultado = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        resultado.mensagem ||
+                        "Não foi possível atualizar o horário."
+                    );
+                }
+
+                const horario = resultado.horario;
+
+                // Atualiza os dados guardados na própria linha
+                item.dataset.diaSemana = horario.diaSemana;
+                item.dataset.horaInicio = horario.horaInicio;
+                item.dataset.horaFim = horario.horaFim;
+
+                const nomesDias = {
+                    0: "Domingo",
+                    1: "Segunda-feira",
+                    2: "Terça-feira",
+                    3: "Quarta-feira",
+                    4: "Quinta-feira",
+                    5: "Sexta-feira",
+                    6: "Sábado"
+                };
+
+                item.querySelector(".ib-employee-schedule-day").innerHTML = `
+                    <strong>${nomesDias[horario.diaSemana]}</strong>
+                    <span>${horario.horaInicio} – ${horario.horaFim}</span>
+                `;
+
+                item.querySelector(".ib-employee-schedule-actions").innerHTML = `
+                    <button type="button"
+                            class="ib-employee-schedule-edit"
+                            data-horario-id="${horario.id}"
+                            title="Editar horário"
+                            aria-label="Editar horário">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"></path>
+                        </svg>
+                    </button>
+
+                    <button type="button"
+                            class="ib-employee-schedule-delete"
+                            data-horario-id="${horario.id}"
+                            title="Eliminar horário"
+                            aria-label="Eliminar horário">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M3 6h18"></path>
+                            <path d="M8 6V4h8v2"></path>
+                            <path d="M19 6l-1 14H6L5 6"></path>
+                            <path d="M10 11v5"></path>
+                            <path d="M14 11v5"></path>
+                        </svg>
+                    </button>
+                `;
+
+                const mensagem =
+                    document.getElementById("horarioMensagem");
+
+                if (mensagem) {
+                    mensagem.style.display = "block";
+                    mensagem.textContent =
+                        resultado.mensagem || "Horário atualizado com sucesso.";
+                }
+            }
+            catch (erro) {
+                botaoGuardar.disabled = false;
+                botaoGuardar.textContent = "Guardar";
+
+                const mensagem =
+                    document.getElementById("horarioMensagem");
+
+                if (mensagem) {
+                    mensagem.style.display = "block";
+                    mensagem.textContent = erro.message;
+                }
+            }
+
+            return;
+        }
+
+        const botao = event.target.closest(".ib-employee-schedule-delete");
+
+        if (!botao) {
+            return;
+        }
+
+        const horarioId = botao.dataset.horarioId;
+        const item = botao.closest(".ib-employee-schedule-item");
+
+        if (!horarioId || !item) {
+            return;
+        }
+
+        const token =
+            document.querySelector(
+                'input[name="__RequestVerificationToken"]'
+            )?.value;
+
+        botao.disabled = true;
+
+        try {
+
+            const formData = new FormData();
+            formData.append("id", horarioId);
+
+            const response = await fetch(
+                '@Url.Action("EliminarHorario", "GestaoFuncionarios")',
+                {
+                    method: "POST",
+                    headers: {
+                        "RequestVerificationToken": token
+                    },
+                    body: formData
+                });
+
+            const resultado = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    resultado.mensagem ||
+                    "Não foi possível eliminar o horário."
+                );
+            }
+
+            item.remove();
+
+            const restantes =
+                horariosLista.querySelectorAll(
+                    ".ib-employee-schedule-item"
+                );
+
+            if (restantes.length === 0) {
+
+                horariosLista.innerHTML = `
+                    <div id="horariosEmpty"
+                         class="ib-employee-services-empty">
+                        Este funcionário ainda não possui horário de trabalho definido.
+                    </div>
+                `;
+            }
+
+        }
+        catch (erro) {
+
+            botao.disabled = false;
+
+            const mensagem =
+                document.getElementById("horarioMensagem");
+
+            if (mensagem) {
+                mensagem.style.display = "block";
+                mensagem.textContent = erro.message;
+            }
+        }
+    });
+}
 </script>
 
 }

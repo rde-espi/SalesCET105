@@ -9039,3 +9039,249 @@ body,
         background: rgba(216, 176, 113, .12);
         color: var(--admin-gold-dark);
     }
+
+/* =========================================================
+   FUNCIONÁRIOS - HORÁRIO DE TRABALHO
+   ========================================================= */
+
+.ib-employee-schedule-create {
+    margin-bottom: 22px;
+    padding: 20px;
+    background: #faf8f4;
+    border: 1px solid rgba(216, 176, 113, .20);
+    border-radius: 12px;
+}
+
+.ib-employee-schedule-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr auto;
+    gap: 16px;
+    align-items: end;
+}
+
+.ib-employee-schedule-action {
+    display: flex;
+    align-items: flex-end;
+}
+
+    .ib-employee-schedule-action .ib-category-save-btn {
+        min-height: 44px;
+        white-space: nowrap;
+    }
+
+@media (max-width: 950px) {
+    .ib-employee-schedule-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .ib-employee-schedule-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* =========================================================
+   FUNCIONÁRIOS - LISTA HORÁRIO SEMANAL
+   ========================================================= */
+
+.ib-employee-schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.ib-employee-schedule-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 68px;
+    padding: 14px 18px;
+    background: #fff;
+    border: 1px solid rgba(216, 176, 113, .22);
+    border-radius: 11px;
+    transition: .18s ease;
+}
+
+    .ib-employee-schedule-item:hover {
+        border-color: rgba(216, 176, 113, .48);
+        box-shadow: 0 5px 18px rgba(25, 25, 25, .035);
+    }
+
+.ib-employee-schedule-day {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+    .ib-employee-schedule-day strong {
+        min-width: 135px;
+        color: #191919;
+        font-size: .84rem;
+        font-weight: 600;
+    }
+
+    .ib-employee-schedule-day span {
+        color: #817a70;
+        font-size: .80rem;
+    }
+
+.ib-employee-schedule-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 11px;
+    background: rgba(216, 176, 113, .09);
+    border-radius: 8px;
+    color: #535333;
+}
+
+.ib-employee-schedule-delete {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(25, 25, 25, .08);
+    border-radius: 9px;
+    background: transparent;
+    color: #817a70;
+    cursor: pointer;
+    transition: .18s ease;
+}
+
+    .ib-employee-schedule-delete svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .ib-employee-schedule-delete:hover {
+        color: #9b3d3d;
+        border-color: rgba(155, 61, 61, .25);
+        background: rgba(155, 61, 61, .05);
+    }
+
+    .ib-employee-schedule-delete:disabled {
+        opacity: .45;
+        cursor: wait;
+    }
+
+.ib-employee-schedule-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.ib-employee-schedule-edit {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(25, 25, 25, .08);
+    border-radius: 9px;
+    background: transparent;
+    color: #817a70;
+    cursor: pointer;
+    transition: .18s ease;
+}
+
+    .ib-employee-schedule-edit svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .ib-employee-schedule-edit:hover {
+        color: #BEA256;
+        border-color: rgba(216, 176, 113, .45);
+        background: rgba(216, 176, 113, .07);
+    }
+/* =========================================================
+   HORÁRIO DE TRABALHO — SELECT E CAMPOS TIME
+   ========================================================= */
+
+.ib-employee-schedule-create select,
+.ib-schedule-edit-day,
+.ib-schedule-edit-start,
+.ib-schedule-edit-end {
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid rgba(216, 176, 113, .30);
+    border-radius: 10px;
+    background: #fff;
+    color: #535333;
+    font: inherit;
+    font-size: .84rem;
+    outline: none;
+    transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+/* Dropdown da área "Adicionar horário" */
+.ib-employee-schedule-create select {
+    width: 100%;
+}
+
+/* Dropdown durante a edição */
+.ib-schedule-edit-day {
+    min-width: 170px;
+}
+
+/* Horas durante a edição */
+.ib-schedule-edit-start,
+.ib-schedule-edit-end {
+    width: 145px;
+}
+
+    /* Focus */
+    .ib-employee-schedule-create select:focus,
+    .ib-schedule-edit-day:focus,
+    .ib-schedule-edit-start:focus,
+    .ib-schedule-edit-end:focus {
+        border-color: #D8B071;
+        box-shadow: 0 0 0 3px rgba(216, 176, 113, .10);
+    }
+
+.ib-schedule-edit-save,
+.ib-schedule-edit-cancel {
+    min-height: 38px;
+    padding: 0 16px;
+    border-radius: 9px;
+    font: inherit;
+    font-size: .78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .18s ease;
+}
+
+.ib-schedule-edit-save {
+    border: 1px solid #191919;
+    background: #191919;
+    color: #fff;
+}
+
+    .ib-schedule-edit-save:hover {
+        background: #24231f;
+    }
+
+.ib-schedule-edit-cancel {
+    border: 1px solid rgba(25, 25, 25, .10);
+    background: #fff;
+    color: #535333;
+}
+
+    .ib-schedule-edit-cancel:hover {
+        border-color: rgba(216, 176, 113, .45);
+        background: rgba(216, 176, 113, .06);
+    }

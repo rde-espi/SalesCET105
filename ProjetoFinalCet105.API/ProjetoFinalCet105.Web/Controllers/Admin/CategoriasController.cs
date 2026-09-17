@@ -9,7 +9,7 @@ using ProjetoFinalCet105.Web.Services;
 
 namespace ProjetoFinalCet105.Web.Controllers.Admin;
 
-[Authorize(Roles = "Admin")]
+[Authorize]
 public class CategoriasController : Controller
 {
     private readonly ApiService _apiService;
@@ -30,26 +30,16 @@ public class CategoriasController : Controller
     [HttpGet]
     public async Task<IActionResult> Imagem(int id)
     {
-        var response =
-            await _apiService
-                .GetResponseAsync(
-                    $"api/Categorias/{id}/imagem");
-
-        if (response == null ||
-            !response.IsSuccessStatusCode)
+        var response = await _apiService.GetResponseAsync($"api/Categorias/{id}/imagem");
+        if (response == null || !response.IsSuccessStatusCode)
         {
             return NotFound();
         }
 
-        var bytes =
-            await response.Content
-                .ReadAsByteArrayAsync();
+        var bytes =  await response.Content.ReadAsByteArrayAsync();
 
-        var contentType =
-            response.Content.Headers.ContentType?
-                .MediaType
-            ?? "image/jpeg";
-
+        var contentType = response.Content.Headers.ContentType?.MediaType ?? "image/jpeg";
+        
         return File(bytes, contentType);
     }
 
@@ -139,9 +129,7 @@ public class CategoriasController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Editar(
-        int id,
-        CategoriaFormViewModel model)
+    public async Task<IActionResult> Editar( int id, CategoriaFormViewModel model)
     {
         if (id != model.Id)
         {
@@ -153,55 +141,35 @@ public class CategoriasController : Controller
             return View(model);
         }
 
-        using var content =
-            new MultipartFormDataContent();
+        using var content =  new MultipartFormDataContent();
 
-        content.Add(
-            new StringContent(model.Nome),
-            "Nome");
+        content.Add(new StringContent(model.Nome), "Nome");
 
         if (!string.IsNullOrWhiteSpace(model.Descricao))
         {
-            content.Add(
-                new StringContent(model.Descricao),
-                "Descricao");
+            content.Add( new StringContent(model.Descricao),"Descricao");
         }
 
         if (model.Imagem != null &&
             model.Imagem.Length > 0)
         {
-            var streamContent =
-                new StreamContent(
-                    model.Imagem.OpenReadStream());
+            var streamContent = new StreamContent( model.Imagem.OpenReadStream());
 
-            streamContent.Headers.ContentType =
-                new MediaTypeHeaderValue(
-                    model.Imagem.ContentType);
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue( model.Imagem.ContentType);
 
-            content.Add(
-                streamContent,
-                "Imagem",
-                model.Imagem.FileName);
+            content.Add(streamContent,"Imagem", model.Imagem.FileName);
         }
 
-        using var response =
-            await _apiService
-                .SendAuthenticatedMultipartAsync(
-                    HttpMethod.Put,
-                    $"api/Categorias/{id}",
-                    content);
+        using var response = await _apiService.SendAuthenticatedMultipartAsync( HttpMethod.Put, $"api/Categorias/{id}", content);
 
         if (!response.IsSuccessStatusCode)
         {
-            ModelState.AddModelError(
-                string.Empty,
-                "Não foi possível atualizar a categoria.");
+            ModelState.AddModelError( string.Empty, "Não foi possível atualizar a categoria.");
 
             return View(model);
         }
 
-        TempData["Sucesso"] =
-            "Categoria atualizada com sucesso.";
+        TempData["Sucesso"] = "Categoria atualizada com sucesso.";
 
         return RedirectToAction(nameof(Index));
     }

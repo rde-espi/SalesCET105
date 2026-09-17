@@ -2,7 +2,9 @@
 
 @{
     ViewData["Title"] = "Editar Categoria";
-    Layout = "_AdminLayout";
+    Layout = User.IsInRole("Admin")
+    ? "_AdminLayout"
+    : "_FuncionarioLayout";
 }
 
 <div class="ib-category-form-page">

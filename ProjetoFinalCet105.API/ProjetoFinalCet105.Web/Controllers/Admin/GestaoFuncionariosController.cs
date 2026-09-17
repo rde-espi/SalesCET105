@@ -142,6 +142,10 @@ public class GestaoFuncionariosController : Controller
 
         var competenciasFuncionario = await _apiService.GetAuthenticatedAsync<List<FuncionarioCompetenciaViewModel>>($"api/FuncionarioCompetencias/funcionario/{id}");
 
+        var horarios = await _apiService.GetAuthenticatedAsync<List<MeuHorarioViewModel>>( "api/HorarioFuncionarios");
+
+        horarios ??= new List<MeuHorarioViewModel>();
+
         competencias ??= new List<CompetenciaViewModel>();
         competenciasFuncionario ??= new List<FuncionarioCompetenciaViewModel>();
 
@@ -187,6 +191,13 @@ public class GestaoFuncionariosController : Controller
 
             CompetenciasFuncionario = competenciasFuncionario
             .OrderBy(c => c.CompetenciaNome)
+            .ToList(),
+            
+
+            Horarios = horarios
+            .Where(h => h.FuncionarioId == id)
+            .OrderBy(h => h.DiaSemana == DayOfWeek.Sunday ? 7 : (int)h.DiaSemana)
+            .ThenBy(h => h.HoraInicio)
             .ToList()
 
         };
@@ -488,6 +499,147 @@ public class GestaoFuncionariosController : Controller
         TempData["SuccessMessage"] = "Acesso administrativo temporário revogado com sucesso.";
 
         return RedirectToAction(nameof(Editar), new { id = funcionarioId });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AdicionarHorario( CriarHorarioFuncionarioViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new
+            {
+                sucesso = false,
+                mensagem = "Preencha corretamente os dados do horário."
+            });
+        }
+
+        using var response =  await _apiService.SendAuthenticatedJsonAsync(  HttpMethod.Post, "api/HorarioFuncionarios",  model);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var erro = await response.Content.ReadAsStringAsync();
+
+            return BadRequest(new
+            {
+                sucesso = false,
+                mensagem = string.IsNullOrWhiteSpace(erro)
+                    ? "Não foi possível adicionar o horário."
+                    : erro
+            });
+        }
+
+        var horarioCriado = await response.Content.ReadFromJsonAsync<MeuHorarioViewModel>();
+
+        if (horarioCriado == null)
+        {
+            return Ok(new
+            {
+                sucesso = true,
+                mensagem = "Horário adicionado com sucesso."
+            });
+        }
+
+        return Ok(new
+        {
+            sucesso = true,
+            mensagem = "Horário adicionado com sucesso.",
+
+            horario = new
+            {
+                id = horarioCriado.Id,
+                funcionarioId = horarioCriado.FuncionarioId,
+                diaSemana = horarioCriado.DiaSemana,
+                horaInicio = horarioCriado.HoraInicio.ToString(@"hh\:mm"),
+                horaFim = horarioCriado.HoraFim.ToString(@"hh\:mm")
+            }
+        });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EliminarHorario(int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest(new
+            {
+                sucesso = false,
+                mensagem = "Horário inválido."
+            });
+        }
+
+        using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Delete, $"api/HorarioFuncionarios/{id}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var erro = await response.Content.ReadAsStringAsync();
+
+            return BadRequest(new
+            {
+                sucesso = false,
+                mensagem = string.IsNullOrWhiteSpace(erro)
+                    ? "Não foi possível eliminar o horário."
+                    : erro
+            });
+        }
+
+        return Ok(new
+        {
+            sucesso = true,
+            mensagem = "Horário eliminado com sucesso."
+        });
+    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditarHorario(int id, int funcionarioId, DayOfWeek diaSemana, TimeSpan horaInicio, TimeSpan horaFim)
+    {
+        if (id <= 0 || funcionarioId <= 0)
+        {
+            return BadRequest(new
+            {
+                sucesso = false,
+                mensagem = "Horário inválido."
+            });
+        }
+
+        var model = new
+        {
+            Id = id,
+            FuncionarioId = funcionarioId,
+            DiaSemana = diaSemana,
+            HoraInicio = horaInicio,
+            HoraFim = horaFim
+        };
+
+        using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Put, $"api/HorarioFuncionarios/{id}",model);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var erro = await response.Content.ReadAsStringAsync();
+
+            return BadRequest(new
+            {
+                sucesso = false,
+                mensagem = string.IsNullOrWhiteSpace(erro)
+                    ? "Não foi possível atualizar o horário."
+                    : erro
+            });
+        }
+
+        return Ok(new
+        {
+            sucesso = true,
+            mensagem = "Horário atualizado com sucesso.",
+            horario = new
+            {
+                id,
+                funcionarioId,
+                diaSemana,
+                horaInicio = horaInicio.ToString(@"hh\:mm"),
+                horaFim = horaFim.ToString(@"hh\:mm")
+            }
+        });
     }
 
 }

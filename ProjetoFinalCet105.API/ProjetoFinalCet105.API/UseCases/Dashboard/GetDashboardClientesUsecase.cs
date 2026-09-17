@@ -76,5 +76,23 @@ namespace ProjetoFinalCet105.API.UseCases.Dashboard
                 TaxaRecorrencia = taxaRecorrencia
             };
         }
+
+        public async Task<List<DashboardClienteRecenteDTO>> ExecuteUltimosClientesAsync(int limite = 5)
+        {
+            var clientes = await _clienteRepository.GetAllClientesAsync();
+
+            return clientes
+                .OrderByDescending(c => c.DataCriacao)
+                .Take(limite)
+                .Select(c => new DashboardClienteRecenteDTO
+                {
+                    Id = c.Id,
+                    NomeCompleto = c.NomeCompleto,
+                    Email = c.Email ?? string.Empty,
+                    Ativo = c.Ativo,
+                    DataCriacao = c.DataCriacao
+                })
+                .ToList();
+        }
     }
 }

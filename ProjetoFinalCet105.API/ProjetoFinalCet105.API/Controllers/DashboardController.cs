@@ -117,13 +117,29 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(resultado);
         }
 
-        [HttpGet("equipa")]
-        public async Task<IActionResult> GetEquipa()
+        [HttpGet("clientes/recentes")]
+        public async Task<IActionResult> GetClientesRecentes([FromQuery] int limite = 5)
         {
+            if (limite <= 0)
+                limite = 5;
+
+            if (limite > 20)
+                limite = 20;
+
             var resultado =
-                await _getDashboardEquipaUseCase.ExecuteAsync();
+                await _getDashboardClientesUseCase.ExecuteUltimosClientesAsync(limite);
 
             return Ok(resultado);
         }
+
+        [HttpGet("equipa")]
+        public async Task<IActionResult> GetEquipa()
+        {
+            var resultado = await _getDashboardEquipaUseCase.ExecuteAsync();
+
+            return Ok(resultado);
+        }
+
+        
     }
 }

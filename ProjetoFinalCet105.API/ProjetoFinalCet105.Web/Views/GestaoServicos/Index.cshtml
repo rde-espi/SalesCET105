@@ -2,7 +2,9 @@
 
 @{
     ViewData["Title"] = "Serviços";
-    Layout = "_AdminLayout";
+    Layout = User.IsInRole("Admin")
+    ? "_AdminLayout"
+    : "_FuncionarioLayout";
 
     var totalServicos = Model?.Count ?? 0;
     var servicosDisponiveis = Model?.Count(s => s.Disponivel) ?? 0;

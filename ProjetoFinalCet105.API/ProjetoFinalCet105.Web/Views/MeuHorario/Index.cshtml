@@ -1,0 +1,93 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.MeuHorarioViewModel>
+
+@{
+    ViewData["Title"] = "Meu Horário";
+    Layout = "~/Views/Shared/_FuncionarioLayout.cshtml";
+
+    string NomeDia(DayOfWeek dia) => dia switch
+    {
+        DayOfWeek.Monday => "Segunda-feira",
+        DayOfWeek.Tuesday => "Terça-feira",
+        DayOfWeek.Wednesday => "Quarta-feira",
+        DayOfWeek.Thursday => "Quinta-feira",
+        DayOfWeek.Friday => "Sexta-feira",
+        DayOfWeek.Saturday => "Sábado",
+        DayOfWeek.Sunday => "Domingo",
+        _ => ""
+    };
+
+    var dias = new[]
+    {
+        DayOfWeek.Monday,
+        DayOfWeek.Tuesday,
+        DayOfWeek.Wednesday,
+        DayOfWeek.Thursday,
+        DayOfWeek.Friday,
+        DayOfWeek.Saturday,
+        DayOfWeek.Sunday
+    };
+}
+
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+        <div class="text-uppercase small"
+             style="letter-spacing:.18em; color:#BEA256; font-weight:600;">
+            Agenda
+        </div>
+
+        <h1 class="mt-2 mb-2">Meu Horário</h1>
+
+        <p class="text-muted mb-0">
+            Consulte o seu horário semanal de trabalho.
+        </p>
+    </div>
+
+    <div class="row g-3">
+
+        @foreach (var dia in dias)
+        {
+            var horariosDia = Model
+                .Where(h => h.DiaSemana == dia)
+                .OrderBy(h => h.HoraInicio)
+                .ToList();
+
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+
+                        <h5 class="mb-3">
+                            @NomeDia(dia)
+                        </h5>
+
+                        @if (horariosDia.Any())
+                        {
+                            foreach (var horario in horariosDia)
+                            {
+                                <div class="d-flex align-items-center justify-content-between py-2">
+                                    <span class="text-muted">
+                                        Horário
+                                    </span>
+
+                                    <strong>
+                                        @horario.HoraInicio.ToString(@"hh\:mm")
+                                        –
+                                        @horario.HoraFim.ToString(@"hh\:mm")
+                                    </strong>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="py-2 text-muted">
+                                Sem horário definido
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>

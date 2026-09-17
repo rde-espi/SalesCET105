@@ -80,19 +80,22 @@ namespace ProjetoFinalCet105.API.Services.HorarioFuncionarioService
             return UseCaseResult<bool>.Ok(true);
         }
 
-        public async Task<bool> ExistemMarcacoesConfirmadasNoHorarioAsync(int funcionarioId, DayOfWeek diaSemana, TimeSpan horaInicio, TimeSpan horaFim)
+        public async Task<bool> ExistemMarcacoesConfirmadasNoHorarioAsync( int funcionarioId, DayOfWeek diaSemana, TimeSpan horaInicio, TimeSpan horaFim)
         {
             var agora = DateTime.Now;
 
-            return await _marcacaoRepository
+            var marcacoes = await _marcacaoRepository
                 .GetAllWithDetails()
-                .AnyAsync(m =>
+                .Where(m =>
                     m.FuncionarioId == funcionarioId &&
                     m.EstadoMarcacao.Nome == "Confirmada" &&
-                    m.DataHoraInicio > agora &&
-                    m.DataHoraInicio.DayOfWeek == diaSemana &&
-                    m.DataHoraInicio.TimeOfDay >= horaInicio &&
-                    m.DataHoraFim.TimeOfDay <= horaFim);
+                    m.DataHoraInicio > agora)
+                .ToListAsync();
+
+            return marcacoes.Any(m =>
+                m.DataHoraInicio.DayOfWeek == diaSemana &&
+                m.DataHoraInicio.TimeOfDay >= horaInicio &&
+                m.DataHoraFim.TimeOfDay <= horaFim);
         }
     }
 }

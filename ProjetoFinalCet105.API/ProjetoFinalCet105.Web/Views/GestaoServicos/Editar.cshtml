@@ -2,7 +2,9 @@
 
 @{
     ViewData["Title"] = "Editar Serviço";
-    Layout = "_AdminLayout";
+    Layout = User.IsInRole("Admin")
+    ? "_AdminLayout"
+    : "_FuncionarioLayout";
 }
 
 <div class="ib-category-form-page">

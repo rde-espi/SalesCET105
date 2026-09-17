@@ -2,7 +2,9 @@
 
 @{
     ViewData["Title"] = "Categorias";
-    Layout = "_AdminLayout";
+    Layout = User.IsInRole("Admin")
+    ? "_AdminLayout"
+    : "_FuncionarioLayout";
 
     var totalCategorias = Model?.Count ?? 0;
     var categoriasAtivas = Model?.Count(c => c.Ativa) ?? 0;

@@ -38,4 +38,5 @@ public class FuncionarioFormViewModel
     public string RoleAtual { get; set; } = "Funcionario";
 
     public PermissaoAdminTemporariaViewModel? PermissaoAdminTemporariaAtiva { get; set; }
+    public List<MeuHorarioViewModel> Horarios { get; set; } = new();
 }

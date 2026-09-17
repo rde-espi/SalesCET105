@@ -180,7 +180,7 @@ builder.Services.AddAuthorization(options =>
     policy.RequireRole("Funcionario", "Admin"));
 
     options.AddPolicy("GerirHorario", policy =>
-        policy.RequireRole("Funcionario", "Admin"));
+        policy.RequireRole("Admin"));
 
     options.AddPolicy("GerirCompetenciasFuncionario", policy =>
     policy.RequireRole("Funcionario", "Admin"));

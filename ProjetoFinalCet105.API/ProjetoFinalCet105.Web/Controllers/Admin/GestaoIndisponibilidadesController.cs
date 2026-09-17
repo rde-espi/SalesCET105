@@ -90,14 +90,17 @@ public class GestaoIndisponibilidadesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Criar(CriarIndisponibilidadeViewModel model)
     {
-        var funcionarios =
-            await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>("api/Funcionarios")
-            ?? new List<FuncionarioViewModel>();
+        var funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>("api/Funcionarios") ?? new List<FuncionarioViewModel>();
 
         model.Funcionarios = funcionarios
             .Where(f => f.Ativo)
             .OrderBy(f => f.NomeCompleto)
             .ToList();
+
+        if (!User.IsInRole("Admin"))
+        {
+            ModelState.Remove(nameof(model.FuncionarioId));
+        }
 
         if (!ModelState.IsValid)
         {
