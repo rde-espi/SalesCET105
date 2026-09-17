@@ -7590,3 +7590,128 @@ body,
 .ib-por-faturar-grid {
     grid-template-columns: minmax(220px, 1.5fr) minmax(180px, 1.25fr) minmax(200px, 1.35fr) 110px 90px 125px;
 }
+
+.ib-despesas-table-header,
+.ib-despesas-row {
+    display: grid;
+    grid-template-columns: minmax(240px, 2fr) minmax(140px, 1fr) minmax(120px, .8fr) minmax(110px, .7fr) 90px;
+    align-items: center;
+    gap: 18px;
+}
+
+.ib-despesas-table-header {
+    padding: 13px 22px;
+    background: #f8f6f1;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--admin-gray);
+}
+
+.ib-despesas-row {
+    padding: 16px 22px;
+    border-bottom: 1px solid rgba(0, 0, 0, .06);
+}
+
+.ib-despesa-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    padding-top: 8px;
+}
+
+.ib-despesa-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ib-despesa-field-wide,
+.ib-despesa-field-full {
+    grid-column: 1 / -1;
+}
+
+.ib-despesa-field label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .05em;
+    color: var(--admin-gray);
+}
+
+.ib-despesa-input {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 14px;
+    border: 1px solid rgba(0, 0, 0, .12);
+    border-radius: 8px;
+    background: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    color: var(--admin-dark);
+    outline: none;
+    transition: .2s ease;
+}
+
+    .ib-despesa-input:focus {
+        border-color: var(--admin-gold);
+        box-shadow: 0 0 0 3px rgba(216, 176, 113, .12);
+    }
+
+.ib-despesa-textarea {
+    min-height: 120px;
+    padding-top: 13px;
+    resize: vertical;
+}
+
+.ib-despesa-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(0, 0, 0, .06);
+}
+
+@media (max-width: 768px) {
+    .ib-despesa-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-despesa-field-wide,
+    .ib-despesa-field-full {
+        grid-column: auto;
+    }
+}
+
+.ib-despesa-detail-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--admin-gold);
+    white-space: nowrap;
+}
+
+.ib-despesa-detail-observacoes {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(0, 0, 0, .06);
+}
+
+    .ib-despesa-detail-observacoes > span {
+        display: block;
+        margin-bottom: 8px;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: var(--admin-gray);
+    }
+
+    .ib-despesa-detail-observacoes p {
+        margin: 0;
+        line-height: 1.7;
+    }

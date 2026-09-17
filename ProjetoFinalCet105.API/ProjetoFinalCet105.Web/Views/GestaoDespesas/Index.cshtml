@@ -1,0 +1,151 @@
+﻿@model ProjetoFinalCet105.Web.Models.GestaoDespesasViewModel
+
+@{
+    ViewData["Title"] = "Despesas";
+    Layout = "_AdminLayout";
+}
+
+<div class="ib-categories-page">
+
+    <div class="ib-categories-heading">
+
+        <div>
+            <span class="ib-section-eyebrow">FINANCEIRO</span>
+            <h1>Despesas</h1>
+            <p>Registe e acompanhe as despesas da Infinity Beauty.</p>
+        </div>
+
+        <a asp-controller="GestaoDespesas" asp-action="Criar"  class="ib-fatura-emitir-btn">
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 5v14"></path>
+                <path d="M5 12h14"></path>
+            </svg>
+
+            Nova despesa
+        </a>
+
+    </div>
+
+    <div class="ib-category-kpi-grid">
+
+        <div class="ib-category-kpi-card">
+            <span>Total de despesas</span>
+            <strong>@Model.TotalDespesas.ToString("C")</strong>
+            <small>Valor acumulado</small>
+        </div>
+
+        <div class="ib-category-kpi-card">
+            <span>Este mês</span>
+            <strong>@Model.TotalMes.ToString("C")</strong>
+            <small>@DateTime.Today.ToString("MMMM yyyy")</small>
+        </div>
+
+        <div class="ib-category-kpi-card">
+            <span>Este ano</span>
+            <strong>@Model.TotalAno.ToString("C")</strong>
+            <small>@DateTime.Today.Year</small>
+        </div>
+
+        <div class="ib-category-kpi-card ib-category-kpi-highlight">
+            <span>Registos</span>
+            <strong>@Model.TotalRegistos</strong>
+            <small>Despesas registadas</small>
+        </div>
+
+    </div>
+
+    <div class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+            <div>
+                <span class="ib-section-eyebrow">DESPESAS</span>
+                <h2>Histórico de despesas</h2>
+                <p>Consulte os registos e respetivos valores.</p>
+            </div>
+        </div>
+
+        @if (Model.Despesas.Any())
+        {
+            <div class="ib-faturas-table-wrap">
+
+                <div class="ib-despesas-table-header">
+                    <span>Descrição</span>
+                    <span>Categoria</span>
+                    <span>Data</span>
+                    <span>Valor</span>
+                    <span>Ações</span>
+                </div>
+
+                @foreach (var despesa in Model.Despesas)
+                {
+                    <div class="ib-despesas-row">
+
+                        <div class="ib-category-name">
+                            <strong>@despesa.Descricao</strong>
+
+                            @if (!string.IsNullOrWhiteSpace(despesa.Observacoes))
+                            {
+                                <small>@despesa.Observacoes</small>
+                            }
+                        </div>
+
+                        <div>
+                            @if (!string.IsNullOrWhiteSpace(despesa.Categoria))
+                            {
+                                <span class="ib-category-status active">
+                                    @despesa.Categoria
+                                </span>
+                            }
+                            else
+                            {
+                                <span>—</span>
+                            }
+                        </div>
+
+                        <div class="ib-fatura-data">
+                            <strong>
+                                @despesa.DataDespesa.ToString("dd/MM/yyyy")
+                            </strong>
+                        </div>
+
+                        <div class="ib-fatura-total">
+                            @despesa.Valor.ToString("C")
+                        </div>
+
+                        <div class="ib-category-actions">
+
+                            <a asp-controller="GestaoDespesas"
+                               asp-action="Detalhes"
+                               asp-route-id="@despesa.Id"
+                               class="ib-category-action-btn"
+                               title="Ver detalhes"
+                               aria-label="Ver detalhes da despesa">
+
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"></path>
+                                    <circle cx="12" cy="12" r="2.5"></circle>
+                                </svg>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-faturas-empty">
+                <strong>Ainda não existem despesas registadas.</strong>
+                <p>
+                    Utilize “Nova despesa” para adicionar o primeiro registo.
+                </p>
+            </div>
+        }
+
+    </div>
+
+</div>

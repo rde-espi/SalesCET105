@@ -1,0 +1,131 @@
+﻿@model ProjetoFinalCet105.Web.Models.DespesaViewModel
+
+@{
+    ViewData["Title"] = "Editar despesa";
+    Layout = "_AdminLayout";
+}
+
+<div class="ib-categories-page">
+
+    <div class="ib-categories-heading">
+        <div>
+            <span class="ib-section-eyebrow">FINANCEIRO</span>
+            <h1>Editar despesa</h1>
+            <p>Atualize os dados do registo financeiro.</p>
+        </div>
+
+        <a asp-controller="GestaoDespesas"
+           asp-action="Index"
+           class="ib-category-back-btn">
+            ← Voltar
+        </a>
+    </div>
+
+    <form asp-controller="GestaoDespesas" asp-action="Editar" asp-route-id="@Model.Id" method="post">
+
+    @Html.AntiForgeryToken()
+
+    <input asp-for="Id" type="hidden" />
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger"></div>
+
+        <div class="ib-fatura-detail-card">
+
+            <div class="ib-fatura-detail-card-header">
+                <div>
+                    <span class="ib-section-eyebrow">DESPESA</span>
+                    <h2>Dados do registo</h2>
+                    <p>Preencha os dados relativos à despesa.</p>
+                </div>
+            </div>
+
+            <div class="ib-despesa-form-grid">
+
+                <div class="ib-despesa-field ib-despesa-field-wide">
+                    <label asp-for="Descricao">Descrição *</label>
+
+                    <input asp-for="Descricao"
+                           class="ib-despesa-input"
+                           placeholder="Ex.: Renda do espaço" />
+
+                    <span asp-validation-for="Descricao"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="ib-despesa-field">
+                    <label asp-for="Valor">Valor (€) *</label>
+
+                    <input asp-for="Valor"
+                           type="number"
+                           step="0.01"
+                           min="0.01"
+                           class="ib-despesa-input"
+                           placeholder="0,00" />
+
+                    <span asp-validation-for="Valor"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="ib-despesa-field">
+                    <label asp-for="DataDespesa">Data da despesa *</label>
+
+                    <input asp-for="DataDespesa"
+                           type="date"
+                           class="ib-despesa-input" />
+
+                    <span asp-validation-for="DataDespesa"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="ib-despesa-field ib-despesa-field-wide">
+                    <label asp-for="Categoria">Categoria</label>
+
+                    <input asp-for="Categoria"
+                           class="ib-despesa-input"
+                           placeholder="Ex.: Conta fixa, Material, Manutenção..." />
+
+                    <span asp-validation-for="Categoria"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="ib-despesa-field ib-despesa-field-full">
+                    <label asp-for="Observacoes">Observações</label>
+
+                    <textarea asp-for="Observacoes"
+                              class="ib-despesa-input ib-despesa-textarea"
+                              rows="5"
+                              placeholder="Informações adicionais sobre esta despesa..."></textarea>
+
+                    <span asp-validation-for="Observacoes"
+                          class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="ib-despesa-form-actions">
+
+                <a asp-controller="GestaoDespesas"
+                   asp-action="Index"
+                   class="ib-category-back-btn">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                    class="ib-fatura-emitir-btn">
+                    Guardar alterações
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

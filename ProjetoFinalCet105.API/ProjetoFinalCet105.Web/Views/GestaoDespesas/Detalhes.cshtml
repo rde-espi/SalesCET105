@@ -1,0 +1,106 @@
+﻿@model ProjetoFinalCet105.Web.Models.DespesaViewModel
+
+@{
+    ViewData["Title"] = "Detalhes da despesa";
+    Layout = "_AdminLayout";
+}
+
+<div class="ib-categories-page">
+
+    <div class="ib-categories-heading">
+
+        <div>
+            <span class="ib-section-eyebrow">FINANCEIRO</span>
+            <h1>Detalhes da despesa</h1>
+            <p>Consulte os dados do registo financeiro.</p>
+        </div>
+
+        <a asp-controller="GestaoDespesas"
+           asp-action="Index"
+           class="ib-category-back-btn">
+            ← Voltar
+        </a>
+
+    </div>
+
+    <div class="ib-fatura-detail-card">
+
+        <div class="ib-fatura-detail-card-header">
+
+            <div>
+                <span class="ib-section-eyebrow">DESPESA</span>
+                <h2>@Model.Descricao</h2>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Categoria))
+                {
+                    <span class="ib-category-status active">
+                        @Model.Categoria
+                    </span>
+                }
+            </div>
+
+            <strong class="ib-despesa-detail-value">
+                @Model.Valor.ToString("C")
+            </strong>
+
+        </div>
+
+        <div class="ib-fatura-detail-info-grid">
+
+            <div>
+                <span>Data da despesa</span>
+                <strong>@Model.DataDespesa.ToString("dd/MM/yyyy")</strong>
+            </div>
+
+            <div>
+                <span>Data de registo</span>
+                <strong>@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")</strong>
+            </div>
+
+        </div>
+
+        <div class="ib-despesa-detail-observacoes">
+
+            <span>Observações</span>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Observacoes))
+            {
+                <p>@Model.Observacoes</p>
+            }
+            else
+            {
+                <p>Sem observações registadas.</p>
+            }
+
+        </div>
+
+        <div class="ib-despesa-form-actions">
+
+            <form asp-controller="GestaoDespesas"
+      asp-action="Eliminar"
+      asp-route-id="@Model.Id"
+      method="post"
+      class="ib-fatura-cancel-form"
+      onsubmit="return confirm('Tem a certeza de que pretende eliminar esta despesa? Esta operação não poderá ser revertida.');">
+
+    @Html.AntiForgeryToken()
+
+    <button type="submit"
+            class="ib-category-back-btn">
+        Eliminar
+    </button>
+
+</form>
+
+            <a asp-controller="GestaoDespesas"
+            asp-action="Editar"
+            asp-route-id="@Model.Id"
+            class="ib-fatura-emitir-btn">
+            Editar despesa
+        </a>
+
+        </div>
+
+    </div>
+
+</div>
