@@ -19,7 +19,7 @@ public class GestaoNotificacoesController : Controller
     {
         try
         {
-            var notificacoes = await _apiService.GetAuthenticatedAsync<List<NotificacaoDashboardViewModel>>( "api/Notificacoes")
+            var notificacoes = await _apiService.GetAuthenticatedAsync<List<NotificacaoDashboardViewModel>>("api/Notificacoes")
                 ?? new List<NotificacaoDashboardViewModel>();
 
             return View(notificacoes
@@ -28,7 +28,7 @@ public class GestaoNotificacoesController : Controller
         }
         catch (Exception)
         {
-            TempData["ErrorMessage"] ="Não foi possível carregar as notificações.";
+            TempData["ErrorMessage"] = "Não foi possível carregar as notificações.";
 
             return View(new List<NotificacaoDashboardViewModel>());
         }
@@ -40,7 +40,7 @@ public class GestaoNotificacoesController : Controller
     {
         try
         {
-            var response = await _apiService.SendAuthenticatedJsonAsync<object>( HttpMethod.Put,$"api/Notificacoes/{id}/lida", null);
+            var response = await _apiService.SendAuthenticatedJsonAsync<object>(HttpMethod.Put, $"api/Notificacoes/{id}/lida", null);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -61,7 +61,7 @@ public class GestaoNotificacoesController : Controller
     {
         try
         {
-            var response = await _apiService.SendAuthenticatedJsonAsync<object>( HttpMethod.Put, "api/Notificacoes/marcar-todas-lidas", null);
+            var response = await _apiService.SendAuthenticatedJsonAsync<object>(HttpMethod.Put, "api/Notificacoes/marcar-todas-lidas", null);
 
             if (response.IsSuccessStatusCode)
             {

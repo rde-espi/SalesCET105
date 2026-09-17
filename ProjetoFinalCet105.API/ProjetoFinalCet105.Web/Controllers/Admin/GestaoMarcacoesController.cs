@@ -79,7 +79,7 @@ public class GestaoMarcacoesController : Controller
             };
 
             using var response =
-                await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post,"api/Marcacoes", dto);
+                await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Marcacoes", dto);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -102,7 +102,7 @@ public class GestaoMarcacoesController : Controller
         }
         catch
         {
-            ModelState.AddModelError( string.Empty, "Ocorreu um erro ao criar a marcação.");
+            ModelState.AddModelError(string.Empty, "Ocorreu um erro ao criar a marcação.");
 
             await CarregarDadosNovaMarcacao(model);
 
@@ -362,7 +362,7 @@ public class GestaoMarcacoesController : Controller
     {
         var clientes = await _apiService.GetAuthenticatedAsync<List<ClienteViewModel>>("api/Clientes");
 
-        var servicos = await _apiService.GetAuthenticatedAsync<List<ServicoViewModel>>( "api/Servicos");
+        var servicos = await _apiService.GetAuthenticatedAsync<List<ServicoViewModel>>("api/Servicos");
 
         model.Clientes = clientes?
             .Where(c => c.Ativo)
@@ -382,7 +382,7 @@ public class GestaoMarcacoesController : Controller
     {
         try
         {
-            var funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>( $"api/Funcionarios/servico/{servicoId}");
+            var funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>($"api/Funcionarios/servico/{servicoId}");
 
             return Json(
                 funcionarios?

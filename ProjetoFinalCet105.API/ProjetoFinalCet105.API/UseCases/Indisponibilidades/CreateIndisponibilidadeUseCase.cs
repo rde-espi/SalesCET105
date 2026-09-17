@@ -34,11 +34,11 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
         public async Task<UseCaseResult<IndisponibilidadeDTO>> ExecuteAsync(string userId, bool isFuncionario, bool isAdmin, NovaIndisponibilidadeDTO dto)
         {
             // 1. Determinar qual funcionário será afetado
-            var funcionarioIdResult = await ObterFuncionarioIdAsync( userId, isFuncionario, isAdmin, dto.FuncionarioId);
+            var funcionarioIdResult = await ObterFuncionarioIdAsync(userId, isFuncionario, isAdmin, dto.FuncionarioId);
 
             if (!funcionarioIdResult.Sucesso)
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha( funcionarioIdResult.Erro!, funcionarioIdResult.TipoErro);
+                return UseCaseResult<IndisponibilidadeDTO>.Falha(funcionarioIdResult.Erro!, funcionarioIdResult.TipoErro);
             }
 
             var funcionarioId = funcionarioIdResult.Dados;
@@ -54,7 +54,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
 
             if (!funcionario.Ativo)
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha( "O funcionário indicado não está ativo.");
+                return UseCaseResult<IndisponibilidadeDTO>.Falha("O funcionário indicado não está ativo.");
             }
 
 
@@ -63,7 +63,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
 
             if (!validacaoTipo.Sucesso)
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha( validacaoTipo.Erro!, validacaoTipo.TipoErro);
+                return UseCaseResult<IndisponibilidadeDTO>.Falha(validacaoTipo.Erro!, validacaoTipo.TipoErro);
             }
 
 
@@ -72,7 +72,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
 
             if (!horariosTrabalho.Any())
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha( "O funcionário não possui horário de trabalho definido para este dia.");
+                return UseCaseResult<IndisponibilidadeDTO>.Falha("O funcionário não possui horário de trabalho definido para este dia.");
             }
 
 
@@ -99,7 +99,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
 
             if (!periodoResult.Sucesso)
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha( periodoResult.Erro!, periodoResult.TipoErro);
+                return UseCaseResult<IndisponibilidadeDTO>.Falha(periodoResult.Erro!, periodoResult.TipoErro);
             }
 
             var inicio = periodoResult.Dados.Inicio;
@@ -118,7 +118,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
 
             if (!conflitoMarcacao.Sucesso)
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha( conflitoMarcacao.Erro!,conflitoMarcacao.TipoErro);
+                return UseCaseResult<IndisponibilidadeDTO>.Falha(conflitoMarcacao.Erro!, conflitoMarcacao.TipoErro);
             }
 
 
@@ -127,7 +127,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
 
             if (existeSobreposicao)
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha( "Já existe uma indisponibilidade sobreposta para este funcionário.", TipoErro.Conflito);
+                return UseCaseResult<IndisponibilidadeDTO>.Falha("Já existe uma indisponibilidade sobreposta para este funcionário.", TipoErro.Conflito);
             }
 
 
@@ -165,7 +165,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
 
                         foreach (var admin in administradores)
                         {
-                            await _notificacaoService.CriarNotificacaoAsync( admin.Id, "Nova indisponibilidade", mensagem);
+                            await _notificacaoService.CriarNotificacaoAsync(admin.Id, "Nova indisponibilidade", mensagem);
                         }
                     }
                     catch

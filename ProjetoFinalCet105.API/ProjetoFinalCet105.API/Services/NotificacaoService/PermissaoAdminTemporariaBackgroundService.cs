@@ -50,7 +50,7 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
                                 "Os seus privilégios administrativos temporários expiraram. " +
                                 "O seu perfil voltou automaticamente ao nível de Funcionário.");
 
-                            var nomeFuncionario =permissao.FuncionarioUser?.NomeCompleto ?? "Funcionário";
+                            var nomeFuncionario = permissao.FuncionarioUser?.NomeCompleto ?? "Funcionário";
 
                             await notificacaoService.CriarNotificacaoAsync(
                                 permissao.ConcedidoPorUserId,

@@ -19,7 +19,7 @@ public class GestaoMensagensController : Controller
     {
         try
         {
-            var conversas = await _apiService.GetAuthenticatedAsync<List<ConversaViewModel>>( "api/Conversas")?? new List<ConversaViewModel>();
+            var conversas = await _apiService.GetAuthenticatedAsync<List<ConversaViewModel>>("api/Conversas") ?? new List<ConversaViewModel>();
 
             var model = new GestaoMensagensViewModel
             {
@@ -50,7 +50,7 @@ public class GestaoMensagensController : Controller
     {
         try
         {
-            var conversa = await _apiService.GetAuthenticatedAsync<ConversaViewModel>( $"api/Conversas/{id}");
+            var conversa = await _apiService.GetAuthenticatedAsync<ConversaViewModel>($"api/Conversas/{id}");
 
             if (conversa == null)
                 return NotFound();

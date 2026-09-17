@@ -29,9 +29,9 @@ public class PesquisaController : Controller
 
         try
         {
-            var clientes = await _apiService.GetAuthenticatedAsync<List<ClienteViewModel>>("api/Clientes")?? new List<ClienteViewModel>();
+            var clientes = await _apiService.GetAuthenticatedAsync<List<ClienteViewModel>>("api/Clientes") ?? new List<ClienteViewModel>();
 
-            var servicos = await _apiService.GetAuthenticatedAsync<List<ServicoViewModel>>("api/Servicos")?? new List<ServicoViewModel>();
+            var servicos = await _apiService.GetAuthenticatedAsync<List<ServicoViewModel>>("api/Servicos") ?? new List<ServicoViewModel>();
 
             var marcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoClienteViewModel>>("api/Marcacoes") ?? new List<MarcacaoClienteViewModel>();
 
@@ -88,6 +88,6 @@ public class PesquisaController : Controller
 
     private static bool Contem(string? valor, string termo)
     {
-        return !string.IsNullOrWhiteSpace(valor) && valor.Contains( termo, StringComparison.OrdinalIgnoreCase);
+        return !string.IsNullOrWhiteSpace(valor) && valor.Contains(termo, StringComparison.OrdinalIgnoreCase);
     }
 }

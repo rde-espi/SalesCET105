@@ -36,10 +36,10 @@ public class CategoriasController : Controller
             return NotFound();
         }
 
-        var bytes =  await response.Content.ReadAsByteArrayAsync();
+        var bytes = await response.Content.ReadAsByteArrayAsync();
 
         var contentType = response.Content.Headers.ContentType?.MediaType ?? "image/jpeg";
-        
+
         return File(bytes, contentType);
     }
 
@@ -129,7 +129,7 @@ public class CategoriasController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Editar( int id, CategoriaFormViewModel model)
+    public async Task<IActionResult> Editar(int id, CategoriaFormViewModel model)
     {
         if (id != model.Id)
         {
@@ -141,30 +141,30 @@ public class CategoriasController : Controller
             return View(model);
         }
 
-        using var content =  new MultipartFormDataContent();
+        using var content = new MultipartFormDataContent();
 
         content.Add(new StringContent(model.Nome), "Nome");
 
         if (!string.IsNullOrWhiteSpace(model.Descricao))
         {
-            content.Add( new StringContent(model.Descricao),"Descricao");
+            content.Add(new StringContent(model.Descricao), "Descricao");
         }
 
         if (model.Imagem != null &&
             model.Imagem.Length > 0)
         {
-            var streamContent = new StreamContent( model.Imagem.OpenReadStream());
+            var streamContent = new StreamContent(model.Imagem.OpenReadStream());
 
-            streamContent.Headers.ContentType = new MediaTypeHeaderValue( model.Imagem.ContentType);
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue(model.Imagem.ContentType);
 
-            content.Add(streamContent,"Imagem", model.Imagem.FileName);
+            content.Add(streamContent, "Imagem", model.Imagem.FileName);
         }
 
-        using var response = await _apiService.SendAuthenticatedMultipartAsync( HttpMethod.Put, $"api/Categorias/{id}", content);
+        using var response = await _apiService.SendAuthenticatedMultipartAsync(HttpMethod.Put, $"api/Categorias/{id}", content);
 
         if (!response.IsSuccessStatusCode)
         {
-            ModelState.AddModelError( string.Empty, "Não foi possível atualizar a categoria.");
+            ModelState.AddModelError(string.Empty, "Não foi possível atualizar a categoria.");
 
             return View(model);
         }

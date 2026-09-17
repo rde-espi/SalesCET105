@@ -18,7 +18,7 @@ namespace ProjetoFinalCet105.Web.ViewComponents
         {
             var notificacoes = await _apiService.GetAuthenticatedAsync<List<NotificacaoDashboardViewModel>>("api/Notificacoes") ?? new();
 
-            var contador = await _apiService.GetAuthenticatedAsync<int>( "api/Notificacoes/contador-nao-lidas");
+            var contador = await _apiService.GetAuthenticatedAsync<int>("api/Notificacoes/contador-nao-lidas");
 
             var model = new NotificationBellViewModel
             {

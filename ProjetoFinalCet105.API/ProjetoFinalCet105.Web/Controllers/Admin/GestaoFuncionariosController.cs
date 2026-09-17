@@ -142,7 +142,7 @@ public class GestaoFuncionariosController : Controller
 
         var competenciasFuncionario = await _apiService.GetAuthenticatedAsync<List<FuncionarioCompetenciaViewModel>>($"api/FuncionarioCompetencias/funcionario/{id}");
 
-        var horarios = await _apiService.GetAuthenticatedAsync<List<MeuHorarioViewModel>>( "api/HorarioFuncionarios");
+        var horarios = await _apiService.GetAuthenticatedAsync<List<MeuHorarioViewModel>>("api/HorarioFuncionarios");
 
         horarios ??= new List<MeuHorarioViewModel>();
 
@@ -192,7 +192,7 @@ public class GestaoFuncionariosController : Controller
             CompetenciasFuncionario = competenciasFuncionario
             .OrderBy(c => c.CompetenciaNome)
             .ToList(),
-            
+
 
             Horarios = horarios
             .Where(h => h.FuncionarioId == id)
@@ -503,7 +503,7 @@ public class GestaoFuncionariosController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AdicionarHorario( CriarHorarioFuncionarioViewModel model)
+    public async Task<IActionResult> AdicionarHorario(CriarHorarioFuncionarioViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -514,7 +514,7 @@ public class GestaoFuncionariosController : Controller
             });
         }
 
-        using var response =  await _apiService.SendAuthenticatedJsonAsync(  HttpMethod.Post, "api/HorarioFuncionarios",  model);
+        using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/HorarioFuncionarios", model);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -569,7 +569,7 @@ public class GestaoFuncionariosController : Controller
             });
         }
 
-        using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Delete, $"api/HorarioFuncionarios/{id}");
+        using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Delete, $"api/HorarioFuncionarios/{id}");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -612,7 +612,7 @@ public class GestaoFuncionariosController : Controller
             HoraFim = horaFim
         };
 
-        using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Put, $"api/HorarioFuncionarios/{id}",model);
+        using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Put, $"api/HorarioFuncionarios/{id}", model);
 
         if (!response.IsSuccessStatusCode)
         {

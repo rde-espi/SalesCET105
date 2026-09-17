@@ -113,7 +113,7 @@ public class GestaoIndisponibilidadesController : Controller
             .Where(f => f.Ativo)
             .OrderBy(f => f.NomeCompleto)
             .ToList();
-        
+
 
         if (!User.IsInRole("Admin"))
         {
@@ -181,7 +181,7 @@ public class GestaoIndisponibilidadesController : Controller
         return View(model);
     }
 
-    private static async Task<string> ObterMensagemErroApi( HttpResponseMessage response)
+    private static async Task<string> ObterMensagemErroApi(HttpResponseMessage response)
     {
         try
         {
@@ -231,7 +231,7 @@ public class GestaoIndisponibilidadesController : Controller
 
             if (User.IsInRole("Admin"))
             {
-                funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>("api/Funcionarios")?? new List<FuncionarioViewModel>();
+                funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>("api/Funcionarios") ?? new List<FuncionarioViewModel>();
             }
 
             var tipo =
@@ -280,7 +280,7 @@ public class GestaoIndisponibilidadesController : Controller
 
         if (User.IsInRole("Admin"))
         {
-            funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>( "api/Funcionarios") ?? new List<FuncionarioViewModel>();
+            funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>("api/Funcionarios") ?? new List<FuncionarioViewModel>();
         }
 
         model.Funcionarios = funcionarios

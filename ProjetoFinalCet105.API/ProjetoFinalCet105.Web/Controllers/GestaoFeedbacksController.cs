@@ -59,7 +59,7 @@ public class GestaoFeedbacksController : Controller
     {
         try
         {
-            var feedback = await _apiService.GetAuthenticatedAsync<FeedbackViewModel>( $"api/Feedbacks/{id}");
+            var feedback = await _apiService.GetAuthenticatedAsync<FeedbackViewModel>($"api/Feedbacks/{id}");
 
             if (feedback == null)
                 return NotFound();
@@ -107,13 +107,13 @@ public class GestaoFeedbacksController : Controller
                 Comentario = model.Comentario
             };
 
-            var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Put, $"api/Feedbacks/{id}",request);
+            var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Put, $"api/Feedbacks/{id}", request);
 
             if (response.IsSuccessStatusCode)
             {
                 TempData["SuccessMessage"] = "Feedback atualizado com sucesso.";
 
-                return RedirectToAction(nameof(Detalhes),new { id });
+                return RedirectToAction(nameof(Detalhes), new { id });
             }
 
             TempData["ErrorMessage"] = "Não foi possível atualizar o feedback.";
@@ -133,11 +133,11 @@ public class GestaoFeedbacksController : Controller
     {
         try
         {
-            var response = await _apiService.SendAuthenticatedJsonAsync<object>( HttpMethod.Delete, $"api/Feedbacks/{id}", null);
+            var response = await _apiService.SendAuthenticatedJsonAsync<object>(HttpMethod.Delete, $"api/Feedbacks/{id}", null);
 
             if (response.IsSuccessStatusCode)
             {
-                TempData["SuccessMessage"] ="Feedback eliminado com sucesso.";
+                TempData["SuccessMessage"] = "Feedback eliminado com sucesso.";
 
                 return RedirectToAction(nameof(Index));
             }
@@ -149,6 +149,6 @@ public class GestaoFeedbacksController : Controller
             TempData["ErrorMessage"] = "Não foi possível eliminar o feedback.";
         }
 
-        return RedirectToAction( nameof(Detalhes), new { id });
+        return RedirectToAction(nameof(Detalhes), new { id });
     }
 }
