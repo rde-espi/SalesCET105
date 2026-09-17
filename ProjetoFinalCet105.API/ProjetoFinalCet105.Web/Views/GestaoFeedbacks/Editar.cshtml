@@ -1,0 +1,103 @@
+﻿@model ProjetoFinalCet105.Web.Models.FeedbackViewModel
+
+@{
+    ViewData["Title"] = "Editar feedback";
+    Layout = "_AdminLayout";
+}
+
+<div class="ib-categories-page">
+
+    <div class="ib-categories-heading">
+        <div>
+            <span class="ib-section-eyebrow">QUALIDADE</span>
+            <h1>Editar feedback</h1>
+            <p>Modere a avaliação submetida pelo cliente.</p>
+        </div>
+
+        <a asp-controller="GestaoFeedbacks"
+           asp-action="Detalhes"
+           asp-route-id="@Model.Id"
+           class="ib-category-back-btn">
+            Voltar
+        </a>
+    </div>
+
+    <div class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+            <div>
+                <span class="ib-section-eyebrow">AVALIAÇÃO</span>
+                <h2>Dados do feedback</h2>
+                <p>
+                    @Model.ClienteNome → @Model.FuncionarioNome
+                </p>
+            </div>
+        </div>
+
+        <form asp-controller="GestaoFeedbacks"
+              asp-action="Editar"
+              asp-route-id="@Model.Id"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input asp-for="Id" type="hidden" />
+
+            <div class="ib-despesa-form-grid">
+
+                <div class="ib-despesa-field">
+                    <label asp-for="Classificacao">
+                        Classificação *
+                    </label>
+
+                    <select asp-for="Classificacao"
+                            class="ib-despesa-input">
+                        <option value="5">5 estrelas</option>
+                        <option value="4">4 estrelas</option>
+                        <option value="3">3 estrelas</option>
+                        <option value="2">2 estrelas</option>
+                        <option value="1">1 estrela</option>
+                    </select>
+                </div>
+
+                <div class="ib-despesa-field">
+                    <label>Marcação</label>
+
+                    <input value="#@Model.MarcacaoId"
+                           class="ib-despesa-input"
+                           disabled />
+                </div>
+
+                <div class="ib-despesa-field ib-despesa-field-full">
+                    <label asp-for="Comentario">
+                        Comentário
+                    </label>
+
+                    <textarea asp-for="Comentario"
+                              class="ib-despesa-textarea"
+                              rows="6"></textarea>
+                </div>
+
+            </div>
+
+            <div class="ib-despesa-form-actions">
+
+                <a asp-controller="GestaoFeedbacks"
+                   asp-action="Detalhes"
+                   asp-route-id="@Model.Id"
+                   class="ib-category-back-btn">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="ib-fatura-emitir-btn">
+                    Guardar alterações
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

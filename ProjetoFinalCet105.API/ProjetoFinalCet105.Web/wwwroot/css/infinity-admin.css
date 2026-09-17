@@ -8193,3 +8193,379 @@ body,
         max-width: 92%;
     }
 }
+
+/* =========================================================
+   FEEDBACKS
+   ========================================================= */
+
+.ib-feedback-filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ib-feedback-filter-select {
+    height: 42px;
+    min-width: 180px;
+    padding: 0 35px 0 13px;
+    border: 1px solid rgba(216, 176, 113, .25);
+    border-radius: 8px;
+    background: #fff;
+    color: #535333;
+    font-family: inherit;
+    font-size: 12px;
+    outline: none;
+}
+
+    .ib-feedback-filter-select:focus {
+        border-color: #d8b071;
+    }
+
+.ib-feedback-table {
+    width: 100%;
+}
+
+.ib-feedback-table-header,
+.ib-feedback-row {
+    display: grid;
+    grid-template-columns: minmax(170px, 1.1fr) minmax(180px, 1.1fr) 145px minmax(190px, 1.5fr) 110px 60px;
+    align-items: center;
+    gap: 18px;
+}
+
+.ib-feedback-table-header {
+    padding: 12px 18px;
+    border-bottom: 1px solid rgba(216, 176, 113, .18);
+}
+
+    .ib-feedback-table-header span {
+        color: #817a70;
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .07em;
+    }
+
+.ib-feedback-row {
+    min-height: 76px;
+    padding: 13px 18px;
+    border-bottom: 1px solid rgba(216, 176, 113, .12);
+    transition: background .2s ease;
+}
+
+    .ib-feedback-row:hover {
+        background: rgba(248, 245, 239, .55);
+    }
+
+/* Estrelas */
+
+.ib-feedback-rating {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    white-space: nowrap;
+}
+
+    .ib-feedback-rating span {
+        color: #d8d4cd;
+        font-size: 15px;
+    }
+
+        .ib-feedback-rating span.active {
+            color: #d8b071;
+        }
+
+    .ib-feedback-rating small {
+        margin-left: 5px;
+        color: #817a70;
+        font-size: 11px;
+    }
+
+/* Comentário */
+
+.ib-feedback-comment {
+    min-width: 0;
+}
+
+    .ib-feedback-comment span {
+        display: block;
+        overflow: hidden;
+        color: #535333;
+        font-size: 12px;
+        line-height: 1.45;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+.ib-feedback-no-comment {
+    color: #a39d94 !important;
+    font-style: italic;
+}
+
+/* Data */
+
+.ib-feedback-date {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+    .ib-feedback-date strong {
+        color: #191919;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .ib-feedback-date small {
+        color: #817a70;
+        font-size: 10px;
+    }
+
+@media (max-width: 1200px) {
+
+    .ib-feedback-table {
+        overflow-x: auto;
+    }
+
+    .ib-feedback-table-header,
+    .ib-feedback-row {
+        min-width: 1050px;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .ib-feedback-filters {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ib-feedback-filter-select {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   FEEDBACKS - DETALHES
+   ========================================================= */
+
+.ib-feedback-detail-rating-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.ib-feedback-detail-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.ib-feedback-detail-stars {
+    display: flex;
+    gap: 3px;
+}
+
+    .ib-feedback-detail-stars span {
+        color: #d8d4cd;
+        font-size: 25px;
+        line-height: 1;
+    }
+
+        .ib-feedback-detail-stars span.active {
+            color: #d8b071;
+        }
+
+.ib-feedback-detail-rating > strong {
+    margin-left: 8px;
+    color: #191919;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 30px;
+    line-height: 1;
+    font-weight: 600;
+}
+
+.ib-feedback-detail-rating > small {
+    color: #817a70;
+    font-size: 12px;
+}
+
+.ib-feedback-detail-date {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+    .ib-feedback-detail-date span,
+    .ib-feedback-detail-booking span {
+        color: #817a70;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: .07em;
+    }
+
+    .ib-feedback-detail-date strong,
+    .ib-feedback-detail-booking strong {
+        margin-top: 3px;
+        color: #191919;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .ib-feedback-detail-date small {
+        color: #817a70;
+        font-size: 11px;
+    }
+
+/* Intervenientes */
+
+.ib-feedback-detail-people {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding-top: 12px;
+}
+
+.ib-feedback-detail-person {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 230px;
+}
+
+    .ib-feedback-detail-person > div:last-child {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .ib-feedback-detail-person span {
+        color: #817a70;
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: .07em;
+    }
+
+    .ib-feedback-detail-person strong {
+        color: #191919;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+.ib-feedback-detail-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d8b071;
+}
+
+.ib-feedback-detail-booking {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: auto;
+}
+
+/* Comentário */
+
+.ib-feedback-detail-comment {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-top: 10px;
+    padding: 22px 24px;
+    border: 1px solid rgba(216, 176, 113, .20);
+    border-radius: 12px;
+    background: #f8f5ef;
+}
+
+    .ib-feedback-detail-comment svg {
+        flex: 0 0 auto;
+        margin-top: 2px;
+        color: #d8b071;
+    }
+
+    .ib-feedback-detail-comment p {
+        margin: 0;
+        color: #535333;
+        font-size: 14px;
+        line-height: 1.7;
+        white-space: pre-wrap;
+    }
+
+.ib-feedback-detail-no-comment {
+    margin-top: 10px;
+    padding: 22px 24px;
+    border-radius: 12px;
+    background: #f8f5ef;
+    color: #817a70;
+    font-size: 13px;
+    font-style: italic;
+}
+
+/* Ações */
+
+.ib-feedback-detail-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+    .ib-feedback-detail-actions > div {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+.ib-feedback-delete-btn {
+    min-height: 42px;
+    padding: 0 18px;
+    border: 1px solid rgba(150, 65, 65, .28);
+    border-radius: 8px;
+    background: #fff;
+    color: #8b4747;
+    font-family: inherit;
+    font-size: 12px;
+}
+
+    .ib-feedback-delete-btn:disabled,
+    .ib-feedback-detail-actions .ib-fatura-emitir-btn:disabled {
+        cursor: not-allowed;
+        opacity: .55;
+    }
+
+@media (max-width: 800px) {
+
+    .ib-feedback-detail-people {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .ib-feedback-detail-arrow {
+        margin-left: 18px;
+        transform: rotate(90deg);
+    }
+
+    .ib-feedback-detail-booking {
+        width: 100%;
+        align-items: flex-start;
+        margin-left: 0;
+        padding-top: 14px;
+        border-top: 1px solid rgba(216, 176, 113, .15);
+    }
+
+    .ib-feedback-detail-actions {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+        .ib-feedback-detail-actions > div {
+            justify-content: flex-end;
+        }
+}

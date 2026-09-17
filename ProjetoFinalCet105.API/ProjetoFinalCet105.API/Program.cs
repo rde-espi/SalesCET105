@@ -308,6 +308,7 @@ builder.Services.AddScoped<GetFeedbacksByFuncionarioUseCase>();
 builder.Services.AddScoped<GetFeedbackResumoFuncionarioUseCase>();
 builder.Services.AddScoped<UpdateFeedbackUseCase>();
 builder.Services.AddScoped<DeleteFeedbackUseCase>();
+builder.Services.AddScoped<GetAllFeedbacksUseCase>();
 builder.Services.AddScoped<CreateIndisponibilidadeUseCase>();
 builder.Services.AddScoped<UpdateIndisponibilidadeUseCase>();
 builder.Services.AddScoped<DeleteIndisponibilidadeUseCase>();

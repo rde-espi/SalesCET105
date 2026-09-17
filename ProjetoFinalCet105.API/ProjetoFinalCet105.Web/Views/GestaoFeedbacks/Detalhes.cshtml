@@ -1,0 +1,200 @@
+﻿@model ProjetoFinalCet105.Web.Models.FeedbackViewModel
+
+@{
+    ViewData["Title"] = "Detalhes do feedback";
+    Layout = "_AdminLayout";
+
+    var clienteInicial = !string.IsNullOrWhiteSpace(Model.ClienteNome)
+        ? Model.ClienteNome.Substring(0, 1).ToUpper()
+        : "C";
+
+    var profissionalInicial = !string.IsNullOrWhiteSpace(Model.FuncionarioNome)
+        ? Model.FuncionarioNome.Substring(0, 1).ToUpper()
+        : "P";
+}
+
+<div class="ib-categories-page">
+
+    <!-- CABEÇALHO -->
+    <div class="ib-categories-heading">
+        <div>
+            <span class="ib-section-eyebrow">QUALIDADE</span>
+            <h1>Detalhes do feedback</h1>
+            <p>Consulte a avaliação submetida pelo cliente.</p>
+        </div>
+
+        <a asp-controller="GestaoFeedbacks"
+           asp-action="Index"
+           class="ib-category-back-btn">
+            Voltar
+        </a>
+    </div>
+
+    <!-- AVALIAÇÃO PRINCIPAL -->
+    <div class="ib-category-panel ib-feedback-detail-rating-card">
+
+        <div>
+            <span class="ib-section-eyebrow">AVALIAÇÃO DO CLIENTE</span>
+
+            <div class="ib-feedback-detail-rating">
+
+                <div class="ib-feedback-detail-stars">
+                    @for (var i = 1; i <= 5; i++)
+                    {
+                        <span class="@(i <= Model.Classificacao ? "active" : "")">
+                            ★
+                        </span>
+                    }
+                </div>
+
+                <strong>@Model.Classificacao.ToString("0.0")</strong>
+                <small>/ 5</small>
+
+            </div>
+        </div>
+
+        <div class="ib-feedback-detail-date">
+            <span>Submetido em</span>
+            <strong>@Model.DataCriacao.ToString("dd/MM/yyyy")</strong>
+            <small>@Model.DataCriacao.ToString("HH:mm")</small>
+        </div>
+
+    </div>
+
+    <!-- CLIENTE / PROFISSIONAL -->
+    <div class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+            <div>
+                <span class="ib-section-eyebrow">INFORMAÇÃO</span>
+                <h2>Intervenientes</h2>
+                <p>Cliente e profissional associados à avaliação.</p>
+            </div>
+        </div>
+
+        <div class="ib-feedback-detail-people">
+
+            <!-- CLIENTE -->
+            <div class="ib-feedback-detail-person">
+
+                <div class="ib-employee-avatar">
+                    <span class="ib-employee-initials">
+                        @clienteInicial
+                    </span>
+                </div>
+
+                <div>
+                    <span>Cliente</span>
+                    <strong>@Model.ClienteNome</strong>
+                </div>
+
+            </div>
+
+            <div class="ib-feedback-detail-arrow">
+                <svg viewBox="0 0 24 24"
+                     width="24"
+                     height="24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.5">
+                    <path d="M5 12h14" />
+                    <path d="M15 8l4 4-4 4" />
+                </svg>
+            </div>
+
+            <!-- PROFISSIONAL -->
+            <div class="ib-feedback-detail-person">
+
+                <div class="ib-employee-avatar">
+                    <span class="ib-employee-initials">
+                        @profissionalInicial
+                    </span>
+                </div>
+
+                <div>
+                    <span>Profissional</span>
+                    <strong>@Model.FuncionarioNome</strong>
+                </div>
+
+            </div>
+
+            <div class="ib-feedback-detail-booking">
+                <span>Marcação</span>
+                <strong>#@Model.MarcacaoId</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- COMENTÁRIO -->
+    <div class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+            <div>
+                <span class="ib-section-eyebrow">COMENTÁRIO</span>
+                <h2>Opinião do cliente</h2>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Comentario))
+        {
+            <div class="ib-feedback-detail-comment">
+
+                <svg viewBox="0 0 24 24"
+                     width="22"
+                     height="22"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.5">
+                    <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+                </svg>
+
+                <p>@Model.Comentario</p>
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-feedback-detail-no-comment">
+                O cliente não deixou comentário.
+            </div>
+        }
+
+    </div>
+
+    <!-- AÇÕES -->
+    <div class="ib-feedback-detail-actions">
+
+        <a asp-controller="GestaoFeedbacks"
+           asp-action="Index"
+           class="ib-category-back-btn">
+            Voltar
+        </a>
+
+        <div>
+            <form asp-controller="GestaoFeedbacks"
+      asp-action="Eliminar"
+      asp-route-id="@Model.Id"
+      method="post"
+      onsubmit="return confirm('Tem a certeza de que pretende eliminar este feedback? Esta ação não pode ser anulada.');">
+
+    @Html.AntiForgeryToken()
+
+    <button type="submit"
+            class="ib-feedback-delete-btn">
+        Eliminar feedback
+    </button>
+</form>
+
+<a asp-controller="GestaoFeedbacks"
+   asp-action="Editar"
+   asp-route-id="@Model.Id"
+   class="ib-fatura-emitir-btn">
+    Editar feedback
+</a>
+        </div>
+
+    </div>
+
+</div>

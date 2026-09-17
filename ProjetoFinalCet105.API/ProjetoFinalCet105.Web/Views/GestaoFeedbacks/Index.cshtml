@@ -1,0 +1,312 @@
+﻿@model ProjetoFinalCet105.Web.Models.GestaoFeedbacksViewModel
+
+@{
+    ViewData["Title"] = "Feedbacks";
+    Layout = "_AdminLayout";
+}
+
+<div class="ib-categories-page">
+
+    <!-- CABEÇALHO -->
+    <div class="ib-categories-heading">
+        <div>
+            <span class="ib-section-eyebrow">QUALIDADE</span>
+            <h1>Feedbacks</h1>
+            <p>Acompanhe as avaliações dos clientes sobre os profissionais.</p>
+        </div>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <!-- KPIs -->
+    <div class="ib-category-kpi-grid">
+
+        <div class="ib-category-kpi-card">
+            <span>Total de avaliações</span>
+            <strong>@Model.TotalFeedbacks</strong>
+            <small>Feedbacks registados</small>
+        </div>
+
+        <div class="ib-category-kpi-card ib-category-kpi-highlight">
+            <span>Média geral</span>
+            <strong>@Model.MediaGeral.ToString("0.0")</strong>
+            <small>Classificação média</small>
+        </div>
+
+        <div class="ib-category-kpi-card">
+            <span>5 estrelas</span>
+            <strong>@Model.CincoEstrelas</strong>
+            <small>Avaliações máximas</small>
+        </div>
+
+        <div class="ib-category-kpi-card">
+            <span>Profissionais avaliados</span>
+            <strong>@Model.ProfissionaisAvaliados</strong>
+            <small>Profissionais distintos</small>
+        </div>
+
+    </div>
+
+    <!-- PAINEL -->
+    <div class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+
+            <div>
+                <span class="ib-section-eyebrow">AVALIAÇÕES</span>
+                <h2>Feedback dos clientes</h2>
+                <p>Consulte e faça a gestão das avaliações registadas.</p>
+            </div>
+
+            <div class="ib-feedback-filters">
+
+                <div class="ib-category-search">
+                    <input type="text"
+                           id="pesquisaFeedback"
+                           placeholder="Pesquisar cliente ou profissional..." />
+                </div>
+
+                <select id="filtroClassificacao"
+                        class="ib-feedback-filter-select">
+                    <option value="">Todas as avaliações</option>
+                    <option value="5">5 estrelas</option>
+                    <option value="4">4 estrelas</option>
+                    <option value="3">3 estrelas</option>
+                    <option value="2">2 estrelas</option>
+                    <option value="1">1 estrela</option>
+                </select>
+
+            </div>
+
+        </div>
+
+        @if (Model.Feedbacks == null || !Model.Feedbacks.Any())
+        {
+            <div class="ib-mensagens-empty">
+
+                <div class="ib-mensagens-empty-icon">
+                    <svg viewBox="0 0 24 24"
+                         width="28"
+                         height="28"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.6">
+                        <polygon points="12 2 15.1 8.3 22 9.3 17 14.2 18.2 21 12 17.8 5.8 21 7 14.2 2 9.3 8.9 8.3 12 2" />
+                    </svg>
+                </div>
+
+                <strong>Sem feedbacks</strong>
+                <span>Ainda não existem avaliações registadas.</span>
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-feedback-table">
+
+                <div class="ib-feedback-table-header">
+                    <span>Cliente</span>
+                    <span>Profissional</span>
+                    <span>Avaliação</span>
+                    <span>Comentário</span>
+                    <span>Data</span>
+                    <span>Ações</span>
+                </div>
+
+                @foreach (var feedback in Model.Feedbacks)
+                {
+                    var clienteInicial = !string.IsNullOrWhiteSpace(feedback.ClienteNome)
+                        ? feedback.ClienteNome.Substring(0, 1).ToUpper()
+                        : "C";
+
+                    var profissionalInicial = !string.IsNullOrWhiteSpace(feedback.FuncionarioNome)
+                        ? feedback.FuncionarioNome.Substring(0, 1).ToUpper()
+                        : "P";
+
+                    <div class="ib-feedback-row"
+                         data-search="@($"{feedback.ClienteNome} {feedback.FuncionarioNome} {feedback.Comentario}".ToLower())"
+                         data-rating="@feedback.Classificacao">
+
+                        <!-- CLIENTE -->
+                        <div class="ib-employee-person">
+
+                            <div class="ib-employee-avatar">
+                                <span class="ib-employee-initials">
+                                    @clienteInicial
+                                </span>
+                            </div>
+
+                            <div>
+                                <strong>@feedback.ClienteNome</strong>
+                                <small>Cliente</small>
+                            </div>
+
+                        </div>
+
+                        <!-- PROFISSIONAL -->
+                        <div class="ib-employee-person">
+
+                            <div class="ib-employee-avatar">
+                                <span class="ib-employee-initials">
+                                    @profissionalInicial
+                                </span>
+                            </div>
+
+                            <div>
+                                <strong>@feedback.FuncionarioNome</strong>
+                                <small>Profissional</small>
+                            </div>
+
+                        </div>
+
+                        <!-- ESTRELAS -->
+                        <div class="ib-feedback-rating"
+                             title="@($"{feedback.Classificacao} de 5")">
+
+                            @for (var i = 1; i <= 5; i++)
+                            {
+                                <span class="@(i <= feedback.Classificacao ? "active" : "")">
+                                    ★
+                                </span>
+                            }
+
+                            <small>@feedback.Classificacao.ToString("0")</small>
+
+                        </div>
+
+                        <!-- COMENTÁRIO -->
+                        <div class="ib-feedback-comment">
+                            @if (!string.IsNullOrWhiteSpace(feedback.Comentario))
+                            {
+                                <span>@feedback.Comentario</span>
+                            }
+                            else
+                            {
+                                <span class="ib-feedback-no-comment">
+                                    Sem comentário
+                                </span>
+                            }
+                        </div>
+
+                        <!-- DATA -->
+                        <div class="ib-feedback-date">
+                            <strong>@feedback.DataCriacao.ToString("dd/MM/yyyy")</strong>
+                            <small>@feedback.DataCriacao.ToString("HH:mm")</small>
+                        </div>
+
+                        <!-- AÇÕES -->
+                        <div class="ib-category-actions">
+
+                            <a asp-controller="GestaoFeedbacks"
+                               asp-action="Detalhes"
+                               asp-route-id="@feedback.Id"
+                               class="ib-category-action-btn"
+                               title="Consultar feedback">
+
+                                <svg viewBox="0 0 24 24"
+                                     width="18"
+                                     height="18"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="1.7">
+                                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+                                    <circle cx="12"
+                                            cy="12"
+                                            r="3" />
+                                </svg>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+            <div id="semResultadosFeedback"
+                 class="ib-mensagens-empty"
+                 style="display:none;">
+
+                <strong>Nenhum feedback encontrado</strong>
+                <span>Não existem resultados para os filtros selecionados.</span>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const pesquisa =
+            document.getElementById("pesquisaFeedback");
+
+        const classificacao =
+            document.getElementById("filtroClassificacao");
+
+        const feedbacks =
+            document.querySelectorAll(".ib-feedback-row");
+
+        const semResultados =
+            document.getElementById("semResultadosFeedback");
+
+        function filtrar() {
+
+            const termo =
+                pesquisa ? pesquisa.value.toLowerCase().trim() : "";
+
+            const rating =
+                classificacao ? classificacao.value : "";
+
+            let encontrados = 0;
+
+            feedbacks.forEach(function (feedback) {
+
+                const texto =
+                    feedback.dataset.search || "";
+
+                const avaliacao =
+                    feedback.dataset.rating || "";
+
+                const correspondePesquisa =
+                    !termo || texto.includes(termo);
+
+                const correspondeRating =
+                    !rating || avaliacao === rating;
+
+                const mostrar =
+                    correspondePesquisa && correspondeRating;
+
+                feedback.style.display =
+                    mostrar ? "" : "none";
+
+                if (mostrar)
+                    encontrados++;
+            });
+
+            if (semResultados) {
+                semResultados.style.display =
+                    encontrados === 0 ? "flex" : "none";
+            }
+        }
+
+        if (pesquisa)
+            pesquisa.addEventListener("input", filtrar);
+
+        if (classificacao)
+            classificacao.addEventListener("change", filtrar);
+
+    });
+</script>
+
+}

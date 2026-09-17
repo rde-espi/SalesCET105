@@ -19,6 +19,7 @@ namespace ProjetoFinalCet105.API.Controllers
         private readonly GetFeedbackResumoFuncionarioUseCase _getFeedbackResumoFuncionarioUseCase;
         private readonly UpdateFeedbackUseCase _updateFeedbackUseCase;
         private readonly DeleteFeedbackUseCase _deleteFeedbackUseCase;
+        private readonly GetAllFeedbacksUseCase _getAllFeedbacksUseCase;
 
         public FeedbacksController(
             CreateFeedbackUseCase createFeedbackUseCase,
@@ -26,7 +27,8 @@ namespace ProjetoFinalCet105.API.Controllers
             GetFeedbacksByFuncionarioUseCase getFeedbacksByFuncionarioUseCase,
             GetFeedbackResumoFuncionarioUseCase getFeedbackResumoFuncionarioUseCase,
             UpdateFeedbackUseCase updateFeedbackUseCase,
-            DeleteFeedbackUseCase deleteFeedbackUseCase)
+            DeleteFeedbackUseCase deleteFeedbackUseCase,
+            GetAllFeedbacksUseCase getAllFeedbacksUseCase)
         {
             _createFeedbackUseCase = createFeedbackUseCase;
             _getFeedbackByIdUseCase = getFeedbackByIdUseCase;
@@ -34,7 +36,23 @@ namespace ProjetoFinalCet105.API.Controllers
             _getFeedbackResumoFuncionarioUseCase = getFeedbackResumoFuncionarioUseCase;
             _updateFeedbackUseCase = updateFeedbackUseCase;
             _deleteFeedbackUseCase = deleteFeedbackUseCase;
+            _getAllFeedbacksUseCase = getAllFeedbacksUseCase;
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<FeedbackDTO>>> GetAllFeedbacks()
+        {
+            var resultado = await _getAllFeedbacksUseCase.ExecuteAsync();
+
+            if (!resultado.Sucesso)
+            {
+                return TratarErroComDados(resultado);
+            }
+
+            return Ok(resultado.Dados);
+        }
+
 
         [HttpGet("funcionario/{funcionarioId:int}")]
         public async Task<ActionResult<IEnumerable<FeedbackDTO>>> GetFeedbacksByFuncionario(int funcionarioId)
