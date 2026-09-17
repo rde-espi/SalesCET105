@@ -2,7 +2,9 @@
 
 @{
     ViewData["Title"] = "Promoções";
-    Layout = "_AdminLayout";
+    Layout = User.IsInRole("Admin")
+        ? "_AdminLayout"
+        : "_FuncionarioLayout";
 
     var agora = DateTime.Now;
 }

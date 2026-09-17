@@ -1,0 +1,203 @@
+﻿@model ProjetoFinalCet105.Web.Models.FuncionarioFormViewModel
+
+@{
+    ViewData["Title"] = "Gerir serviços";
+
+    Layout = User.IsInRole("Admin")
+        ? "_AdminLayout"
+        : "_FuncionarioLayout";
+}
+
+<div class="ib-category-form-page">
+
+    <header class="ib-category-form-header">
+        <div>
+            <span class="ib-category-form-eyebrow">PROFISSIONAIS E SERVIÇOS</span>
+
+            <h1>Gerir serviços</h1>
+
+            <p>
+                Selecione os serviços que
+                <strong>@Model.NomeCompleto</strong>
+                está habilitado a realizar.
+            </p>
+        </div>
+
+        <a asp-controller="GestaoFuncionarioServicos"
+           asp-action="Index"
+           class="ib-category-back-btn">
+            Voltar
+        </a>
+    </header>
+
+    <form asp-controller="GestaoFuncionarioServicos"
+          asp-action="Editar"
+          asp-route-id="@Model.Id"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="NomeCompleto" />
+
+        @if (Model.Servicos != null && Model.Servicos.Any())
+        {
+            <div class="ib-category-form-card ib-employee-services-card">
+
+                <div class="ib-category-form-card-header">
+                    <div>
+                        <h3>Serviços realizados</h3>
+                        <p>
+                            Ative ou desative os serviços realizados por este profissional.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="ib-employee-services-search">
+
+                    <span class="ib-employee-services-search-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="7"></circle>
+                            <path d="M20 20l-3.5-3.5"></path>
+                        </svg>
+                    </span>
+
+                    <input type="text"
+                           id="pesquisaServicosFuncionario"
+                           placeholder="Pesquisar serviço ou categoria..." />
+
+                </div>
+
+                <div class="ib-employee-services-list">
+
+                    @for (var i = 0; i < Model.Servicos.Count; i++)
+                    {
+                        <div class="ib-employee-service-item"
+                             data-servico="@Model.Servicos[i].Nome.ToLowerInvariant()"
+                             data-categoria="@(Model.Servicos[i].CategoriaNome?.ToLowerInvariant() ?? string.Empty)">
+
+                            <input type="hidden"
+                                   asp-for="Servicos[i].ServicoId" />
+
+                            <input type="hidden"
+                                   asp-for="Servicos[i].Nome" />
+
+                            <input type="hidden"
+                                   asp-for="Servicos[i].CategoriaNome" />
+
+                            <input type="hidden"
+                                   asp-for="Servicos[i].FuncionarioServicoId" />
+
+                            <div class="ib-employee-service-info">
+
+                                <strong>
+                                    @Model.Servicos[i].Nome
+                                </strong>
+
+                                @if (!string.IsNullOrWhiteSpace(
+                                    Model.Servicos[i].CategoriaNome))
+                                {
+                                    <span>
+                                        @Model.Servicos[i].CategoriaNome
+                                    </span>
+                                }
+
+                            </div>
+
+                            <label class="ib-employee-service-switch">
+
+                                <input asp-for="Servicos[i].Selecionado" />
+
+                                <span class="ib-employee-service-switch-slider">
+                                </span>
+
+                            </label>
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-category-form-card">
+
+                <div class="ib-category-form-card-header">
+                    <div>
+                        <h3>Serviços realizados</h3>
+
+                        <p>
+                            Não existem serviços disponíveis para associação.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        }
+
+        <footer class="ib-category-form-footer">
+
+            <a asp-controller="GestaoFuncionarioServicos"
+               asp-action="Index"
+               class="ib-category-cancel-btn">
+                Cancelar
+            </a>
+
+            <button type="submit"
+                    class="ib-category-save-btn">
+
+                <svg viewBox="0 0 24 24">
+                    <path d="M5 12l4 4L19 6"></path>
+                </svg>
+
+                Guardar alterações
+            </button>
+
+        </footer>
+
+    </form>
+
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const pesquisa =
+                document.getElementById("pesquisaServicosFuncionario");
+
+            if (!pesquisa) {
+                return;
+            }
+
+            const itens =
+                document.querySelectorAll(".ib-employee-service-item");
+
+            pesquisa.addEventListener("input", function () {
+
+                const termo =
+                    this.value.trim().toLowerCase();
+
+                itens.forEach(function (item) {
+
+                    const servico =
+                        item.dataset.servico || "";
+
+                    const categoria =
+                        item.dataset.categoria || "";
+
+                    item.style.display =
+                        servico.includes(termo) ||
+                        categoria.includes(termo)
+                            ? ""
+                            : "none";
+                });
+            });
+        });
+    </script>
+}

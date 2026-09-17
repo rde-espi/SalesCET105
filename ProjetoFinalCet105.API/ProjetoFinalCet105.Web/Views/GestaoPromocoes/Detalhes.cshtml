@@ -2,7 +2,9 @@
 
 @{
     ViewData["Title"] = "Detalhes da promoção";
-    Layout = "_AdminLayout";
+    Layout = User.IsInRole("Admin")
+        ? "_AdminLayout"
+        : "_FuncionarioLayout";
 
     var agora = DateTime.Now;
     var expirada = Model.DataFim < agora;

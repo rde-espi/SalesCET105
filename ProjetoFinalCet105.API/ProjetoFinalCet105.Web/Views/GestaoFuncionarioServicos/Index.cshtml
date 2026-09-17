@@ -1,0 +1,130 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.FuncionarioViewModel>
+
+@{
+    ViewData["Title"] = "Profissionais e Serviços";
+
+    Layout = User.IsInRole("Admin")
+        ? "_AdminLayout"
+        : "_FuncionarioLayout";
+}
+
+<div class="ib-prof-services-page">
+
+    <header class="ib-prof-services-header">
+        <div>
+            <span class="ib-section-eyebrow">
+                GESTÃO OPERACIONAL
+            </span>
+
+            <h1>Profissionais e Serviços</h1>
+
+            <p>
+                Selecione um profissional para gerir os serviços
+                que está habilitado a realizar.
+            </p>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="ib-prof-services-count">
+                <span>Profissionais ativos</span>
+                <strong>@Model.Count</strong>
+            </div>
+        }
+    </header>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="ib-prof-services-empty">
+
+            <div class="ib-prof-services-empty-icon">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="9" cy="8" r="3"></circle>
+                    <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path>
+                    <path d="M17 8h4"></path>
+                    <path d="M19 6v4"></path>
+                </svg>
+            </div>
+
+            <strong>Sem profissionais disponíveis</strong>
+
+            <p>
+                Não existem profissionais ativos disponíveis neste momento.
+            </p>
+
+        </div>
+    }
+    else
+    {
+        <div class="ib-prof-services-grid">
+
+            @foreach (var funcionario in Model)
+            {
+                var iniciais = string.Join("",
+                    funcionario.NomeCompleto
+                        .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                        .Take(2)
+                        .Select(x => char.ToUpper(x[0])));
+
+                <article class="ib-prof-services-card">
+
+                    <div class="ib-prof-services-card-top">
+
+                        <div class="ib-prof-services-avatar">
+                            @iniciais
+                        </div>
+
+                        <div class="ib-prof-services-info">
+
+                            <h2>@funcionario.NomeCompleto</h2>
+
+                            @if (funcionario.Disponivel)
+                            {
+                                <span class="ib-prof-services-status available">
+                                    <i></i>
+                                    Disponível
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="ib-prof-services-status unavailable">
+                                    <i></i>
+                                    Indisponível
+                                </span>
+                            }
+
+                        </div>
+
+                    </div>
+
+                    <div class="ib-prof-services-divider"></div>
+
+                    <div class="ib-prof-services-card-footer">
+
+                        <span>
+                            Configurar serviços realizados
+                        </span>
+
+                        <a asp-controller="GestaoFuncionarioServicos"
+                           asp-action="Editar"
+                           asp-route-id="@funcionario.Id"
+                           class="ib-prof-services-manage-btn">
+
+                            Gerir serviços
+
+                            <svg viewBox="0 0 24 24">
+                                <path d="M5 12h14"></path>
+                                <path d="M14 7l5 5-5 5"></path>
+                            </svg>
+
+                        </a>
+
+                    </div>
+
+                </article>
+            }
+
+        </div>
+    }
+
+</div>

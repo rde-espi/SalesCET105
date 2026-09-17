@@ -2,7 +2,9 @@
 
 @{
     ViewData["Title"] = "Nova promoção";
-    Layout = "_AdminLayout";
+    Layout = User.IsInRole("Admin")
+        ? "_AdminLayout"
+        : "_FuncionarioLayout";
 }
 
 <div class="ib-categories-page">

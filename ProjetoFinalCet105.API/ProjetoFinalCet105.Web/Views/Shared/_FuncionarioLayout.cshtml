@@ -102,7 +102,7 @@
 
                     <a asp-controller="Dashboard"
                        asp-action="Index"
-                       class="ib-admin-menu-item">
+                       class="ib-admin-menu-item @(currentController == "Dashboard" ? "active" : "")">
                         <svg viewBox="0 0 24 24">
                             <rect x="3" y="3" width="7" height="7"></rect>
                             <rect x="14" y="3" width="7" height="7"></rect>
@@ -114,7 +114,7 @@
 
                     <a asp-controller="GestaoServicos"
                        asp-action="Index"
-                       class="ib-admin-menu-item">
+                       class="ib-admin-menu-item @(currentController == "GestaoServicos" ? "active" : "")">
                         <svg viewBox="0 0 24 24">
                             <path d="M12 3v18"></path>
                             <path d="M3 12h18"></path>
@@ -123,9 +123,21 @@
                         <span>Serviços</span>
                     </a>
 
+                    <a asp-controller="GestaoFuncionarioServicos" asp-action="Index"  class="ib-admin-menu-item @(currentController == "GestaoFuncionarioServicos" ? "active" : "")">
+    <span class="ib-sidebar-icon">
+        <svg viewBox="0 0 24 24">
+            <circle cx="9" cy="8" r="3"></circle>
+            <path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path>
+            <path d="M17 8h4"></path>
+            <path d="M19 6v4"></path>
+        </svg>
+    </span>
+    <span>Profissionais e Serviços</span>
+</a>
+
                     <a asp-controller="Categorias"
                        asp-action="Index"
-                       class="ib-admin-menu-item">
+                       class="ib-admin-menu-item @(currentController == "Categorias" ? "active" : "")">
                         <svg viewBox="0 0 24 24">
                             <rect x="3" y="4" width="7" height="7"></rect>
                             <rect x="14" y="4" width="7" height="7"></rect>
@@ -134,6 +146,29 @@
                         </svg>
                         <span>Categorias</span>
                     </a>
+
+                    <a asp-controller="GestaoDespesas"
+                       asp-action="Index"
+                       class="ib-admin-menu-item @(currentController == "GestaoDespesas" ? "active" : "")">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="7" height="7"></rect>
+                            <rect x="14" y="4" width="7" height="7"></rect>
+                            <rect x="3" y="15" width="7" height="6"></rect>
+                            <rect x="14" y="15" width="7" height="6"></rect>
+                        </svg>
+                        <span>Despesas</span>
+                    </a>
+                    <a asp-controller="GestaoPromocoes"
+   asp-action="Index"
+   class="ib-admin-menu-item @(currentController == "GestaoPromocoes" ? "active" : "")">
+
+    <svg viewBox="0 0 24 24">
+        <path d="M20 12l-8 8-8-8V4h8z"></path>
+        <circle cx="9" cy="8" r="1.5"></circle>
+    </svg>
+
+    <span>Promoções</span>
+</a>
 
                 </div>
 

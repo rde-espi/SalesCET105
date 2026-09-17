@@ -21,18 +21,15 @@ public class GestaoClientesController : Controller
     {
         try
         {
-            var clientes =
-                await _apiService.GetAuthenticatedAsync<List<ClienteViewModel>>(
-                    "api/Clientes");
-
+            var clientes = await _apiService.GetAuthenticatedAsync<List<ClienteViewModel>>("api/Clientes");
+            
             clientes ??= new List<ClienteViewModel>();
 
             return View(clientes);
         }
         catch (Exception)
         {
-            TempData["ErrorMessage"] =
-                "Não foi possível carregar os clientes.";
+            TempData["ErrorMessage"] = "Não foi possível carregar os clientes.";
 
             return View(new List<ClienteViewModel>());
         }
