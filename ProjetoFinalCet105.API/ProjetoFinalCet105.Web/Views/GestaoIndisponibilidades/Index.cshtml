@@ -1,0 +1,371 @@
+﻿@model ProjetoFinalCet105.Web.Models.GestaoIndisponibilidadesViewModel
+
+@{
+    ViewData["Title"] = "Indisponibilidades";
+    Layout = "_AdminLayout";
+}
+
+<div class="ib-categories-page">
+
+    <div class="ib-categories-heading">
+    <div>
+        <span class="ib-section-eyebrow">AGENDA</span>
+        <h1>Indisponibilidades</h1>
+        <p>Gerir ausências e bloqueios de agenda da equipa.</p>
+    </div>
+
+    <a asp-controller="GestaoIndisponibilidades"
+       asp-action="Criar"
+       class="ib-indisponibilidade-new-btn">
+        + Nova indisponibilidade
+    </a>
+</div>
+
+    <div class="ib-category-kpi-grid">
+
+        <div class="ib-category-kpi-card">
+            <span>Total</span>
+            <strong>@Model.Total</strong>
+            <small>Indisponibilidades registadas</small>
+        </div>
+
+        <div class="ib-category-kpi-card ib-category-kpi-highlight">
+            <span>Hoje</span>
+            <strong>@Model.Hoje</strong>
+            <small>Em vigor hoje</small>
+        </div>
+
+        <div class="ib-category-kpi-card">
+            <span>Próximas</span>
+            <strong>@Model.Proximas</strong>
+            <small>Ausências futuras</small>
+        </div>
+
+        <div class="ib-category-kpi-card">
+            <span>Dia completo</span>
+            <strong>@Model.DiasCompletos</strong>
+            <small>Bloqueios de dia inteiro</small>
+        </div>
+
+    </div>
+    <div class="ib-category-panel">
+
+    <div class="ib-category-panel-header">
+
+        <div>
+            <span class="ib-section-eyebrow">REGISTOS</span>
+            <h2>Indisponibilidades da equipa</h2>
+        </div>
+
+        <div class="ib-indisponibilidade-filters">
+
+            <div class="ib-category-search">
+                <input type="text"
+                       id="pesquisaIndisponibilidade"
+                       placeholder="Pesquisar profissional ou motivo..." />
+            </div>
+
+            <select id="filtroProfissional"
+                    class="ib-indisponibilidade-select">
+
+                <option value="">Todos os profissionais</option>
+
+                @foreach (var funcionario in Model.Funcionarios)
+                {
+                    <option value="@funcionario.Id">
+                        @funcionario.NomeCompleto
+                    </option>
+                }
+
+            </select>
+
+            <select id="filtroPeriodo"
+                    class="ib-indisponibilidade-select">
+
+                <option value="">Todos os períodos</option>
+                <option value="hoje">Hoje</option>
+                <option value="futuras">Próximas</option>
+                <option value="passadas">Passadas</option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+    <div class="ib-employee-table">
+
+        <div class="ib-employee-table-header ib-indisponibilidade-grid">
+            <span>Profissional</span>
+            <span>Data</span>
+            <span>Horário</span>
+            <span>Tipo</span>
+            <span>Motivo</span>
+            <span></span>
+        </div>
+
+        <div id="listaIndisponibilidades">
+
+            @foreach (var item in Model.Indisponibilidades)
+            {
+                var pesquisa =
+                    $"{item.FuncionarioNome} {item.Motivo}"
+                    .ToLowerInvariant();
+
+                var dataInicio =
+                    item.DataHoraInicio.ToString("yyyy-MM-dd");
+
+                var dataFim =
+                    item.DataHoraFim.ToString("yyyy-MM-dd");
+
+                <div class="ib-employee-row ib-indisponibilidade-grid ib-indisponibilidade-item"
+                     data-funcionario="@item.FuncionarioId"
+                     data-inicio="@dataInicio"
+                     data-fim="@dataFim"
+                     data-pesquisa="@pesquisa">
+
+                    <div class="ib-employee-person">
+
+                        <div class="ib-employee-avatar">
+                            <span class="ib-employee-initials">
+                                @(string.IsNullOrWhiteSpace(item.FuncionarioNome)
+                                    ? "?"
+                                    : item.FuncionarioNome.Substring(0, 1).ToUpper())
+                            </span>
+                        </div>
+
+                        <div>
+                            <strong class="ib-category-name">
+                                @item.FuncionarioNome
+                            </strong>
+                        </div>
+
+                    </div>
+
+                    <div class="ib-indisponibilidade-date">
+
+                        <strong>
+                            @item.DataHoraInicio.ToString("dd/MM/yyyy")
+                        </strong>
+
+                        @if (item.DataHoraFim.Date != item.DataHoraInicio.Date)
+                        {
+                            <small>
+                                até @item.DataHoraFim.ToString("dd/MM/yyyy")
+                            </small>
+                        }
+
+                    </div>
+
+                    <div class="ib-indisponibilidade-time">
+
+                        @if (item.DiaCompleto)
+                        {
+                            <span>Dia inteiro</span>
+                        }
+                        else
+                        {
+                            <span>
+                                @item.DataHoraInicio.ToString("HH:mm")
+                                —
+                                @item.DataHoraFim.ToString("HH:mm")
+                            </span>
+                        }
+
+                    </div>
+
+                    <div>
+                        @if (item.DiaCompleto)
+                        {
+                            <span class="ib-category-status active">
+                                Dia completo
+                            </span>
+                        }
+                        else if (item.RestoDoDia)
+                        {
+                            <span class="ib-category-status active">
+                                Resto do dia
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="ib-category-status inactive">
+                                Período
+                            </span>
+                        }
+                    </div>
+
+                    <div class="ib-indisponibilidade-reason">
+                        @(string.IsNullOrWhiteSpace(item.Motivo)
+                            ? "Sem motivo indicado"
+                            : item.Motivo)
+                    </div>
+
+                    <div class="ib-category-actions">
+
+                        <a asp-controller="GestaoIndisponibilidades"
+                           asp-action="Editar"
+                           asp-route-id="@item.Id"
+                           class="ib-category-action-btn"
+                           title="Editar">
+                            ✎
+                        </a>
+
+                        <form asp-controller="GestaoIndisponibilidades"
+      asp-action="Eliminar"
+      asp-route-id="@item.Id"
+      method="post"
+      class="ib-indisponibilidade-delete-form"
+      onsubmit="return confirm('Tem a certeza de que pretende eliminar esta indisponibilidade?');">
+
+    @Html.AntiForgeryToken()
+
+    <button type="submit"
+        class="ib-category-action-btn danger"
+        title="Eliminar indisponibilidade"
+        aria-label="Eliminar indisponibilidade">
+
+    <svg viewBox="0 0 24 24">
+        <path d="M4 7h16"></path>
+        <path d="M9 7V4h6v3"></path>
+        <path d="M6 7l1 13h10l1-13"></path>
+        <path d="M10 11v5"></path>
+        <path d="M14 11v5"></path>
+    </svg>
+
+</button>
+
+</form>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+        <div id="semIndisponibilidades"
+             class="ib-indisponibilidade-empty"
+             style="display:none;">
+
+            <strong>Nenhum registo encontrado</strong>
+            <span>Altere os filtros para consultar outras indisponibilidades.</span>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+                                @section Scripts {
+    <script>
+        (() => {
+
+            const pesquisa =
+                document.getElementById("pesquisaIndisponibilidade");
+
+            const profissional =
+                document.getElementById("filtroProfissional");
+
+            const periodo =
+                document.getElementById("filtroPeriodo");
+
+            const itens =
+                Array.from(
+                    document.querySelectorAll(".ib-indisponibilidade-item")
+                );
+
+            const vazio =
+                document.getElementById("semIndisponibilidades");
+
+            const hoje = new Date();
+
+            hoje.setHours(0, 0, 0, 0);
+
+            function aplicarFiltros() {
+
+                const termo =
+                    (pesquisa?.value || "")
+                    .trim()
+                    .toLowerCase();
+
+                const funcionarioId =
+                    profissional?.value || "";
+
+                const periodoSelecionado =
+                    periodo?.value || "";
+
+                let visiveis = 0;
+
+                itens.forEach(item => {
+
+                    const correspondePesquisa =
+                        !termo ||
+                        item.dataset.pesquisa.includes(termo);
+
+                    const correspondeProfissional =
+                        !funcionarioId ||
+                        item.dataset.funcionario === funcionarioId;
+
+                    const inicio =
+                        new Date(item.dataset.inicio + "T00:00:00");
+
+                    const fim =
+                        new Date(item.dataset.fim + "T23:59:59");
+
+                    let correspondePeriodo = true;
+
+                    if (periodoSelecionado === "hoje") {
+
+                        correspondePeriodo =
+                            inicio <= hoje &&
+                            fim >= hoje;
+                    }
+
+                    else if (periodoSelecionado === "futuras") {
+
+                        correspondePeriodo =
+                            inicio > hoje;
+                    }
+
+                    else if (periodoSelecionado === "passadas") {
+
+                        correspondePeriodo =
+                            fim < hoje;
+                    }
+
+                    const mostrar =
+                        correspondePesquisa &&
+                        correspondeProfissional &&
+                        correspondePeriodo;
+
+                    item.style.display =
+                        mostrar ? "" : "none";
+
+                    if (mostrar)
+                        visiveis++;
+                });
+
+                if (vazio) {
+                    vazio.style.display =
+                        visiveis === 0 ? "flex" : "none";
+                }
+            }
+
+            pesquisa?.addEventListener(
+                "input",
+                aplicarFiltros);
+
+            profissional?.addEventListener(
+                "change",
+                aplicarFiltros);
+
+            periodo?.addEventListener(
+                "change",
+                aplicarFiltros);
+
+        })();
+    </script>
+}

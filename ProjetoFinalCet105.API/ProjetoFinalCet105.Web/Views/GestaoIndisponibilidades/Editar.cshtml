@@ -1,0 +1,158 @@
+﻿@model ProjetoFinalCet105.Web.Models.EditarIndisponibilidadeViewModel
+
+@{
+    ViewData["Title"] = "Editar indisponibilidade";
+    Layout = "_AdminLayout";
+}
+
+<div class="ib-categories-page">
+
+    <div class="ib-categories-heading">
+
+        <div>
+            <span class="ib-section-eyebrow">AGENDA</span>
+            <h1>Editar indisponibilidade</h1>
+            <p>Altere o período de bloqueio da agenda do profissional.</p>
+        </div>
+
+        <a asp-controller="GestaoIndisponibilidades"
+           asp-action="Index"
+           class="ib-category-back-btn">
+            ← Voltar
+        </a>
+
+    </div>
+
+    <div class="ib-indisponibilidade-form-panel">
+
+        <div class="ib-indisponibilidade-form-header">
+            <span class="ib-section-eyebrow">EDITAR REGISTO</span>
+            <h2>Dados da indisponibilidade</h2>
+            <p>Atualize os dados necessários e guarde as alterações.</p>
+        </div>
+
+        <form asp-controller="GestaoIndisponibilidades"
+              asp-action="Editar"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input asp-for="Id" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="ib-indisponibilidade-validation">
+            </div>
+
+            <div class="ib-indisponibilidade-form-grid">
+
+                <div class="ib-indisponibilidade-field ib-field-full">
+                    <label asp-for="FuncionarioId"></label>
+
+                    <select asp-for="FuncionarioId">
+                        <option value="">Selecionar profissional</option>
+
+                        @foreach (var funcionario in Model.Funcionarios)
+                        {
+                            <option value="@funcionario.Id">
+                                @funcionario.NomeCompleto
+                            </option>
+                        }
+                    </select>
+
+                    <span asp-validation-for="FuncionarioId"></span>
+                </div>
+
+                <div class="ib-indisponibilidade-field">
+                    <label asp-for="Data"></label>
+                    <input asp-for="Data" type="date" />
+                    <span asp-validation-for="Data"></span>
+                </div>
+
+                <div class="ib-indisponibilidade-field">
+                    <label>Tipo de indisponibilidade</label>
+
+                    <select asp-for="Tipo"
+                            id="tipoIndisponibilidade">
+
+                        <option value="periodo">Período específico</option>
+                        <option value="dia">Dia completo</option>
+                        <option value="resto">Resto do dia</option>
+
+                    </select>
+                </div>
+
+                <div id="camposHorario"
+                     class="ib-indisponibilidade-time-fields">
+
+                    <div class="ib-indisponibilidade-field">
+                        <label asp-for="HoraInicio"></label>
+                        <input asp-for="HoraInicio" type="time" />
+                    </div>
+
+                    <div class="ib-indisponibilidade-field">
+                        <label asp-for="HoraFim"></label>
+                        <input asp-for="HoraFim" type="time" />
+                    </div>
+
+                </div>
+
+                <div class="ib-indisponibilidade-field ib-field-full">
+                    <label asp-for="Motivo"></label>
+
+                    <textarea asp-for="Motivo"
+                              rows="4"
+                              placeholder="Ex.: férias, formação, consulta, ausência..."></textarea>
+
+                    <span asp-validation-for="Motivo"></span>
+                </div>
+
+            </div>
+
+            <div class="ib-indisponibilidade-form-actions">
+
+                <a asp-controller="GestaoIndisponibilidades"
+                   asp-action="Index"
+                   class="ib-category-back-btn">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="ib-indisponibilidade-new-btn">
+                    Guardar alterações
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        (() => {
+            const tipo =
+                document.getElementById("tipoIndisponibilidade");
+
+            const horarios =
+                document.getElementById("camposHorario");
+
+            function atualizarTipo() {
+                if (!tipo || !horarios)
+                    return;
+
+                horarios.style.display =
+                    tipo.value === "periodo"
+                        ? "grid"
+                        : "none";
+            }
+
+            tipo?.addEventListener(
+                "change",
+                atualizarTipo);
+
+            atualizarTipo();
+        })();
+    </script>
+}

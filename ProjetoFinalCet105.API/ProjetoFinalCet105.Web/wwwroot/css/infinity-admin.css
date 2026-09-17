@@ -6819,3 +6819,774 @@ body,
     font-size: .55rem;
     font-weight: 600;
 }
+
+/* =========================================================
+   INDISPONIBILIDADES
+   ========================================================= */
+
+.ib-indisponibilidade-filters {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.ib-indisponibilidade-select {
+    height: 38px;
+    min-width: 175px;
+    padding: 0 36px 0 12px;
+    border: 1px solid rgba(216,176,113,.28);
+    border-radius: 8px;
+    background: #fff;
+    color: #535333;
+    outline: none;
+    font-family: "Montserrat", sans-serif;
+    font-size: .62rem;
+    cursor: pointer;
+}
+
+    .ib-indisponibilidade-select:focus {
+        border-color: #D8B071;
+        box-shadow: 0 0 0 3px rgba(216,176,113,.08);
+    }
+
+.ib-indisponibilidade-grid {
+    display: grid;
+    grid-template-columns: minmax(180px,1.25fr) minmax(110px,.7fr) minmax(110px,.65fr) minmax(110px,.7fr) minmax(170px,1.2fr) 80px;
+    align-items: center;
+    gap: 16px;
+}
+
+.ib-indisponibilidade-date strong,
+.ib-indisponibilidade-date small {
+    display: block;
+    font-family: "Montserrat", sans-serif;
+}
+
+.ib-indisponibilidade-date strong {
+    color: #535333;
+    font-size: .63rem;
+    font-weight: 600;
+}
+
+.ib-indisponibilidade-date small {
+    margin-top: 3px;
+    color: #817a70;
+    font-size: .54rem;
+}
+
+.ib-indisponibilidade-time {
+    color: #535333;
+    font-family: "Montserrat", sans-serif;
+    font-size: .62rem;
+    font-weight: 500;
+}
+
+.ib-indisponibilidade-reason {
+    overflow: hidden;
+    color: #817a70;
+    font-family: "Montserrat", sans-serif;
+    font-size: .6rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ib-indisponibilidade-empty {
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: #817a70;
+    font-family: "Montserrat", sans-serif;
+}
+
+    .ib-indisponibilidade-empty strong {
+        color: #535333;
+        font-size: .7rem;
+    }
+
+    .ib-indisponibilidade-empty span {
+        font-size: .59rem;
+    }
+
+.ib-indisponibilidade-new-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 0 18px;
+    border: 1px solid #D8B071;
+    border-radius: 9px;
+    background: #D8B071;
+    color: #191919;
+    font-family: "Montserrat", sans-serif;
+    font-size: .65rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+    text-decoration: none !important;
+    white-space: nowrap;
+    box-shadow: 0 5px 14px rgba(190,162,86,.14);
+    transition: .18s ease;
+}
+
+    .ib-indisponibilidade-new-btn span {
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1;
+    }
+
+    .ib-indisponibilidade-new-btn:hover {
+        background: #BEA256;
+        border-color: #BEA256;
+        color: #191919;
+        transform: translateY(-1px);
+        box-shadow: 0 7px 18px rgba(190,162,86,.22);
+    }
+
+    .ib-indisponibilidade-new-btn:focus {
+        color: #191919;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(216,176,113,.18);
+    }
+
+@media (max-width: 1150px) {
+    .ib-indisponibilidade-grid {
+        grid-template-columns: minmax(170px,1.2fr) 100px 100px 110px minmax(140px,1fr) 70px;
+    }
+
+    .ib-indisponibilidade-filters {
+        width: 100%;
+    }
+
+}
+
+/* =========================================================
+   INDISPONIBILIDADES - FORMULÁRIO
+   ========================================================= */
+
+.ib-indisponibilidade-form-panel {
+    max-width: 920px;
+    margin-top: 24px;
+    padding: 28px 30px;
+    border: 1px solid rgba(216,176,113,.18);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(25,25,25,.04);
+}
+
+.ib-indisponibilidade-form-header {
+    padding-bottom: 22px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(216,176,113,.16);
+}
+
+    .ib-indisponibilidade-form-header h2 {
+        margin: 4px 0 5px;
+        color: #191919;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.65rem;
+        font-weight: 600;
+    }
+
+    .ib-indisponibilidade-form-header p {
+        margin: 0;
+        color: #817a70;
+        font-family: "Montserrat", sans-serif;
+        font-size: .64rem;
+    }
+
+.ib-indisponibilidade-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 20px;
+}
+
+.ib-indisponibilidade-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.ib-field-full {
+    grid-column: 1 / -1;
+}
+
+.ib-indisponibilidade-field label {
+    color: #535333;
+    font-family: "Montserrat", sans-serif;
+    font-size: .59rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+}
+
+.ib-indisponibilidade-field input,
+.ib-indisponibilidade-field select,
+.ib-indisponibilidade-field textarea {
+    width: 100%;
+    border: 1px solid rgba(216,176,113,.28);
+    border-radius: 9px;
+    background: #FBFAF7;
+    color: #24231f;
+    outline: none;
+    font-family: "Montserrat", sans-serif;
+    font-size: .66rem;
+    transition: .18s ease;
+}
+
+.ib-indisponibilidade-field input,
+.ib-indisponibilidade-field select {
+    height: 43px;
+    padding: 0 13px;
+}
+
+.ib-indisponibilidade-field textarea {
+    padding: 13px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+    .ib-indisponibilidade-field input:focus,
+    .ib-indisponibilidade-field select:focus,
+    .ib-indisponibilidade-field textarea:focus {
+        border-color: #D8B071;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(216,176,113,.08);
+    }
+
+.ib-indisponibilidade-time-fields {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 20px;
+}
+
+.ib-indisponibilidade-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 24px;
+    margin-top: 25px;
+    border-top: 1px solid rgba(216,176,113,.16);
+}
+
+@media (max-width: 800px) {
+
+    .ib-indisponibilidade-form-grid,
+    .ib-indisponibilidade-time-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-indisponibilidade-form-panel {
+        padding: 22px 18px;
+    }
+}
+
+.ib-indisponibilidade-validation {
+    margin-bottom: 20px;
+    padding: 12px 15px;
+    border: 1px solid rgba(165,72,72,.18);
+    border-radius: 9px;
+    background: rgba(165,72,72,.055);
+    color: #8a4b4b;
+    font-family: "Montserrat", sans-serif;
+    font-size: .62rem;
+}
+
+    .ib-indisponibilidade-validation:empty {
+        display: none;
+    }
+
+    .ib-indisponibilidade-validation ul {
+        margin: 0;
+        padding-left: 17px;
+    }
+
+.ib-indisponibilidade-delete-form {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+}
+/* =========================================================
+   FATURAS
+   ========================================================= */
+
+.ib-faturas-filters {
+    display: grid;
+    grid-template-columns: minmax(260px,1fr) 190px 190px;
+    gap: 12px;
+    padding: 18px 22px;
+    border-bottom: 1px solid rgba(25,25,25,.07);
+}
+
+.ib-faturas-filter-select,
+.ib-faturas-page-size select {
+    min-height: 40px;
+    border: 1px solid rgba(25,25,25,.11);
+    border-radius: 8px;
+    background: #fff;
+    color: #535333;
+    padding: 0 12px;
+    font-family: "Montserrat",sans-serif;
+    font-size: .63rem;
+    outline: none;
+}
+
+    .ib-faturas-filter-select:focus,
+    .ib-faturas-page-size select:focus {
+        border-color: #D8B071;
+        box-shadow: 0 0 0 3px rgba(216,176,113,.10);
+    }
+
+.ib-faturas-table-wrap {
+    width: 100%;
+}
+
+.ib-faturas-table-header,
+.ib-faturas-row {
+    display: grid;
+    grid-template-columns: 1.05fr .9fr 1.55fr .8fr .8fr .8fr 130px;
+    align-items: center;
+    column-gap: 16px;
+}
+
+.ib-faturas-table-header {
+    padding: 13px 22px;
+    background: rgba(248,245,239,.75);
+    border-bottom: 1px solid rgba(25,25,25,.07);
+    color: #817a70;
+    font-family: "Montserrat",sans-serif;
+    font-size: .52rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+}
+
+.ib-faturas-row {
+    min-height: 72px;
+    padding: 12px 22px;
+    border-bottom: 1px solid rgba(25,25,25,.055);
+    transition: .16s ease;
+}
+
+    .ib-faturas-row:hover {
+        background: rgba(248,245,239,.42);
+    }
+
+.ib-fatura-numero,
+.ib-fatura-data,
+.ib-fatura-marcacao {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+    .ib-fatura-numero strong,
+    .ib-fatura-data strong,
+    .ib-fatura-marcacao strong,
+    .ib-fatura-cliente strong {
+        color: #24231f;
+        font-family: "Montserrat",sans-serif;
+        font-size: .65rem;
+        font-weight: 600;
+    }
+
+    .ib-fatura-numero small,
+    .ib-fatura-data small,
+    .ib-fatura-marcacao small,
+    .ib-fatura-cliente small {
+        color: #817a70;
+        font-family: "Montserrat",sans-serif;
+        font-size: .55rem;
+    }
+
+.ib-fatura-cliente {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+    .ib-fatura-cliente > div {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
+    }
+
+
+
+.ib-fatura-total {
+    color: #191919;
+    font-family: "Montserrat",sans-serif;
+    font-size: .68rem;
+    font-weight: 700;
+}
+
+.ib-fatura-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: max-content;
+    min-width: 68px;
+    min-height: 24px;
+    padding: 0 9px;
+    border-radius: 20px;
+    font-family: "Montserrat",sans-serif;
+    font-size: .52rem;
+    font-weight: 600;
+}
+
+    .ib-fatura-status.active {
+        background: rgba(63,122,85,.10);
+        color: #467858;
+    }
+
+    .ib-fatura-status.cancelled {
+        background: rgba(156,74,74,.09);
+        color: #995656;
+    }
+
+.ib-category-action-btn svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.ib-faturas-empty {
+    padding: 50px 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+}
+
+    .ib-faturas-empty strong {
+        color: #24231f;
+        font-family: "Cormorant Garamond",serif;
+        font-size: 1.2rem;
+    }
+
+    .ib-faturas-empty span {
+        color: #817a70;
+        font-family: "Montserrat",sans-serif;
+        font-size: .62rem;
+    }
+
+.ib-faturas-pagination {
+    min-height: 62px;
+    padding: 12px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-top: 1px solid rgba(25,25,25,.06);
+}
+
+.ib-faturas-page-size {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #817a70;
+    font-family: "Montserrat",sans-serif;
+    font-size: .58rem;
+}
+
+    .ib-faturas-page-size select {
+        min-height: 32px;
+        padding: 0 8px;
+    }
+
+.ib-faturas-page-info {
+    color: #817a70;
+    font-family: "Montserrat",sans-serif;
+    font-size: .58rem;
+}
+
+.ib-faturas-page-buttons {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+    .ib-faturas-page-buttons button,
+    .ib-faturas-page-buttons span {
+        width: 31px;
+        height: 31px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(25,25,25,.10);
+        border-radius: 7px;
+        background: #fff;
+        color: #535333;
+        font-family: "Montserrat",sans-serif;
+        font-size: .62rem;
+    }
+
+    .ib-faturas-page-buttons span {
+        background: #191919;
+        border-color: #191919;
+        color: #D8B071;
+    }
+
+    .ib-faturas-page-buttons button {
+        cursor: pointer;
+    }
+
+        .ib-faturas-page-buttons button:disabled {
+            opacity: .35;
+            cursor: default;
+        }
+
+@media (max-width:1100px) {
+    .ib-faturas-table-wrap {
+        overflow-x: auto;
+    }
+
+    .ib-faturas-table-header,
+    .ib-faturas-row {
+        min-width: 1000px;
+    }
+}
+
+@media (max-width:760px) {
+    .ib-faturas-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-faturas-pagination {
+        flex-wrap: wrap;
+    }
+}
+
+
+.ib-fatura-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.ib-fatura-detail-card {
+    padding: 24px;
+    border: 1px solid rgba(25,25,25,.06);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 10px 28px rgba(25,25,25,.035);
+}
+
+.ib-fatura-detail-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+    .ib-fatura-detail-card-header h2 {
+        margin: 4px 0 0;
+        color: #24231f;
+        font-family: "Cormorant Garamond",serif;
+        font-size: 1.35rem;
+        font-weight: 600;
+    }
+
+.ib-fatura-detail-info-grid,
+.ib-fatura-client-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 28px;
+}
+
+    .ib-fatura-detail-info-grid > div,
+    .ib-fatura-client-detail > div {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .ib-fatura-detail-info-grid span,
+    .ib-fatura-client-detail span {
+        color: #817a70;
+        font-family: "Montserrat",sans-serif;
+        font-size: .53rem;
+        font-weight: 600;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+
+    .ib-fatura-detail-info-grid strong,
+    .ib-fatura-client-detail strong {
+        color: #24231f;
+        font-family: "Montserrat",sans-serif;
+        font-size: .66rem;
+        font-weight: 500;
+    }
+
+.ib-fatura-detail-full {
+    grid-column: 1 / -1;
+}
+
+.ib-fatura-lines-card {
+    margin-bottom: 18px;
+}
+
+.ib-fatura-lines-header,
+.ib-fatura-line {
+    display: grid;
+    grid-template-columns: 2fr .5fr .8fr .6fr .8fr;
+    align-items: center;
+    gap: 16px;
+}
+
+.ib-fatura-lines-header {
+    padding: 11px 14px;
+    background: #F8F5EF;
+    color: #817a70;
+    font-family: "Montserrat",sans-serif;
+    font-size: .5rem;
+    font-weight: 700;
+    letter-spacing: .07em;
+}
+
+.ib-fatura-line {
+    min-height: 55px;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(25,25,25,.06);
+    color: #535333;
+    font-family: "Montserrat",sans-serif;
+    font-size: .62rem;
+}
+
+    .ib-fatura-line strong {
+        color: #24231f;
+        font-weight: 600;
+    }
+
+.ib-fatura-totals {
+    width: 330px;
+    max-width: 100%;
+    margin: 22px 0 0 auto;
+}
+
+    .ib-fatura-totals > div {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 7px 2px;
+        color: #817a70;
+        font-family: "Montserrat",sans-serif;
+        font-size: .61rem;
+    }
+
+    .ib-fatura-totals strong {
+        color: #24231f;
+    }
+
+.ib-fatura-total-final {
+    margin-top: 8px;
+    padding-top: 13px !important;
+    border-top: 1px solid rgba(25,25,25,.12);
+}
+
+    .ib-fatura-total-final span {
+        color: #24231f;
+        font-weight: 600;
+    }
+
+    .ib-fatura-total-final strong {
+        color: #BEA256;
+        font-family: "Cormorant Garamond",serif;
+        font-size: 1.25rem;
+    }
+
+.ib-fatura-no-lines {
+    padding: 25px 14px;
+    color: #817a70;
+    font-family: "Montserrat",sans-serif;
+    font-size: .62rem;
+    text-align: center;
+}
+
+.ib-fatura-at-card {
+    margin-bottom: 20px;
+}
+
+@media (max-width:900px) {
+    .ib-fatura-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width:650px) {
+    .ib-fatura-detail-info-grid,
+    .ib-fatura-client-detail {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-fatura-detail-full {
+        grid-column: auto;
+    }
+
+    .ib-fatura-lines-card {
+        overflow-x: auto;
+    }
+
+    .ib-fatura-lines-header,
+    .ib-fatura-line {
+        min-width: 650px;
+    }
+}
+
+.ib-fatura-cancel-form {
+    display: inline-flex;
+    margin: 0;
+    padding: 0;
+}
+
+.ib-fatura-emitir-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 42px;
+    padding: 0 18px;
+    border: 1px solid var(--admin-gold);
+    border-radius: 9px;
+    background: var(--admin-gold);
+    color: var(--admin-dark);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: .2s ease;
+}
+
+    .ib-fatura-emitir-btn svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+    }
+
+    .ib-fatura-emitir-btn:hover {
+        transform: translateY(-1px);
+        filter: brightness(.96);
+        color: var(--admin-dark);
+    }
+
+.ib-por-faturar-grid {
+    grid-template-columns: minmax(220px, 1.5fr) minmax(180px, 1.25fr) minmax(200px, 1.35fr) 110px 90px 125px;
+}

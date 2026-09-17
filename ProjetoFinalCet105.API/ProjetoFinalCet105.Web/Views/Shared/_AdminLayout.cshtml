@@ -144,8 +144,8 @@
                 </a>
 
 
-                <a href="#"
-                   class="ib-admin-menu-item">
+                 <a asp-controller="GestaoIndisponibilidades" asp-action="Index" class="ib-admin-menu-item @(currentController == "GestaoIndisponibilidades" ? "active" : "")">
+
 
                     <svg viewBox="0 0 24 24">
                         <path d="M4 20V10M10 20V4M16 20v-7M22 20V7"></path>
@@ -155,8 +155,8 @@
                 </a>
 
 
-                <a href="#"
-                   class="ib-admin-menu-item">
+                <a asp-controller="GestaoFaturas" asp-action="Index" class="ib-admin-menu-item @(currentController == "GestaoFaturas" ? "active" : "")">
+
 
                     <svg viewBox="0 0 24 24">
                         <rect x="4" y="3" width="16" height="18" rx="2"></rect>
