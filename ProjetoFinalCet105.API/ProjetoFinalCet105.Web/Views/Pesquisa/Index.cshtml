@@ -1,0 +1,286 @@
+﻿@model ProjetoFinalCet105.Web.Models.PesquisaGlobalViewModel
+
+@{
+    ViewData["Title"] = "Pesquisa";
+    Layout = "_AdminLayout";
+
+    string Iniciais(string? nome)
+    {
+        if (string.IsNullOrWhiteSpace(nome))
+            return "IB";
+
+        var partes = nome
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        if (partes.Length == 1)
+            return partes[0][0].ToString().ToUpper();
+
+        return $"{partes[0][0]}{partes[^1][0]}".ToUpper();
+    }
+}
+
+<div class="ib-categories-page ib-search-page">
+
+    <div class="ib-categories-heading">
+        <div>
+            <span class="ib-section-eyebrow">PESQUISA GLOBAL</span>
+            <h1>Resultados da pesquisa</h1>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Termo))
+            {
+                <p>
+                    Resultados encontrados para
+                    <strong>“@Model.Termo”</strong>
+                </p>
+            }
+            else
+            {
+                <p>Pesquise clientes, marcações, serviços ou profissionais.</p>
+            }
+        </div>
+    </div>
+
+    <form asp-controller="Pesquisa"
+          asp-action="Index"
+          method="get"
+          class="ib-search-main-form">
+
+        <svg viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="1.8">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m20 20-3.5-3.5"></path>
+        </svg>
+
+        <input type="search"
+               name="q"
+               value="@Model.Termo"
+               placeholder="Pesquisar clientes, serviços, marcações..."
+               autocomplete="off" />
+
+        <button type="submit">Pesquisar</button>
+    </form>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Termo))
+    {
+        <div class="ib-search-summary">
+            <strong>@Model.TotalResultados</strong>
+            @(Model.TotalResultados == 1 ? "resultado encontrado" : "resultados encontrados")
+        </div>
+    }
+
+    @if (string.IsNullOrWhiteSpace(Model.Termo))
+    {
+        <div class="ib-category-panel ib-search-empty">
+            <div class="ib-search-empty-icon">⌕</div>
+            <h3>O que pretende encontrar?</h3>
+            <p>
+                Pode pesquisar por nome, email, telefone, serviço,
+                profissional ou número de marcação.
+            </p>
+        </div>
+    }
+    else if (Model.TotalResultados == 0)
+    {
+        <div class="ib-category-panel ib-search-empty">
+            <div class="ib-search-empty-icon">⌕</div>
+            <h3>Sem resultados</h3>
+            <p>
+                Não encontrámos resultados para
+                <strong>“@Model.Termo”</strong>.
+            </p>
+        </div>
+    }
+    else
+    {
+        @if (Model.Clientes.Any())
+        {
+            <section class="ib-search-section">
+
+                <div class="ib-search-section-header">
+                    <div>
+                        <span class="ib-section-eyebrow">CLIENTES</span>
+                        <h2>Clientes</h2>
+                    </div>
+
+                    <span class="ib-search-count">
+                        @Model.Clientes.Count
+                    </span>
+                </div>
+
+                <div class="ib-search-results-grid">
+                    @foreach (var cliente in Model.Clientes)
+                    {
+                        <a asp-controller="GestaoClientes"
+                           asp-action="Detalhes"
+                           asp-route-id="@cliente.Id"
+                           class="ib-search-result-card">
+
+                            <div class="ib-employee-avatar">
+                                <span class="ib-employee-initials">
+                                    @Iniciais(cliente.NomeCompleto)
+                                </span>
+                            </div>
+
+                            <div class="ib-search-result-content">
+                                <span class="ib-search-result-type">Cliente</span>
+                                <strong>@cliente.NomeCompleto</strong>
+
+                                @if (!string.IsNullOrWhiteSpace(cliente.Email))
+                                {
+                                    <small>@cliente.Email</small>
+                                }
+                            </div>
+
+                            <span class="ib-search-result-arrow">→</span>
+                        </a>
+                    }
+                </div>
+            </section>
+        }
+
+        @if (Model.Marcacoes.Any())
+        {
+            <section class="ib-search-section">
+
+                <div class="ib-search-section-header">
+                    <div>
+                        <span class="ib-section-eyebrow">AGENDA</span>
+                        <h2>Marcações</h2>
+                    </div>
+
+                    <span class="ib-search-count">
+                        @Model.Marcacoes.Count
+                    </span>
+                </div>
+
+                <div class="ib-search-results-grid">
+                    @foreach (var marcacao in Model.Marcacoes)
+                    {
+                        <a asp-controller="GestaoMarcacoes"
+                           asp-action="Detalhes"
+                           asp-route-id="@marcacao.Id"
+                           class="ib-search-result-card">
+
+                            <div class="ib-search-result-number">
+                                #@marcacao.Id
+                            </div>
+
+                            <div class="ib-search-result-content">
+                                <span class="ib-search-result-type">
+                                    @marcacao.ServicoNome
+                                </span>
+
+                                <strong>@marcacao.ClienteNome</strong>
+
+                                <small>
+                                    @marcacao.DataHoraInicio.ToString("dd/MM/yyyy · HH:mm")
+                                    · @marcacao.FuncionarioNome
+                                </small>
+                            </div>
+
+                            <span class="ib-search-result-arrow">→</span>
+                        </a>
+                    }
+                </div>
+            </section>
+        }
+
+        @if (Model.Servicos.Any())
+        {
+            <section class="ib-search-section">
+
+                <div class="ib-search-section-header">
+                    <div>
+                        <span class="ib-section-eyebrow">CATÁLOGO</span>
+                        <h2>Serviços</h2>
+                    </div>
+
+                    <span class="ib-search-count">
+                        @Model.Servicos.Count
+                    </span>
+                </div>
+
+                <div class="ib-search-results-grid">
+                    @foreach (var servico in Model.Servicos)
+                    {
+                        <a asp-controller="GestaoServicos"
+                           asp-action="Editar"
+                           asp-route-id="@servico.Id"
+                           class="ib-search-result-card">
+
+                            <div class="ib-search-result-symbol">
+                                ✦
+                            </div>
+
+                            <div class="ib-search-result-content">
+                                <span class="ib-search-result-type">
+                                    @servico.CategoriaNome
+                                </span>
+
+                                <strong>@servico.Nome</strong>
+
+                                <small>
+                                    @servico.Preco.ToString("N2") €
+                                </small>
+                            </div>
+
+                            <span class="ib-search-result-arrow">→</span>
+                        </a>
+                    }
+                </div>
+            </section>
+        }
+
+        @if (Model.Funcionarios.Any())
+        {
+            <section class="ib-search-section">
+
+                <div class="ib-search-section-header">
+                    <div>
+                        <span class="ib-section-eyebrow">EQUIPA</span>
+                        <h2>Profissionais</h2>
+                    </div>
+
+                    <span class="ib-search-count">
+                        @Model.Funcionarios.Count
+                    </span>
+                </div>
+
+                <div class="ib-search-results-grid">
+                    @foreach (var funcionario in Model.Funcionarios)
+                    {
+                        <a asp-controller="GestaoFuncionarios"
+                           asp-action="Editar"
+                           asp-route-id="@funcionario.Id"
+                           class="ib-search-result-card">
+
+                            <div class="ib-employee-avatar">
+                                <span class="ib-employee-initials">
+                                    @Iniciais(funcionario.NomeCompleto)
+                                </span>
+                            </div>
+
+                            <div class="ib-search-result-content">
+                                <span class="ib-search-result-type">
+                                    Profissional
+                                </span>
+
+                                <strong>@funcionario.NomeCompleto</strong>
+
+                                @if (!string.IsNullOrWhiteSpace(funcionario.Email))
+                                {
+                                    <small>@funcionario.Email</small>
+                                }
+                            </div>
+
+                            <span class="ib-search-result-arrow">→</span>
+                        </a>
+                    }
+                </div>
+            </section>
+        }
+    }
+
+</div>

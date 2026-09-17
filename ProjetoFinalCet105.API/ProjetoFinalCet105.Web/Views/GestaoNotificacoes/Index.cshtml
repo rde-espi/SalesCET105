@@ -1,0 +1,309 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.NotificacaoDashboardViewModel>
+
+@{
+    ViewData["Title"] = "Notificações";
+    Layout = "_AdminLayout";
+
+    var total = Model?.Count ?? 0;
+    var naoLidas = Model?.Count(n => !n.Lida) ?? 0;
+    var lidas = Model?.Count(n => n.Lida) ?? 0;
+}
+
+<div class="ib-categories-page">
+
+    <!-- CABEÇALHO -->
+    <div class="ib-categories-heading">
+        <div>
+            <span class="ib-section-eyebrow">CENTRAL DE ATIVIDADE</span>
+            <h1>Notificações</h1>
+            <p>Acompanhe os avisos e atualizações associados à sua conta.</p>
+        </div>
+
+        @if (naoLidas > 0)
+        {
+            <form asp-controller="GestaoNotificacoes"
+                  asp-action="MarcarTodasComoLidas"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit"
+                        class="ib-fatura-emitir-btn">
+                    Marcar todas como lidas
+                </button>
+            </form>
+        }
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <!-- KPIs -->
+    <div class="ib-category-kpi-grid">
+
+        <div class="ib-category-kpi-card">
+            <span>Total</span>
+            <strong>@total</strong>
+            <small>Notificações recebidas</small>
+        </div>
+
+        <div class="ib-category-kpi-card ib-category-kpi-highlight">
+            <span>Não lidas</span>
+            <strong>@naoLidas</strong>
+            <small>Por consultar</small>
+        </div>
+
+        <div class="ib-category-kpi-card">
+            <span>Lidas</span>
+            <strong>@lidas</strong>
+            <small>Já consultadas</small>
+        </div>
+
+    </div>
+
+    <!-- PAINEL -->
+    <div class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+
+            <div>
+                <span class="ib-section-eyebrow">ATIVIDADE</span>
+                <h2>As minhas notificações</h2>
+                <p>Consulte o histórico de notificações da sua conta.</p>
+            </div>
+
+            <div class="ib-notification-filters">
+
+                <div class="ib-category-search">
+                    <input type="text"
+                           id="pesquisaNotificacoes"
+                           placeholder="Pesquisar notificações..." />
+                </div>
+
+                <select id="filtroNotificacoes"
+                        class="ib-feedback-filter-select">
+                    <option value="">Todas</option>
+                    <option value="nao-lida">Não lidas</option>
+                    <option value="lida">Lidas</option>
+                </select>
+
+            </div>
+
+        </div>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="ib-mensagens-empty">
+
+                <div class="ib-mensagens-empty-icon">
+                    <svg viewBox="0 0 24 24"
+                         width="27"
+                         height="27"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.6">
+                        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
+                        <path d="M10 21h4" />
+                    </svg>
+                </div>
+
+                <strong>Sem notificações</strong>
+                <span>Não existem notificações para apresentar.</span>
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-notification-list">
+
+                @foreach (var notificacao in Model.OrderByDescending(n => n.DataCriacao))
+                {
+                    <div class="ib-notification-item @(notificacao.Lida ? "lida" : "nao-lida")"
+                         data-status="@(notificacao.Lida ? "lida" : "nao-lida")"
+                         data-search="@($"{notificacao.Titulo} {notificacao.Mensagem}".ToLower())">
+
+                        <!-- ÍCONE -->
+                        <div class="ib-notification-icon">
+
+                            <svg viewBox="0 0 24 24"
+                                 width="20"
+                                 height="20"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.7">
+                                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" />
+                                <path d="M10 21h4" />
+                            </svg>
+
+                        </div>
+
+                        <!-- CONTEÚDO -->
+                        <div class="ib-notification-content">
+
+                            <div class="ib-notification-title">
+
+                                <strong>@notificacao.Titulo</strong>
+
+                                @if (!notificacao.Lida)
+                                {
+                                    <span class="ib-notification-new">
+                                        Nova
+                                    </span>
+                                }
+
+                            </div>
+
+                            <p>@notificacao.Mensagem</p>
+
+                            <div class="ib-notification-date">
+                                @notificacao.DataCriacao.ToString("dd/MM/yyyy · HH:mm")
+                            </div>
+
+                        </div>
+
+                        <!-- AÇÃO -->
+                        <div class="ib-notification-actions">
+
+                            @if (!notificacao.Lida)
+                            {
+                                <form asp-controller="GestaoNotificacoes"
+                                      asp-action="MarcarComoLida"
+                                      asp-route-id="@notificacao.Id"
+                                      method="post">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit"
+                                            class="ib-notification-read-btn"
+                                            title="Marcar como lida">
+
+                                        <svg viewBox="0 0 24 24"
+                                             width="17"
+                                             height="17"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="1.8">
+                                            <path d="M4 12l5 5L20 6" />
+                                        </svg>
+
+                                        Marcar como lida
+                                    </button>
+
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="ib-notification-read-label">
+
+                                    <svg viewBox="0 0 24 24"
+                                         width="15"
+                                         height="15"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="1.8">
+                                        <path d="M4 12l5 5L20 6" />
+                                    </svg>
+
+                                    Lida
+                                </span>
+                            }
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+            <div id="semResultadosNotificacoes"
+                 class="ib-mensagens-empty"
+                 style="display:none;">
+
+                <strong>Nenhuma notificação encontrada</strong>
+                <span>Não existem resultados para os filtros selecionados.</span>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const pesquisa =
+            document.getElementById("pesquisaNotificacoes");
+
+        const filtro =
+            document.getElementById("filtroNotificacoes");
+
+        const notificacoes =
+            document.querySelectorAll(".ib-notification-item");
+
+        const semResultados =
+            document.getElementById("semResultadosNotificacoes");
+
+        function filtrar() {
+
+            const termo =
+                pesquisa ? pesquisa.value.toLowerCase().trim() : "";
+
+            const estado =
+                filtro ? filtro.value : "";
+
+            let encontrados = 0;
+
+            notificacoes.forEach(function (notificacao) {
+
+                const texto =
+                    notificacao.dataset.search || "";
+
+                const status =
+                    notificacao.dataset.status || "";
+
+                const correspondePesquisa =
+                    !termo || texto.includes(termo);
+
+                const correspondeEstado =
+                    !estado || status === estado;
+
+                const mostrar =
+                    correspondePesquisa && correspondeEstado;
+
+                notificacao.style.display =
+                    mostrar ? "" : "none";
+
+                if (mostrar)
+                    encontrados++;
+            });
+
+            if (semResultados) {
+                semResultados.style.display =
+                    encontrados === 0 ? "flex" : "none";
+            }
+        }
+
+        if (pesquisa)
+            pesquisa.addEventListener("input", filtrar);
+
+        if (filtro)
+            filtro.addEventListener("change", filtrar);
+
+    });
+</script>
+
+}

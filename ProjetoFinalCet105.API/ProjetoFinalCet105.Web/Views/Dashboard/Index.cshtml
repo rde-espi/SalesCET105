@@ -516,9 +516,11 @@
 
                 <h2>Agenda de hoje</h2>
 
-                <a href="#" class="ib-panel-link">
-                    Ver calendário
-                </a>
+                <a asp-controller="Calendario"
+   asp-action="Index"
+   class="ib-panel-link">
+    Ver calendário
+</a>
 
             </div>
 
@@ -582,11 +584,14 @@
                                 @marcacao.EstadoMarcacaoNome
                             </span>
 
-                            <button class="ib-row-options"
-                                    type="button"
-                                    aria-label="Opções">
-                                •••
-                            </button>
+                            <a asp-controller="GestaoMarcacoes"
+   asp-action="Detalhes"
+   asp-route-id="@marcacao.Id"
+   class="ib-row-options"
+   title="Ver detalhes da marcação"
+   aria-label="Ver detalhes da marcação">
+    •••
+</a>
 
                         </div>
                     }
@@ -611,9 +616,11 @@
 
                 <h2>Últimos clientes</h2>
 
-                <a href="#" class="ib-panel-link">
-                    Ver todos
-                </a>
+                <a asp-controller="GestaoClientes"
+   asp-action="Index"
+   class="ib-panel-link">
+    Ver todos
+</a>
 
             </div>
 
@@ -688,9 +695,11 @@
 
                 <h2>Desempenho da equipa</h2>
 
-                <a href="#" class="ib-panel-link">
-                    Ver equipa
-                </a>
+                <button type="button"
+        class="ib-panel-link ib-panel-link-button"
+        data-open-dashboard-tab="team">
+    Ver equipa
+</button>
 
             </div>
 
@@ -1868,7 +1877,7 @@
         <article class="ib-team-main-card">
 
             <span class="ib-team-kpi-label">
-                Avaliação média
+                Avaliação média mensal
             </span>
 
                 <strong>
@@ -2454,5 +2463,26 @@ else
                 }, 50);
             });
         });
+        document.querySelectorAll('[data-open-dashboard-tab]').forEach(button => {
+    button.addEventListener('click', function () {
+
+        const target = this.dataset.openDashboardTab;
+
+        const tab = document.querySelector(
+            `[data-dashboard-tab="${target}"]`
+        );
+
+        if (tab) {
+            tab.click();
+
+            document.querySelector('.ib-dashboard-tabs')
+                ?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+        }
+    });
+});
+
     </script>
 }
