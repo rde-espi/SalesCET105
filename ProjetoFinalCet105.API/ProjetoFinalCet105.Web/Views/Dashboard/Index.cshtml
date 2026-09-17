@@ -350,12 +350,13 @@
 
                 <h2>Evolução da faturação</h2>
 
-                <select class="ib-dashboard-period"
-                        aria-label="Período da faturação">
-                    <option>Últimos 6 meses</option>
-                    <option>Últimos 12 meses</option>
-                    <option>Este ano</option>
-                </select>
+                <select id="overviewRevenuePeriod"
+        class="ib-dashboard-period"
+        aria-label="Período da faturação">
+    <option value="6">Últimos 6 meses</option>
+    <option value="12">Últimos 12 meses</option>
+    <option value="year">Este ano</option>
+</select>
 
             </div>
 
@@ -446,58 +447,58 @@
             </div>
 
 
-            <div class="ib-top-services-list">
+            <div class="ib-top-services">
 
-                @if (Model.ServicosMaisFaturados.Any())
-                {
-                    var posicao = 1;
+    @if (Model.ServicosMaisFaturados.Any())
+    {
+        var posicao = 1;
 
-                    foreach (var servico in Model.ServicosMaisFaturados)
-                    {
-                        var iniciais = string.Join("",
-                            servico.NomeServico
-                                .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                                .Take(2)
-                                .Select(p => char.ToUpper(p[0])));
+        foreach (var servico in Model.ServicosMaisFaturados)
+        {
+            var iniciais = string.Join("",
+                servico.NomeServico
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                    .Take(2)
+                    .Select(p => char.ToUpper(p[0])));
 
-                        <div class="ib-service-rank">
+            <div class="ib-top-service">
 
-                            <span class="ib-rank-number">
-                                @posicao
-                            </span>
+                <span class="ib-service-position">
+                    @posicao
+                </span>
 
-                            <div class="ib-service-avatar">
-                                @iniciais
-                            </div>
+                <div class="ib-service-placeholder">
+                    @iniciais
+                </div>
 
-                            <div class="ib-service-info">
-                                <strong>@servico.NomeServico</strong>
+                <div class="ib-service-info">
+                    <strong>@servico.NomeServico</strong>
 
-                                <span>
-                                    @servico.Quantidade
-                                    @(servico.Quantidade == 1 ? "serviço" : "serviços")
-                                </span>
-                            </div>
+                    <span>
+                        @servico.Quantidade
+                        @(servico.Quantidade == 1 ? "serviço" : "serviços")
+                    </span>
+                </div>
 
-                            <strong class="ib-service-value">
-                                @servico.TotalFaturado.ToString(
-                                    "C2",
-                                    new System.Globalization.CultureInfo("pt-PT"))
-                            </strong>
-
-                        </div>
-
-                        posicao++;
-                    }
-                }
-                else
-                {
-                    <div class="ib-dashboard-empty">
-                        Ainda não existem dados de faturação.
-                    </div>
-                }
+                <strong class="ib-service-revenue">
+                    @servico.TotalFaturado.ToString(
+                        "C2",
+                        new System.Globalization.CultureInfo("pt-PT"))
+                </strong>
 
             </div>
+
+            posicao++;
+        }
+    }
+    else
+    {
+        <div class="ib-dashboard-empty">
+            Ainda não existem dados de faturação.
+        </div>
+    }
+
+</div>
 
         </article>
 
@@ -939,14 +940,12 @@
             </div>
 
             <select id="financePeriod"
-                    class="ib-dashboard-period"
-                    aria-label="Período da análise financeira">
-
-                <option value="6">Últimos 6 meses</option>
-                <option value="12">Últimos 12 meses</option>
-                <option value="year">Este ano</option>
-
-            </select>
+        class="ib-dashboard-period"
+        aria-label="Período da faturação">
+    <option value="6">Últimos 6 meses</option>
+    <option value="12">Últimos 12 meses</option>
+    <option value="year">Este ano</option>
+</select>
         </div>
 
         <div class="ib-finance-analysis-grid">
@@ -2165,10 +2164,10 @@ else
             overviewRevenueChart = new Chart(revenueCanvas, {
                 type: 'line',
                 data: {
-                    labels: overviewRevenueLabels,
+                    labels: [],
                     datasets: [{
                         label: 'Faturação',
-                        data: overviewRevenueValues,
+                        data: [],
                         borderColor: '#b57d27',
                         backgroundColor: 'rgba(216, 176, 113, 0.15)',
                         borderWidth: 2,
@@ -2221,6 +2220,41 @@ else
                 }
             });
         }
+
+        function updateOverviewRevenueChart(period) {
+    if (!overviewRevenueChart) {
+        return;
+    }
+
+    const data = buildRevenuePeriod(period);
+    const scale = calculateRevenueScale(data.values);
+
+    overviewRevenueChart.data.labels = data.labels;
+    overviewRevenueChart.data.datasets[0].data = data.values;
+
+    overviewRevenueChart.options.scales.y.min = scale.min;
+    overviewRevenueChart.options.scales.y.max = scale.max;
+    overviewRevenueChart.options.scales.y.ticks.stepSize = scale.step;
+
+    overviewRevenueChart.update();
+}
+
+const overviewRevenuePeriod =
+    document.getElementById('overviewRevenuePeriod');
+
+if (overviewRevenuePeriod && overviewRevenueChart) {
+
+    overviewRevenuePeriod.addEventListener(
+        'change',
+        function () {
+            updateOverviewRevenueChart(this.value);
+        }
+    );
+
+    updateOverviewRevenueChart(
+        overviewRevenuePeriod.value
+    );
+}
 
         /* =========================================================
            VISÃO GERAL - FATURAÇÃO POR CATEGORIA

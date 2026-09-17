@@ -28,12 +28,21 @@
 
     <!-- CABEÇALHO -->
     <section class="ib-categories-heading">
-        <div>
-            <span class="ib-section-eyebrow">AGENDA</span>
-            <h1>Marcações</h1>
-            <p>Consulte e acompanhe as marcações dos clientes.</p>
-        </div>
-    </section>
+    <div>
+        <span class="ib-section-eyebrow">AGENDA</span>
+        <h1>Marcações</h1>
+        <p>Consulte, acompanhe e crie marcações para os clientes.</p>
+    </div>
+
+    <a asp-controller="GestaoMarcacoes"
+       asp-action="Criar"
+       class="ib-fatura-emitir-btn">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 5v14M5 12h14"></path>
+        </svg>
+        Nova marcação
+    </a>
+</section>
 
 
     <!-- KPIs -->

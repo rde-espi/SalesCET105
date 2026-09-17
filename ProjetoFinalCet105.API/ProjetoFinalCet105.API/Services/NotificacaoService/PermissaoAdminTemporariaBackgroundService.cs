@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
+using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
 
 namespace ProjetoFinalCet105.API.Services.NotificacaoService
@@ -26,6 +28,7 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
                     var permissaoRepository = scope.ServiceProvider.GetRequiredService<IPermissaoAdminTemporariaRepository>();
 
                     var notificacaoService = scope.ServiceProvider.GetRequiredService<INotificacaoService>();
+                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
                     var agora = DateTime.UtcNow;
 
@@ -46,6 +49,14 @@ namespace ProjetoFinalCet105.API.Services.NotificacaoService
                                 "Privilégios administrativos expirados",
                                 "Os seus privilégios administrativos temporários expiraram. " +
                                 "O seu perfil voltou automaticamente ao nível de Funcionário.");
+
+                            var nomeFuncionario =permissao.FuncionarioUser?.NomeCompleto ?? "Funcionário";
+
+                            await notificacaoService.CriarNotificacaoAsync(
+                                permissao.ConcedidoPorUserId,
+                                "Permissão temporária expirada",
+                                $"A permissão de Administrador Temporário de {nomeFuncionario} " +
+                                $"expirou em {permissao.DataFim.ToLocalTime():dd/MM/yyyy 'às' HH:mm}.");
 
                             permissao.DataNotificacaoExpiracao = agora;
 

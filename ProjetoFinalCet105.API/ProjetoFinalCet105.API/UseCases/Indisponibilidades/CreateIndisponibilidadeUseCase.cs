@@ -1,7 +1,10 @@
-﻿using ProjetoFinalCet105.API.DTOs;
+﻿using Microsoft.AspNetCore.Identity;
+
+using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.Services.IndisponibilidadeService;
+using ProjetoFinalCet105.API.Services.NotificacaoService;
 using ProjetoFinalCet105.API.UseCases.Common;
 
 namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
@@ -11,52 +14,47 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
         private readonly IIndisponibilidadeRepository _indisponibilidadeRepository;
         private readonly IFuncionarioRepository _funcionarioRepository;
         private readonly IIndisponibilidadeService _indisponibilidadeService;
+        private readonly INotificacaoService _notificacaoService;
+        private readonly UserManager<User> _userManager;
 
         public CreateIndisponibilidadeUseCase(
             IIndisponibilidadeRepository indisponibilidadeRepository,
             IFuncionarioRepository funcionarioRepository,
-            IIndisponibilidadeService indisponibilidadeService)
+            IIndisponibilidadeService indisponibilidadeService,
+            INotificacaoService notificacaoService,
+            UserManager<User> userManager)
         {
             _indisponibilidadeRepository = indisponibilidadeRepository;
             _funcionarioRepository = funcionarioRepository;
             _indisponibilidadeService = indisponibilidadeService;
+            _notificacaoService = notificacaoService;
+            _userManager = userManager;
         }
 
         public async Task<UseCaseResult<IndisponibilidadeDTO>> ExecuteAsync(string userId, bool isFuncionario, bool isAdmin, NovaIndisponibilidadeDTO dto)
         {
             // 1. Determinar qual funcionário será afetado
-            var funcionarioIdResult =
-                await ObterFuncionarioIdAsync(
-                    userId,
-                    isFuncionario,
-                    isAdmin,
-                    dto.FuncionarioId);
+            var funcionarioIdResult = await ObterFuncionarioIdAsync( userId, isFuncionario, isAdmin, dto.FuncionarioId);
 
             if (!funcionarioIdResult.Sucesso)
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha(
-                    funcionarioIdResult.Erro!,
-                    funcionarioIdResult.TipoErro);
+                return UseCaseResult<IndisponibilidadeDTO>.Falha( funcionarioIdResult.Erro!, funcionarioIdResult.TipoErro);
             }
 
             var funcionarioId = funcionarioIdResult.Dados;
 
 
             // 2. Validar funcionário
-            var funcionario =
-                await _funcionarioRepository.GetFuncionarioByIdAsync(funcionarioId);
+            var funcionario = await _funcionarioRepository.GetFuncionarioByIdAsync(funcionarioId);
 
             if (funcionario == null)
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha(
-                    "O funcionário indicado não existe.",
-                    TipoErro.NaoEncontrado);
+                return UseCaseResult<IndisponibilidadeDTO>.Falha("O funcionário indicado não existe.", TipoErro.NaoEncontrado);
             }
 
             if (!funcionario.Ativo)
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha(
-                    "O funcionário indicado não está ativo.");
+                return UseCaseResult<IndisponibilidadeDTO>.Falha( "O funcionário indicado não está ativo.");
             }
 
 
@@ -65,9 +63,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
 
             if (!validacaoTipo.Sucesso)
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha(
-                    validacaoTipo.Erro!,
-                    validacaoTipo.TipoErro);
+                return UseCaseResult<IndisponibilidadeDTO>.Falha( validacaoTipo.Erro!, validacaoTipo.TipoErro);
             }
 
 
@@ -76,8 +72,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
 
             if (!horariosTrabalho.Any())
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha(
-                    "O funcionário não possui horário de trabalho definido para este dia.");
+                return UseCaseResult<IndisponibilidadeDTO>.Falha( "O funcionário não possui horário de trabalho definido para este dia.");
             }
 
 
@@ -104,9 +99,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
 
             if (!periodoResult.Sucesso)
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha(
-                    periodoResult.Erro!,
-                    periodoResult.TipoErro);
+                return UseCaseResult<IndisponibilidadeDTO>.Falha( periodoResult.Erro!, periodoResult.TipoErro);
             }
 
             var inicio = periodoResult.Dados.Inicio;
@@ -116,8 +109,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
             // 7. Funcionário não pode criar indisponibilidade no passado
             if (!isAdmin && !dto.RestoDoDia && inicio <= DateTime.Now)
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha(
-                    "Não é possível criar uma indisponibilidade numa data/hora passada.");
+                return UseCaseResult<IndisponibilidadeDTO>.Falha("Não é possível criar uma indisponibilidade numa data/hora passada.");
             }
 
 
@@ -126,9 +118,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
 
             if (!conflitoMarcacao.Sucesso)
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha(
-                    conflitoMarcacao.Erro!,
-                    conflitoMarcacao.TipoErro);
+                return UseCaseResult<IndisponibilidadeDTO>.Falha( conflitoMarcacao.Erro!,conflitoMarcacao.TipoErro);
             }
 
 
@@ -137,9 +127,7 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
 
             if (existeSobreposicao)
             {
-                return UseCaseResult<IndisponibilidadeDTO>.Falha(
-                    "Já existe uma indisponibilidade sobreposta para este funcionário.",
-                    TipoErro.Conflito);
+                return UseCaseResult<IndisponibilidadeDTO>.Falha( "Já existe uma indisponibilidade sobreposta para este funcionário.", TipoErro.Conflito);
             }
 
 
@@ -157,6 +145,35 @@ namespace ProjetoFinalCet105.API.UseCases.Indisponibilidades
                 };
 
                 await _indisponibilidadeRepository.CreateAsync(indisponibilidade);
+
+                // Funcionário criou a sua própria indisponibilidade:
+                // notificar todos os administradores.
+                if (isFuncionario && !isAdmin)
+                {
+                    try
+                    {
+                        var administradores = await _userManager.GetUsersInRoleAsync("Admin");
+
+                        var mensagem =
+                            indisponibilidade.DiaCompleto
+                                ? $"{funcionario.User.NomeCompleto} registou uma indisponibilidade para o dia " +
+                                  $"{indisponibilidade.DataHoraInicio:dd/MM/yyyy} (dia completo)."
+                                : $"{funcionario.User.NomeCompleto} registou uma indisponibilidade para o dia " +
+                                  $"{indisponibilidade.DataHoraInicio:dd/MM/yyyy}, das " +
+                                  $"{indisponibilidade.DataHoraInicio:HH:mm} às " +
+                                  $"{indisponibilidade.DataHoraFim:HH:mm}.";
+
+                        foreach (var admin in administradores)
+                        {
+                            await _notificacaoService.CriarNotificacaoAsync( admin.Id, "Nova indisponibilidade", mensagem);
+                        }
+                    }
+                    catch
+                    {
+                        // A indisponibilidade já foi criada.
+                        // Uma falha na notificação não deve anular a operação.
+                    }
+                }
 
                 var resposta = new IndisponibilidadeDTO
                 {

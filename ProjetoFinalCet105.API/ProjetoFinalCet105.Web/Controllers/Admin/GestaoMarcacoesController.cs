@@ -37,6 +37,79 @@ public class GestaoMarcacoesController : Controller
         }
     }
 
+    [HttpGet]
+    public async Task<IActionResult> Criar()
+    {
+        try
+        {
+            var model = new NovaMarcacaoAdminViewModel();
+
+            await CarregarDadosNovaMarcacao(model);
+
+            return View(model);
+        }
+        catch
+        {
+            TempData["ErrorMessage"] =
+                "Não foi possível preparar a nova marcação.";
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Criar(NovaMarcacaoAdminViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            await CarregarDadosNovaMarcacao(model);
+            return View(model);
+        }
+
+        try
+        {
+            var dto = new
+            {
+                model.ClienteId,
+                model.FuncionarioId,
+                model.ServicoId,
+                model.DataHoraInicio,
+                model.Observacoes
+            };
+
+            using var response =
+                await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post,"api/Marcacoes", dto);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var erro = await response.Content.ReadAsStringAsync();
+
+                ModelState.AddModelError(
+                    string.Empty,
+                    string.IsNullOrWhiteSpace(erro)
+                        ? "Não foi possível criar a marcação."
+                        : erro.Trim('"'));
+
+                await CarregarDadosNovaMarcacao(model);
+
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Marcação criada com sucesso.";
+
+            return RedirectToAction(nameof(Index));
+        }
+        catch
+        {
+            ModelState.AddModelError( string.Empty, "Ocorreu um erro ao criar a marcação.");
+
+            await CarregarDadosNovaMarcacao(model);
+
+            return View(model);
+        }
+    }
+
     public async Task<IActionResult> Detalhes(int id)
     {
         try
@@ -281,6 +354,46 @@ public class GestaoMarcacoesController : Controller
                 .ToList();
 
             return View(model);
+        }
+    }
+
+
+    private async Task CarregarDadosNovaMarcacao(NovaMarcacaoAdminViewModel model)
+    {
+        var clientes = await _apiService.GetAuthenticatedAsync<List<ClienteViewModel>>("api/Clientes");
+
+        var servicos = await _apiService.GetAuthenticatedAsync<List<ServicoViewModel>>( "api/Servicos");
+
+        model.Clientes = clientes?
+            .Where(c => c.Ativo)
+            .OrderBy(c => c.NomeCompleto)
+            .ToList()
+            ?? new List<ClienteViewModel>();
+
+        model.Servicos = servicos?
+            .Where(s => s.Disponivel)
+            .OrderBy(s => s.Nome)
+            .ToList()
+            ?? new List<ServicoViewModel>();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ProfissionaisPorServico(int servicoId)
+    {
+        try
+        {
+            var funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>( $"api/Funcionarios/servico/{servicoId}");
+
+            return Json(
+                funcionarios?
+                    .Where(f => f.Ativo && f.Disponivel)
+                    .OrderBy(f => f.NomeCompleto)
+                    .ToList()
+                ?? new List<FuncionarioViewModel>());
+        }
+        catch
+        {
+            return Json(new List<FuncionarioViewModel>());
         }
     }
 
