@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Editar indisponibilidade";
+
+   var isAdmin = User.IsInRole("Admin");
+
     Layout = User.IsInRole("Admin")
     ? "_AdminLayout"
     : "_FuncionarioLayout";
@@ -47,22 +50,25 @@
 
             <div class="ib-indisponibilidade-form-grid">
 
-                <div class="ib-indisponibilidade-field ib-field-full">
-                    <label asp-for="FuncionarioId"></label>
+               @if (isAdmin)
+{
+    <div class="ib-indisponibilidade-field ib-field-full">
+        <label asp-for="FuncionarioId"></label>
 
-                    <select asp-for="FuncionarioId">
-                        <option value="">Selecionar profissional</option>
+        <select asp-for="FuncionarioId">
+            <option value="">Selecionar profissional</option>
 
-                        @foreach (var funcionario in Model.Funcionarios)
-                        {
-                            <option value="@funcionario.Id">
-                                @funcionario.NomeCompleto
-                            </option>
-                        }
-                    </select>
+            @foreach (var funcionario in Model.Funcionarios)
+            {
+                <option value="@funcionario.Id">
+                    @funcionario.NomeCompleto
+                </option>
+            }
+        </select>
 
-                    <span asp-validation-for="FuncionarioId"></span>
-                </div>
+        <span asp-validation-for="FuncionarioId"></span>
+    </div>
+}
 
                 <div class="ib-indisponibilidade-field">
                     <label asp-for="Data"></label>

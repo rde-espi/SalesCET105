@@ -23,8 +23,12 @@ public class GestaoIndisponibilidadesController : Controller
         {
             var indisponibilidades = await _apiService.GetAuthenticatedAsync<List<IndisponibilidadeViewModel>>("api/Indisponibilidades") ?? new List<IndisponibilidadeViewModel>();
 
-            var funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>("api/Funcionarios") ?? new List<FuncionarioViewModel>();
+            var funcionarios = new List<FuncionarioViewModel>();
 
+            if (User.IsInRole("Admin"))
+            {
+                funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>("api/Funcionarios") ?? new List<FuncionarioViewModel>();
+            }
             var hoje = DateTime.Today;
             var amanha = hoje.AddDays(1);
 
@@ -65,8 +69,12 @@ public class GestaoIndisponibilidadesController : Controller
     {
         try
         {
-            var funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>("api/Funcionarios") ?? new List<FuncionarioViewModel>();
+            var funcionarios = new List<FuncionarioViewModel>();
 
+            if (User.IsInRole("Admin"))
+            {
+                funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>("api/Funcionarios") ?? new List<FuncionarioViewModel>();
+            }
             var model = new CriarIndisponibilidadeViewModel
             {
                 Data = DateTime.Today,
@@ -90,12 +98,22 @@ public class GestaoIndisponibilidadesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Criar(CriarIndisponibilidadeViewModel model)
     {
-        var funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>("api/Funcionarios") ?? new List<FuncionarioViewModel>();
+        var funcionarios = new List<FuncionarioViewModel>();
+
+
+        if (User.IsInRole("Admin"))
+        {
+            funcionarios =
+                await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>(
+                    "api/Funcionarios")
+                ?? new List<FuncionarioViewModel>();
+        }
 
         model.Funcionarios = funcionarios
             .Where(f => f.Ativo)
             .OrderBy(f => f.NomeCompleto)
             .ToList();
+        
 
         if (!User.IsInRole("Admin"))
         {
@@ -163,8 +181,7 @@ public class GestaoIndisponibilidadesController : Controller
         return View(model);
     }
 
-    private static async Task<string> ObterMensagemErroApi(
-    HttpResponseMessage response)
+    private static async Task<string> ObterMensagemErroApi( HttpResponseMessage response)
     {
         try
         {
@@ -203,19 +220,19 @@ public class GestaoIndisponibilidadesController : Controller
     {
         try
         {
-            var indisponibilidade =
-                await _apiService.GetAuthenticatedAsync<IndisponibilidadeViewModel>(
-                    $"api/Indisponibilidades/{id}");
+            var indisponibilidade = await _apiService.GetAuthenticatedAsync<IndisponibilidadeViewModel>($"api/Indisponibilidades/{id}");
 
             if (indisponibilidade == null)
             {
                 return NotFound();
             }
 
-            var funcionarios =
-                await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>(
-                    "api/Funcionarios")
-                ?? new List<FuncionarioViewModel>();
+            var funcionarios = new List<FuncionarioViewModel>();
+
+            if (User.IsInRole("Admin"))
+            {
+                funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>("api/Funcionarios")?? new List<FuncionarioViewModel>();
+            }
 
             var tipo =
                 indisponibilidade.DiaCompleto
@@ -259,14 +276,23 @@ public class GestaoIndisponibilidadesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Editar(EditarIndisponibilidadeViewModel model)
     {
-        var funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>("api/Funcionarios")
-            ?? new List<FuncionarioViewModel>();
+        var funcionarios = new List<FuncionarioViewModel>();
+
+        if (User.IsInRole("Admin"))
+        {
+            funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>( "api/Funcionarios") ?? new List<FuncionarioViewModel>();
+        }
 
         model.Funcionarios = funcionarios
             .Where(f => f.Ativo ||
                         f.Id == model.FuncionarioId)
             .OrderBy(f => f.NomeCompleto)
             .ToList();
+
+        if (!User.IsInRole("Admin"))
+        {
+            ModelState.Remove(nameof(model.FuncionarioId));
+        }
 
         if (!ModelState.IsValid)
         {

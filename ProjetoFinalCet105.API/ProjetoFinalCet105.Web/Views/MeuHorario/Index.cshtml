@@ -28,50 +28,86 @@
     };
 }
 
-<div class="container-fluid py-4">
+<div class="ib-meu-horario-page">
 
-    <div class="mb-4">
-        <div class="text-uppercase small"
-             style="letter-spacing:.18em; color:#BEA256; font-weight:600;">
-            Agenda
+    <div class="ib-meu-horario-heading">
+        <div>
+            <span class="ib-section-eyebrow">AGENDA</span>
+            <h1>Meu Horário</h1>
+            <p>Consulte o seu horário semanal de trabalho.</p>
         </div>
 
-        <h1 class="mt-2 mb-2">Meu Horário</h1>
-
-        <p class="text-muted mb-0">
-            Consulte o seu horário semanal de trabalho.
-        </p>
+        <div class="ib-meu-horario-summary">
+            <span>SEMANA DE TRABALHO</span>
+            <strong>
+                @dias.Count(dia => Model.Any(h => h.DiaSemana == dia))
+                dias com horário
+            </strong>
+        </div>
     </div>
 
-    <div class="row g-3">
 
-        @foreach (var dia in dias)
-        {
-            var horariosDia = Model
-                .Where(h => h.DiaSemana == dia)
-                .OrderBy(h => h.HoraInicio)
-                .ToList();
+    <div class="ib-meu-horario-panel">
 
-            <div class="col-12 col-md-6 col-xl-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body p-4">
+        <div class="ib-meu-horario-panel-header">
+            <div>
+                <span class="ib-section-eyebrow">HORÁRIO SEMANAL</span>
+                <h2>Disponibilidade de trabalho</h2>
+            </div>
 
-                        <h5 class="mb-3">
-                            @NomeDia(dia)
-                        </h5>
+            <span class="ib-meu-horario-info">
+                Segunda-feira — Domingo
+            </span>
+        </div>
 
-                        @if (horariosDia.Any())
+
+        <div class="ib-meu-horario-list">
+
+            @foreach (var dia in dias)
+            {
+                var horariosDia = Model
+                    .Where(h => h.DiaSemana == dia)
+                    .OrderBy(h => h.HoraInicio)
+                    .ToList();
+
+                var temHorario = horariosDia.Any();
+
+                <div class="ib-meu-horario-day @(temHorario ? "is-working" : "is-off")">
+
+                    <div class="ib-meu-horario-day-name">
+                        <span class="ib-meu-horario-day-marker"></span>
+
+                       <div>
+                           <strong>@NomeDia(dia)</strong>
+                           
+                           @if (temHorario)
+                           {
+                               <span>Horário de trabalho</span>
+                           }
+                           </div>
+                    </div>
+
+
+                    <div class="ib-meu-horario-periods">
+
+                        @if (temHorario)
                         {
                             foreach (var horario in horariosDia)
                             {
-                                <div class="d-flex align-items-center justify-content-between py-2">
-                                    <span class="text-muted">
-                                        Horário
+                                <div class="ib-meu-horario-period">
+                                    <span class="ib-meu-horario-clock">
+                                        <svg viewBox="0 0 24 24"
+                                             aria-hidden="true">
+                                            <circle cx="12"
+                                                    cy="12"
+                                                    r="9"></circle>
+                                            <path d="M12 7v5l3 2"></path>
+                                        </svg>
                                     </span>
 
                                     <strong>
                                         @horario.HoraInicio.ToString(@"hh\:mm")
-                                        –
+                                        <span>—</span>
                                         @horario.HoraFim.ToString(@"hh\:mm")
                                     </strong>
                                 </div>
@@ -79,15 +115,39 @@
                         }
                         else
                         {
-                            <div class="py-2 text-muted">
-                                Sem horário definido
-                            </div>
+                            <span class="ib-meu-horario-off-label">
+                                Folga
+                            </span>
                         }
 
                     </div>
+
+
+                    <div class="ib-meu-horario-status">
+                        @if (temHorario)
+                        {
+                            <span class="is-active">
+                                Em serviço
+                            </span>
+                        }
+                        else
+                        {
+                            <div class="ib-meu-horario-status">
+    @if (temHorario)
+    {
+        <span class="is-active">
+            Em serviço
+        </span>
+    }
+</div>
+                        }
+                    </div>
+
                 </div>
-            </div>
-        }
+            }
+
+        </div>
 
     </div>
+
 </div>

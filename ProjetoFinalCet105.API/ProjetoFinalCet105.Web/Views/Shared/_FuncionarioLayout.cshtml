@@ -72,9 +72,16 @@
 
                     <span>Meu Perfil</span>
                 </a>
-                <a asp-controller="GestaoIndisponibilidades"
-   asp-action="Index"
-   class="ib-admin-menu-item">
+                <a asp-controller="MeuHorario" asp-action="Index" class="ib-admin-menu-item @(currentController == "MeuHorario" ? "active" : "")">
+
+    <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"></circle>
+        <path d="M12 7v5l3 2"></path>
+    </svg>
+
+    <span>Meu Horário</span>
+</a>
+                <a asp-controller="GestaoIndisponibilidades" asp-action="Index" class="ib-admin-menu-item @(currentController == "GestaoIndisponibilidades" ? "active" : "")">
     <svg viewBox="0 0 24 24">
         <rect x="3" y="5" width="18" height="16" rx="2"></rect>
         <path d="M16 3v4"></path>

@@ -2,9 +2,14 @@
 
 @{
     ViewData["Title"] = "Indisponibilidades";
+
+    var isAdmin = User.IsInRole("Admin");
+
     Layout = User.IsInRole("Admin")
     ? "_AdminLayout"
     : "_FuncionarioLayout";
+
+
 }
 
 <div class="ib-categories-page">
@@ -13,7 +18,12 @@
     <div>
         <span class="ib-section-eyebrow">AGENDA</span>
         <h1>Indisponibilidades</h1>
-        <p>Gerir ausências e bloqueios de agenda da equipa.</p>
+
+<p>
+    @(isAdmin
+        ? "Gerir ausências e bloqueios de agenda da equipa."
+        : "Gerir as minhas ausências e bloqueios de agenda.")
+</p>
     </div>
 
     <a asp-controller="GestaoIndisponibilidades"
@@ -55,8 +65,11 @@
 
         <div>
             <span class="ib-section-eyebrow">REGISTOS</span>
-            <h2>Indisponibilidades da equipa</h2>
-        </div>
+<h2>
+    @(isAdmin
+        ? "Indisponibilidades da equipa"
+        : "As minhas indisponibilidades")
+</h2>        </div>
 
         <div class="ib-indisponibilidade-filters">
 
@@ -65,8 +78,9 @@
                        id="pesquisaIndisponibilidade"
                        placeholder="Pesquisar profissional ou motivo..." />
             </div>
-
-            <select id="filtroProfissional"
+            @if (isAdmin)
+            {
+                <select id="filtroProfissional"
                     class="ib-indisponibilidade-select">
 
                 <option value="">Todos os profissionais</option>
@@ -78,7 +92,8 @@
                     </option>
                 }
 
-            </select>
+            </select>}
+            
 
             <select id="filtroPeriodo"
                     class="ib-indisponibilidade-select">

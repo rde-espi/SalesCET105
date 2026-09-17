@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Nova indisponibilidade";
+
+    var isAdmin = User.IsInRole("Admin");
+
     Layout = User.IsInRole("Admin")
     ? "_AdminLayout"
     : "_FuncionarioLayout";
@@ -14,8 +17,11 @@
         <div>
             <span class="ib-section-eyebrow">AGENDA</span>
             <h1>Nova indisponibilidade</h1>
-            <p>Bloqueie um período da agenda de um profissional.</p>
-        </div>
+<p>
+    @(isAdmin
+        ? "Bloqueie um período da agenda de um profissional."
+        : "Registe um período em que não estará disponível.")
+</p>        </div>
 
         <a asp-controller="GestaoIndisponibilidades"
            asp-action="Index"
@@ -31,9 +37,10 @@
             <span class="ib-section-eyebrow">NOVO REGISTO</span>
             <h2>Dados da indisponibilidade</h2>
             <p>
-                Defina o profissional, a data e o período que pretende
-                bloquear na agenda.
-            </p>
+    @(isAdmin
+        ? "Defina o profissional, a data e o período que pretende bloquear na agenda."
+        : "Defina a data e o período que pretende bloquear na sua agenda.")
+</p>
         </div>
 
         <form asp-controller="GestaoIndisponibilidades" asp-action="Criar" method="post">
@@ -46,7 +53,7 @@
 
             <div class="ib-indisponibilidade-form-grid">
 
-               @if (User.IsInRole("Admin"))
+               @if (isAdmin)
 {
     <div class="ib-indisponibilidade-field ib-field-full">
         <label asp-for="FuncionarioId"></label>

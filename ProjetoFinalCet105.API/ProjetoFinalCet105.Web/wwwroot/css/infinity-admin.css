@@ -9285,3 +9285,279 @@ body,
         border-color: rgba(216, 176, 113, .45);
         background: rgba(216, 176, 113, .06);
     }
+
+/* =========================================================
+   MEU HORÁRIO - FUNCIONÁRIO
+   ========================================================= */
+
+.ib-meu-horario-page {
+    padding: 32px 38px 48px;
+}
+
+.ib-meu-horario-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 28px;
+}
+
+    .ib-meu-horario-heading h1 {
+        margin: 4px 0 6px;
+        font-size: 34px;
+        font-weight: 700;
+        color: var(--ib-black, #191919);
+    }
+
+    .ib-meu-horario-heading p {
+        margin: 0;
+        color: var(--ib-text-muted, #817a70);
+        font-size: 14px;
+    }
+
+
+/* RESUMO */
+
+.ib-meu-horario-summary {
+    min-width: 215px;
+    padding: 14px 18px;
+    border: 1px solid rgba(216, 176, 113, 0.32);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.72);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+    .ib-meu-horario-summary > span {
+        font-size: 10px;
+        letter-spacing: 1.5px;
+        font-weight: 700;
+        color: var(--ib-gold-dark, #BEA256);
+    }
+
+    .ib-meu-horario-summary strong {
+        font-size: 14px;
+        color: var(--ib-black, #191919);
+    }
+
+
+/* PAINEL */
+
+.ib-meu-horario-panel {
+    background: #fff;
+    border: 1px solid rgba(216, 176, 113, 0.20);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(25, 25, 25, 0.045);
+}
+
+.ib-meu-horario-panel-header {
+    min-height: 92px;
+    padding: 22px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.18);
+}
+
+    .ib-meu-horario-panel-header h2 {
+        margin: 3px 0 0;
+        font-size: 19px;
+        font-weight: 650;
+        color: var(--ib-black, #191919);
+    }
+
+.ib-meu-horario-info {
+    font-size: 12px;
+    color: var(--ib-text-muted, #817a70);
+}
+
+
+/* LINHA DO DIA */
+
+.ib-meu-horario-day {
+    min-height: 86px;
+    padding: 17px 28px;
+    display: grid;
+    grid-template-columns: minmax(210px, 1fr) minmax(300px, 1.4fr) 130px;
+    align-items: center;
+    gap: 24px;
+    border-bottom: 1px solid rgba(25, 25, 25, 0.055);
+    transition: background 0.2s ease;
+}
+
+    .ib-meu-horario-day:last-child {
+        border-bottom: 0;
+    }
+
+    .ib-meu-horario-day.is-working:hover {
+        background: rgba(248, 245, 239, 0.65);
+    }
+
+    .ib-meu-horario-day.is-off {
+        background: rgba(248, 245, 239, 0.32);
+    }
+
+
+/* NOME DO DIA */
+
+.ib-meu-horario-day-name {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.ib-meu-horario-day-marker {
+    width: 4px;
+    height: 37px;
+    border-radius: 10px;
+    background: rgba(129, 122, 112, 0.20);
+    flex-shrink: 0;
+}
+
+.ib-meu-horario-day.is-working
+.ib-meu-horario-day-marker {
+    background: var(--ib-gold, #D8B071);
+}
+
+.ib-meu-horario-day-name div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.ib-meu-horario-day-name strong {
+    font-size: 15px;
+    font-weight: 650;
+    color: var(--ib-black, #191919);
+}
+
+.ib-meu-horario-day-name div > span {
+    font-size: 12px;
+    color: var(--ib-text-muted, #817a70);
+}
+
+
+/* PERÍODOS */
+
+.ib-meu-horario-periods {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 9px;
+}
+
+.ib-meu-horario-period {
+    min-height: 40px;
+    padding: 8px 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    border: 1px solid rgba(216, 176, 113, 0.28);
+    border-radius: 10px;
+    background: var(--ib-cream, #F8F5EF);
+}
+
+    .ib-meu-horario-period strong {
+        font-size: 13px;
+        font-weight: 650;
+        color: var(--ib-black-soft, #24231f);
+    }
+
+        .ib-meu-horario-period strong span {
+            padding: 0 4px;
+            color: var(--ib-gold-dark, #BEA256);
+        }
+
+.ib-meu-horario-clock {
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .ib-meu-horario-clock svg {
+        width: 17px;
+        height: 17px;
+        fill: none;
+        stroke: var(--ib-gold-dark, #BEA256);
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+
+/* ESTADOS */
+
+.ib-meu-horario-status {
+    display: flex;
+    justify-content: flex-end;
+}
+
+    .ib-meu-horario-status span {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 96px;
+        padding: 6px 11px;
+        border-radius: 999px;
+        background: rgba(129, 122, 112, 0.09);
+        color: var(--ib-text-muted, #817a70);
+        font-size: 11px;
+        font-weight: 650;
+    }
+
+        .ib-meu-horario-status span.is-active {
+            background: rgba(216, 176, 113, 0.14);
+            color: #9a763d;
+        }
+
+            .ib-meu-horario-status span.is-active::before {
+                content: "";
+                width: 6px;
+                height: 6px;
+                margin-right: 7px;
+                border-radius: 50%;
+                background: var(--ib-gold-dark, #BEA256);
+            }
+
+.ib-meu-horario-off-label {
+    font-size: 12px;
+    color: #aaa39a;
+}
+
+
+/* RESPONSIVO */
+
+@media (max-width: 900px) {
+
+    .ib-meu-horario-page {
+        padding: 24px 20px 40px;
+    }
+
+    .ib-meu-horario-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ib-meu-horario-summary {
+        width: 100%;
+    }
+
+    .ib-meu-horario-day {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .ib-meu-horario-status {
+        justify-content: flex-start;
+    }
+
+    .ib-meu-horario-panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
