@@ -1,0 +1,256 @@
+﻿@model ProjetoFinalCet105.Web.Models.GestaoMensagensViewModel
+
+@{
+    ViewData["Title"] = "Mensagens";
+    Layout = "_AdminLayout";
+}
+
+<div class="ib-categories-page">
+
+    <!-- CABEÇALHO -->
+    <div class="ib-categories-heading">
+        <div>
+            <span class="ib-section-eyebrow">COMUNICAÇÃO</span>
+            <h1>Mensagens</h1>
+            <p>
+                Acompanhe as conversas entre clientes e profissionais.
+            </p>
+        </div>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <!-- KPIs -->
+    <div class="ib-category-kpi-grid">
+
+        <div class="ib-category-kpi-card">
+    <span>Total de conversas</span>
+    <strong class="ib-mensagens-kpi-value">@Model.TotalConversas</strong>
+    <small>Conversas registadas</small>
+</div>
+
+<div class="ib-category-kpi-card">
+    <span>Clientes</span>
+    <strong class="ib-mensagens-kpi-value">@Model.TotalClientes</strong>
+    <small>Clientes com conversas</small>
+</div>
+
+<div class="ib-category-kpi-card ib-category-kpi-highlight">
+    <span>Profissionais</span>
+    <strong class="ib-mensagens-kpi-value">@Model.TotalProfissionais</strong>
+    <small>Profissionais envolvidos</small>
+</div>
+
+    </div>
+
+    <!-- PAINEL -->
+    <div class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+
+            <div>
+                <span class="ib-section-eyebrow">SUPERVISÃO</span>
+                <h2>Conversas</h2>
+                <p>
+                    Consulte o histórico de comunicação entre clientes e profissionais.
+                </p>
+            </div>
+
+            <div class="ib-category-search">
+                <input type="text"
+                       id="pesquisaConversas"
+                       placeholder="Pesquisar cliente ou profissional..." />
+            </div>
+
+        </div>
+
+        @if (Model.Conversas == null || !Model.Conversas.Any())
+        {
+            <div class="ib-mensagens-empty">
+                <div class="ib-mensagens-empty-icon">
+                    <svg viewBox="0 0 24 24"
+                         width="28"
+                         height="28"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.6">
+                        <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+                    </svg>
+                </div>
+
+                <strong>Sem conversas</strong>
+                <span>Ainda não existem conversas para supervisionar.</span>
+            </div>
+        }
+        else
+        {
+            <div class="ib-conversation-list">
+
+                @foreach (var conversa in Model.Conversas)
+                {
+                    var clienteInicial =
+                        !string.IsNullOrWhiteSpace(conversa.ClienteNome)
+                            ? conversa.ClienteNome.Substring(0, 1).ToUpper()
+                            : "C";
+
+                    var funcionarioInicial =
+                        !string.IsNullOrWhiteSpace(conversa.FuncionarioNome)
+                            ? conversa.FuncionarioNome.Substring(0, 1).ToUpper()
+                            : "P";
+
+                    <div class="ib-conversation-card"
+                         data-search="@($"{conversa.ClienteNome} {conversa.FuncionarioNome}".ToLower())">
+
+                        <div class="ib-conversation-people">
+
+                            <!-- CLIENTE -->
+                            <div class="ib-conversation-person">
+
+                                <div class="ib-employee-avatar">
+                                    <span class="ib-employee-initials">
+                                        @clienteInicial
+                                    </span>
+                                </div>
+
+                                <div>
+                                    <small>Cliente</small>
+                                    <strong>@conversa.ClienteNome</strong>
+                                </div>
+
+                            </div>
+
+                            <!-- SETA -->
+                            <div class="ib-conversation-arrow">
+                                <svg viewBox="0 0 24 24"
+                                     width="21"
+                                     height="21"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="1.6">
+                                    <path d="M7 7h11l-3-3" />
+                                    <path d="M17 17H6l3 3" />
+                                </svg>
+                            </div>
+
+                            <!-- PROFISSIONAL -->
+                            <div class="ib-conversation-person">
+
+                                <div class="ib-employee-avatar">
+                                    <span class="ib-employee-initials">
+                                        @funcionarioInicial
+                                    </span>
+                                </div>
+
+                                <div>
+                                    <small>Profissional</small>
+                                    <strong>@conversa.FuncionarioNome</strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="ib-conversation-meta">
+
+                            <div>
+                                <small>Conversa iniciada</small>
+                                <strong>
+                                    @conversa.DataCriacao.ToString("dd/MM/yyyy")
+                                </strong>
+
+                                <span>
+                                    @conversa.DataCriacao.ToString("HH:mm")
+                                </span>
+                            </div>
+
+                            <a asp-controller="GestaoMensagens"
+                               asp-action="Detalhes"
+                               asp-route-id="@conversa.Id"
+                               class="ib-category-action-btn"
+                               title="Consultar conversa">
+
+                                <svg viewBox="0 0 24 24"
+                                     width="19"
+                                     height="19"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="1.7">
+                                    <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
+                                    <circle cx="12" cy="12" r="3" />
+                                </svg>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+            <div id="semResultadosConversas"
+                 class="ib-mensagens-empty"
+                 style="display:none;">
+
+                <strong>Nenhuma conversa encontrada</strong>
+                <span>
+                    Não existem resultados para a pesquisa efetuada.
+                </span>
+
+            </div>
+        }
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const pesquisa = document.getElementById("pesquisaConversas");
+        const conversas = document.querySelectorAll(".ib-conversation-card");
+        const semResultados = document.getElementById("semResultadosConversas");
+
+        if (!pesquisa)
+            return;
+
+        pesquisa.addEventListener("input", function () {
+
+            const termo = pesquisa.value
+                .toLowerCase()
+                .trim();
+
+            let encontrados = 0;
+
+            conversas.forEach(function (conversa) {
+
+                const texto =
+                    conversa.dataset.search || "";
+
+                const mostrar =
+                    texto.includes(termo);
+
+                conversa.style.display =
+                    mostrar ? "" : "none";
+
+                if (mostrar)
+                    encontrados++;
+            });
+
+            if (semResultados) {
+                semResultados.style.display =
+                    encontrados === 0 ? "flex" : "none";
+            }
+        });
+
+    });
+</script>
+
+}

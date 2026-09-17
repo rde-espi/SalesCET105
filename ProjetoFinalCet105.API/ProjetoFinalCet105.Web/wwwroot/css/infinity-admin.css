@@ -7790,3 +7790,406 @@ body,
         color: #9a5d5d;
     }
 
+/* =========================================================
+   MENSAGENS - SUPERVISÃO
+   ========================================================= */
+
+.ib-conversation-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ib-conversation-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 18px 20px;
+    border: 1px solid rgba(216, 176, 113, 0.18);
+    border-radius: 12px;
+    background: #fff;
+    transition: .2s ease;
+}
+
+    .ib-conversation-card:hover {
+        border-color: rgba(216, 176, 113, 0.45);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+    }
+
+.ib-conversation-people {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex: 1;
+    min-width: 0;
+}
+
+.ib-conversation-person {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 210px;
+}
+
+    .ib-conversation-person > div:last-child {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    .ib-conversation-person small,
+    .ib-conversation-meta small {
+        color: #817a70;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: .07em;
+    }
+
+    .ib-conversation-person strong {
+        color: #191919;
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+.ib-conversation-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d8b071;
+}
+
+.ib-conversation-meta {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+    .ib-conversation-meta > div {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 1px;
+    }
+
+    .ib-conversation-meta strong {
+        color: #191919;
+        font-size: 13px;
+    }
+
+    .ib-conversation-meta span {
+        color: #817a70;
+        font-size: 12px;
+    }
+
+.ib-mensagens-empty {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+    color: #817a70;
+}
+
+    .ib-mensagens-empty strong {
+        color: #191919;
+        font-size: 16px;
+    }
+
+    .ib-mensagens-empty span {
+        font-size: 13px;
+    }
+
+.ib-mensagens-empty-icon {
+    width: 54px;
+    height: 54px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(216, 176, 113, 0.12);
+    color: #beA256;
+}
+
+@media (max-width: 900px) {
+
+    .ib-conversation-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ib-conversation-people {
+        width: 100%;
+    }
+
+    .ib-conversation-meta {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+        .ib-conversation-meta > div {
+            align-items: flex-start;
+        }
+}
+
+@media (max-width: 650px) {
+
+    .ib-conversation-people {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .ib-conversation-person {
+        min-width: 0;
+    }
+
+    .ib-conversation-arrow {
+        transform: rotate(90deg);
+        margin-left: 17px;
+    }
+}
+
+/* =========================================================
+   MENSAGENS - DETALHES / SUPERVISÃO
+   ========================================================= */
+
+.ib-chat-participants-panel {
+    margin-bottom: 20px;
+}
+
+.ib-chat-participants {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 4px 0;
+}
+
+.ib-chat-participant {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 220px;
+}
+
+    .ib-chat-participant > div:last-child {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .ib-chat-participant small,
+    .ib-chat-created small {
+        color: #817a70;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: .07em;
+    }
+
+    .ib-chat-participant strong {
+        color: #191919;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+.ib-chat-participant-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d8b071;
+}
+
+.ib-chat-created {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-left: auto;
+}
+
+    .ib-chat-created strong {
+        color: #191919;
+        font-size: 13px;
+    }
+
+    .ib-chat-created span {
+        color: #817a70;
+        font-size: 12px;
+    }
+
+/* Badge apenas leitura */
+
+.ib-chat-readonly-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    border: 1px solid rgba(216, 176, 113, .28);
+    border-radius: 20px;
+    background: rgba(216, 176, 113, .08);
+    color: #817a70;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+/* Área das mensagens */
+
+.ib-chat-history {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 28px 4px;
+}
+
+.ib-chat-message {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+    .ib-chat-message.cliente {
+        align-items: flex-start;
+    }
+
+    .ib-chat-message.profissional {
+        align-items: flex-end;
+    }
+
+.ib-chat-message-sender {
+    margin: 0 10px 5px;
+    color: #817a70;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* Balão */
+
+.ib-chat-bubble {
+    max-width: 68%;
+    padding: 14px 17px 10px;
+    border-radius: 15px;
+}
+
+.ib-chat-message.cliente .ib-chat-bubble {
+    background: #f8f5ef;
+    border: 1px solid rgba(216, 176, 113, .20);
+    border-bottom-left-radius: 4px;
+}
+
+.ib-chat-message.profissional .ib-chat-bubble {
+    background: #191919;
+    border: 1px solid #191919;
+    border-bottom-right-radius: 4px;
+}
+
+.ib-chat-bubble p {
+    margin: 0 0 7px;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.ib-chat-message.cliente .ib-chat-bubble p {
+    color: #191919;
+}
+
+.ib-chat-message.profissional .ib-chat-bubble p {
+    color: #fff;
+}
+
+/* Data + leitura */
+
+.ib-chat-message-meta {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 9px;
+    font-size: 10px;
+}
+
+.ib-chat-message.cliente .ib-chat-message-meta {
+    color: #817a70;
+}
+
+.ib-chat-message.profissional .ib-chat-message-meta {
+    color: rgba(255, 255, 255, .60);
+}
+
+.ib-chat-read-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.ib-chat-message.profissional .ib-chat-read-status {
+    color: #d8b071;
+}
+
+/* Aviso final */
+
+.ib-chat-supervision-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 14px;
+    border-top: 1px solid rgba(216, 176, 113, .18);
+    color: #817a70;
+    font-size: 11px;
+}
+
+    .ib-chat-supervision-note svg {
+        color: #d8b071;
+    }
+
+/* Responsivo */
+
+@media (max-width: 850px) {
+
+    .ib-chat-participants {
+        flex-wrap: wrap;
+    }
+
+    .ib-chat-created {
+        width: 100%;
+        align-items: flex-start;
+        margin-left: 0;
+        padding-top: 12px;
+        border-top: 1px solid rgba(216, 176, 113, .15);
+    }
+
+    .ib-chat-bubble {
+        max-width: 85%;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .ib-chat-participants {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .ib-chat-participant {
+        min-width: 0;
+    }
+
+    .ib-chat-participant-arrow {
+        transform: rotate(90deg);
+        margin-left: 18px;
+    }
+
+    .ib-chat-bubble {
+        max-width: 92%;
+    }
+}
