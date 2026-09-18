@@ -455,4 +455,51 @@ public class PerfilController : Controller
             return View(model);
         }
     }
+
+    [HttpGet]
+    public IActionResult AlterarPassword()
+    {
+        return View(new AlterarPasswordViewModel());
+    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AlterarPassword(AlterarPasswordViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        try
+        {
+            var dados = new
+            {
+                PasswordAtual = model.PasswordAtual,
+                NovaPassword = model.NovaPassword
+            };
+
+            using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Auth/alterar-password", dados);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var erro = await response.Content.ReadAsStringAsync();
+
+                ModelState.AddModelError(
+                    string.Empty,
+                    string.IsNullOrWhiteSpace(erro)
+                        ? "Não foi possível alterar a palavra-passe."
+                        : erro);
+
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Palavra-passe alterada com sucesso.";
+
+            return RedirectToAction(nameof(Index));
+        }
+        catch
+        {
+            ModelState.AddModelError( string.Empty, "Ocorreu um erro ao alterar a palavra-passe.");
+
+            return View(model);
+        }
+    }
 }
