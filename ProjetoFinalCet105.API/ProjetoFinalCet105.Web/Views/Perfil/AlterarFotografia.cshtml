@@ -1,0 +1,192 @@
+﻿@model ProjetoFinalCet105.Web.Models.AlterarFotografiaPerfilViewModel
+
+@{
+    ViewData["Title"] = "Alterar fotografia";
+    Layout = "_FuncionarioLayout";
+
+    var partesNome = (Model.NomeCompleto ?? "")
+        .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+    var iniciais = partesNome.Length switch
+    {
+        0 => "?",
+        1 => partesNome[0][0].ToString().ToUpper(),
+        _ => $"{partesNome[0][0]}{partesNome[^1][0]}".ToUpper()
+    };
+}
+
+<div class="ib-category-form-page">
+
+    <div class="ib-category-form-heading">
+
+        <div>
+            <span class="ib-section-eyebrow">MEU PERFIL</span>
+
+            <h1>Alterar fotografia</h1>
+
+            <p>
+                Escolha a fotografia que pretende utilizar no seu perfil.
+            </p>
+        </div>
+
+        <a asp-controller="Perfil"
+           asp-action="Index"
+           class="ib-category-back-btn">
+            <i class="bi bi-chevron-left"></i>
+            Voltar ao perfil
+        </a>
+
+    </div>
+
+
+    <form asp-controller="Perfil"
+          asp-action="AlterarFotografia"
+          method="post"
+          enctype="multipart/form-data">
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly"
+             class="ib-category-form-validation">
+        </div>
+
+
+        <div class="ib-category-form-grid">
+
+            <!-- IMAGEM -->
+            <section class="ib-category-image-card">
+
+                <span class="ib-section-eyebrow">
+                    IMAGEM
+                </span>
+
+                <h3>Nova fotografia</h3>
+
+                <p>
+                    Selecione uma imagem para utilizar como fotografia de perfil.
+                </p>
+
+
+               <label for="Fotografia"
+       class="ib-category-upload ib-profile-photo-upload">
+
+    <div class="ib-profile-photo-upload-content">
+
+    <div class="ib-profile-photo-preview">
+
+        <div id="fotoFallback">
+            @if (Model.TemFotografia &&
+                 !string.IsNullOrWhiteSpace(Model.FotografiaUrl))
+            {
+                <img src="@Model.FotografiaUrl"
+                     alt="@Model.NomeCompleto" />
+            }
+            else
+            {
+                <span>@iniciais</span>
+            }
+        </div>
+
+        <img id="fotoPreview"
+             alt="Pré-visualização"
+             hidden />
+    </div>
+
+    <strong>Alterar fotografia</strong>
+
+    <span id="fotoInstrucao">
+        Clique para selecionar uma imagem
+    </span>
+
+    <small>
+        JPG, PNG ou WebP
+    </small>
+
+</div>
+
+    <img id="fotoPreview"
+         class="ib-profile-photo-new-preview"
+         alt="Pré-visualização"
+         hidden />
+
+</label>
+
+
+                <input asp-for="Fotografia"
+                       type="file"
+                       accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                       hidden />
+
+                <span asp-validation-for="Fotografia"
+                      class="ib-field-validation">
+                </span>
+
+
+                <button type="button"
+                        class="ib-category-back-btn"
+                        onclick="document.getElementById('Fotografia').click();">
+
+                    <i class="bi bi-image"></i>
+                    Escolher fotografia
+
+                </button>
+
+            </section>
+
+        </div>
+
+
+        <div class="ib-category-form-footer">
+
+            <a asp-controller="Perfil"
+               asp-action="Index"
+               class="ib-category-cancel-btn">
+                Cancelar
+            </a>
+
+            <button type="submit"
+                    class="ib-category-save-btn">
+
+                <i class="bi bi-check-lg"></i>
+                Guardar fotografia
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const inputFotografia =
+            document.getElementById('Fotografia');
+
+        const preview =
+            document.getElementById('fotoPreview');
+
+        const fallback =
+            document.getElementById('fotoFallback');
+
+        inputFotografia.addEventListener('change', function () {
+
+            const ficheiro = this.files[0];
+
+            if (!ficheiro)
+                return;
+
+            const url =
+                URL.createObjectURL(ficheiro);
+
+            preview.src = url;
+            preview.hidden = false;
+
+            fallback.hidden = true;
+        });
+    </script>
+}

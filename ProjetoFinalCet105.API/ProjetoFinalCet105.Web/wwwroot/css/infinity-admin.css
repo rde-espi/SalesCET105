@@ -9881,3 +9881,397 @@ body,
         width: 100%;
     }
 }
+
+/* =========================================================
+   INFINITY BEAUTY — PERFIL
+   ========================================================= */
+
+.ib-profile {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 10px 0 40px;
+}
+
+/* Cabeçalho da página */
+.ib-profile-header {
+    margin-bottom: 28px;
+}
+
+    .ib-profile-header h1 {
+        margin: 0 0 7px;
+        font-size: 30px;
+        font-weight: 600;
+        color: var(--ib-black, #191919);
+    }
+
+    .ib-profile-header p {
+        margin: 0;
+        color: #817a70;
+        font-size: 14px;
+    }
+
+
+/* Card principal com identidade do utilizador */
+.ib-profile-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 26px 30px;
+    margin-bottom: 22px;
+    background: #ffffff;
+    border: 1px solid rgba(216, 176, 113, 0.28);
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(25, 25, 25, 0.05);
+}
+
+.ib-profile-identity {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+
+/* Avatar */
+.ib-profile-avatar {
+    width: 88px;
+    height: 88px;
+    min-width: 88px;
+    border-radius: 50% !important;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e2bf7d, #c99c4e);
+    border: 2px solid rgba(216, 176, 113, 0.55);
+    color: #191919;
+    font-size: 25px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+    .ib-profile-avatar img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+
+/* Nome / role */
+.ib-profile-name {
+    margin: 0 0 4px;
+    font-size: 23px;
+    font-weight: 600;
+    color: #191919;
+}
+
+.ib-profile-role {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: rgba(216, 176, 113, 0.13);
+    color: #9a742f;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.ib-profile-email {
+    margin-top: 7px;
+    color: #817a70;
+    font-size: 13px;
+}
+
+
+/* Grelha dos cards */
+.ib-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+
+/* Card */
+.ib-profile-card {
+    background: #ffffff;
+    border: 1px solid rgba(216, 176, 113, 0.24);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 7px 25px rgba(25, 25, 25, 0.04);
+}
+
+.ib-profile-card-wide {
+    grid-column: 1 / -1;
+}
+
+.ib-profile-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.18);
+}
+
+.ib-profile-card-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #24231f;
+}
+
+.ib-profile-card-subtitle {
+    margin: 4px 0 0;
+    color: #817a70;
+    font-size: 12px;
+}
+
+.ib-profile-card-body {
+    padding: 23px 24px;
+}
+
+
+/* Dados */
+.ib-profile-data-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 28px;
+}
+
+.ib-profile-field {
+    min-width: 0;
+}
+
+.ib-profile-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #817a70;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ib-profile-value {
+    color: #24231f;
+    font-size: 14px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+}
+
+
+/* Linhas para Segurança / Integrações */
+.ib-profile-setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.15);
+}
+
+    .ib-profile-setting:first-child {
+        padding-top: 0;
+    }
+
+    .ib-profile-setting:last-child {
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+
+.ib-profile-setting-title {
+    margin: 0 0 3px;
+    color: #24231f;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.ib-profile-setting-description {
+    margin: 0;
+    color: #817a70;
+    font-size: 12px;
+}
+
+
+/* Botões do Perfil */
+.ib-profile-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 36px;
+    padding: 8px 15px;
+    border: 1px solid #d8b071;
+    border-radius: 8px;
+    background: transparent;
+    color: #9b752f;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+    .ib-profile-btn:hover {
+        background: #d8b071;
+        color: #191919;
+    }
+
+.ib-profile-btn-primary {
+    background: #d8b071;
+    color: #191919;
+}
+
+    .ib-profile-btn-primary:hover {
+        background: #bea256;
+        border-color: #bea256;
+    }
+
+
+/* Estado */
+.ib-profile-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
+    border-radius: 20px;
+    background: rgba(216, 176, 113, 0.12);
+    color: #8e6a29;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+/* Responsivo */
+@media (max-width: 900px) {
+
+    .ib-profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-profile-card-wide {
+        grid-column: auto;
+    }
+}
+
+@media (max-width: 650px) {
+
+    .ib-profile-hero {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 22px;
+    }
+
+    .ib-profile-data-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-profile-setting {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ib-profile-avatar {
+        width: 74px;
+        height: 74px;
+        min-width: 74px;
+    }
+}
+/* =========================================================
+   PERFIL - ALTERAR FOTOGRAFIA
+========================================================= */
+
+.ib-profile-photo-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.ib-profile-photo-upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.ib-profile-photo-preview {
+    width: 118px;
+    height: 118px;
+    margin-bottom: 10px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 3px solid rgba(216, 176, 113, .35);
+    border-radius: 50%;
+    background: linear-gradient( 135deg, rgba(216, 176, 113, .20), rgba(190, 162, 86, .08) );
+    color: #191919;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+    .ib-profile-photo-preview img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+    }
+
+.ib-profile-photo-upload strong {
+    color: #24231f;
+    font-size: .78rem;
+    font-weight: 600;
+}
+
+.ib-profile-photo-upload span {
+    color: #817a70;
+    font-size: .68rem;
+}
+
+.ib-profile-photo-upload small {
+    color: #aaa39a;
+    font-size: .62rem;
+}
+
+.ib-profile-photo-new-preview {
+    width: 118px;
+    height: 118px;
+    margin-bottom: 10px;
+    display: block;
+    object-fit: cover;
+    border: 3px solid rgba(216, 176, 113, .35);
+    border-radius: 50%;
+}
+
+/* Fotografia do utilizador na topbar */
+
+.ib-admin-avatar {
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.ib-topbar-avatar-foto {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.ib-topbar-avatar-iniciais {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}

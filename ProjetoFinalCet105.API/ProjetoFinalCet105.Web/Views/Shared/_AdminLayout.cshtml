@@ -316,30 +316,43 @@
                     <span class="ib-admin-topbar-divider"></span>
 
 
-                    <div class="ib-admin-profile">
+                    <a asp-controller="Perfil"
+   asp-action="Index"
+   class="ib-admin-profile"
+   title="Meu Perfil"
+   style="text-decoration: none;">
 
-                        <div class="ib-admin-avatar">
-                            @{
-                                var nome = User.Identity?.Name ?? "A";
-                                var inicial = nome.Substring(0, 1).ToUpper();
-                            }
+    <div class="ib-admin-avatar">
+        @{
+            var nome = User.Identity?.Name ?? "A";
 
-                            @inicial
-                        </div>
+            var partesNome = nome
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
-                        <div class="ib-admin-profile-info">
+            var iniciaisPerfil = partesNome.Length switch
+            {
+                0 => "?",
+                1 => partesNome[0].Substring(0, 1).ToUpper(),
+                _ => $"{partesNome[0][0]}{partesNome[^1][0]}".ToUpper()
+            };
+        }
 
-                            <strong>
-                                @User.Identity?.Name
-                            </strong>
+        @iniciaisPerfil
+    </div>
 
-                            <span>
-                                Administrador
-                            </span>
+    <div class="ib-admin-profile-info">
 
-                        </div>
+        <strong>
+            @User.Identity?.Name
+        </strong>
 
-                    </div>
+        <span>
+            Administrador
+        </span>
+
+    </div>
+
+</a>
 
 
                     <form asp-controller="Account"

@@ -47,32 +47,55 @@
             </a>
 
 
-            <nav class="ib-admin-menu">
 
-                <a asp-controller="Funcionario"
-                   asp-action="Index"
-                   class="ib-admin-menu-item @(currentController == "Funcionario" ? "active" : "")">
 
-                    <svg viewBox="0 0 24 24">
-                        <path d="M3 11L12 3l9 8"></path>
-                        <path d="M5 10v11h14V10"></path>
-                        <path d="M9 21v-7h6v7"></path>
-                    </svg>
+<a asp-controller="Funcionario"
+   asp-action="Index"
+   class="ib-admin-menu-item @(currentController == "Funcionario" ? "active" : "")">
 
-                    <span>Início</span>
-                </a>
+    <svg viewBox="0 0 24 24">
+        <path d="M3 11L12 3l9 8"></path>
+        <path d="M5 10v11h14V10"></path>
+        <path d="M9 21v-7h6v7"></path>
+    </svg>
 
-                <a href="#"
-                   class="ib-admin-menu-item">
+    <span>Início</span>
+</a>
 
-                    <svg viewBox="0 0 24 24">
-                        <circle cx="12" cy="8" r="4"></circle>
-                        <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path>
-                    </svg>
+<a href="#"
+   class="ib-admin-menu-item">
 
-                    <span>Meu Perfil</span>
-                </a>
-                <a asp-controller="MeuHorario" asp-action="Index" class="ib-admin-menu-item @(currentController == "MeuHorario" ? "active" : "")">
+    <svg viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+        <path d="M16 3v4"></path>
+        <path d="M8 3v4"></path>
+        <path d="M3 11h18"></path>
+    </svg>
+
+    <span>Minha Agenda</span>
+</a>
+
+
+
+<a href="#"
+   class="ib-admin-menu-item">
+
+    <svg viewBox="0 0 24 24">
+        <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+        <path d="M16 3v4"></path>
+        <path d="M8 3v4"></path>
+        <path d="M3 11h18"></path>
+        <path d="M12 14v5"></path>
+        <path d="M9.5 16.5h5"></path>
+    </svg>
+
+    <span>Nova Marcação</span>
+</a>
+
+
+<a asp-controller="MeuHorario"
+   asp-action="Index"
+   class="ib-admin-menu-item @(currentController == "MeuHorario" ? "active" : "")">
 
     <svg viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="9"></circle>
@@ -81,7 +104,12 @@
 
     <span>Meu Horário</span>
 </a>
-                <a asp-controller="GestaoIndisponibilidades" asp-action="Index" class="ib-admin-menu-item @(currentController == "GestaoIndisponibilidades" ? "active" : "")">
+
+
+<a asp-controller="GestaoIndisponibilidades"
+   asp-action="Index"
+   class="ib-admin-menu-item @(currentController == "GestaoIndisponibilidades" ? "active" : "")">
+
     <svg viewBox="0 0 24 24">
         <rect x="3" y="5" width="18" height="16" rx="2"></rect>
         <path d="M16 3v4"></path>
@@ -93,9 +121,77 @@
     <span>Indisponibilidades</span>
 </a>
 
+
+
+
+
+<a href="#"
+   class="ib-admin-menu-item">
+
+    <svg viewBox="0 0 24 24">
+        <path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"></path>
+        <path d="M9 8h6"></path>
+        <path d="M9 12h6"></path>
+    </svg>
+
+    <span>Faturas</span>
+</a>
+
+
+<a href="#"
+   class="ib-admin-menu-item">
+
+    <svg viewBox="0 0 24 24">
+        <path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"></path>
+    </svg>
+
+    <span>Feedback</span>
+</a>
+
+
+
+
+
+<a href="#"
+   class="ib-admin-menu-item">
+
+    <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="4"></circle>
+        <path d="M5 21c0-4 3.1-7 7-7s7 3 7 7"></path>
+        <path d="M18 5l1 1 2-2"></path>
+    </svg>
+
+    <span>Minhas Competências</span>
+</a>
+
+
+
+<a href="#"
+   class="ib-admin-menu-item">
+
+    <svg viewBox="0 0 24 24">
+        <path d="M4 4h16v12H8l-4 4z"></path>
+        <path d="M8 9h8"></path>
+        <path d="M8 12h5"></path>
+    </svg>
+
+    <span>Mensagens</span>
+</a>
+
+
+<a href="#"
+   class="ib-admin-menu-item">
+
+    <svg viewBox="0 0 24 24">
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+        <path d="M10 21h4"></path>
+    </svg>
+
+    <span>Notificações</span>
+</a>
                 <div id="adminTemporarioMenu" style="display:none;">
 
-                    <div class="ib-admin-menu-section">
+                    <div class="ib-admin-signature">
                         <span>ADMIN TEMPORÁRIO</span>
                         <small id="adminTemporarioTempo"></small>
                     </div>
@@ -237,16 +333,39 @@
                     <span class="ib-admin-topbar-divider"></span>
 
 
-                    <div class="ib-admin-profile">
+                    <a asp-controller="Perfil"
+                       asp-action="Index"
+                       class="ib-admin-profile"
+                       title="Meu Perfil"
+                       style="text-decoration: none;">
 
-                        <div class="ib-admin-avatar">
-                            @{
-                                var nome = User.Identity?.Name ?? "A";
-                                var inicial = nome.Substring(0, 1).ToUpper();
-                            }
+                        @{
+    var nome = User.Identity?.Name ?? "A";
 
-                            @inicial
-                        </div>
+    var partesNome = nome
+        .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+    var iniciaisPerfil = partesNome.Length switch
+    {
+        0 => "?",
+        1 => partesNome[0].Substring(0, 1).ToUpper(),
+        _ => $"{partesNome[0][0]}{partesNome[^1][0]}".ToUpper()
+    };
+}
+
+<div class="ib-admin-avatar">
+
+    <span class="ib-topbar-avatar-iniciais">
+        @iniciaisPerfil
+    </span>
+
+    <img src="@Url.Action("Fotografia", "Perfil")"
+         alt="@nome"
+         class="ib-topbar-avatar-foto"
+         onload="this.previousElementSibling.style.display='none';"
+         onerror="this.style.display='none';" />
+
+</div>
 
                         <div class="ib-admin-profile-info">
 
@@ -260,7 +379,7 @@
 
                         </div>
 
-                    </div>
+                    </a>
 
 
                     <form asp-controller="Account"

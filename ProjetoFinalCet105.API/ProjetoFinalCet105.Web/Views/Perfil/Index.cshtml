@@ -1,0 +1,374 @@
+﻿@model ProjetoFinalCet105.Web.Models.PerfilViewModel
+
+@{
+    ViewData["Title"] = "Meu Perfil";
+
+    if (User.IsInRole("Admin"))
+    {
+        Layout = "_AdminLayout";
+    }
+    else if (User.IsInRole("Funcionario"))
+    {
+        Layout = "_FuncionarioLayout";
+    }
+    else
+    {
+        Layout = "_ClienteLayout";
+    }
+
+    var partesNome = (Model.NomeCompleto ?? "")
+    .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+    var iniciais = partesNome.Length switch
+    {
+        0 => "?",
+        1 => partesNome[0].Substring(0, 1).ToUpper(),
+        _ => $"{partesNome[0][0]}{partesNome[^1][0]}".ToUpper()
+    };
+}
+
+<div class="ib-profile">
+
+    <div class="ib-profile-header">
+        <h1>Meu Perfil</h1>
+        <p>Consulte e faça a gestão dos seus dados pessoais e da sua conta.</p>
+    </div>
+
+    <!-- IDENTIDADE -->
+    <section class="ib-profile-hero">
+
+        <div class="ib-profile-identity">
+
+            <div class="ib-profile-avatar">
+                @if (Model.TemFotografia &&
+                     !string.IsNullOrWhiteSpace(Model.FotografiaUrl))
+                {
+                    <img src="@Model.FotografiaUrl"
+                         alt="@Model.NomeCompleto" />
+                }
+                else
+                {
+                    <span>@iniciais</span>
+                }
+            </div>
+
+            <div>
+                <h2 class="ib-profile-name">
+                    @Model.NomeCompleto
+                </h2>
+
+                <span class="ib-profile-role">
+                    @Model.TipoUtilizador
+                </span>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Email))
+                {
+                    <div class="ib-profile-email">
+                        @Model.Email
+                    </div>
+                }
+            </div>
+
+        </div>
+
+        @if (!User.IsInRole("Admin"))
+        {
+           <a asp-controller="Perfil"
+   asp-action="AlterarFotografia"
+   class="ib-profile-btn">
+    <i class="bi bi-camera"></i>
+    Alterar fotografia
+</a>
+        }
+
+    </section>
+
+
+    <div class="ib-profile-grid">
+
+        <!-- DADOS PESSOAIS -->
+        <section class="ib-profile-card ib-profile-card-wide">
+
+            <div class="ib-profile-card-header">
+
+                <div>
+                    <h3 class="ib-profile-card-title">
+                        Dados pessoais
+                    </h3>
+
+                    <p class="ib-profile-card-subtitle">
+                        Informação associada à sua conta.
+                    </p>
+                </div>
+
+                @if (!User.IsInRole("Admin"))
+                {
+                   <a asp-controller="Perfil" asp-action="Editar"  class="ib-profile-btn">
+                   Editar dados
+                   </a>
+                }
+
+            </div>
+
+            <div class="ib-profile-card-body">
+
+                <div class="ib-profile-data-grid">
+
+                    <div class="ib-profile-field">
+                        <span class="ib-profile-label">
+                            Nome completo
+                        </span>
+
+                        <div class="ib-profile-value">
+                            @(string.IsNullOrWhiteSpace(Model.NomeCompleto)
+                                ? "—"
+                                : Model.NomeCompleto)
+                        </div>
+                    </div>
+
+                    <div class="ib-profile-field">
+                        <span class="ib-profile-label">
+                            Email
+                        </span>
+
+                        <div class="ib-profile-value">
+                            @(string.IsNullOrWhiteSpace(Model.Email)
+                                ? "—"
+                                : Model.Email)
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Telefone))
+                    {
+                        <div class="ib-profile-field">
+                            <span class="ib-profile-label">
+                                Telefone
+                            </span>
+
+                            <div class="ib-profile-value">
+                                @Model.Telefone
+                            </div>
+                        </div>
+                    }
+
+
+                    @* CAMPOS DO CLIENTE *@
+                    @if (Model.TipoUtilizador == "Cliente")
+                    {
+                        <div class="ib-profile-field">
+                            <span class="ib-profile-label">
+                                NIF
+                            </span>
+
+                            <div class="ib-profile-value">
+                                @(string.IsNullOrWhiteSpace(Model.Contribuinte)
+                                    ? "—"
+                                    : Model.Contribuinte)
+                            </div>
+                        </div>
+
+                        <div class="ib-profile-field">
+                            <span class="ib-profile-label">
+                                Morada
+                            </span>
+
+                            <div class="ib-profile-value">
+                                @(string.IsNullOrWhiteSpace(Model.Morada)
+                                    ? "—"
+                                    : Model.Morada)
+                            </div>
+                        </div>
+
+                        <div class="ib-profile-field">
+                            <span class="ib-profile-label">
+                                Código postal
+                            </span>
+
+                            <div class="ib-profile-value">
+                                @(string.IsNullOrWhiteSpace(Model.CodigoPostal)
+                                    ? "—"
+                                    : Model.CodigoPostal)
+                            </div>
+                        </div>
+
+                        <div class="ib-profile-field">
+                            <span class="ib-profile-label">
+                                Localidade
+                            </span>
+
+                            <div class="ib-profile-value">
+                                @(string.IsNullOrWhiteSpace(Model.Localidade)
+                                    ? "—"
+                                    : Model.Localidade)
+                            </div>
+                        </div>
+                    }
+
+
+                    @* CAMPOS DO FUNCIONÁRIO *@
+                    @if (Model.TipoUtilizador == "Funcionário")
+                    {
+                        <div class="ib-profile-field">
+                            <span class="ib-profile-label">
+                                Disponibilidade
+                            </span>
+
+                            <div>
+                                <span class="ib-profile-status">
+                                    @(Model.Disponivel == true
+                                        ? "Disponível"
+                                        : "Indisponível")
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="ib-profile-field">
+                            <span class="ib-profile-label">
+                                Biografia
+                            </span>
+
+                            <div class="ib-profile-value">
+                                @(string.IsNullOrWhiteSpace(Model.Biografia)
+                                    ? "—"
+                                    : Model.Biografia)
+                            </div>
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SEGURANÇA -->
+        <section class="ib-profile-card">
+
+            <div class="ib-profile-card-header">
+                <div>
+                    <h3 class="ib-profile-card-title">
+                        Segurança
+                    </h3>
+
+                    <p class="ib-profile-card-subtitle">
+                        Proteção e acesso à sua conta.
+                    </p>
+                </div>
+            </div>
+
+            <div class="ib-profile-card-body">
+
+                <div class="ib-profile-setting">
+
+                    <div>
+                        <h4 class="ib-profile-setting-title">
+                            Palavra-passe
+                        </h4>
+
+                        <p class="ib-profile-setting-description">
+                            Altere periodicamente a sua palavra-passe.
+                        </p>
+                    </div>
+
+                    <button type="button"
+                            class="ib-profile-btn">
+                        Alterar
+                    </button>
+
+                </div>
+
+                <div class="ib-profile-setting">
+
+                    <div>
+                        <h4 class="ib-profile-setting-title">
+                            Autenticação de dois fatores
+                        </h4>
+
+                        <p class="ib-profile-setting-description">
+                            Adicione uma camada extra de segurança.
+                        </p>
+                    </div>
+
+                    <button type="button"
+                            class="ib-profile-btn">
+                        Configurar
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- GOOGLE CALENDAR -->
+        <section class="ib-profile-card">
+
+            <div class="ib-profile-card-header">
+                <div>
+                    <h3 class="ib-profile-card-title">
+                        Integrações
+                    </h3>
+
+                    <p class="ib-profile-card-subtitle">
+                        Ligue a sua conta a serviços externos.
+                    </p>
+                </div>
+            </div>
+
+            <div class="ib-profile-card-body">
+
+                <div class="ib-profile-setting">
+
+                    <div>
+                        <h4 class="ib-profile-setting-title">
+                            Google Calendar
+                        </h4>
+
+                        <p class="ib-profile-setting-description">
+                            Sincronize as suas marcações com o seu calendário.
+                        </p>
+                    </div>
+
+                    @if (Model.GoogleCalendarLigado)
+                    {
+                        <span class="ib-profile-status">
+                            Ligado
+                        </span>
+                    }
+                    else
+                    {
+                        <button type="button"
+                                class="ib-profile-btn ib-profile-btn-primary">
+                            Ligar
+                        </button>
+                    }
+
+                </div>
+
+                @if (Model.GoogleCalendarLigado &&
+                     !string.IsNullOrWhiteSpace(Model.GoogleEmail))
+                {
+                    <div class="ib-profile-setting">
+
+                        <div>
+                            <h4 class="ib-profile-setting-title">
+                                Conta ligada
+                            </h4>
+
+                            <p class="ib-profile-setting-description">
+                                @Model.GoogleEmail
+                            </p>
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>

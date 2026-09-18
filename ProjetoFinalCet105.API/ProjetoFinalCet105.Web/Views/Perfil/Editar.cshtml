@@ -1,0 +1,206 @@
+﻿@model ProjetoFinalCet105.Web.Models.EditarPerfilFuncionarioViewModel
+
+@{
+    ViewData["Title"] = "Editar Perfil";
+    Layout = "_FuncionarioLayout";
+}
+
+<div class="ib-profile">
+
+    <div class="ib-dashboard-section-header">
+
+    <span class="ib-section-eyebrow">
+        MEU PERFIL
+    </span>
+
+    <h2>
+        Editar dados pessoais
+    </h2>
+
+    <p>
+        Atualize os seus dados profissionais e de contacto.
+    </p>
+
+</div>
+
+
+    <div class="ib-profile-card">
+
+        <div class="ib-profile-card-header">
+            <div>
+                <h2>Dados pessoais</h2>
+                <p>Informação associada ao seu perfil de funcionário.</p>
+            </div>
+        </div>
+
+
+       <form asp-controller="Perfil"
+      asp-action="Editar"
+      method="post">
+
+    <input asp-for="FuncionarioId" type="hidden" />
+
+    <div asp-validation-summary="ModelOnly"
+         class="ib-category-form-validation">
+    </div>
+
+    <div class="ib-category-form-grid">
+
+        <!-- DADOS PRINCIPAIS -->
+        <div class="ib-category-form-card">
+
+            <div class="ib-category-form-card-header">
+
+                <div class="ib-category-form-card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="8" r="4"></circle>
+                        <path d="M5 21c0-4 3.1-7 7-7s7 3 7 7"></path>
+                    </svg>
+                </div>
+
+                <div>
+                    <h2>Informação pessoal</h2>
+                    <p>Dados de identificação e contacto do seu perfil.</p>
+                </div>
+
+            </div>
+
+
+            <div class="ib-category-field">
+                <label asp-for="NomeCompleto">
+                    Nome completo <span>*</span>
+                </label>
+
+                <input asp-for="NomeCompleto" />
+
+                <span asp-validation-for="NomeCompleto"
+                      class="ib-field-validation"></span>
+            </div>
+
+
+            <div class="ib-category-field">
+                <label asp-for="Email">
+                    Email <span>*</span>
+                </label>
+
+                <input asp-for="Email"
+                       type="email" />
+
+                <span asp-validation-for="Email"
+                      class="ib-field-validation"></span>
+            </div>
+
+
+            <div class="ib-category-field">
+                <label asp-for="Telefone">
+                    Telefone
+                </label>
+
+                <input asp-for="Telefone"
+                       type="tel" />
+
+                <span asp-validation-for="Telefone"
+                      class="ib-field-validation"></span>
+            </div>
+
+        </div>
+
+
+        <!-- INFORMAÇÃO PROFISSIONAL -->
+        <div class="ib-category-form-card">
+
+            <div class="ib-category-form-card-header">
+
+                <div class="ib-category-form-card-icon">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="7" width="18" height="13" rx="2"></rect>
+                        <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        <path d="M3 12h18"></path>
+                    </svg>
+                </div>
+
+                <div>
+                    <h2>Informação profissional</h2>
+                    <p>Disponibilidade e apresentação aos clientes.</p>
+                </div>
+
+            </div>
+
+
+            <div class="ib-category-field">
+                <label>Disponibilidade</label>
+
+                <label style="
+                    min-height:44px;
+                    display:flex;
+                    align-items:center;
+                    gap:10px;
+                    padding:0 13px;
+                    border:1px solid rgba(216,176,113,.25);
+                    border-radius:9px;
+                    background:#F8F5EF;
+                    cursor:pointer;">
+
+                    <input asp-for="Disponivel"
+                           type="checkbox"
+                           style="width:17px;height:17px;min-height:0;" />
+
+                    <span style="color:#535333;font-size:.73rem;">
+                        Disponível para marcações
+                    </span>
+
+                </label>
+            </div>
+
+
+            <div class="ib-category-field">
+                <label asp-for="Biografia">
+                    Biografia
+                </label>
+
+                <textarea asp-for="Biografia"
+                          rows="6"></textarea>
+
+                <small>
+                    Esta informação poderá ser apresentada aos clientes.
+                </small>
+
+                <span asp-validation-for="Biografia"
+                      class="ib-field-validation"></span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="ib-category-form-footer"
+         style="margin-top:20px;">
+
+        <a asp-controller="Perfil"
+           asp-action="Index"
+           class="ib-category-cancel-btn">
+            Cancelar
+        </a>
+
+        <button type="submit"
+                class="ib-category-save-btn">
+
+            <svg viewBox="0 0 24 24">
+                <path d="M5 12l4 4L19 6"></path>
+            </svg>
+
+            Guardar alterações
+        </button>
+
+    </div>
+
+</form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
