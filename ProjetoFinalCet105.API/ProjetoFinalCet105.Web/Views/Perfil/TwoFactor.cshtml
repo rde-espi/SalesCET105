@@ -1,0 +1,124 @@
+﻿@model ProjetoFinalCet105.Web.Models.TwoFactorViewModel
+
+@{
+    ViewData["Title"] = "Autenticação de dois fatores";
+
+    if (User.IsInRole("Admin"))
+        Layout = "_AdminLayout";
+    else if (User.IsInRole("Funcionario"))
+        Layout = "_FuncionarioLayout";
+}
+
+<div class="ib-dashboard-section-header">
+    <span class="ib-section-eyebrow">SEGURANÇA</span>
+    <h2>Autenticação de dois fatores</h2>
+    <p>Adicione uma camada extra de segurança à sua conta.</p>
+</div>
+
+<div class="ib-category-form-grid">
+
+    <div class="ib-category-form-card">
+
+        <div class="ib-category-form-card-header">
+            <div class="ib-category-form-card-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+
+            <div>
+                <h3>Proteção da conta</h3>
+                <p>Estado atual da autenticação de dois fatores.</p>
+            </div>
+        </div>
+
+        <div class="ib-category-field">
+
+            <label>Estado atual</label>
+
+            @if (Model.Ativo)
+            {
+                <div>
+                    <strong>Ativada</strong>
+                    <p>
+                        A autenticação de dois fatores está ativa
+                        na sua conta.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div>
+                    <strong>Desativada</strong>
+                    <p>
+                        A autenticação de dois fatores não está
+                        atualmente ativa.
+                    </p>
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+
+    <div class="ib-category-form-card">
+
+        <div class="ib-category-form-card-header">
+            <div class="ib-category-form-card-icon">
+                <i class="bi bi-phone"></i>
+            </div>
+
+            <div>
+                <h3>Segurança adicional</h3>
+                <p>Proteja o acesso à sua conta.</p>
+            </div>
+        </div>
+
+        <div class="ib-category-field">
+            <p>
+                Quando ativada, a autenticação de dois fatores
+                acrescenta uma verificação adicional durante
+                o início de sessão.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="ib-category-form-footer">
+
+    <a asp-controller="Perfil"
+       asp-action="Index"
+       class="ib-category-cancel-btn">
+        Voltar ao perfil
+    </a>
+
+    <form asp-controller="Perfil"
+          asp-action="TwoFactor"
+          method="post">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden"
+               name="Ativo"
+               value="@(!Model.Ativo ? "true" : "false")" />
+
+        @if (Model.Ativo)
+        {
+            <button type="submit"
+                    class="ib-category-save-btn">
+                Desativar autenticação
+            </button>
+        }
+        else
+        {
+            <button type="submit"
+                    class="ib-category-save-btn">
+                Ativar autenticação
+            </button>
+        }
+
+    </form>
+
+</div>

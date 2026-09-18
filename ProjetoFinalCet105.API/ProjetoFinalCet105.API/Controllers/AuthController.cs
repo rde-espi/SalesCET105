@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using ProjetoFinalCet105.API.DTOs;
@@ -210,5 +211,26 @@ namespace ProjetoFinalCet105.API.Controllers
 
             return Ok(resultado.Dados);
         }
+
+        [Authorize]
+        [HttpGet("2fa")]
+        public async Task<ActionResult<TwoFactorStatusDTO>> GetTwoFactorStatus()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrWhiteSpace(userId))
+                return Unauthorized();
+
+            var resultado = await _gerirTwoFactorUseCase.GetEstadoAsync(userId);
+
+            if (!resultado.Sucesso)
+                return BadRequest(resultado.Erro);
+
+            return Ok(new TwoFactorStatusDTO
+            {
+                Ativo = resultado.Dados
+            });
+        }
+
     }
 }

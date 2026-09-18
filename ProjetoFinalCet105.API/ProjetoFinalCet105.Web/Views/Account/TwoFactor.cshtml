@@ -1,0 +1,108 @@
+﻿@model ProjetoFinalCet105.Web.Models.VerificarTwoFactorViewModel
+
+@{
+    ViewData["Title"] = "Verificação de segurança";
+    Layout = "_PublicLayout";
+}
+
+<section class="ib-login-page">
+
+    <div class="ib-login-container">
+
+        <div class="ib-login-panel">
+
+            <div class="ib-login-heading">
+
+                <span>
+                    VERIFICAÇÃO DE SEGURANÇA
+                </span>
+
+                <h1>
+                    Confirme o seu acesso.
+                </h1>
+
+                <p>
+                    Enviámos um código de autenticação para o seu email.
+                    Introduza-o abaixo para continuar.
+                </p>
+
+            </div>
+
+            <form asp-controller="Account"
+                  asp-action="TwoFactor"
+                  method="post"
+                  class="ib-login-form">
+
+                @Html.AntiForgeryToken()
+
+                <input asp-for="UserId"
+                       type="hidden" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="ib-login-error">
+                </div>
+
+                <div class="ib-form-group">
+
+                    <label asp-for="Codigo">
+                        Código de autenticação
+                    </label>
+
+                    <input asp-for="Codigo"
+                           type="text"
+                           placeholder="Introduza o código"
+                           autocomplete="one-time-code"
+                           inputmode="numeric"
+                           autofocus />
+
+                    <span asp-validation-for="Codigo"
+                          class="ib-field-error">
+                    </span>
+
+                </div>
+
+                <button type="submit"
+                        class="ib-login-submit">
+                    Confirmar código
+                </button>
+
+                <div class="ib-login-register">
+
+                    <a asp-controller="Account"
+                       asp-action="Login">
+                        Voltar ao início de sessão
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="ib-login-image">
+
+            <div class="ib-login-image-overlay"></div>
+
+            <div class="ib-login-image-copy">
+
+                <span>
+                    INFINITY BEAUTY
+                </span>
+
+                <h2>
+                    Segurança<br />
+                    em primeiro lugar.
+                </h2>
+
+                <p>
+                    Confirme a sua identidade para aceder
+                    à sua conta com segurança.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>

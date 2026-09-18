@@ -25,6 +25,97 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
             return View();
         }
 
+        [HttpGet]
+        public IActionResult TwoFactor()
+        {
+            var userId = HttpContext.Session.GetString("TwoFactorUserId");
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            var model = new VerificarTwoFactorViewModel
+            {
+                UserId = userId
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TwoFactor(VerificarTwoFactorViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var userId = HttpContext.Session.GetString("TwoFactorUserId");
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            var request = new
+            {
+                UserId = userId,
+                Codigo = model.Codigo
+            };
+
+            var response = await _apiService.PostAsync<object, LoginResponseViewModel>( "api/Auth/verificar-2fa",  request);
+
+            if (response == null || string.IsNullOrWhiteSpace(response.Token))
+            {
+                ModelState.AddModelError(  string.Empty, "Código de autenticação inválido.");
+
+                return View(model);
+            }
+
+            HttpContext.Session.SetString("JwtToken", response.Token);
+            HttpContext.Session.SetString("UserId", response.UserId);
+            HttpContext.Session.SetString("NomeCompleto", response.NomeCompleto);
+            HttpContext.Session.SetString("Email", response.Email);
+            HttpContext.Session.SetString("Roles", string.Join(",", response.Roles));
+
+            HttpContext.Session.Remove("TwoFactorUserId");
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, response.UserId),
+                new Claim(ClaimTypes.Name, response.NomeCompleto),
+                new Claim(ClaimTypes.Email, response.Email)
+            };
+
+            foreach (var role in response.Roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var claimsIdentity = new ClaimsIdentity( claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+            if (response.Roles.Contains("Admin"))
+            {
+                return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+            }
+
+            if (response.Roles.Contains("Funcionario"))
+            {
+                return RedirectToAction( "Index", "Funcionarios", new { area = "Funcionario" });
+            }
+
+            if (response.Roles.Contains("Cliente"))
+            {
+                return RedirectToAction("Index","Dashboard", new { area = "Cliente" });
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

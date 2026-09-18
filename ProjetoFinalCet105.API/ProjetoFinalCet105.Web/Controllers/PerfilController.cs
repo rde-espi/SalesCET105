@@ -502,4 +502,62 @@ public class PerfilController : Controller
             return View(model);
         }
     }
+
+    [HttpGet]
+    public async Task<IActionResult> TwoFactor()
+    {
+        try
+        {
+            var estado = await _apiService.GetAuthenticatedAsync<TwoFactorViewModel>( "api/Auth/2fa");
+
+            if (estado == null)
+            {
+                TempData["ErrorMessage"] = "Não foi possível consultar o estado da autenticação de dois fatores.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(estado);
+        }
+        catch
+        {
+            TempData["ErrorMessage"] = "Não foi possível consultar o estado da autenticação de dois fatores.";
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> TwoFactor(TwoFactorViewModel model)
+    {
+        try
+        {
+            var dados = new
+            {
+                Ativo = model.Ativo
+            };
+
+            using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Put,"api/Auth/2fa",  dados);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["ErrorMessage"] = "Não foi possível alterar a autenticação de dois fatores.";
+
+                return RedirectToAction(nameof(TwoFactor));
+            }
+
+            TempData["SuccessMessage"] = model.Ativo
+                ? "Autenticação de dois fatores ativada com sucesso."
+                : "Autenticação de dois fatores desativada com sucesso.";
+
+            return RedirectToAction(nameof(TwoFactor));
+        }
+        catch
+        {
+            TempData["ErrorMessage"] = "Não foi possível alterar a autenticação de dois fatores.";
+
+            return RedirectToAction(nameof(TwoFactor));
+        }
+    }
 }
