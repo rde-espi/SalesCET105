@@ -331,16 +331,25 @@
 
                     @if (Model.GoogleCalendarLigado)
                     {
-                        <span class="ib-profile-status">
-                            Ligado
-                        </span>
+                        <form asp-controller="Perfil"
+                              asp-action="DesligarGoogleCalendar"
+                              method="post"
+                              class="m-0">
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit"
+                                    class="ib-profile-btn">
+                                Desligar
+                            </button>
+                        </form>
                     }
                     else
                     {
-                        <button type="button"
-                                class="ib-profile-btn ib-profile-btn-primary">
+                        <a asp-controller="Perfil"
+                           asp-action="LigarGoogleCalendar"
+                           class="ib-profile-btn">
                             Ligar
-                        </button>
+                        </a>
                     }
 
                 </div>

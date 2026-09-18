@@ -124,6 +124,8 @@ public class PerfilController : Controller
 
                 fotografiaResponse.Dispose();
 
+                var googleCalendar = await _apiService.GetAuthenticatedAsync<GoogleCalendarStatusViewModel>("api/GoogleCalendar/status");
+
                 var model = new PerfilViewModel
                 {
                     UserId = funcionario.UserId,
@@ -133,6 +135,8 @@ public class PerfilController : Controller
                     Telefone = funcionario.Telefone,
                     Biografia = funcionario.Biografia,
                     Disponivel = funcionario.Disponivel,
+                    GoogleCalendarLigado = googleCalendar?.Ligado ?? false,
+                    GoogleEmail = googleCalendar?.GoogleEmail,
 
                     TemFotografia = temFotografia,
                     FotografiaUrl = temFotografia ? Url.Action("FotografiaFuncionario", "Perfil") : null
@@ -143,6 +147,8 @@ public class PerfilController : Controller
 
             if (User.IsInRole("Admin"))
             {
+                var googleCalendar = await _apiService.GetAuthenticatedAsync<GoogleCalendarStatusViewModel>( "api/GoogleCalendar/status");
+
                 var model = new PerfilViewModel
                 {
                     UserId = userId,
@@ -152,7 +158,10 @@ public class PerfilController : Controller
                         ?? User.Identity?.Name
                         ?? string.Empty,
 
-                    Email = User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty
+                    Email = User.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty,
+
+                    GoogleCalendarLigado = googleCalendar?.Ligado ?? false,
+                    GoogleEmail = googleCalendar?.GoogleEmail
                 };
 
                 return View(model);
@@ -558,6 +567,57 @@ public class PerfilController : Controller
             TempData["ErrorMessage"] = "Não foi possível alterar a autenticação de dois fatores.";
 
             return RedirectToAction(nameof(TwoFactor));
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> LigarGoogleCalendar()
+    {
+        try
+        {
+            var resultado = await _apiService.GetAuthenticatedAsync<GoogleCalendarConectarViewModel>( "api/GoogleCalendar/conectar");
+
+            if (resultado == null || string.IsNullOrWhiteSpace(resultado.AuthorizationUrl))
+            {
+                TempData["ErrorMessage"] = "Não foi possível iniciar a ligação ao Google Calendar.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return Redirect(resultado.AuthorizationUrl);
+        }
+        catch
+        {
+            TempData["ErrorMessage"] = "Não foi possível iniciar a ligação ao Google Calendar.";
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DesligarGoogleCalendar()
+    {
+        try
+        {
+            using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Delete, "api/GoogleCalendar/desligar");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["ErrorMessage"] = "Não foi possível desligar o Google Calendar.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["SuccessMessage"] = "Google Calendar desligado com sucesso.";
+
+            return RedirectToAction(nameof(Index));
+        }
+        catch
+        {
+            TempData["ErrorMessage"] = "Não foi possível desligar o Google Calendar.";
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

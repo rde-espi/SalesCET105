@@ -19,19 +19,22 @@ namespace ProjetoFinalCet105.API.Controllers
         private readonly GetGoogleCalendarStatusUseCase _getGoogleCalendarStatusUseCase;
         private readonly DesligarGoogleCalendarUseCase _desligarGoogleCalendarUseCase;
         private readonly CallbackGoogleCalendarUseCase _callbackUseCase;
+        private readonly IConfiguration _configuration;
 
         public GoogleCalendarController(
             ConectarGoogleCalendarUseCase conectarUseCase,
             CallbackGoogleCalendarUseCase callbackUseCase,
             IGoogleCalendarService googleCalendarService,
             GetGoogleCalendarStatusUseCase getGoogleCalendarStatusUseCase,
-            DesligarGoogleCalendarUseCase desligarGoogleCalendarUseCase)
+            DesligarGoogleCalendarUseCase desligarGoogleCalendarUseCase,
+            IConfiguration configuration)
         {
             _conectarUseCase = conectarUseCase;
             _callbackUseCase = callbackUseCase;
             _googleCalendarService = googleCalendarService;
             _getGoogleCalendarStatusUseCase = getGoogleCalendarStatusUseCase;
             _desligarGoogleCalendarUseCase = desligarGoogleCalendarUseCase;
+            _configuration = configuration;
         }
 
         [HttpGet("conectar")]
@@ -82,13 +85,17 @@ namespace ProjetoFinalCet105.API.Controllers
 
             if (!resultado.Sucesso)
             {
-                return BadRequest(resultado.Erro);
+                return BadRequest(new { erro = resultado.Erro });
             }
 
-            return Ok(new
+            var webBaseUrl = _configuration["WebSettings:BaseUrl"];
+
+            if (string.IsNullOrWhiteSpace(webBaseUrl))
             {
-                mensagem = "Google Calendar ligado com sucesso."
-            });
+                return BadRequest("A configuração WebSettings:BaseUrl não está definida.");
+            }
+
+            return Redirect($"{webBaseUrl.TrimEnd('/')}/Perfil");
         }
 
         [HttpGet("status")]
