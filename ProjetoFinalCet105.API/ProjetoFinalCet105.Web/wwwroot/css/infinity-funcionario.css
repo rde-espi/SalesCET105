@@ -1,0 +1,510 @@
+﻿/* =========================================================
+   INFINITY BEAUTY
+   ÁREA DO FUNCIONÁRIO
+   ========================================================= */
+
+
+/* =========================================================
+   MINHA AGENDA
+   ========================================================= */
+
+.ib-minha-agenda {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 8px 0 40px;
+}
+
+
+/* ---------------------------------------------------------
+   CABEÇALHO
+   --------------------------------------------------------- */
+
+.ib-minha-agenda-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 20px;
+}
+
+    .ib-minha-agenda-header h1 {
+        margin: 0 0 6px;
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1.15;
+        letter-spacing: -0.035em;
+        color: #191919;
+    }
+
+    .ib-minha-agenda-header p {
+        margin: 0;
+        font-size: .9rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #817a70;
+    }
+
+
+.ib-minha-agenda-hoje {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 0 18px;
+    border: 1px solid rgba(216, 176, 113, .55);
+    border-radius: 9px;
+    background: #ffffff;
+    color: #535333;
+    font-size: .82rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all .2s ease;
+}
+
+    .ib-minha-agenda-hoje:hover {
+        background: #f8f5ef;
+        border-color: #d8b071;
+        color: #191919;
+    }
+
+
+/* =========================================================
+   CALENDÁRIO
+   ========================================================= */
+
+.ib-minha-agenda-card {
+    padding: 22px 30px 24px;
+    background: #ffffff;
+    border: 1px solid rgba(216, 176, 113, .22);
+    border-radius: 16px;
+    box-shadow: 0 8px 28px rgba(25, 25, 25, .05);
+}
+
+
+/* ---------------------------------------------------------
+   NAVEGAÇÃO DO MÊS
+   --------------------------------------------------------- */
+
+.ib-minha-agenda-month-nav {
+    display: grid;
+    grid-template-columns: 38px 1fr 38px;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+    .ib-minha-agenda-month-nav h2 {
+        margin: 0;
+        text-align: center;
+        font-size: 1.08rem;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.015em;
+        color: #24231f;
+    }
+
+
+.ib-minha-agenda-arrow {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(216, 176, 113, .30);
+    border-radius: 50%;
+    background: #ffffff;
+    color: #535333;
+    font-size: 1.3rem;
+    line-height: 1;
+    text-decoration: none;
+    transition: all .2s ease;
+}
+
+    .ib-minha-agenda-arrow:last-child {
+        justify-self: end;
+    }
+
+    .ib-minha-agenda-arrow:hover {
+        background: #f8f5ef;
+        border-color: #d8b071;
+        color: #bea256;
+    }
+
+
+/* =========================================================
+   GRELHA DO CALENDÁRIO
+   ========================================================= */
+
+.ib-minha-agenda-weekdays,
+.ib-minha-agenda-calendar {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.ib-minha-agenda-weekdays {
+    margin-bottom: 5px;
+}
+
+    .ib-minha-agenda-weekdays span {
+        text-align: center;
+        font-size: .66rem;
+        font-weight: 700;
+        letter-spacing: .09em;
+        color: #817a70;
+    }
+
+.ib-minha-agenda-calendar {
+    row-gap: 3px;
+}
+
+
+/* ---------------------------------------------------------
+   DIAS
+   --------------------------------------------------------- */
+
+.ib-minha-agenda-day {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    color: #535333;
+    font-size: .78rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background .18s ease, color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+
+    .ib-minha-agenda-day:not(.ib-minha-agenda-day-empty):hover {
+        background: #f8f5ef;
+        color: #191919;
+        transform: translateY(-1px);
+    }
+
+    .ib-minha-agenda-day.selected {
+        background: linear-gradient(135deg, #e2bd7c, #d2a75e);
+        color: #191919;
+        font-weight: 700;
+        box-shadow: 0 5px 13px rgba(190, 162, 86, .25);
+    }
+
+.ib-minha-agenda-day-empty {
+    pointer-events: none;
+}
+
+
+/* ---------------------------------------------------------
+   INDICADOR DE MARCAÇÕES
+   --------------------------------------------------------- */
+
+.ib-minha-agenda-dot {
+    position: absolute;
+    left: 50%;
+    bottom: 3px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #bea256;
+    transform: translateX(-50%);
+}
+
+.ib-minha-agenda-day.selected .ib-minha-agenda-dot {
+    background: #191919;
+}
+
+
+/* =========================================================
+   MARCAÇÕES DO DIA
+   ========================================================= */
+
+.ib-minha-agenda-day-section {
+    margin-top: 14px;
+    padding: 22px 30px;
+    background: #ffffff;
+    border: 1px solid rgba(216, 176, 113, .22);
+    border-radius: 16px;
+    box-shadow: 0 8px 28px rgba(25, 25, 25, .05);
+}
+
+.ib-minha-agenda-date-title {
+    position: relative;
+    padding: 0 0 16px 14px;
+    margin-bottom: 0;
+    border-bottom: 1px solid rgba(216, 176, 113, .22);
+    font-size: .95rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: #24231f;
+    text-transform: capitalize;
+}
+
+    .ib-minha-agenda-date-title::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 2px;
+        bottom: 17px;
+        width: 3px;
+        border-radius: 999px;
+        background: #d8b071;
+    }
+
+
+/* ---------------------------------------------------------
+   LISTA DE MARCAÇÕES
+   --------------------------------------------------------- */
+
+.ib-minha-agenda-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.ib-minha-agenda-item {
+    display: grid;
+    grid-template-columns: 76px 46px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+    min-height: 76px;
+    padding: 12px 4px;
+    border-bottom: 1px solid rgba(216, 176, 113, .14);
+}
+
+    .ib-minha-agenda-item:last-child {
+        border-bottom: 0;
+    }
+
+
+/* ---------------------------------------------------------
+   HORÁRIO
+   --------------------------------------------------------- */
+
+.ib-minha-agenda-time {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+    .ib-minha-agenda-time strong {
+        font-size: .88rem;
+        color: #191919;
+    }
+
+    .ib-minha-agenda-time span {
+        font-size: .74rem;
+        color: #817a70;
+    }
+
+
+/* ---------------------------------------------------------
+   AVATAR
+   --------------------------------------------------------- */
+
+.ib-minha-agenda-avatar {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid rgba(216, 176, 113, .35);
+    border-radius: 50%;
+    background: #f8f5ef;
+    color: #bea256;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+}
+
+
+/* ---------------------------------------------------------
+   CLIENTE / SERVIÇO
+   --------------------------------------------------------- */
+
+.ib-minha-agenda-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+    .ib-minha-agenda-info strong {
+        overflow: hidden;
+        color: #24231f;
+        font-size: .88rem;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .ib-minha-agenda-info span {
+        overflow: hidden;
+        color: #817a70;
+        font-size: .77rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+
+/* =========================================================
+   ESTADOS DAS MARCAÇÕES
+   ========================================================= */
+
+.ib-minha-agenda-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: .67rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.ib-minha-agenda-status-confirmada {
+    background: rgba(216, 176, 113, .18);
+    color: #9b783e;
+}
+
+.ib-minha-agenda-status-curso {
+    background: rgba(83, 83, 51, .10);
+    color: #535333;
+}
+
+.ib-minha-agenda-status-pendente {
+    background: #f8f5ef;
+    color: #817a70;
+}
+
+.ib-minha-agenda-status-cancelada {
+    background: rgba(120, 70, 70, .08);
+    color: #805555;
+}
+
+
+/* =========================================================
+   SEM MARCAÇÕES
+   ========================================================= */
+
+.ib-minha-agenda-empty {
+    min-height: 105px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    text-align: center;
+}
+
+    .ib-minha-agenda-empty strong {
+        color: #24231f;
+        font-size: .9rem;
+        font-weight: 700;
+    }
+
+    .ib-minha-agenda-empty span {
+        color: #817a70;
+        font-size: .78rem;
+        font-weight: 400;
+    }
+
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .ib-minha-agenda {
+        padding-bottom: 24px;
+    }
+
+    .ib-minha-agenda-header {
+        align-items: flex-start;
+    }
+
+    .ib-minha-agenda-card,
+    .ib-minha-agenda-day-section {
+        padding: 20px 16px;
+    }
+
+    .ib-minha-agenda-day {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        font-size: .76rem;
+    }
+
+    .ib-minha-agenda-item {
+        grid-template-columns: 58px 40px minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .ib-minha-agenda-avatar {
+        width: 38px;
+        height: 38px;
+    }
+
+    .ib-minha-agenda-status {
+        grid-column: 3;
+        justify-self: start;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .ib-minha-agenda {
+        padding-top: 4px;
+    }
+
+    .ib-minha-agenda-header {
+        gap: 12px;
+    }
+
+        .ib-minha-agenda-header h1 {
+            font-size: 1.45rem;
+        }
+
+        .ib-minha-agenda-header p {
+            font-size: .78rem;
+        }
+
+    .ib-minha-agenda-hoje {
+        min-height: 34px;
+        padding: 0 12px;
+        font-size: .76rem;
+    }
+
+    .ib-minha-agenda-card {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .ib-minha-agenda-month-nav {
+        grid-template-columns: 34px 1fr 34px;
+    }
+
+        .ib-minha-agenda-month-nav h2 {
+            font-size: .88rem;
+        }
+
+    .ib-minha-agenda-day {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        font-size: .72rem;
+    }
+
+    .ib-minha-agenda-weekdays span {
+        font-size: .56rem;
+        letter-spacing: .04em;
+    }
+
+    .ib-minha-agenda-day-section {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}

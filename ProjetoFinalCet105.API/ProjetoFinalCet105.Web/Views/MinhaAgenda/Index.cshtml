@@ -1,0 +1,225 @@
+﻿@model ProjetoFinalCet105.Web.Models.MinhaAgendaViewModel
+
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Minha Agenda";
+    Layout = "_FuncionarioLayout";
+
+    var cultura = new CultureInfo("pt-PT");
+
+    var primeiroDiaMes = new DateTime(
+        Model.MesSelecionado.Year,
+        Model.MesSelecionado.Month,
+        1);
+
+    var mesAnterior = primeiroDiaMes.AddMonths(-1);
+    var mesSeguinte = primeiroDiaMes.AddMonths(1);
+
+    var deslocamentoInicial = ((int)primeiroDiaMes.DayOfWeek + 6) % 7;
+    var totalDias = DateTime.DaysInMonth(
+        primeiroDiaMes.Year,
+        primeiroDiaMes.Month);
+
+    var totalCelulas = deslocamentoInicial + totalDias;
+    var totalLinhas = (int)Math.Ceiling(totalCelulas / 7.0);
+
+    string Iniciais(string nome)
+    {
+        if (string.IsNullOrWhiteSpace(nome))
+            return "?";
+
+        var partes = nome.Split(
+            ' ',
+            StringSplitOptions.RemoveEmptyEntries);
+
+        return partes.Length switch
+        {
+            0 => "?",
+            1 => partes[0][0].ToString().ToUpper(),
+            _ => $"{partes[0][0]}{partes[^1][0]}".ToUpper()
+        };
+    }
+
+    string ClasseEstado(string estado)
+    {
+        var valor = estado?.Trim().ToLowerInvariant() ?? "";
+
+        if (valor.Contains("confirm"))
+            return "ib-minha-agenda-status-confirmada";
+
+        if (valor.Contains("curso"))
+            return "ib-minha-agenda-status-curso";
+
+        if (valor.Contains("cancel"))
+            return "ib-minha-agenda-status-cancelada";
+
+        return "ib-minha-agenda-status-pendente";
+    }
+}
+
+<section class="ib-minha-agenda">
+
+    <header class="ib-minha-agenda-header">
+        <div>
+            <h1>Minha Agenda</h1>
+            <p>Consulte as suas marcações e organize o seu dia.</p>
+        </div>
+
+        <a asp-controller="MinhaAgenda"
+           asp-action="Index"
+           asp-route-data="@DateTime.Today.ToString("yyyy-MM-dd")"
+           class="ib-minha-agenda-hoje">
+            Hoje
+        </a>
+    </header>
+
+
+    <article class="ib-minha-agenda-card">
+
+        <div class="ib-minha-agenda-month-nav">
+
+            <a asp-controller="MinhaAgenda"
+               asp-action="Index"
+               asp-route-data="@mesAnterior.ToString("yyyy-MM-dd")"
+               class="ib-minha-agenda-arrow"
+               aria-label="Mês anterior">
+                ‹
+            </a>
+
+            <h2>
+                @cultura.TextInfo.ToTitleCase(
+                    primeiroDiaMes.ToString("MMMM 'de' yyyy", cultura))
+            </h2>
+
+            <a asp-controller="MinhaAgenda"
+               asp-action="Index"
+               asp-route-data="@mesSeguinte.ToString("yyyy-MM-dd")"
+               class="ib-minha-agenda-arrow"
+               aria-label="Mês seguinte">
+                ›
+            </a>
+
+        </div>
+
+
+        <div class="ib-minha-agenda-weekdays">
+            <span>SEG</span>
+            <span>TER</span>
+            <span>QUA</span>
+            <span>QUI</span>
+            <span>SEX</span>
+            <span>SÁB</span>
+            <span>DOM</span>
+        </div>
+
+
+        <div class="ib-minha-agenda-calendar">
+
+            @for (var i = 0; i < deslocamentoInicial; i++)
+            {
+                <div class="ib-minha-agenda-day ib-minha-agenda-day-empty"></div>
+            }
+
+            @for (var dia = 1; dia <= totalDias; dia++)
+            {
+                var dataDia = new DateTime(
+                    primeiroDiaMes.Year,
+                    primeiroDiaMes.Month,
+                    dia);
+
+                var selecionado =
+                    dataDia.Date == Model.DataSelecionada.Date;
+
+                var temMarcacoes =
+                    Model.MarcacoesMes.Any(m =>
+                        m.DataHoraInicio.Date == dataDia.Date);
+
+                <a asp-controller="MinhaAgenda"
+                   asp-action="Index"
+                   asp-route-data="@dataDia.ToString("yyyy-MM-dd")"
+                   class="ib-minha-agenda-day @(selecionado ? "selected" : "")">
+
+                    <span>@dia</span>
+
+                    @if (temMarcacoes)
+                    {
+                        <small class="ib-minha-agenda-dot"></small>
+                    }
+
+                </a>
+            }
+
+            @{
+                var restantes = (totalLinhas * 7) - totalCelulas;
+            }
+
+            @for (var i = 0; i < restantes; i++)
+            {
+                <div class="ib-minha-agenda-day ib-minha-agenda-day-empty"></div>
+            }
+
+        </div>
+
+    </article>
+
+
+    <section class="ib-minha-agenda-day-section">
+
+        <div class="ib-minha-agenda-date-title">
+            @Model.DataSelecionada.ToString(
+                "dddd, d 'de' MMMM",
+                cultura)
+        </div>
+
+
+        @if (Model.MarcacoesDia.Any())
+        {
+            <div class="ib-minha-agenda-list">
+
+                @foreach (var marcacao in Model.MarcacoesDia)
+                {
+                    <article class="ib-minha-agenda-item">
+
+                        <div class="ib-minha-agenda-time">
+                            <strong>
+                                @marcacao.DataHoraInicio.ToString("HH:mm")
+                            </strong>
+
+                            <span>
+                                @marcacao.DataHoraFim.ToString("HH:mm")
+                            </span>
+                        </div>
+
+
+                        <div class="ib-minha-agenda-avatar">
+                            @Iniciais(marcacao.ClienteNome)
+                        </div>
+
+
+                        <div class="ib-minha-agenda-info">
+                            <strong>@marcacao.ClienteNome</strong>
+                            <span>@marcacao.ServicoNome</span>
+                        </div>
+
+
+                        <span class="ib-minha-agenda-status @ClasseEstado(marcacao.EstadoMarcacaoNome)">
+                            @marcacao.EstadoMarcacaoNome
+                        </span>
+
+                    </article>
+                }
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-minha-agenda-empty">
+                <strong>Sem marcações</strong>
+                <span>Não existem marcações para este dia.</span>
+            </div>
+        }
+
+    </section>
+
+</section>

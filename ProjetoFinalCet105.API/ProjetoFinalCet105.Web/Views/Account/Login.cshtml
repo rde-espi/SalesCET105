@@ -1,5 +1,5 @@
 ﻿@model LoginViewModel
-
+@inject IConfiguration Configuration
 @{
     ViewData["Title"] = "Entrar";
     Layout = "_PublicLayout";
@@ -98,13 +98,19 @@
                 </div>
 
 
-                <button type="submit"
-                        class="ib-login-submit">
-
+                <button type="submit" class="ib-login-submit">
                     Entrar
-
                 </button>
 
+                <div class="ib-login-google">
+
+                    <div class="ib-login-divider">
+                        <span>ou</span>
+                    </div>
+
+                    <div id="google-signin-button"></div>
+
+                </div>
 
                 <div class="ib-login-register">
 
@@ -150,3 +156,57 @@
     </div>
 
 </section>
+@section Scripts {
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <script>
+        window.onload = function () {
+
+            google.accounts.id.initialize({
+                client_id: '@Configuration["GoogleAuth:ClientId"]',
+                callback: handleGoogleCredential
+            });
+
+            google.accounts.id.renderButton(
+                document.getElementById("google-signin-button"),
+                {
+                    theme: "outline",
+                    size: "large",
+                    text: "continue_with",
+                    shape: "rectangular",
+                    width: 360
+                }
+            );
+        };
+
+        function handleGoogleCredential(response) {
+
+            const form = document.createElement("form");
+            form.method = "post";
+            form.action = '@Url.Action("GoogleLogin", "Account")';
+
+            const token = document.createElement("input");
+            token.type = "hidden";
+            token.name = "idToken";
+            token.value = response.credential;
+
+            form.appendChild(token);
+
+            const antiForgeryToken =
+                document.querySelector('input[name="__RequestVerificationToken"]');
+
+            if (antiForgeryToken) {
+                const antiforgery = document.createElement("input");
+                antiforgery.type = "hidden";
+                antiforgery.name = "__RequestVerificationToken";
+                antiforgery.value = antiForgeryToken.value;
+
+                form.appendChild(antiforgery);
+            }
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+}

@@ -63,10 +63,7 @@ namespace ProjetoFinalCet105.Web.Services
 
             if (!string.IsNullOrWhiteSpace(token))
             {
-                request.Headers.Authorization =
-                    new System.Net.Http.Headers.AuthenticationHeaderValue(
-                        "Bearer",
-                        token);
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue( "Bearer", token);
             }
 
             request.Content = content;

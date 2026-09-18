@@ -100,17 +100,17 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (response.Roles.Contains("Admin"))
             {
-                return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                return RedirectToAction("Index", "Dashboard");
             }
 
             if (response.Roles.Contains("Funcionario"))
             {
-                return RedirectToAction( "Index", "Funcionarios", new { area = "Funcionario" });
+                return RedirectToAction( "Index", "Funcionarios");
             }
 
             if (response.Roles.Contains("Cliente"))
             {
-                return RedirectToAction("Index","Dashboard", new { area = "Cliente" });
+                return RedirectToAction("Index","Perfil");
             }
 
             return RedirectToAction("Index", "Home");
@@ -210,12 +210,110 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (response.Roles.Contains("Cliente"))
             {
-                return RedirectToAction("Index", "Dashboard", new { area = "Cliente" });
+                return RedirectToAction("Index", "Perfil", new { area = "Cliente" });
             }
 
 
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GoogleLogin(string idToken)
+        {
+            if (string.IsNullOrWhiteSpace(idToken))
+            {
+                TempData["ErrorMessage"] = "Não foi possível obter os dados da conta Google.";
+
+                return RedirectToAction(nameof(Login));
+            }
+
+            var request = new
+            {
+                IdToken = idToken
+            };
+
+            var response = await _apiService.PostAsync<object, LoginResponseViewModel>( "api/Auth/google", request);
+
+            if (response == null)
+            {
+                TempData["ErrorMessage"] = "Não foi possível iniciar sessão com a conta Google.";
+
+                return RedirectToAction(nameof(Login));
+            }
+
+            if (response.RequiresTwoFactor)
+            {
+                HttpContext.Session.SetString( "TwoFactorUserId", response.UserId);
+
+                return RedirectToAction(nameof(TwoFactor));
+            }
+
+            if (string.IsNullOrWhiteSpace(response.Token))
+            {
+                TempData["ErrorMessage"] = "Não foi possível concluir o login com Google.";
+
+                return RedirectToAction(nameof(Login));
+            }
+
+            HttpContext.Session.SetString( "JwtToken", response.Token);
+
+            HttpContext.Session.SetString("UserId", response.UserId);
+
+            HttpContext.Session.SetString("NomeCompleto", response.NomeCompleto);
+
+            HttpContext.Session.SetString( "Email", response.Email);
+
+            HttpContext.Session.SetString( "Roles", string.Join(",", response.Roles));
+
+            var claims = new List<Claim>
+    {
+        new Claim( ClaimTypes.NameIdentifier, response.UserId),
+
+        new Claim(ClaimTypes.Name,response.NomeCompleto),
+
+        new Claim( ClaimTypes.Email, response.Email)
+    };
+
+            foreach (var role in response.Roles)
+            {
+                claims.Add(
+                    new Claim(
+                        ClaimTypes.Role,
+                        role));
+            }
+
+            var claimsIdentity = new ClaimsIdentity( claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            await HttpContext.SignInAsync( CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+
+            if (response.Roles.Contains("Admin"))
+            {
+                return RedirectToAction(
+                    "Index",
+                    "Dashboard",
+                    new { area = "Admin" });
+            }
+
+            if (response.Roles.Contains("Funcionario"))
+            {
+                return RedirectToAction(
+                    "Index",
+                    "Funcionarios",
+                    new { area = "Funcionario" });
+            }
+
+            if (response.Roles.Contains("Cliente"))
+            {
+                return RedirectToAction(
+                    "Index",
+                    "Perfil",
+                    new { area = "Cliente" });
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
 
         [HttpGet]
         public IActionResult PrimeiroAcesso(string email, string tokenConfirmacao, string tokenPassword)

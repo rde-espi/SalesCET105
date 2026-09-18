@@ -1,4 +1,6 @@
-﻿using ProjetoFinalCet105.API.Entities;
+﻿using Google.Apis.Auth.OAuth2.Responses;
+
+using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
 
 namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
@@ -58,7 +60,7 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
                 cancellationToken);
         }
 
-        private async Task EliminarEventoParaUserAsync(Marcacao marcacao, string userId, CancellationToken cancellationToken)
+        private async Task EliminarEventoParaUserAsync( Marcacao marcacao, string userId, CancellationToken cancellationToken)
         {
             var conta = await _contaRepository.GetByUserIdAsync(userId);
 
@@ -74,17 +76,24 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
                 return;
             }
 
-            await _googleCalendarService.EliminarEventoAsync(conta, evento.GoogleEventId, cancellationToken);
+            try
+            {
+                await _googleCalendarService.EliminarEventoAsync( conta, evento.GoogleEventId,cancellationToken);
 
-            await _eventoRepository.DeleteAsync(evento);
+                await _eventoRepository.DeleteAsync(evento);
+            }
+            catch (TokenResponseException ex)
+                when (ex.Error?.Error == "invalid_grant")
+            {
+                conta.Ativo = false;
+
+                await _contaRepository.UpdateAsync(conta);
+
+                return;
+            }
         }
 
-        private async Task CriarEventoParaUserAsync(
-            Marcacao marcacao,
-            string userId,
-            string titulo,
-            string descricao,
-            CancellationToken cancellationToken)
+        private async Task CriarEventoParaUserAsync( Marcacao marcacao,string userId, string titulo, string descricao,  CancellationToken cancellationToken)
         {
             var conta = await _contaRepository.GetByUserIdAsync(userId);
 
@@ -100,9 +109,10 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
                 return;
             }
 
-            var googleEventId =
-                await _googleCalendarService
-                .CriarEventoAsync(
+            try
+            {
+                var googleEventId =await _googleCalendarService
+                    .CriarEventoAsync(
                     conta,
                     titulo,
                     descricao,
@@ -110,17 +120,30 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
                     marcacao.DataHoraFim,
                     cancellationToken);
 
-            var evento = new GoogleCalendarEvento
-            {
-                MarcacaoId = marcacao.Id,
-                UserId = userId,
-                GoogleEventId = googleEventId,
-                CalendarId = conta.CalendarId,
-                DataCriacao = DateTime.UtcNow,
-                DataUltimaSincronizacao = DateTime.UtcNow
-            };
+                var evento = new GoogleCalendarEvento
+                {
+                    MarcacaoId = marcacao.Id,
+                    UserId = userId,
+                    GoogleEventId = googleEventId,
+                    CalendarId = conta.CalendarId,
+                    DataCriacao = DateTime.UtcNow,
+                    DataUltimaSincronizacao = DateTime.UtcNow
+                };
 
-            await _eventoRepository.CreateAsync(evento);
+                await _eventoRepository.CreateAsync(evento);
+            }
+            catch (TokenResponseException ex)
+                when (ex.Error?.Error == "invalid_grant")
+            {
+                conta.Ativo = false;
+
+                await _contaRepository.UpdateAsync(conta);
+
+                // O token Google deixou de ser válido.
+                // A marcação permanece criada e a conta terá
+                // de ser ligada novamente pelo utilizador.
+                return;
+            }
         }
 
         public async Task SincronizarAtualizacaoMarcacaoAsync(Marcacao marcacao, CancellationToken cancellationToken = default)
@@ -149,12 +172,7 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
                 descricao,
                 cancellationToken);
         }
-        private async Task AtualizarEventoParaUserAsync(
-            Marcacao marcacao,
-            string userId,
-            string titulo,
-            string descricao,
-            CancellationToken cancellationToken)
+        private async Task AtualizarEventoParaUserAsync( Marcacao marcacao, string userId, string titulo, string descricao, CancellationToken cancellationToken)
         {
             var conta = await _contaRepository.GetByUserIdAsync(userId);
 
@@ -167,28 +185,35 @@ namespace ProjetoFinalCet105.API.Services.GoogleCalendarService
 
             if (evento == null)
             {
-                await CriarEventoParaUserAsync(
-                    marcacao,
-                    userId,
-                    titulo,
-                    descricao,
-                    cancellationToken);
+                await CriarEventoParaUserAsync( marcacao, userId, titulo, descricao, cancellationToken);
 
                 return;
             }
 
-            await _googleCalendarService.AtualizarEventoAsync(
-                conta,
-                evento.GoogleEventId,
-                titulo,
-                descricao,
-                marcacao.DataHoraInicio,
-                marcacao.DataHoraFim,
-                cancellationToken);
+            try
+            {
+                await _googleCalendarService.AtualizarEventoAsync(
+                    conta,
+                    evento.GoogleEventId,
+                    titulo,
+                    descricao,
+                    marcacao.DataHoraInicio,
+                    marcacao.DataHoraFim,
+                    cancellationToken);
 
-            evento.DataUltimaSincronizacao = DateTime.UtcNow;
+                evento.DataUltimaSincronizacao = DateTime.UtcNow;
 
-            await _eventoRepository.UpdateAsync(evento);
+                await _eventoRepository.UpdateAsync(evento);
+            }
+            catch (TokenResponseException ex)
+                when (ex.Error?.Error == "invalid_grant")
+            {
+                conta.Ativo = false;
+
+                await _contaRepository.UpdateAsync(conta);
+
+                return;
+            }
         }
     }
 }
