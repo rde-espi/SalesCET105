@@ -20,6 +20,8 @@ namespace ProjetoFinalCet105.API.Controllers
         private readonly UpdateFeedbackUseCase _updateFeedbackUseCase;
         private readonly DeleteFeedbackUseCase _deleteFeedbackUseCase;
         private readonly GetAllFeedbacksUseCase _getAllFeedbacksUseCase;
+        private readonly GetMeusFeedbacksUseCase _getMeusFeedbacksUseCase;
+        private readonly GetMeuFeedbackResumoUseCase _getMeuFeedbackResumoUseCase;
 
         public FeedbacksController(
             CreateFeedbackUseCase createFeedbackUseCase,
@@ -28,7 +30,9 @@ namespace ProjetoFinalCet105.API.Controllers
             GetFeedbackResumoFuncionarioUseCase getFeedbackResumoFuncionarioUseCase,
             UpdateFeedbackUseCase updateFeedbackUseCase,
             DeleteFeedbackUseCase deleteFeedbackUseCase,
-            GetAllFeedbacksUseCase getAllFeedbacksUseCase)
+            GetAllFeedbacksUseCase getAllFeedbacksUseCase,
+            GetMeusFeedbacksUseCase getMeusFeedbacksUseCase,
+            GetMeuFeedbackResumoUseCase getMeuFeedbackResumoUseCase)
         {
             _createFeedbackUseCase = createFeedbackUseCase;
             _getFeedbackByIdUseCase = getFeedbackByIdUseCase;
@@ -37,6 +41,8 @@ namespace ProjetoFinalCet105.API.Controllers
             _updateFeedbackUseCase = updateFeedbackUseCase;
             _deleteFeedbackUseCase = deleteFeedbackUseCase;
             _getAllFeedbacksUseCase = getAllFeedbacksUseCase;
+            _getMeusFeedbacksUseCase = getMeusFeedbacksUseCase;
+            _getMeuFeedbackResumoUseCase = getMeuFeedbackResumoUseCase;
         }
 
         [Authorize(Roles = "Admin")]
@@ -53,6 +59,48 @@ namespace ProjetoFinalCet105.API.Controllers
             return Ok(resultado.Dados);
         }
 
+
+        [Authorize(Roles = "Funcionario")]
+        [HttpGet("meus")]
+        public async Task<ActionResult<IEnumerable<FeedbackDTO>>> GetMeusFeedbacks()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized();
+            }
+
+            var resultado = await _getMeusFeedbacksUseCase.ExecuteAsync(userId);
+
+            if (!resultado.Sucesso)
+            {
+                return TratarErroComDados(resultado);
+            }
+
+            return Ok(resultado.Dados);
+        }
+
+        [Authorize(Roles = "Funcionario")]
+        [HttpGet("meus/resumo")]
+        public async Task<ActionResult<FeedbackResumoDTO>> GetMeuFeedbackResumo()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return Unauthorized();
+            }
+
+            var resultado = await _getMeuFeedbackResumoUseCase.ExecuteAsync(userId);
+
+            if (!resultado.Sucesso)
+            {
+                return TratarErroComDados(resultado);
+            }
+
+            return Ok(resultado.Dados);
+        }
 
         [HttpGet("funcionario/{funcionarioId:int}")]
         public async Task<ActionResult<IEnumerable<FeedbackDTO>>> GetFeedbacksByFuncionario(int funcionarioId)

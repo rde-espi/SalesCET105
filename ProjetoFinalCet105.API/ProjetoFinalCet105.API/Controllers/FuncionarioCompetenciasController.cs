@@ -33,8 +33,30 @@ namespace ProjetoFinalCet105.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FuncionarioCompetenciaDTO>>> GetAllFuncionarioCompetencias()
         {
-            var dados = await _funcionarioCompetenciaRepository
-                .GetAllWithDetails()
+            var query = _funcionarioCompetenciaRepository.GetAllWithDetails();
+
+            if (User.IsInRole("Funcionario") && !User.IsInRole("Admin"))
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    return Unauthorized();
+                }
+
+                var funcionario = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
+
+                if (funcionario == null)
+                {
+                    return Forbid();
+                }
+
+                query = query.Where(fc =>
+                    fc.FuncionarioId == funcionario.Id);
+            }
+
+            var dados = await query
+                .OrderBy(fc => fc.Competencia.Nome)
                 .Select(fc => new FuncionarioCompetenciaDTO
                 {
                     Id = fc.Id,
@@ -44,7 +66,8 @@ namespace ProjetoFinalCet105.API.Controllers
                     CompetenciaNome = fc.Competencia.Nome,
                     Nivel = fc.Nivel,
                     Certificacao = fc.Certificacao
-                }).ToListAsync();
+                })
+                .ToListAsync();
 
             return Ok(dados);
         }

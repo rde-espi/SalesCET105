@@ -1,0 +1,120 @@
+﻿@model ProjetoFinalCet105.Web.Models.FeedbackFuncionarioViewModel
+
+@{
+    ViewData["Title"] = "Feedback";
+    Layout = "~/Views/Shared/_FuncionarioLayout.cshtml";
+}
+
+<div class="ib-func-page">
+
+    <div class="ib-func-page-header">
+        <div>
+            <h1>Feedback</h1>
+            <p>
+                Consulte as avaliações e comentários recebidos dos seus clientes.
+            </p>
+        </div>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+  <section class="ib-feedback-summary">
+
+    <h2>Avaliação geral</h2>
+
+    <div class="ib-feedback-score">
+        <strong>@Model.Resumo.Media.ToString("0.0")</strong>
+        <span>/ 5</span>
+    </div>
+
+    <div class="ib-feedback-stars"
+         aria-label="Avaliação média">
+
+        @for (var i = 1; i <= 5; i++)
+        {
+            if (i <= Math.Round(Model.Resumo.Media))
+            {
+                <span>★</span>
+            }
+            else
+            {
+                <span>☆</span>
+            }
+        }
+
+    </div>
+
+    <p class="ib-feedback-total">
+        @Model.Resumo.TotalAvaliacoes
+        @(Model.Resumo.TotalAvaliacoes == 1
+            ? "avaliação recebida"
+            : "avaliações recebidas")
+    </p>
+
+</section>
+
+
+<section class="ib-feedback-list">
+
+    <h2>Avaliações recebidas</h2>
+
+    @if (Model.Feedbacks == null || !Model.Feedbacks.Any())
+    {
+        <div class="ib-feedback-empty">
+            Ainda não recebeu avaliações.
+        </div>
+    }
+    else
+    {
+        @foreach (var feedback in Model.Feedbacks)
+        {
+            <article class="ib-feedback-card">
+
+                <div class="ib-feedback-card-header">
+
+                    <strong>
+                        @feedback.ClienteNome
+                    </strong>
+
+                    <span class="ib-feedback-date">
+                        @feedback.DataCriacao.ToString("dd/MM/yyyy")
+                    </span>
+
+                </div>
+
+                <div class="ib-feedback-stars"
+                     aria-label="@($"{feedback.Classificacao} de 5 estrelas")">
+
+                    @for (var i = 1; i <= 5; i++)
+                    {
+                        if (i <= feedback.Classificacao)
+                        {
+                            <span>★</span>
+                        }
+                        else
+                        {
+                            <span>☆</span>
+                        }
+                    }
+
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(feedback.Comentario))
+                {
+                    <p class="ib-feedback-comment">
+                        @feedback.Comentario
+                    </p>
+                }
+
+            </article>
+        }
+    }
+
+</section>
+
+</div>

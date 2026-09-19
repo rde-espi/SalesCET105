@@ -784,3 +784,120 @@ textarea.ib-form-control {
         flex: 1 0 70px;
     }
 }
+/* =========================================================
+   FEEDBACK DO FUNCIONÁRIO
+   ========================================================= */
+
+.ib-feedback-summary {
+    margin-top: 24px;
+    padding: 26px 30px;
+    background: #FFFFFF;
+    border: 1px solid rgba(216, 176, 113, 0.25);
+    border-radius: 12px;
+}
+
+    .ib-feedback-summary h2,
+    .ib-feedback-list h2 {
+        margin: 0 0 18px;
+        font-size: 1.15rem;
+        font-weight: 600;
+        color: #24231f;
+    }
+
+.ib-feedback-score {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+
+    .ib-feedback-score strong {
+        font-size: 2.3rem;
+        font-weight: 600;
+        color: #191919;
+    }
+
+    .ib-feedback-score span {
+        font-size: 0.9rem;
+        color: #817a70;
+    }
+
+.ib-feedback-stars {
+    display: flex;
+    gap: 3px;
+    margin-bottom: 10px;
+    color: #D8B071;
+    font-size: 1.15rem;
+}
+
+.ib-feedback-total {
+    margin: 0;
+    color: #817a70;
+    font-size: 0.82rem;
+}
+
+.ib-feedback-list {
+    margin-top: 26px;
+}
+
+.ib-feedback-empty {
+    padding: 32px;
+    background: #FFFFFF;
+    border: 1px solid rgba(216, 176, 113, 0.25);
+    border-radius: 12px;
+    text-align: center;
+    color: #817a70;
+}
+
+.ib-feedback-card {
+    padding: 22px 26px;
+    margin-bottom: 14px;
+    background: #FFFFFF;
+    border: 1px solid rgba(216, 176, 113, 0.25);
+    border-radius: 12px;
+}
+
+.ib-feedback-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+    .ib-feedback-card-header strong {
+        color: #24231f;
+        font-size: 0.9rem;
+    }
+
+.ib-feedback-date {
+    color: #817a70;
+    font-size: 0.75rem;
+}
+
+.ib-feedback-card .ib-feedback-stars {
+    margin-bottom: 10px;
+}
+
+.ib-feedback-comment {
+    margin: 0;
+    color: #535333;
+    font-size: 0.85rem;
+    line-height: 1.65;
+}
+
+@media (max-width: 768px) {
+    .ib-feedback-summary {
+        padding: 22px 20px;
+    }
+
+    .ib-feedback-card {
+        padding: 20px;
+    }
+
+    .ib-feedback-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+    }
+}
