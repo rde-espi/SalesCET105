@@ -8,11 +8,7 @@ namespace ProjetoFinalCet105.API.Repositories
 
         Task<HorarioFuncionario?> GetByIdWithFuncionarioAsync(int id);
 
-        Task<bool> ExisteSobreposicaoAsync(
-    int funcionarioId,
-    DayOfWeek diaSemana,
-    TimeSpan horaInicio,
-    TimeSpan horaFim,
-    int? horarioIdIgnorar = null);
+        Task<bool> ExisteSobreposicaoAsync(int funcionarioId,DayOfWeek diaSemana,TimeSpan horaInicio, TimeSpan horaFim,int? horarioIdIgnorar = null);
+        Task<HorarioFuncionario?> GetByFuncionarioEDiaAsync( int funcionarioId, DayOfWeek diaSemana);
     }
 }

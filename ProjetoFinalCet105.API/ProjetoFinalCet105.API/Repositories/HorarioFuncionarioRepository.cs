@@ -27,12 +27,7 @@ namespace ProjetoFinalCet105.API.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(h => h.Id == id);
         }
-        public async Task<bool> ExisteSobreposicaoAsync(
-    int funcionarioId,
-    DayOfWeek diaSemana,
-    TimeSpan horaInicio,
-    TimeSpan horaFim,
-    int? horarioIdIgnorar = null)
+        public async Task<bool> ExisteSobreposicaoAsync( int funcionarioId, DayOfWeek diaSemana, TimeSpan horaInicio,TimeSpan horaFim, int? horarioIdIgnorar = null)
         {
             return await _context.HorariosFuncionarios
                 .AnyAsync(h =>
@@ -42,6 +37,14 @@ namespace ProjetoFinalCet105.API.Repositories
                     (!horarioIdIgnorar.HasValue || h.Id != horarioIdIgnorar.Value) &&
                     horaInicio < h.HoraFim &&
                     horaFim > h.HoraInicio);
+        }
+
+        public async Task<HorarioFuncionario?> GetByFuncionarioEDiaAsync( int funcionarioId, DayOfWeek diaSemana)
+        {
+            return await _context.HorariosFuncionarios
+                .FirstOrDefaultAsync(h =>
+                    h.FuncionarioId == funcionarioId &&
+                    h.DiaSemana == diaSemana);
         }
     }
 }

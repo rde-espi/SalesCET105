@@ -22,79 +22,76 @@ namespace ProjetoFinalCet105.API.UseCases.HorariosFuncionarios
             _horarioFuncionarioService = horarioFuncionarioService;
         }
 
-        public async Task<UseCaseResult<HorarioFuncionarioDTO>> ExecuteAsync(
-            string userId,
-            bool isFuncionario,
-            bool isAdmin,
-            NovoHorarioFuncionarioDTO dto)
+        public async Task<UseCaseResult<HorarioFuncionarioDTO>> ExecuteAsync(string userId,bool isFuncionario,bool isAdmin, NovoHorarioFuncionarioDTO dto)
         {
             // 1. Determinar o funcionário
-            var funcionarioIdResult =
-                await ObterFuncionarioIdAsync(
-                    userId,
-                    isFuncionario,
-                    isAdmin,
-                    dto.FuncionarioId);
+            var funcionarioIdResult = await ObterFuncionarioIdAsync( userId, isFuncionario, isAdmin, dto.FuncionarioId);
 
             if (!funcionarioIdResult.Sucesso)
             {
-                return UseCaseResult<HorarioFuncionarioDTO>.Falha(
-                    funcionarioIdResult.Erro!,
-                    funcionarioIdResult.TipoErro);
+                return UseCaseResult<HorarioFuncionarioDTO>.Falha( funcionarioIdResult.Erro!, funcionarioIdResult.TipoErro);
             }
 
             var funcionarioId = funcionarioIdResult.Dados;
 
             // 2. Verificar funcionário
-            var funcionario =
-                await _funcionarioRepository
-                    .GetFuncionarioByIdAsync(funcionarioId);
+            var funcionario = await _funcionarioRepository.GetFuncionarioByIdAsync(funcionarioId);
 
             if (funcionario == null)
             {
-                return UseCaseResult<HorarioFuncionarioDTO>.Falha(
-                    "Funcionário não encontrado.",
-                    TipoErro.NaoEncontrado);
+                return UseCaseResult<HorarioFuncionarioDTO>.Falha( "Funcionário não encontrado.", TipoErro.NaoEncontrado);
             }
 
             if (!funcionario.Ativo)
             {
-                return UseCaseResult<HorarioFuncionarioDTO>.Falha(
-                    "Não é possível criar um horário para um funcionário inativo.");
+                return UseCaseResult<HorarioFuncionarioDTO>.Falha("Não é possível criar um horário para um funcionário inativo.");
             }
 
             // 3. Validar período
-            var periodoResult =
-                _horarioFuncionarioService.ValidarPeriodo(
-                    dto.HoraInicio,
-                    dto.HoraFim);
+            var periodoResult = _horarioFuncionarioService.ValidarPeriodo( dto.HoraInicio, dto.HoraFim);
 
             if (!periodoResult.Sucesso)
             {
-                return UseCaseResult<HorarioFuncionarioDTO>.Falha(
-                    periodoResult.Erro!,
-                    periodoResult.TipoErro);
+                return UseCaseResult<HorarioFuncionarioDTO>.Falha( periodoResult.Erro!, periodoResult.TipoErro);
             }
 
-            // 4. Verificar sobreposição
-            var existeSobreposicao =
-                await _horarioFuncionarioService
-                    .ExisteSobreposicaoAsync(
-                        funcionarioId,
-                        dto.DiaSemana,
-                        dto.HoraInicio,
-                        dto.HoraFim);
+            // 4. Verificar se já existe horário para este dia
+            var horarioExistente = await _horarioFuncionarioRepository.GetByFuncionarioEDiaAsync( funcionarioId, dto.DiaSemana);
 
-            if (existeSobreposicao)
-            {
-                return UseCaseResult<HorarioFuncionarioDTO>.Falha(
-                    "Já existe um horário sobreposto para este funcionário nesse dia.",
-                    TipoErro.Conflito);
-            }
-
-            // 5. Criar
             try
             {
+                // 5. Se já existe, atualizar em vez de criar outro
+                if (horarioExistente != null)
+                {
+                    horarioExistente.HoraInicio = dto.HoraInicio;
+
+                    horarioExistente.HoraFim = dto.HoraFim;
+
+                    horarioExistente.Ativo = true;
+
+                    await _horarioFuncionarioRepository.UpdateAsync(horarioExistente);
+
+                    var respostaAtualizada =
+                        new HorarioFuncionarioDTO
+                        {
+                            Id = horarioExistente.Id,
+                            FuncionarioId = funcionario.Id,
+                            FuncionarioNome =
+                                funcionario.User.NomeCompleto,
+                            DiaSemana =
+                                horarioExistente.DiaSemana,
+                            HoraInicio =
+                                horarioExistente.HoraInicio,
+                            HoraFim =
+                                horarioExistente.HoraFim,
+                            Ativo =
+                                horarioExistente.Ativo
+                        };
+
+                    return UseCaseResult<HorarioFuncionarioDTO>.Ok(respostaAtualizada);
+                }
+
+                // 6. Se não existe, criar
                 var horario = new HorarioFuncionario
                 {
                     FuncionarioId = funcionarioId,
@@ -104,48 +101,39 @@ namespace ProjetoFinalCet105.API.UseCases.HorariosFuncionarios
                     Ativo = true
                 };
 
-                await _horarioFuncionarioRepository
-                    .CreateAsync(horario);
+                await _horarioFuncionarioRepository.CreateAsync(horario);
 
-                var resposta = new HorarioFuncionarioDTO
-                {
-                    Id = horario.Id,
-                    FuncionarioId = funcionario.Id,
-                    FuncionarioNome = funcionario.User.NomeCompleto,
-                    DiaSemana = horario.DiaSemana,
-                    HoraInicio = horario.HoraInicio,
-                    HoraFim = horario.HoraFim,
-                    Ativo = horario.Ativo
-                };
+                var resposta =
+                    new HorarioFuncionarioDTO
+                    {
+                        Id = horario.Id,
+                        FuncionarioId = funcionario.Id,
+                        FuncionarioNome =
+                            funcionario.User.NomeCompleto,
+                        DiaSemana = horario.DiaSemana,
+                        HoraInicio = horario.HoraInicio,
+                        HoraFim = horario.HoraFim,
+                        Ativo = horario.Ativo
+                    };
 
-                return UseCaseResult<HorarioFuncionarioDTO>
-                    .Ok(resposta);
+                return UseCaseResult<HorarioFuncionarioDTO>.Ok(resposta);
             }
             catch (Exception)
             {
-                return UseCaseResult<HorarioFuncionarioDTO>.Falha(
-                    "Ocorreu um erro ao criar o horário do funcionário.");
+                return UseCaseResult<HorarioFuncionarioDTO>.Falha( "Ocorreu um erro ao guardar o horário do funcionário.");
             }
         }
 
-        private async Task<UseCaseResult<int>> ObterFuncionarioIdAsync(
-            string userId,
-            bool isFuncionario,
-            bool isAdmin,
-            int? funcionarioIdDto)
+        private async Task<UseCaseResult<int>> ObterFuncionarioIdAsync(string userId, bool isFuncionario,bool isAdmin,int? funcionarioIdDto)
         {
             // Funcionário cria horário apenas para si próprio
             if (isFuncionario && !isAdmin)
             {
-                var funcionario =
-                    await _funcionarioRepository
-                        .GetFuncionarioByUserIdAsync(userId);
+                var funcionario = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
 
                 if (funcionario == null)
                 {
-                    return UseCaseResult<int>.Falha(
-                        "Funcionário autenticado não encontrado.",
-                        TipoErro.Proibido);
+                    return UseCaseResult<int>.Falha( "Funcionário autenticado não encontrado.", TipoErro.Proibido);
                 }
 
                 return UseCaseResult<int>.Ok(funcionario.Id);
@@ -156,17 +144,13 @@ namespace ProjetoFinalCet105.API.UseCases.HorariosFuncionarios
             {
                 if (!funcionarioIdDto.HasValue)
                 {
-                    return UseCaseResult<int>.Falha(
-                        "É necessário indicar o funcionário.");
+                    return UseCaseResult<int>.Falha( "É necessário indicar o funcionário.");
                 }
 
-                return UseCaseResult<int>.Ok(
-                    funcionarioIdDto.Value);
+                return UseCaseResult<int>.Ok( funcionarioIdDto.Value);
             }
 
-            return UseCaseResult<int>.Falha(
-                "Utilizador sem permissão.",
-                TipoErro.Proibido);
+            return UseCaseResult<int>.Falha("Utilizador sem permissão.", TipoErro.Proibido);
         }
     }
 }

@@ -1,0 +1,819 @@
+﻿@model ProjetoFinalCet105.Web.Models.NovaMarcacaoFuncionarioViewModel
+
+@{
+    ViewData["Title"] = "Nova Marcação";
+    Layout = "~/Views/Shared/_FuncionarioLayout.cshtml";
+}
+
+<div class="ib-func-page">
+
+    <div class="ib-func-page-header">
+        <div>
+            <span class="ib-func-eyebrow">AGENDA</span>
+            <h1>Nova Marcação</h1>
+            <p>Registe uma nova marcação para um cliente.</p>
+        </div>
+
+        <a asp-controller="MinhaAgenda"
+           asp-action="Index"
+           class="ib-func-btn-secondary">
+            Voltar à agenda
+        </a>
+    </div>
+
+    <div class="ib-func-card">
+
+        <div class="ib-func-card-header">
+            <div>
+                <span class="ib-func-eyebrow">NOVA MARCAÇÃO</span>
+                <h2>Dados da marcação</h2>
+            </div>
+        </div>
+
+        <form asp-controller="NovaMarcacaoFuncionario"
+              asp-action="Index"
+              method="post"
+              id="formNovaMarcacao">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger"></div>
+
+            <div class="ib-nova-marcacao-form">
+
+                <!-- CLIENTE -->
+                <div class="ib-form-group">
+
+                    <label asp-for="ClienteId">
+                        Cliente *
+                    </label>
+
+                    <select asp-for="ClienteId"
+                            id="ClienteId"
+                            class="ib-form-control">
+
+                        <option value="">
+                            Selecione o cliente
+                        </option>
+
+                        @foreach (var cliente in Model.Clientes)
+                        {
+                            <option value="@cliente.Id">
+                                @cliente.NomeCompleto
+                            </option>
+                        }
+
+                    </select>
+
+                    <span asp-validation-for="ClienteId"
+                          class="text-danger"></span>
+
+                </div>
+
+
+                <!-- SERVIÇO -->
+                <div class="ib-form-group">
+
+                    <label asp-for="ServicoId">
+                        Serviço *
+                    </label>
+
+                    <select asp-for="ServicoId"
+                            id="ServicoId"
+                            class="ib-form-control">
+
+                        <option value="">
+                            Selecione o serviço
+                        </option>
+
+                        @foreach (var servico in Model.Servicos)
+                        {
+                            <option value="@servico.Id">
+                                @servico.Nome
+                            </option>
+                        }
+
+                    </select>
+
+                    <span asp-validation-for="ServicoId"
+                          class="text-danger"></span>
+
+                </div>
+
+
+                <!-- DATA -->
+                <div class="ib-form-group">
+
+                    <label>
+                        Data *
+                    </label>
+
+                    <div class="ib-datepicker"
+                         id="ibDatepicker">
+
+                        <button type="button"
+                                class="ib-datepicker-trigger"
+                                id="ibDatepickerTrigger">
+
+                            <svg viewBox="0 0 24 24"
+                                 aria-hidden="true">
+                                <rect x="3"
+                                      y="5"
+                                      width="18"
+                                      height="16"
+                                      rx="2"></rect>
+
+                                <path d="M16 3v4M8 3v4M3 10h18"></path>
+                            </svg>
+
+                            <span id="ibDatepickerText">
+                                Selecione a data
+                            </span>
+
+                            <svg class="ib-datepicker-chevron"
+                                 viewBox="0 0 24 24"
+                                 aria-hidden="true">
+                                <path d="m6 9 6 6 6-6"></path>
+                            </svg>
+
+                        </button>
+
+
+                        <div class="ib-datepicker-popup"
+                             id="ibDatepickerPopup">
+
+                            <div class="ib-datepicker-header">
+
+                                <strong id="ibCalendarMonth"></strong>
+
+                                <div class="ib-datepicker-nav">
+
+                                    <button type="button"
+                                            id="ibCalendarPrev"
+                                            aria-label="Mês anterior">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="m15 18-6-6 6-6"></path>
+                                        </svg>
+                                    </button>
+
+                                    <button type="button"
+                                            id="ibCalendarNext"
+                                            aria-label="Mês seguinte">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="m9 18 6-6-6-6"></path>
+                                        </svg>
+                                    </button>
+
+                                </div>
+                            </div>
+
+
+                            <div class="ib-datepicker-weekdays">
+                                <span>D</span>
+                                <span>S</span>
+                                <span>T</span>
+                                <span>Q</span>
+                                <span>Q</span>
+                                <span>S</span>
+                                <span>S</span>
+                            </div>
+
+
+                            <div class="ib-datepicker-days"
+                                 id="ibCalendarDays">
+                            </div>
+
+
+                            <div class="ib-datepicker-footer">
+                                <button type="button"
+                                        id="ibCalendarToday">
+                                    Hoje
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <input type="hidden"
+                           id="dataMarcacao" />
+
+                    <input asp-for="DataHoraInicio"
+                           type="hidden"
+                           id="DataHoraInicio" />
+
+                    <span asp-validation-for="DataHoraInicio"
+                          class="text-danger"></span>
+
+                </div>
+
+
+                <!-- HORÁRIOS -->
+                <div class="ib-form-group">
+
+                    <label>
+                        Horários disponíveis *
+                    </label>
+
+                    <div id="horariosDisponiveis"
+                         class="ib-func-booking-slots">
+
+                        <div class="ib-func-booking-slots-empty">
+                            Selecione o serviço e a data.
+                        </div>
+
+                    </div>
+
+                    <div id="horarioErro"
+                         class="text-danger"
+                         style="display:none;">
+                        Selecione um horário disponível.
+                    </div>
+
+                </div>
+
+
+                <!-- OBSERVAÇÕES -->
+                <div class="ib-form-group">
+
+                    <label asp-for="Observacoes">
+                        Observações
+                    </label>
+
+                    <textarea asp-for="Observacoes"
+                              class="ib-form-control"
+                              rows="4"
+                              maxlength="500"
+                              placeholder="Observações da marcação..."></textarea>
+
+                    <span asp-validation-for="Observacoes"
+                          class="text-danger"></span>
+
+                </div>
+
+
+                <div class="ib-nova-marcacao-actions">
+
+                    <a asp-controller="MinhaAgenda"
+                       asp-action="Index"
+                       class="ib-func-btn-secondary">
+                        Cancelar
+                    </a>
+
+                    <button type="submit"
+                            id="btnCriarMarcacao"
+                            class="ib-func-btn-primary"
+                            disabled>
+                        Criar marcação
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const servico =
+                document.getElementById("ServicoId");
+
+            const data =
+                document.getElementById("dataMarcacao");
+
+            const dataHoraInicio =
+                document.getElementById("DataHoraInicio");
+
+            const container =
+                document.getElementById("horariosDisponiveis");
+
+            const horarioErro =
+                document.getElementById("horarioErro");
+            const cliente =
+            document.getElementById("ClienteId");
+
+            const btnCriarMarcacao =
+            document.getElementById("btnCriarMarcacao");
+
+            const datepicker =
+                document.getElementById("ibDatepicker");
+
+            const datepickerTrigger =
+                document.getElementById("ibDatepickerTrigger");
+
+            const datepickerText =
+                document.getElementById("ibDatepickerText");
+
+            const calendarMonth =
+                document.getElementById("ibCalendarMonth");
+
+            const calendarDays =
+                document.getElementById("ibCalendarDays");
+
+            const calendarPrev =
+                document.getElementById("ibCalendarPrev");
+
+            const calendarNext =
+                document.getElementById("ibCalendarNext");
+
+            const calendarToday =
+                document.getElementById("ibCalendarToday");
+
+
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+
+            let dataSelecionada = null;
+
+            let mesVisivel =
+                new Date(
+                    hoje.getFullYear(),
+                    hoje.getMonth(),
+                    1
+                );
+
+
+            function mesmaData(a, b) {
+
+                return a.getFullYear() === b.getFullYear() &&
+                       a.getMonth() === b.getMonth() &&
+                       a.getDate() === b.getDate();
+            }
+
+
+            function formatarDataInput(date) {
+
+                const ano = date.getFullYear();
+
+                const mes =
+                    String(date.getMonth() + 1)
+                        .padStart(2, "0");
+
+                const dia =
+                    String(date.getDate())
+                        .padStart(2, "0");
+
+                return `${ano}-${mes}-${dia}`;
+            }
+
+
+            function formatarDataVisual(date) {
+
+                return date.toLocaleDateString(
+                    "pt-PT",
+                    {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric"
+                    }
+                );
+            }
+
+
+            function desenharCalendario() {
+
+                calendarDays.innerHTML = "";
+
+                const mesAtual =
+                    new Date(
+                        hoje.getFullYear(),
+                        hoje.getMonth(),
+                        1
+                    );
+
+                calendarPrev.disabled =
+                    mesVisivel <= mesAtual;
+
+                calendarMonth.textContent =
+                    mesVisivel.toLocaleDateString(
+                        "pt-PT",
+                        {
+                            month: "long",
+                            year: "numeric"
+                        }
+                    );
+
+
+                const primeiroDia =
+                    new Date(
+                        mesVisivel.getFullYear(),
+                        mesVisivel.getMonth(),
+                        1
+                    );
+
+                const ultimoDia =
+                    new Date(
+                        mesVisivel.getFullYear(),
+                        mesVisivel.getMonth() + 1,
+                        0
+                    );
+
+
+                for (
+                    let i = 0;
+                    i < primeiroDia.getDay();
+                    i++
+                ) {
+
+                    const vazio =
+                        document.createElement("span");
+
+                    vazio.className =
+                        "ib-datepicker-empty";
+
+                    calendarDays.appendChild(vazio);
+                }
+
+
+                for (
+                    let dia = 1;
+                    dia <= ultimoDia.getDate();
+                    dia++
+                ) {
+
+                    const dataDia =
+                        new Date(
+                            mesVisivel.getFullYear(),
+                            mesVisivel.getMonth(),
+                            dia
+                        );
+
+                    const botao =
+                        document.createElement("button");
+
+                    botao.type = "button";
+                    botao.className =
+                        "ib-datepicker-day";
+
+                    botao.textContent = dia;
+
+
+                    if (dataDia < hoje)
+                        botao.disabled = true;
+
+
+                    if (mesmaData(dataDia, hoje))
+                        botao.classList.add("today");
+
+
+                    if (
+                        dataSelecionada &&
+                        mesmaData(
+                            dataDia,
+                            dataSelecionada
+                        )
+                    ) {
+                        botao.classList.add(
+                            "selected"
+                        );
+                    }
+
+
+                    botao.addEventListener(
+                        "click",
+                        function () {
+
+                            dataSelecionada =
+                                new Date(dataDia);
+
+                            data.value =
+                                formatarDataInput(
+                                    dataSelecionada
+                                );
+
+                            datepickerText.textContent =
+                                formatarDataVisual(
+                                    dataSelecionada
+                                );
+
+                            datepicker.classList.remove(
+                                "open"
+                            );
+
+                            desenharCalendario();
+
+                            carregarHorarios();
+                        }
+                    );
+
+
+                    calendarDays.appendChild(botao);
+                }
+            }
+
+
+            datepickerTrigger.addEventListener(
+                "click",
+                function (event) {
+
+                    event.stopPropagation();
+
+                    datepicker.classList.toggle(
+                        "open"
+                    );
+
+                    if (
+                        datepicker.classList.contains(
+                            "open"
+                        )
+                    ) {
+                        desenharCalendario();
+                    }
+                }
+            );
+
+
+            calendarPrev.addEventListener(
+                "click",
+                function (event) {
+
+                    event.stopPropagation();
+
+                    mesVisivel =
+                        new Date(
+                            mesVisivel.getFullYear(),
+                            mesVisivel.getMonth() - 1,
+                            1
+                        );
+
+                    desenharCalendario();
+                }
+            );
+
+
+            calendarNext.addEventListener(
+                "click",
+                function (event) {
+
+                    event.stopPropagation();
+
+                    mesVisivel =
+                        new Date(
+                            mesVisivel.getFullYear(),
+                            mesVisivel.getMonth() + 1,
+                            1
+                        );
+
+                    desenharCalendario();
+                }
+            );
+
+
+            calendarToday.addEventListener(
+                "click",
+                function (event) {
+
+                    event.stopPropagation();
+
+                    dataSelecionada =
+                        new Date(hoje);
+
+                    mesVisivel =
+                        new Date(
+                            hoje.getFullYear(),
+                            hoje.getMonth(),
+                            1
+                        );
+
+                    data.value =
+                        formatarDataInput(
+                            dataSelecionada
+                        );
+
+                    datepickerText.textContent =
+                        formatarDataVisual(
+                            dataSelecionada
+                        );
+
+                    datepicker.classList.remove(
+                        "open"
+                    );
+
+                    desenharCalendario();
+
+                    carregarHorarios();
+                }
+            );
+
+
+            document.addEventListener(
+                "click",
+                function (event) {
+
+                    if (!datepicker.contains(event.target))
+                        datepicker.classList.remove("open");
+                }
+            );
+
+                    function atualizarEstadoBotao() {
+
+            const formularioCompleto =
+                cliente.value &&
+                servico.value &&
+                data.value &&
+                dataHoraInicio.value;
+
+            btnCriarMarcacao.disabled =
+                !formularioCompleto;
+        }
+
+            async function carregarHorarios() {
+
+                const servicoId =
+                    servico.value;
+
+                const dataEscolhida =
+                    data.value;
+
+                horarioErro.style.display =
+                    "none";
+
+                dataHoraInicio.value = "";
+                atualizarEstadoBotao();
+
+
+                if (
+                    !servicoId ||
+                    !dataEscolhida
+                ) {
+
+                    container.innerHTML =
+                        '<div class="ib-func-booking-slots-empty">' +
+                        'Selecione o serviço e a data.' +
+                        '</div>';
+
+                    return;
+                }
+
+
+                container.innerHTML =
+                    '<div class="ib-func-booking-slots-loading">' +
+                    'A consultar horários disponíveis...' +
+                    '</div>';
+
+
+                try {
+
+                    const url =
+                        '@Url.Action("HorariosDisponiveis", "NovaMarcacaoFuncionario")' +
+                        '?servicoId=' +
+                        encodeURIComponent(servicoId) +
+                        '&data=' +
+                        encodeURIComponent(dataEscolhida);
+
+
+                    const response =
+                        await fetch(url);
+
+
+                    if (!response.ok)
+                        throw new Error();
+
+
+                    const horarios =
+                        await response.json();
+
+
+                    if (
+                        !horarios ||
+                        horarios.length === 0
+                    ) {
+
+                        container.innerHTML =
+                            '<div class="ib-func-booking-slots-empty">' +
+                            'Sem horários disponíveis para esta data.' +
+                            '</div>';
+
+                        return;
+                    }
+
+
+                    container.innerHTML = "";
+
+
+                    horarios.forEach(
+                        function (horario) {
+
+                            const dataHora =
+                                new Date(horario);
+
+                            const horas =
+                                String(
+                                    dataHora.getHours()
+                                ).padStart(2, "0") +
+                                ":" +
+                                String(
+                                    dataHora.getMinutes()
+                                ).padStart(2, "0");
+
+
+                            const botao =
+                                document.createElement(
+                                    "button"
+                                );
+
+                            botao.type = "button";
+
+                            botao.className =
+                                "ib-func-booking-slot";
+
+                            botao.textContent =
+                                horas;
+
+
+                            botao.addEventListener(
+                                "click",
+                                function () {
+
+                                    document
+                                        .querySelectorAll(
+                                            ".ib-func-booking-slot"
+                                        )
+                                        .forEach(
+                                            function (b) {
+
+                                                b.classList.remove(
+                                                    "selected"
+                                                );
+                                            }
+                                        );
+
+
+                                    botao.classList.add(
+                                        "selected"
+                                    );
+
+
+                                    dataHoraInicio.value =
+                                        dataEscolhida +
+                                        "T" +
+                                        horas;
+
+
+                                    horarioErro.style.display =
+                                        "none";
+
+                                        atualizarEstadoBotao();
+                                }
+                            );
+
+
+                            container.appendChild(
+                                botao
+                            );
+                        }
+                    );
+                }
+                catch {
+
+                    container.innerHTML =
+                        '<div class="ib-func-booking-slots-empty">' +
+                        'Não foi possível consultar os horários disponíveis.' +
+                        '</div>';
+                }
+            }
+
+            servico.addEventListener(
+                "change",
+                carregarHorarios
+            );
+                    cliente.addEventListener(
+            "change",
+            atualizarEstadoBotao
+        );
+
+            const form =
+                document.getElementById(
+                    "formNovaMarcacao"
+                );
+
+
+            form.addEventListener(
+                "submit",
+                function (event) {
+
+                    if (!dataHoraInicio.value) {
+
+                        event.preventDefault();
+
+                        horarioErro.style.display =
+                            "block";
+                    }
+                }
+            );
+            desenharCalendario();
+            atualizarEstadoBotao();
+        });
+    </script>
+}

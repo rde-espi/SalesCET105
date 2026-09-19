@@ -173,6 +173,9 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("ConsultarCliente", policy =>
     policy.RequireRole("Cliente", "Admin"));
 
+    options.AddPolicy("ConsultarTodosClientes", policy =>
+    policy.RequireRole("Funcionario", "Admin"));
+
     options.AddPolicy("AlterarCliente", policy =>
     policy.RequireRole("Cliente", "Admin"));
 

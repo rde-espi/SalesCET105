@@ -1,0 +1,132 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.MarcacaoClienteViewModel>
+
+@{
+    ViewData["Title"] = "Marcações por faturar";
+    Layout = "_FuncionarioLayout";
+}
+
+<div class="ib-categories-page">
+
+    <div class="ib-categories-heading">
+
+        <div>
+            <span class="ib-section-eyebrow">FATURAÇÃO</span>
+            <h1>Marcações por faturar</h1>
+            <p>
+                Marcações concluídas que ainda não possuem fatura emitida.
+            </p>
+        </div>
+
+        <a asp-controller="FaturasFuncionario"
+           asp-action="Index"
+           class="ib-category-back-btn">
+            ← Voltar
+        </a>
+
+    </div>
+
+    <div class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+            <div>
+                <span class="ib-section-eyebrow">PENDENTES</span>
+                <h2>Prontas para faturação</h2>
+            </div>
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="ib-faturas-table-wrap">
+
+<div class="ib-faturas-table-header ib-por-faturar-grid">
+    <span>Cliente</span>
+    <span>Serviço</span>
+    <span>Profissional</span>
+    <span>Data</span>
+    <span>Valor</span>
+    <span>Ação</span>
+</div>
+
+                @foreach (var marcacao in Model)
+                {
+                    var nomes = (marcacao.ClienteNome ?? string.Empty)
+                        .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                    var iniciais = string.Join("", nomes
+                        .Take(2)
+                        .Select(n => char.ToUpper(n[0])));
+
+                    <div class="ib-faturas-row ib-por-faturar-grid">
+
+                        <div class="ib-employee-person">
+                            <div class="ib-employee-avatar">
+                                <span class="ib-employee-initials">
+                                    @(string.IsNullOrWhiteSpace(iniciais)
+                                        ? "?"
+                                        : iniciais)
+                                </span>
+                            </div>
+
+                            <div class="ib-category-name">
+                                <strong>@marcacao.ClienteNome</strong>
+                                <small>Marcação #@marcacao.Id</small>
+                            </div>
+                        </div>
+
+                        <div class="ib-category-name">
+                            <strong>@marcacao.ServicoNome</strong>
+                        </div>
+
+                        <div class="ib-category-name">
+                            @marcacao.FuncionarioNome
+                        </div>
+
+                        <div class="ib-fatura-data">
+                            <strong>
+                                @marcacao.DataHoraInicio.ToString("dd/MM/yyyy")
+                            </strong>
+                            <small>
+                                @marcacao.DataHoraInicio.ToString("HH:mm")
+                            </small>
+                        </div>
+
+                        <div class="ib-fatura-total">
+                            @marcacao.Preco.ToString("C")
+                        </div>
+
+                        <form asp-controller="FaturasFuncionario"
+                              asp-action="Emitir"
+                              method="post"
+                              onsubmit="return confirm('Pretende emitir a fatura desta marcação?');">
+
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden"
+                                   name="marcacaoId"
+                                   value="@marcacao.Id" />
+
+                            <button type="submit"
+                                    class="ib-category-back-btn">
+                                Emitir fatura
+                            </button>
+
+                        </form>
+
+                    </div>
+                }
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-faturas-empty">
+                <strong>Não existem marcações por faturar.</strong>
+                <p>
+                    Todas as marcações concluídas já possuem fatura emitida.
+                </p>
+            </div>
+        }
+
+    </div>
+
+</div>

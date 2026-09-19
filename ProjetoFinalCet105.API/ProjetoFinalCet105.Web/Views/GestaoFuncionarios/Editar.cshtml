@@ -450,9 +450,9 @@
     <div id="horariosLista"
      class="ib-employee-schedule-list">
 
-    @if (Model.Horarios != null && Model.Horarios.Any())
-    {
-        @foreach (var horario in Model.Horarios)
+   @if (Model.Horarios != null && Model.Horarios.Any(h => h.Ativo))
+{
+    @foreach (var horario in Model.Horarios.Where(h => h.Ativo))
         {
             <div class="ib-employee-schedule-item"
      data-horario-id="@horario.Id"
@@ -1122,10 +1122,20 @@ if (btnAdicionarHorario) {
         6: "Sábado"
     };
 
-    const item = document.createElement("div");
+    let item = Array.from(
+    lista.querySelectorAll(".ib-employee-schedule-item")
+).find(x =>
+    Number(x.dataset.diaSemana) ===
+    Number(horario.diaSemana)
+);
 
+if (!item) {
+    item = document.createElement("div");
     item.className = "ib-employee-schedule-item";
-    item.dataset.horarioId = horario.id;
+    lista.appendChild(item);
+}
+
+item.dataset.horarioId = horario.id;
 
             item.innerHTML = `
             <div class="ib-employee-schedule-day">
@@ -1165,7 +1175,6 @@ if (btnAdicionarHorario) {
     item.dataset.diaSemana = horario.diaSemana;
     item.dataset.horaInicio = horario.horaInicio;
         item.dataset.horaFim = horario.horaFim;
-    lista.appendChild(item);
 
 const itens = Array.from(
     lista.querySelectorAll(".ib-employee-schedule-item")
@@ -1237,29 +1246,27 @@ if (horariosLista) {
             const acoes =
                 item.querySelector(".ib-employee-schedule-actions");
 
-            conteudo.innerHTML = `
-                <select class="ib-schedule-edit-day">
-                    <option value="1">Segunda-feira</option>
-                    <option value="2">Terça-feira</option>
-                    <option value="3">Quarta-feira</option>
-                    <option value="4">Quinta-feira</option>
-                    <option value="5">Sexta-feira</option>
-                    <option value="6">Sábado</option>
-                    <option value="0">Domingo</option>
-                </select>
+            const nomesDias = {
+    0: "Domingo",
+    1: "Segunda-feira",
+    2: "Terça-feira",
+    3: "Quarta-feira",
+    4: "Quinta-feira",
+    5: "Sexta-feira",
+    6: "Sábado"
+};
 
-                <input type="time"
-                       class="ib-schedule-edit-start"
-                       value="${horaInicio}" />
+conteudo.innerHTML = `
+    <strong>${nomesDias[diaSemana]}</strong>
 
-                <input type="time"
-                       class="ib-schedule-edit-end"
-                       value="${horaFim}" />
-            `;
+    <input type="time"
+           class="ib-schedule-edit-start"
+           value="${horaInicio}" />
 
-            conteudo
-                .querySelector(".ib-schedule-edit-day")
-                .value = diaSemana;
+    <input type="time"
+           class="ib-schedule-edit-end"
+           value="${horaFim}" />
+`;         
 
             acoes.innerHTML = `
                 <button type="button"
@@ -1332,8 +1339,7 @@ if (horariosLista) {
 
 
         // GUARDAR EDIÇÃO
-        const botaoGuardar =
-            event.target.closest(".ib-schedule-edit-save");
+        const botaoGuardar = event.target.closest(".ib-schedule-edit-save");
 
         if (botaoGuardar) {
             const item =
@@ -1342,17 +1348,13 @@ if (horariosLista) {
             if (!item) return;
 
             const horarioId = item.dataset.horarioId;
-            const funcionarioId =
-                document.getElementById("horarioCreateArea").dataset.funcionarioId;
+            const funcionarioId = document.getElementById("horarioCreateArea").dataset.funcionarioId;
 
-            const diaSemana =
-                item.querySelector(".ib-schedule-edit-day").value;
+           const diaSemana = item.dataset.diaSemana;
 
-            const horaInicio =
-                item.querySelector(".ib-schedule-edit-start").value;
+            const horaInicio = item.querySelector(".ib-schedule-edit-start").value;
 
-            const horaFim =
-                item.querySelector(".ib-schedule-edit-end").value;
+            const horaFim = item.querySelector(".ib-schedule-edit-end").value;
 
             if (!horaInicio || !horaFim) return;
 

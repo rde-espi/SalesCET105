@@ -108,7 +108,7 @@ namespace ProjetoFinalCet105.API.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "ConsultarTodosClientes")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ClienteDTO>>> GetAllClientes()
         {

@@ -1,0 +1,246 @@
+﻿@model ProjetoFinalCet105.Web.Models.FaturaViewModel
+
+@{
+    ViewData["Title"] = "Detalhes da fatura";
+    Layout = "_FuncionarioLayout";
+
+    var anulada = string.Equals(
+        Model.Estado,
+        "Anulada",
+        StringComparison.OrdinalIgnoreCase);
+}
+
+<div class="ib-categories-page">
+
+    <div class="ib-categories-heading">
+
+        <div>
+            <span class="ib-section-eyebrow">FATURAÇÃO</span>
+            <h1>Detalhes da fatura</h1>
+            <p>Consulte os dados e valores do documento emitido.</p>
+        </div>
+
+        <a asp-controller="FaturasFuncionario"
+           asp-action="Index"
+           class="ib-category-back-btn">
+            ← Voltar
+        </a>
+
+    </div>
+
+    <div class="ib-fatura-detail-grid">
+
+        <!-- DOCUMENTO -->
+        <section class="ib-fatura-detail-card ib-fatura-document">
+
+            <div class="ib-fatura-detail-card-header">
+                <div>
+                    <span class="ib-section-eyebrow">DOCUMENTO</span>
+                    <h2>@Model.Numero</h2>
+                </div>
+
+                <span class="ib-fatura-status @(anulada ? "cancelled" : "active")">
+                    @Model.Estado
+                </span>
+            </div>
+
+            <div class="ib-fatura-detail-info-grid">
+
+                <div>
+                    <span>Série</span>
+                    <strong>@Model.Serie</strong>
+                </div>
+
+                <div>
+                    <span>Data de emissão</span>
+                    <strong>@Model.DataEmissao.ToString("dd/MM/yyyy HH:mm")</strong>
+                </div>
+
+                <div>
+                    <span>Marcação</span>
+                    <strong>#@Model.MarcacaoId</strong>
+                </div>
+
+                <div>
+                    <span>Data da marcação</span>
+                    <strong>@Model.DataMarcacao.ToString("dd/MM/yyyy HH:mm")</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- CLIENTE -->
+        <section class="ib-fatura-detail-card">
+
+            <div class="ib-fatura-detail-card-header">
+                <div>
+                    <span class="ib-section-eyebrow">CLIENTE</span>
+                    <h2>Dados fiscais</h2>
+                </div>
+            </div>
+
+            <div class="ib-fatura-client-detail">
+
+                <div>
+                    <span>Nome</span>
+                    <strong>@Model.NomeCliente</strong>
+                </div>
+
+                <div>
+                    <span>NIF</span>
+                    <strong>
+                        @(string.IsNullOrWhiteSpace(Model.NifCliente)
+                            ? "Não indicado"
+                            : Model.NifCliente)
+                    </strong>
+                </div>
+
+                <div class="ib-fatura-detail-full">
+                    <span>Morada</span>
+                    <strong>
+                        @(string.IsNullOrWhiteSpace(Model.MoradaCliente)
+                            ? "Não indicada"
+                            : Model.MoradaCliente)
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Código postal</span>
+                    <strong>
+                        @(string.IsNullOrWhiteSpace(Model.CodigoPostalCliente)
+                            ? "—"
+                            : Model.CodigoPostalCliente)
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Localidade</span>
+                    <strong>
+                        @(string.IsNullOrWhiteSpace(Model.LocalidadeCliente)
+                            ? "—"
+                            : Model.LocalidadeCliente)
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- LINHAS -->
+    <section class="ib-fatura-detail-card ib-fatura-lines-card">
+
+        <div class="ib-fatura-detail-card-header">
+            <div>
+                <span class="ib-section-eyebrow">SERVIÇOS</span>
+                <h2>Linhas da fatura</h2>
+            </div>
+        </div>
+
+        <div class="ib-fatura-lines-header">
+            <span>DESCRIÇÃO</span>
+            <span>QTD.</span>
+            <span>PREÇO</span>
+            <span>IVA</span>
+            <span>TOTAL</span>
+        </div>
+
+        @foreach (var item in Model.Itens)
+        {
+            <div class="ib-fatura-line">
+
+                <strong>@item.Descricao</strong>
+
+                <span>
+                    @item.Quantidade.ToString("0.##")
+                </span>
+
+                <span>
+                    @item.PrecoUnitario.ToString("C")
+                </span>
+
+                <span>
+                    @item.PercentagemIva.ToString("0.##")%
+                </span>
+
+                <strong>
+                    @item.Total.ToString("C")
+                </strong>
+
+            </div>
+        }
+
+        @if (!Model.Itens.Any())
+        {
+            <div class="ib-fatura-no-lines">
+                Sem linhas disponíveis.
+            </div>
+        }
+
+        <!-- TOTAIS -->
+        <div class="ib-fatura-totals">
+
+            <div>
+                <span>Subtotal</span>
+                <strong>@Model.Subtotal.ToString("C")</strong>
+            </div>
+
+            @if (Model.ValorDesconto > 0)
+            {
+                <div>
+                    <span>Desconto</span>
+                    <strong>- @Model.ValorDesconto.ToString("C")</strong>
+                </div>
+            }
+
+            <div>
+                <span>IVA</span>
+                <strong>@Model.ValorIva.ToString("C")</strong>
+            </div>
+
+            <div class="ib-fatura-total-final">
+                <span>Total</span>
+                <strong>@Model.Total.ToString("C")</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- AT -->
+    <section class="ib-fatura-detail-card ib-fatura-at-card">
+
+        <div class="ib-fatura-detail-card-header">
+            <div>
+                <span class="ib-section-eyebrow">AUTORIDADE TRIBUTÁRIA</span>
+                <h2>Comunicação</h2>
+            </div>
+        </div>
+
+        <div class="ib-fatura-detail-info-grid">
+
+            <div>
+                <span>Estado</span>
+                <strong>
+                    @(Model.ComunicadaAT
+                        ? "Comunicada"
+                        : "Não comunicada")
+                </strong>
+            </div>
+
+            <div>
+                <span>Data de comunicação</span>
+                <strong>
+                    @(Model.DataComunicacaoAT.HasValue
+                        ? Model.DataComunicacaoAT.Value.ToString("dd/MM/yyyy HH:mm")
+                        : "—")
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>

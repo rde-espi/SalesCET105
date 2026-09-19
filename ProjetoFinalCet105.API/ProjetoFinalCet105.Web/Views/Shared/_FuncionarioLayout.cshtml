@@ -62,8 +62,9 @@
     <span>Início</span>
 </a>
 
-<a href="#"
-   class="ib-admin-menu-item">
+            <a asp-controller="MinhaAgenda"
+               asp-action="Index"
+               class="ib-admin-menu-item @(currentController == "MinhaAgenda" ? "active" : "")">
 
     <svg viewBox="0 0 24 24">
         <rect x="3" y="5" width="18" height="16" rx="2"></rect>
@@ -77,9 +78,9 @@
 
 
 
-<a href="#"
-   class="ib-admin-menu-item">
-
+            <a asp-controller="NovaMarcacaoFuncionario"
+               asp-action="Index"
+               class="ib-admin-menu-item @(currentController == "NovaMarcacaoFuncionario" ? "active" : "")">
     <svg viewBox="0 0 24 24">
         <rect x="3" y="5" width="18" height="16" rx="2"></rect>
         <path d="M16 3v4"></path>
@@ -125,8 +126,9 @@
 
 
 
-<a href="#"
-   class="ib-admin-menu-item">
+<a asp-controller="FaturasFuncionario"
+   asp-action="Index"
+   class="ib-admin-menu-item @(currentController == "FaturasFuncionario" ? "active" : "")">
 
     <svg viewBox="0 0 24 24">
         <path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"></path>
