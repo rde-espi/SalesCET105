@@ -293,6 +293,17 @@ builder.Services.AddHostedService<LembreteMarcacoesBackgroundService>();
 builder.Services.AddHostedService<PermissaoAdminTemporariaBackgroundService>();
 builder.Services.AddScoped<IFirebaseService, FirebaseService>();
 builder.Services.AddSignalR();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("WebApp", policy =>
+    {
+        policy
+            .WithOrigins("https://localhost:7187")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
 builder.Services.AddScoped<IGoogleCalendarService, GoogleCalendarService>();
 builder.Services.AddScoped<IGoogleCalendarSyncService, GoogleCalendarSyncService>();
 builder.Services.AddHttpClient<INifService, NifService>();
@@ -382,6 +393,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("WebApp");
 
 app.UseAuthentication();
 app.UseAuthorization();

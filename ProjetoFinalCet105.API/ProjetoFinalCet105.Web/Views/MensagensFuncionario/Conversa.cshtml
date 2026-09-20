@@ -1,0 +1,292 @@
+﻿@model ProjetoFinalCet105.Web.Models.ConversaViewModel
+
+@{
+    ViewData["Title"] = "Conversa";
+    Layout = "_FuncionarioLayout";
+
+    var funcionarioUserId = Model.FuncionarioUserId;
+
+    var inicialCliente =
+        !string.IsNullOrWhiteSpace(Model.ClienteNome)
+            ? Model.ClienteNome.Substring(0, 1).ToUpper()
+            : "C";
+}
+
+<div class="ib-func-page">
+
+    <div class="ib-func-page-heading">
+
+        <div>
+            <span class="ib-section-eyebrow">
+                COMUNICAÇÃO
+            </span>
+
+            <h1>Conversa</h1>
+
+            <p>
+                Consulte as mensagens trocadas com o cliente.
+            </p>
+        </div>
+
+        <a asp-controller="MensagensFuncionario"
+           asp-action="Index"
+           class="ib-btn-secondary">
+
+            ← Voltar às mensagens
+
+        </a>
+
+    </div>
+
+
+    <div class="ib-func-card ib-chat-card">
+
+        <!-- CABEÇALHO DA CONVERSA -->
+
+        <div class="ib-chat-header">
+
+            <div class="ib-chat-avatar">
+                @inicialCliente
+            </div>
+
+            <div class="ib-chat-user">
+
+                <strong>
+                    @Model.ClienteNome
+                </strong>
+
+                <span>
+                    Cliente
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- HISTÓRICO -->
+
+        <div class="ib-chat-messages">
+
+            @if (Model.Mensagens == null ||
+                 !Model.Mensagens.Any())
+            {
+                <div class="ib-chat-empty">
+
+                    <span>
+                        Ainda não existem mensagens nesta conversa.
+                    </span>
+
+                </div>
+            }
+            else
+            {
+                @foreach (var mensagem in
+                    Model.Mensagens.OrderBy(m => m.DataEnvio))
+                {
+                    var enviadaPeloFuncionario =
+                        mensagem.RemetenteId ==
+                        funcionarioUserId;
+
+                    <div class="ib-chat-message-row
+                                @(enviadaPeloFuncionario
+                                    ? "ib-chat-message-row-sent"
+                                    : "ib-chat-message-row-received")">
+
+                        <div class="ib-chat-message">
+
+                            <div class="ib-chat-message-text">
+                                @mensagem.Texto
+                            </div>
+
+                            <div class="ib-chat-message-meta">
+
+                                <span>
+                                    @mensagem.DataEnvio.ToString("HH:mm")
+                                </span>
+
+                                @if (enviadaPeloFuncionario)
+                                {
+                                    <span class="ib-chat-message-status">
+                                        @(mensagem.Lida
+                                            ? "Lida"
+                                            : "Enviada")
+                                    </span>
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+            }
+
+        </div>
+
+
+        <form asp-controller="MensagensFuncionario" asp-action="Enviar" method="post" class="ib-chat-compose">
+
+    @Html.AntiForgeryToken()
+
+    <input type="hidden"
+           name="id"
+           value="@Model.Id" />
+
+    <textarea name="texto"
+              rows="1"
+              maxlength="2000"
+              required
+              autocomplete="off"
+              placeholder="Escreva uma mensagem..."></textarea>
+
+    <button type="submit"
+            class="ib-chat-send"
+            title="Enviar mensagem">
+
+        <svg viewBox="0 0 24 24"
+             aria-hidden="true">
+
+            <path d="M22 2L11 13" />
+            <path d="M22 2L15 22L11 13L2 9L22 2Z" />
+
+        </svg>
+
+    </button>
+
+</form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+
+            const chat = document.querySelector(".ib-chat-messages");
+
+            if (chat) {
+                chat.scrollTop = chat.scrollHeight;
+            }
+
+            try {
+
+                // Obter o JWT guardado na sessão do Web
+                const tokenResponse = await fetch(
+                    '@Url.Action("SignalRToken", "MensagensFuncionario")'
+                );
+
+                if (!tokenResponse.ok) {
+                    console.error("Não foi possível obter o token do SignalR.");
+                    return;
+                }
+
+                const tokenData = await tokenResponse.json();
+
+                // Criar ligação ao Hub da API
+                const connection = new signalR.HubConnectionBuilder()
+                    .withUrl("https://localhost:7261/hubs/chat", {
+                        accessTokenFactory: () => tokenData.accessToken
+                    })
+                    .withAutomaticReconnect()
+                    .build();
+
+                // Receber novas mensagens
+               connection.on("NovaMensagem", function (mensagem) {
+
+    console.log("Nova mensagem recebida:", mensagem);
+
+    if (!chat) {
+        return;
+    }
+
+    const funcionarioUserId = '@Model.FuncionarioUserId';
+
+    const enviadaPeloFuncionario = mensagem.remetenteId === funcionarioUserId;
+
+    const row = document.createElement("div");
+
+    row.className =
+        "ib-chat-message-row " +
+        (enviadaPeloFuncionario
+            ? "ib-chat-message-row-sent"
+            : "ib-chat-message-row-received");
+
+    const bubble = document.createElement("div");
+    bubble.className = "ib-chat-message";
+
+    const texto = document.createElement("div");
+    texto.className = "ib-chat-message-text";
+    texto.textContent = mensagem.texto;
+
+    const meta = document.createElement("div");
+    meta.className = "ib-chat-message-meta";
+
+    const hora = document.createElement("span");
+
+    const dataEnvio = new Date(mensagem.dataEnvio);
+
+    hora.textContent = dataEnvio.toLocaleTimeString(
+        "pt-PT",
+        {
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
+
+    meta.appendChild(hora);
+
+    if (enviadaPeloFuncionario) {
+
+        const estado = document.createElement("span");
+        estado.className = "ib-chat-message-status";
+        estado.textContent =
+            mensagem.lida ? "Lida" : "Enviada";
+
+        meta.appendChild(estado);
+    }
+
+    bubble.appendChild(texto);
+    bubble.appendChild(meta);
+
+    row.appendChild(bubble);
+    chat.appendChild(row);
+
+    chat.scrollTop = chat.scrollHeight;
+});
+connection.on("MensagensLidas", function () {
+
+    const estados =
+        document.querySelectorAll(
+            ".ib-chat-message-status"
+        );
+
+    estados.forEach(function (estado) {
+        estado.textContent = "Lida";
+    });
+
+});
+                await connection.start();
+
+                // Entrar no grupo desta conversa
+                await connection.invoke(
+                    "EntrarNaConversa",
+                    @Model.Id
+                );
+
+                console.log(
+                    "SignalR ligado à conversa @Model.Id"
+                );
+
+            }
+            catch (error) {
+                console.error(
+                    "Erro na ligação SignalR:",
+                    error
+                );
+            }
+
+        });
+    </script>
+}

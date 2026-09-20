@@ -166,8 +166,9 @@
 
 
 
-<a href="#"
-   class="ib-admin-menu-item">
+<a asp-controller="MensagensFuncionario"
+   asp-action="Index"
+   class="ib-admin-menu-item @(currentController == "MensagensFuncionario" ? "active" : "")">
 
     <svg viewBox="0 0 24 24">
         <path d="M4 4h16v12H8l-4 4z"></path>
@@ -454,6 +455,10 @@
             }
     </script>
     <script src="~/js/admin-temporario-monitor.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+<script src="~/js/admin-temporario-monitor.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@8.0.7/dist/browser/signalr.min.js"></script>
+
+@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

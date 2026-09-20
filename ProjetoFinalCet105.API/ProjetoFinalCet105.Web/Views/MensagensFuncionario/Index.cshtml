@@ -1,0 +1,151 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.ConversaViewModel>
+
+@{
+    ViewData["Title"] = "Mensagens";
+    Layout = "_FuncionarioLayout";
+}
+
+<div class="ib-func-page">
+
+    <div class="ib-func-page-heading">
+        <div>
+            <span class="ib-section-eyebrow">
+                COMUNICAÇÃO
+            </span>
+
+            <h1>Mensagens</h1>
+
+            <p>
+                Consulte as conversas com os seus clientes.
+            </p>
+        </div>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="ib-func-card">
+
+        <div class="ib-func-card-header">
+
+            <div>
+                <h2>Conversas</h2>
+
+                <p>
+                    Acompanhe as mensagens trocadas com os seus clientes.
+                </p>
+            </div>
+
+        </div>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="ib-mensagens-func-empty">
+
+                <div class="ib-mensagens-func-empty-icon">
+
+                    <svg viewBox="0 0 24 24"
+                         aria-hidden="true">
+
+                        <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+
+                    </svg>
+
+                </div>
+
+                <strong>Ainda não tem conversas</strong>
+
+                <span>
+                    As conversas com os seus clientes irão aparecer aqui.
+                </span>
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-mensagens-func-list">
+
+                @foreach (var conversa in Model)
+                {
+                    var inicial =
+                        !string.IsNullOrWhiteSpace(conversa.ClienteNome)
+                            ? conversa.ClienteNome.Substring(0, 1).ToUpper()
+                            : "C";
+
+                    var ultimaMensagem =
+                        conversa.Mensagens?
+                            .OrderByDescending(m => m.DataEnvio)
+                            .FirstOrDefault();
+
+                    var data =
+                        ultimaMensagem?.DataEnvio
+                        ?? conversa.DataCriacao;
+
+                    <div class="ib-mensagens-func-item">
+
+                        <div class="ib-mensagens-func-avatar">
+                            @inicial
+                        </div>
+
+                        <div class="ib-mensagens-func-content">
+
+                            <div class="ib-mensagens-func-top">
+
+                                <strong>
+                                    @conversa.ClienteNome
+                                </strong>
+
+                                <span>
+                                    @data.ToString("dd/MM/yyyy HH:mm")
+                                </span>
+
+                            </div>
+
+                            <div class="ib-mensagens-func-bottom">
+
+                                <p>
+                                    @if (ultimaMensagem != null)
+                                    {
+                                        @ultimaMensagem.Texto
+                                    }
+                                    else
+                                    {
+                                        <span>
+                                            Conversa iniciada.
+                                        </span>
+                                    }
+                                </p>
+
+                                <a asp-controller="MensagensFuncionario"
+                                   asp-action="Conversa"
+                                   asp-route-id="@conversa.Id"
+                                   class="ib-mensagens-func-open"
+                                   title="Abrir conversa">
+
+                                    <svg viewBox="0 0 24 24"
+                                         aria-hidden="true">
+
+                                        <path d="M5 12h14" />
+                                        <path d="M13 6l6 6-6 6" />
+
+                                    </svg>
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+        }
+
+    </div>
+
+</div>

@@ -1,0 +1,311 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.ClienteViewModel>
+
+@{
+    ViewData["Title"] = "Nova conversa";
+    Layout = "_FuncionarioLayout";
+}
+
+<div class="ib-func-page">
+
+    <div class="ib-func-page-heading">
+        <div>
+            <span class="ib-section-eyebrow">
+                COMUNICAÇÃO
+            </span>
+
+            <h1>Nova conversa</h1>
+
+            <p>
+                Selecione o cliente com quem pretende iniciar uma conversa.
+            </p>
+        </div>
+
+        <a asp-controller="MensagensFuncionario"
+           asp-action="Index"
+           class="ib-btn-secondary">
+            ← Voltar às mensagens
+        </a>
+    </div>
+
+    <div class="ib-func-card">
+
+        <div class="ib-mensagens-nova-search">
+            <svg viewBox="0 0 24 24"
+                 aria-hidden="true">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="M20 20L16.5 16.5"></path>
+            </svg>
+
+            <input type="search"
+                   id="pesquisaCliente"
+                   placeholder="Pesquisar cliente por nome ou email..."
+                   autocomplete="off" />
+        </div>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="ib-mensagens-func-empty">
+                <strong>Nenhum cliente disponível</strong>
+                <span>
+                    Não existem clientes ativos disponíveis
+                    para iniciar uma conversa.
+                </span>
+            </div>
+        }
+        else
+        {
+            <div class="ib-mensagens-nova-list"
+                 id="listaClientes">
+
+                @foreach (var cliente in Model)
+                {
+                    var inicial =
+                        !string.IsNullOrWhiteSpace(cliente.NomeCompleto)
+                            ? cliente.NomeCompleto.Substring(0, 1).ToUpper()
+                            : "C";
+
+                    <div class="ib-mensagens-nova-item"
+                         data-pesquisa="@($"{cliente.NomeCompleto} {cliente.Email}".ToLower())">
+
+                        <div class="ib-mensagens-nova-avatar">
+                            @inicial
+                        </div>
+
+                        <div class="ib-mensagens-nova-info">
+                            <strong>@cliente.NomeCompleto</strong>
+                            <span>@cliente.Email</span>
+                        </div>
+
+                        <form asp-controller="MensagensFuncionario"
+      asp-action="IniciarConversa"
+      method="post">
+    
+    @Html.AntiForgeryToken()
+
+    <input type="hidden"
+           name="destinatarioId"
+           value="@cliente.Id" />
+
+    <button type="submit"
+            class="ib-mensagens-nova-select">
+        Selecionar
+    </button>
+
+</form>
+
+                    </div>
+                }
+
+            </div>
+
+            <div class="ib-mensagens-nova-sem-resultados"
+                 id="semResultados"
+                 hidden>
+                Nenhum cliente encontrado.
+            </div>
+            <div class="ib-mensagens-nova-pagination"
+     id="paginacaoClientes">
+
+    <div class="ib-mensagens-nova-pagination-info">
+        A mostrar
+        <strong id="inicioPagina">0</strong>–<strong id="fimPagina">0</strong>
+        de
+        <strong id="totalClientes">0</strong>
+    </div>
+
+    <div class="ib-mensagens-nova-pagination-controls">
+
+        <div class="ib-mensagens-nova-page-size">
+            <span>Itens por página</span>
+
+            <select id="itensPorPagina">
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+            </select>
+        </div>
+
+        <div class="ib-mensagens-nova-pages"
+             id="paginasClientes">
+        </div>
+
+    </div>
+
+</div>
+        }
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const pesquisa = document.getElementById("pesquisaCliente");
+            const itens = Array.from(
+                document.querySelectorAll(".ib-mensagens-nova-item")
+            );
+
+            const semResultados = document.getElementById("semResultados");
+            const paginacao = document.getElementById("paginacaoClientes");
+            const inicioPagina = document.getElementById("inicioPagina");
+            const fimPagina = document.getElementById("fimPagina");
+            const totalClientes = document.getElementById("totalClientes");
+            const itensPorPaginaSelect = document.getElementById("itensPorPagina");
+            const paginasClientes = document.getElementById("paginasClientes");
+
+            let paginaAtual = 1;
+
+            function obterFiltrados() {
+
+                const termo = pesquisa.value
+                    .trim()
+                    .toLowerCase();
+
+                return itens.filter(function (item) {
+
+                    const texto =
+                        item.dataset.pesquisa || "";
+
+                    return texto.includes(termo);
+                });
+            }
+
+            function criarBotao(texto, pagina, ativo = false, desativado = false) {
+
+                const botao = document.createElement("button");
+
+                botao.type = "button";
+                botao.textContent = texto;
+                botao.className = "ib-mensagens-nova-page-btn";
+
+                if (ativo) {
+                    botao.classList.add("active");
+                }
+
+                botao.disabled = desativado;
+
+                botao.addEventListener("click", function () {
+
+                    paginaAtual = pagina;
+                    atualizarLista();
+                });
+
+                return botao;
+            }
+
+            function atualizarLista() {
+
+                const filtrados = obterFiltrados();
+                const itensPorPagina =
+                    parseInt(itensPorPaginaSelect.value);
+
+                const total = filtrados.length;
+
+                const totalPaginas =
+                    Math.max(
+                        1,
+                        Math.ceil(total / itensPorPagina)
+                    );
+
+                if (paginaAtual > totalPaginas) {
+                    paginaAtual = totalPaginas;
+                }
+
+                const inicio =
+                    (paginaAtual - 1) * itensPorPagina;
+
+                const fim =
+                    Math.min(
+                        inicio + itensPorPagina,
+                        total
+                    );
+
+                // Esconder todos primeiro
+                itens.forEach(function (item) {
+                    item.hidden = true;
+                });
+
+                // Mostrar apenas os resultados da página atual
+                filtrados
+                    .slice(inicio, fim)
+                    .forEach(function (item) {
+                        item.hidden = false;
+                    });
+
+                // Estado sem resultados
+                if (semResultados) {
+                    semResultados.hidden = total > 0;
+                }
+
+                // Informação
+                inicioPagina.textContent =
+                    total === 0 ? 0 : inicio + 1;
+
+                fimPagina.textContent = fim;
+                totalClientes.textContent = total;
+
+                // Paginação
+                paginasClientes.innerHTML = "";
+
+                if (total > itensPorPagina) {
+
+                    paginasClientes.appendChild(
+                        criarBotao(
+                            "‹",
+                            Math.max(1, paginaAtual - 1),
+                            false,
+                            paginaAtual === 1
+                        )
+                    );
+
+                    for (let pagina = 1;
+                         pagina <= totalPaginas;
+                         pagina++) {
+
+                        paginasClientes.appendChild(
+                            criarBotao(
+                                pagina,
+                                pagina,
+                                pagina === paginaAtual
+                            )
+                        );
+                    }
+
+                    paginasClientes.appendChild(
+                        criarBotao(
+                            "›",
+                            Math.min(
+                                totalPaginas,
+                                paginaAtual + 1
+                            ),
+                            false,
+                            paginaAtual === totalPaginas
+                        )
+                    );
+                }
+
+                if (paginacao) {
+                    paginacao.hidden = total === 0;
+                }
+            }
+
+            pesquisa.addEventListener("input", function () {
+                paginaAtual = 1;
+                atualizarLista();
+            });
+
+            itensPorPaginaSelect.addEventListener(
+                "change",
+                function () {
+                    paginaAtual = 1;
+                    atualizarLista();
+                }
+            );
+
+            atualizarLista();
+        });
+    </script>
+}
