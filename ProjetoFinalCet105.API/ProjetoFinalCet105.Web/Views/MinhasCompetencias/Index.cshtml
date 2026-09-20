@@ -1,0 +1,688 @@
+﻿@model ProjetoFinalCet105.Web.Models.MinhasCompetenciasViewModel
+
+@{
+    ViewData["Title"] = "Minhas Competências";
+    Layout = "~/Views/Shared/_FuncionarioLayout.cshtml";
+}
+
+<div class="ib-func-page">
+
+    <header class="ib-func-page-header">
+        <div>
+            <span class="ib-func-eyebrow">Perfil profissional</span>
+            <h1>Minhas Competências</h1>
+            <p>Consulte e mantenha atualizadas as suas competências profissionais.</p>
+        </div>
+    </header>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger mb-4">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success mb-4">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="ib-competencias-layout">
+
+        <!-- ADICIONAR -->
+        <section class="ib-func-card">
+
+            <div class="ib-func-card-header">
+                <h2>Adicionar competência</h2>
+                <p>Associe uma nova competência ao seu perfil profissional.</p>
+            </div>
+
+            @if (!Model.CompetenciasDisponiveis.Any())
+            {
+                <div class="ib-competencias-empty">
+                    <strong>Não existem competências disponíveis.</strong>
+                </div>
+            }
+            else
+            {
+                <form asp-controller="MinhasCompetencias"
+                      asp-action="Adicionar"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <div class="ib-competencias-add-grid">
+
+                        <div class="ib-form-group">
+                            <label for="CompetenciaId">Competência</label>
+
+                            <select id="CompetenciaId"
+                                    name="CompetenciaId"
+                                    class="ib-form-control"
+                                    required>
+
+                                <option value="">Selecione uma competência</option>
+
+                                @foreach (var competencia in Model.CompetenciasDisponiveis)
+                                {
+                                    <option value="@competencia.Id">
+                                        @competencia.Nome
+                                    </option>
+                                }
+
+                            </select>
+                        </div>
+
+                        <div class="ib-form-group">
+                            <label for="Nivel">Nível</label>
+
+                            <input id="Nivel"
+                                   name="Nivel"
+                                   type="text"
+                                   class="ib-form-control"
+                                   placeholder="Ex.: Avançado" />
+                        </div>
+
+                        <div class="ib-form-group">
+                            <label for="Certificacao">Certificação</label>
+
+                            <input id="Certificacao"
+                                   name="Certificacao"
+                                   type="text"
+                                   class="ib-form-control"
+                                   placeholder="Ex.: CEFAD 2026" />
+                        </div>
+
+                    </div>
+
+                    <div class="ib-competencias-add-actions">
+                        <button type="submit"
+                                class="ib-func-btn-primary">
+                            <i class="bi bi-plus-lg"></i>
+                            Adicionar competência
+                        </button>
+                    </div>
+
+                </form>
+            }
+
+        </section>
+
+
+        <!-- LISTAGEM -->
+        <section class="ib-func-card">
+
+            <div class="ib-func-card-header">
+                <h2>Competências registadas</h2>
+                <p>
+                    Consulte e faça a gestão das competências
+                    associadas ao seu perfil.
+                </p>
+            </div>
+            <div class="ib-competencias-toolbar">
+
+    <div class="ib-competencias-search">
+        <svg class="ib-competencias-search-icon"
+     viewBox="0 0 24 24"
+     aria-hidden="true">
+    <circle cx="11" cy="11" r="7"></circle>
+    <path d="M16 16l5 5"></path>
+</svg>
+
+        <input type="search"
+               id="pesquisaCompetencias"
+               placeholder="Pesquisar competência, nível ou certificação..."
+               autocomplete="off" />
+    </div>
+
+</div>
+            @if (!Model.CompetenciasFuncionario.Any())
+            {
+                <div class="ib-competencias-empty">
+
+                    
+                    <strong>Ainda não possui competências registadas.</strong>
+
+                    <p>
+                        Adicione uma competência através
+                        do formulário acima.
+                    </p>
+
+                </div>
+            }
+            else
+            {
+                <div class="ib-competencias-table">
+
+                    <div class="ib-competencias-table-header">
+                        <span>Competência</span>
+                        <span>Nível</span>
+                        <span>Certificação</span>
+                        <span>Ações</span>
+                    </div>
+
+                    @foreach (var competencia in Model.CompetenciasFuncionario)
+{
+    <form asp-controller="MinhasCompetencias"
+          asp-action="Alterar"
+          method="post"
+          class="ib-competencias-row"
+          id="competencia-form-@competencia.Id"
+          data-competencia="@competencia.CompetenciaNome.ToLower()"
+      data-nivel="@((competencia.Nivel ?? "").ToLower())"
+      data-certificacao="@((competencia.Certificacao ?? "").ToLower())">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden"
+               name="Id"
+               value="@competencia.Id" />
+
+        <input type="hidden"
+               name="CompetenciaId"
+               value="@competencia.CompetenciaId" />
+
+        <!-- COMPETÊNCIA -->
+        <div class="ib-competencias-name">
+
+            <span class="ib-competencias-row-icon">
+    <svg viewBox="0 0 24 24"
+         aria-hidden="true">
+        <circle cx="12" cy="8" r="5"></circle>
+        <path d="M9 13l-1 8 4-2 4 2-1-8"></path>
+    </svg>
+</span>
+
+            <strong>
+                @competencia.CompetenciaNome
+            </strong>
+
+        </div>
+
+
+        <!-- NÍVEL -->
+        <div>
+            <input type="text"
+                   name="Nivel"
+                   value="@competencia.Nivel"
+                   class="ib-form-control ib-competencia-inline-input"
+                   data-original="@competencia.Nivel"
+                   disabled />
+        </div>
+
+
+        <!-- CERTIFICAÇÃO -->
+        <div>
+            <input type="text"
+                   name="Certificacao"
+                   value="@competencia.Certificacao"
+                   class="ib-form-control ib-competencia-inline-input"
+                   data-original="@competencia.Certificacao"
+                   disabled />
+        </div>
+
+
+        <!-- AÇÕES -->
+        <div class="ib-competencias-row-actions">
+
+            <button type="button"
+                    class="ib-competencias-edit-btn"
+                    data-id="@competencia.Id">
+
+                <i class="bi bi-pencil"></i>
+                Editar
+
+            </button>
+
+
+            <button type="submit"
+                    class="ib-func-btn-primary ib-competencias-save-btn"
+                    data-id="@competencia.Id"
+                    style="display:none;">
+
+                <i class="bi bi-check2"></i>
+                Guardar
+
+            </button>
+
+
+            <button type="button"
+                    class="ib-func-btn-secondary ib-competencias-cancel-btn"
+                    data-id="@competencia.Id"
+                    style="display:none;">
+
+                Cancelar
+
+            </button>
+            <button type="submit"
+        formaction="@Url.Action("Remover", "MinhasCompetencias")"
+        formmethod="post"
+        name="id"
+        value="@competencia.Id"
+        class="ib-competencias-delete-btn"
+        onclick="return confirm('Tem a certeza de que pretende remover esta competência?');">
+
+    <i class="bi bi-trash3"></i>
+    Remover
+
+</button>
+
+        </div>
+
+    </form>
+
+}
+<div id="competenciasSemResultados"
+     class="ib-competencias-no-results"
+     style="display:none;">
+
+    <i class="bi bi-search"></i>
+
+    <strong>Nenhuma competência encontrada</strong>
+
+    <span>
+        Tente pesquisar por outro termo.
+    </span>
+
+</div>
+<div class="ib-pagination"
+     id="paginacaoCompetencias">
+
+    <div class="ib-pagination-info">
+        A mostrar
+        <strong id="competenciaPaginaInicio">0</strong>–<strong id="competenciaPaginaFim">0</strong>
+        de
+        <strong id="competenciaTotalFiltrado">0</strong>
+    </div>
+
+    <div class="ib-pagination-controls">
+
+        <label class="ib-pagination-size">
+            <span>Itens por página</span>
+
+            <select id="competenciasPorPagina">
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+            </select>
+        </label>
+
+        <div class="ib-pagination-pages">
+
+            <button type="button"
+                    id="competenciaPaginaAnterior"
+                    class="ib-pagination-arrow"
+                    aria-label="Página anterior">
+                ‹
+            </button>
+
+            <div id="competenciaNumerosPaginas"
+                 class="ib-pagination-numbers">
+            </div>
+
+            <button type="button"
+                    id="competenciaPaginaSeguinte"
+                    class="ib-pagination-arrow"
+                    aria-label="Página seguinte">
+                ›
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+                </div>
+            }
+
+        </section>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+   <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        document.querySelectorAll(".ib-competencias-edit-btn")
+            .forEach(function (button) {
+
+                button.addEventListener("click", function () {
+
+                    const id = this.dataset.id;
+                    const form = document.getElementById("competencia-form-" + id);
+
+                    if (!form) return;
+
+                    form.querySelectorAll(".ib-competencia-inline-input")
+                        .forEach(function (input) {
+                            input.disabled = false;
+                        });
+
+                    this.style.display = "none";
+
+                    form.querySelector(".ib-competencias-save-btn")
+                        .style.display = "inline-flex";
+
+                    form.querySelector(".ib-competencias-cancel-btn")
+                        .style.display = "inline-flex";
+                });
+            });
+
+
+        document.querySelectorAll(".ib-competencias-cancel-btn")
+            .forEach(function (button) {
+
+                button.addEventListener("click", function () {
+
+                    const id = this.dataset.id;
+                    const form = document.getElementById("competencia-form-" + id);
+
+                    if (!form) return;
+
+                    form.querySelectorAll(".ib-competencia-inline-input")
+                        .forEach(function (input) {
+
+                            input.value = input.dataset.original ?? "";
+                            input.disabled = true;
+                        });
+
+                    form.querySelector(".ib-competencias-edit-btn")
+                        .style.display = "inline-flex";
+
+                    form.querySelector(".ib-competencias-save-btn")
+                        .style.display = "none";
+
+                    this.style.display = "none";
+                });
+            });
+
+            //Bloco da pesquisa
+           const pesquisa =
+    document.getElementById("pesquisaCompetencias");
+
+const linhas =
+    Array.from(
+        document.querySelectorAll(".ib-competencias-row")
+    );
+
+const semResultados =
+    document.getElementById("competenciasSemResultados");
+
+const paginacao =
+    document.getElementById("paginacaoCompetencias");
+
+const paginaInicio =
+    document.getElementById("competenciaPaginaInicio");
+
+const paginaFim =
+    document.getElementById("competenciaPaginaFim");
+
+const totalFiltrado =
+    document.getElementById("competenciaTotalFiltrado");
+
+const porPaginaSelect =
+    document.getElementById("competenciasPorPagina");
+
+const paginaAnterior =
+    document.getElementById("competenciaPaginaAnterior");
+
+const paginaSeguinte =
+    document.getElementById("competenciaPaginaSeguinte");
+
+const numerosPaginas =
+    document.getElementById("competenciaNumerosPaginas");
+
+
+let paginaAtual = 1;
+let itensPorPagina =
+    parseInt(porPaginaSelect?.value || "10");
+
+
+function obterLinhasFiltradas() {
+
+    const termo =
+        pesquisa?.value.trim().toLowerCase() || "";
+
+    return linhas.filter(function (linha) {
+
+        const competencia =
+            linha.dataset.competencia || "";
+
+        const nivel =
+            linha.dataset.nivel || "";
+
+        const certificacao =
+            linha.dataset.certificacao || "";
+
+        return (
+            competencia.includes(termo) ||
+            nivel.includes(termo) ||
+            certificacao.includes(termo)
+        );
+    });
+}
+
+
+function atualizarPaginacao() {
+
+    const filtradas = obterLinhasFiltradas();
+
+    const total = filtradas.length;
+
+    const totalPaginas =
+        Math.max(
+            1,
+            Math.ceil(total / itensPorPagina)
+        );
+
+    if (paginaAtual > totalPaginas) {
+        paginaAtual = totalPaginas;
+    }
+
+    if (paginaAtual < 1) {
+        paginaAtual = 1;
+    }
+
+
+    /* Esconde todas as linhas */
+
+    linhas.forEach(function (linha) {
+        linha.style.display = "none";
+    });
+
+
+    /* Mostra apenas a página atual */
+
+    const inicio =
+        (paginaAtual - 1) * itensPorPagina;
+
+    const fim =
+        Math.min(
+            inicio + itensPorPagina,
+            total
+        );
+
+    filtradas
+        .slice(inicio, fim)
+        .forEach(function (linha) {
+            linha.style.display = "grid";
+        });
+
+
+    /* Informação */
+
+    if (paginaInicio) {
+        paginaInicio.textContent =
+            total === 0 ? "0" : inicio + 1;
+    }
+
+    if (paginaFim) {
+        paginaFim.textContent =
+            total === 0 ? "0" : fim;
+    }
+
+    if (totalFiltrado) {
+        totalFiltrado.textContent = total;
+    }
+
+
+    /* Sem resultados */
+
+    if (semResultados) {
+        semResultados.style.display =
+            total === 0 ? "flex" : "none";
+    }
+
+
+    /* Paginação */
+
+    if (paginacao) {
+    paginacao.style.display =
+        total > 10 ? "flex" : "none";
+}
+
+
+    /* Anterior / seguinte */
+
+    if (paginaAnterior) {
+        paginaAnterior.disabled =
+            paginaAtual <= 1;
+    }
+
+    if (paginaSeguinte) {
+        paginaSeguinte.disabled =
+            paginaAtual >= totalPaginas;
+    }
+
+
+    /* Números das páginas */
+
+    if (numerosPaginas) {
+
+        numerosPaginas.innerHTML = "";
+
+        for (
+            let pagina = 1;
+            pagina <= totalPaginas;
+            pagina++
+        ) {
+
+            const botao =
+                document.createElement("button");
+
+            botao.type = "button";
+            botao.textContent = pagina;
+
+            botao.className =
+                "ib-pagination-number";
+
+            if (pagina === paginaAtual) {
+                botao.classList.add("active");
+            }
+
+            botao.addEventListener(
+                "click",
+                function () {
+
+                    paginaAtual = pagina;
+
+                    atualizarPaginacao();
+                });
+
+            numerosPaginas.appendChild(botao);
+        }
+    }
+}
+
+
+/* Pesquisa */
+
+if (pesquisa) {
+
+    pesquisa.addEventListener(
+        "input",
+        function () {
+
+            paginaAtual = 1;
+
+            atualizarPaginacao();
+        });
+}
+
+
+/* Itens por página */
+
+if (porPaginaSelect) {
+
+    porPaginaSelect.addEventListener(
+        "change",
+        function () {
+
+            itensPorPagina =
+                parseInt(this.value);
+
+            paginaAtual = 1;
+
+            atualizarPaginacao();
+        });
+}
+
+
+/* Página anterior */
+
+if (paginaAnterior) {
+
+    paginaAnterior.addEventListener(
+        "click",
+        function () {
+
+            if (paginaAtual > 1) {
+
+                paginaAtual--;
+
+                atualizarPaginacao();
+            }
+        });
+}
+
+
+/* Página seguinte */
+
+if (paginaSeguinte) {
+
+    paginaSeguinte.addEventListener(
+        "click",
+        function () {
+
+            const total =
+                obterLinhasFiltradas().length;
+
+            const totalPaginas =
+                Math.ceil(
+                    total / itensPorPagina
+                );
+
+            if (paginaAtual < totalPaginas) {
+
+                paginaAtual++;
+
+                atualizarPaginacao();
+            }
+        });
+}
+
+
+/* Estado inicial */
+
+atualizarPaginacao();
+
+    });
+</script>
+
+}
