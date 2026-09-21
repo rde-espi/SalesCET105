@@ -6,7 +6,7 @@ using ProjetoFinalCet105.Web.Services;
 
 namespace ProjetoFinalCet105.Web.Controllers.Funcionario;
 
-//[Authorize(Roles = "Funcionario")]
+[Authorize(Roles = "Funcionario")]
 public class MensagensFuncionarioController : Controller
 {
     private readonly ApiService _apiService;

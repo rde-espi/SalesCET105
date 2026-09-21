@@ -2149,3 +2149,124 @@ textarea.ib-form-control {
     line-height: 1;
     box-shadow: 0 2px 5px rgba(216, 176, 113, .22);
 }
+
+/* =========================================================
+   NOTIFICAÇÕES — PAGINAÇÃO
+   ========================================================= */
+
+.ib-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 22px;
+    margin-top: 4px;
+    border-top: 1px solid rgba(216, 176, 113, 0.18);
+}
+
+.ib-pagination-info {
+    color: #817a70;
+    font-size: 12px;
+}
+
+    .ib-pagination-info strong {
+        color: #535333;
+        font-weight: 600;
+    }
+
+.ib-pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .ib-pagination-controls label {
+        margin: 0 4px 0 0;
+        color: #817a70;
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+
+/* SELECT */
+
+.ib-pagination-select {
+    min-width: 64px;
+    height: 34px;
+    padding: 0 28px 0 11px;
+    border: 1px solid rgba(216, 176, 113, 0.35);
+    border-radius: 8px;
+    background-color: #fff;
+    color: #535333;
+    font-size: 12px;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+    .ib-pagination-select:hover,
+    .ib-pagination-select:focus {
+        border-color: #D8B071;
+        box-shadow: 0 0 0 3px rgba(216, 176, 113, 0.08);
+    }
+
+
+/* PÁGINAS */
+
+.ib-pagination-pages {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ib-pagination-btn {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid rgba(216, 176, 113, 0.28);
+    border-radius: 8px;
+    background: #fff;
+    color: #535333;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s ease, border-color .2s ease, color .2s ease, transform .15s ease;
+}
+
+    .ib-pagination-btn:hover:not(:disabled):not(.active) {
+        border-color: #D8B071;
+        background: #F8F5EF;
+        color: #191919;
+    }
+
+    .ib-pagination-btn.active {
+        border-color: #D8B071;
+        background: #D8B071;
+        color: #191919;
+        box-shadow: 0 3px 8px rgba(216, 176, 113, 0.22);
+    }
+
+    .ib-pagination-btn:disabled {
+        opacity: .35;
+        cursor: default;
+    }
+
+
+/* RESPONSIVO */
+
+@media (max-width: 768px) {
+
+    .ib-pagination {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ib-pagination-controls {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+}

@@ -2,7 +2,9 @@
 
 @{
     ViewData["Title"] = "Notificações";
-    Layout = "_AdminLayout";
+    Layout = User.IsInRole("Admin")
+        ? "_AdminLayout"
+        : "_FuncionarioLayout";
 
     var total = Model?.Count ?? 0;
     var naoLidas = Model?.Count(n => !n.Lida) ?? 0;
@@ -234,13 +236,43 @@
                 <span>Não existem resultados para os filtros selecionados.</span>
 
             </div>
+
+                        <div id="paginacaoNotificacoes"
+                 class="ib-pagination">
+
+                <div class="ib-pagination-info">
+                    A mostrar
+                    <strong id="notificacoesInicio">0</strong>–<strong id="notificacoesFim">0</strong>
+                    de
+                    <strong id="notificacoesTotal">0</strong>
+                </div>
+
+                <div class="ib-pagination-controls">
+
+                    <label for="notificacoesPorPagina">
+                        Itens por página
+                    </label>
+
+                    <select id="notificacoesPorPagina"
+                            class="ib-pagination-select">
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="50">50</option>
+                    </select>
+
+                    <div id="notificacoesPaginas"
+                         class="ib-pagination-pages">
+                    </div>
+
+                </div>
+
+            </div>
         }
 
     </div>
 
 </div>
-
-@section Scripts {
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -252,22 +284,47 @@
             document.getElementById("filtroNotificacoes");
 
         const notificacoes =
-            document.querySelectorAll(".ib-notification-item");
+            Array.from(
+                document.querySelectorAll(".ib-notification-item")
+            );
 
         const semResultados =
             document.getElementById("semResultadosNotificacoes");
 
-        function filtrar() {
+        const paginacao =
+            document.getElementById("paginacaoNotificacoes");
+
+        const itensPorPaginaSelect =
+            document.getElementById("notificacoesPorPagina");
+
+        const paginasContainer =
+            document.getElementById("notificacoesPaginas");
+
+        const inicioElement =
+            document.getElementById("notificacoesInicio");
+
+        const fimElement =
+            document.getElementById("notificacoesFim");
+
+        const totalElement =
+            document.getElementById("notificacoesTotal");
+
+        let paginaAtual = 1;
+
+
+        function obterFiltradas() {
 
             const termo =
-                pesquisa ? pesquisa.value.toLowerCase().trim() : "";
+                pesquisa
+                    ? pesquisa.value.toLowerCase().trim()
+                    : "";
 
             const estado =
-                filtro ? filtro.value : "";
+                filtro
+                    ? filtro.value
+                    : "";
 
-            let encontrados = 0;
-
-            notificacoes.forEach(function (notificacao) {
+            return notificacoes.filter(function (notificacao) {
 
                 const texto =
                     notificacao.dataset.search || "";
@@ -281,29 +338,205 @@
                 const correspondeEstado =
                     !estado || status === estado;
 
-                const mostrar =
-                    correspondePesquisa && correspondeEstado;
-
-                notificacao.style.display =
-                    mostrar ? "" : "none";
-
-                if (mostrar)
-                    encontrados++;
+                return correspondePesquisa &&
+                       correspondeEstado;
             });
-
-            if (semResultados) {
-                semResultados.style.display =
-                    encontrados === 0 ? "flex" : "none";
-            }
         }
 
-        if (pesquisa)
-            pesquisa.addEventListener("input", filtrar);
 
-        if (filtro)
-            filtro.addEventListener("change", filtrar);
+        function criarBotaoPagina(texto, pagina, ativo, desativado) {
+
+            const button =
+                document.createElement("button");
+
+            button.type = "button";
+            button.textContent = texto;
+            button.className = "ib-pagination-btn";
+
+            if (ativo) {
+                button.classList.add("active");
+            }
+
+            button.disabled = desativado;
+
+            button.addEventListener("click", function () {
+
+                if (desativado)
+                    return;
+
+                paginaAtual = pagina;
+                atualizar();
+            });
+
+            return button;
+        }
+
+
+        function atualizar() {
+
+            const filtradas =
+                obterFiltradas();
+
+            const total =
+                filtradas.length;
+
+            const itensPorPagina =
+                Number(itensPorPaginaSelect?.value || 10);
+
+            const totalPaginas =
+                Math.max(
+                    1,
+                    Math.ceil(total / itensPorPagina)
+                );
+
+            if (paginaAtual > totalPaginas) {
+                paginaAtual = totalPaginas;
+            }
+
+            if (paginaAtual < 1) {
+                paginaAtual = 1;
+            }
+
+
+            /* Esconde todas primeiro */
+            notificacoes.forEach(function (notificacao) {
+                notificacao.style.display = "none";
+            });
+
+
+            const inicio =
+                (paginaAtual - 1) * itensPorPagina;
+
+            const fim =
+                Math.min(
+                    inicio + itensPorPagina,
+                    total
+                );
+
+
+            /* Mostra apenas os itens da página atual */
+            filtradas
+                .slice(inicio, fim)
+                .forEach(function (notificacao) {
+                    notificacao.style.display = "";
+                });
+
+
+            /* Estado sem resultados */
+            if (semResultados) {
+                semResultados.style.display =
+                    total === 0
+                        ? "flex"
+                        : "none";
+            }
+
+
+            /* Informação "A mostrar X–Y de Z" */
+            if (inicioElement) {
+                inicioElement.textContent =
+                    total === 0
+                        ? "0"
+                        : (inicio + 1).toString();
+            }
+
+            if (fimElement) {
+                fimElement.textContent =
+                    fim.toString();
+            }
+
+            if (totalElement) {
+                totalElement.textContent =
+                    total.toString();
+            }
+
+
+            /* Paginação só aparece quando necessária */
+            if (paginacao) {
+                paginacao.style.display =
+                    total > itensPorPagina
+                        ? "flex"
+                        : "none";
+            }
+
+
+            /* Botões */
+            if (!paginasContainer)
+                return;
+
+            paginasContainer.innerHTML = "";
+
+
+            if (total <= itensPorPagina)
+                return;
+
+
+            /* Anterior */
+            paginasContainer.appendChild(
+                criarBotaoPagina(
+                    "‹",
+                    paginaAtual - 1,
+                    false,
+                    paginaAtual === 1
+                )
+            );
+
+
+            /* Números das páginas */
+            for (let pagina = 1;
+                 pagina <= totalPaginas;
+                 pagina++) {
+
+                paginasContainer.appendChild(
+                    criarBotaoPagina(
+                        pagina.toString(),
+                        pagina,
+                        pagina === paginaAtual,
+                        false
+                    )
+                );
+            }
+
+
+            /* Seguinte */
+            paginasContainer.appendChild(
+                criarBotaoPagina(
+                    "›",
+                    paginaAtual + 1,
+                    false,
+                    paginaAtual === totalPaginas
+                )
+            );
+        }
+
+
+        if (pesquisa) {
+            pesquisa.addEventListener("input", function () {
+                paginaAtual = 1;
+                atualizar();
+            });
+        }
+
+
+        if (filtro) {
+            filtro.addEventListener("change", function () {
+                paginaAtual = 1;
+                atualizar();
+            });
+        }
+
+
+        if (itensPorPaginaSelect) {
+            itensPorPaginaSelect.addEventListener(
+                "change",
+                function () {
+                    paginaAtual = 1;
+                    atualizar();
+                }
+            );
+        }
+
+
+        atualizar();
 
     });
 </script>
-
-}

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 using ProjetoFinalCet105.Web.Models;
 using ProjetoFinalCet105.Web.Services;
 
 namespace ProjetoFinalCet105.Web.Controllers.Admin;
 
+[Authorize]
 public class GestaoNotificacoesController : Controller
 {
     private readonly ApiService _apiService;
