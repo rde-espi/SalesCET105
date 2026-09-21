@@ -2270,3 +2270,531 @@ textarea.ib-form-control {
         flex-wrap: wrap;
     }
 }
+
+/* =========================================================
+   DASHBOARD FUNCIONÁRIO
+   ========================================================= */
+
+.ib-dashboard-func {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+
+/* =========================================================
+   CABEÇALHO
+   ========================================================= */
+
+.ib-dashboard-func-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+    .ib-dashboard-func-header h1 {
+        margin: 5px 0 5px;
+        color: #191919;
+        font-size: 27px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .ib-dashboard-func-header p {
+        margin: 0;
+        color: #817a70;
+        font-size: 13px;
+    }
+
+.ib-dashboard-func-new {
+    min-height: 40px;
+    padding: 0 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1px solid #D8B071;
+    border-radius: 8px;
+    background: #D8B071;
+    color: #191919;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(216, 176, 113, 0.18);
+    transition: background .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+
+    .ib-dashboard-func-new:hover {
+        background: #BEA256;
+        border-color: #BEA256;
+        color: #191919;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(216, 176, 113, 0.25);
+    }
+
+
+/* =========================================================
+   KPIs
+   ========================================================= */
+
+.ib-dashboard-func-summary {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.ib-dashboard-func-kpi {
+    position: relative;
+    min-height: 112px;
+    padding: 19px 21px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid rgba(216, 176, 113, 0.22);
+    border-radius: 13px;
+    background: #fff;
+    box-shadow: 0 5px 18px rgba(25, 25, 25, 0.035);
+}
+
+    .ib-dashboard-func-kpi::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 3px;
+        height: 100%;
+        background: #D8B071;
+    }
+
+    .ib-dashboard-func-kpi > span {
+        margin-bottom: 7px;
+        color: #817a70;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 1.3px;
+    }
+
+    .ib-dashboard-func-kpi strong {
+        overflow: hidden;
+        color: #191919;
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1.1;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .ib-dashboard-func-kpi small {
+        margin-top: 6px;
+        overflow: hidden;
+        color: #817a70;
+        font-size: 11px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+
+/* =========================================================
+   AGENDA
+   ========================================================= */
+
+.ib-dashboard-func-agenda {
+    overflow: hidden;
+    border: 1px solid rgba(216, 176, 113, 0.22);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 6px 22px rgba(25, 25, 25, 0.04);
+}
+
+.ib-dashboard-func-agenda-header {
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+    .ib-dashboard-func-agenda-header h2 {
+        margin: 3px 0 3px;
+        color: #191919;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .ib-dashboard-func-agenda-header p {
+        margin: 0;
+        color: #817a70;
+        font-size: 11px;
+    }
+
+.ib-dashboard-func-agenda-link {
+    color: #BEA256;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color .18s ease;
+}
+
+    .ib-dashboard-func-agenda-link:hover {
+        color: #191919;
+    }
+
+
+/* =========================================================
+   LINHAS DA AGENDA
+   ========================================================= */
+
+.ib-dashboard-func-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.ib-dashboard-func-item {
+    min-height: 82px;
+    padding: 14px 22px;
+    display: grid;
+    grid-template-columns: 68px 42px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid rgba(25, 25, 25, 0.055);
+    transition: background .18s ease;
+}
+
+    .ib-dashboard-func-item:last-child {
+        border-bottom: 0;
+    }
+
+    .ib-dashboard-func-item:hover {
+        background: rgba(248, 245, 239, 0.65);
+    }
+
+
+/* HORA */
+
+.ib-dashboard-func-time {
+    display: flex;
+    flex-direction: column;
+}
+
+    .ib-dashboard-func-time strong {
+        color: #191919;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .ib-dashboard-func-time span {
+        margin-top: 2px;
+        color: #817a70;
+        font-size: 10px;
+    }
+
+
+/* AVATAR */
+
+.ib-dashboard-func-avatar {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(216, 176, 113, 0.32);
+    border-radius: 50%;
+    background: #F8F5EF;
+    color: #BEA256;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* CLIENTE + SERVIÇO */
+
+.ib-dashboard-func-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+    .ib-dashboard-func-info strong {
+        overflow: hidden;
+        color: #24231f;
+        font-size: 13px;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .ib-dashboard-func-info span {
+        margin-top: 3px;
+        overflow: hidden;
+        color: #817a70;
+        font-size: 11px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+
+/* =========================================================
+   ESTADOS
+   ========================================================= */
+
+.ib-dashboard-func-status {
+    min-width: 82px;
+    padding: 5px 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.ib-dashboard-func-status-confirmada {
+    border: 1px solid rgba(46, 125, 83, 0.18);
+    background: rgba(46, 125, 83, 0.08);
+    color: #2e7d53;
+}
+
+.ib-dashboard-func-status-curso {
+    border: 1px solid rgba(216, 176, 113, 0.30);
+    background: rgba(216, 176, 113, 0.12);
+    color: #8b6a35;
+}
+
+.ib-dashboard-func-status-pendente {
+    border: 1px solid rgba(216, 176, 113, 0.28);
+    background: #F8F5EF;
+    color: #817a70;
+}
+
+.ib-dashboard-func-status-cancelada {
+    border: 1px solid rgba(177, 76, 76, 0.16);
+    background: rgba(177, 76, 76, 0.07);
+    color: #a34f4f;
+}
+
+
+/* =========================================================
+   AGENDA VAZIA
+   ========================================================= */
+
+.ib-dashboard-func-empty {
+    min-height: 190px;
+    padding: 35px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.ib-dashboard-func-empty-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(216, 176, 113, 0.30);
+    border-radius: 50%;
+    background: #F8F5EF;
+    color: #D8B071;
+}
+
+.ib-dashboard-func-empty strong {
+    color: #24231f;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.ib-dashboard-func-empty span {
+    margin-top: 4px;
+    color: #817a70;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .ib-dashboard-func-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-dashboard-func-item {
+        grid-template-columns: 58px 38px minmax(0, 1fr) auto;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 650px) {
+
+    .ib-dashboard-func-header {
+        flex-direction: column;
+    }
+
+    .ib-dashboard-func-new {
+        width: 100%;
+    }
+
+    .ib-dashboard-func-agenda-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ib-dashboard-func-item {
+        grid-template-columns: 52px 36px minmax(0, 1fr);
+    }
+
+    .ib-dashboard-func-status {
+        grid-column: 3;
+        width: fit-content;
+        margin-top: -5px;
+    }
+}
+
+/* KPI CLICÁVEL */
+
+.ib-dashboard-func-kpi-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+}
+
+    .ib-dashboard-func-kpi-link:hover {
+        color: inherit;
+        text-decoration: none;
+        transform: translateY(-2px);
+        border-color: rgba(216, 176, 113, 0.48);
+        box-shadow: 0 8px 22px rgba(25, 25, 25, 0.07);
+    }
+
+.ib-dashboard-func-kpi-arrow {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    margin: 0 !important;
+    color: #D8B071 !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+    letter-spacing: 0 !important;
+    transition: transform .18s ease;
+}
+
+.ib-dashboard-func-kpi-link:hover
+.ib-dashboard-func-kpi-arrow {
+    transform: translateX(3px);
+}
+
+/* =========================================================
+   DASHBOARD - PAINÉIS INFERIORES
+   ========================================================= */
+
+.ib-dashboard-func-bottom {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.ib-dashboard-func-panel {
+    overflow: hidden;
+    border: 1px solid rgba(216, 176, 113, 0.22);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 6px 22px rgba(25, 25, 25, 0.04);
+}
+
+.ib-dashboard-func-panel-header {
+    min-height: 74px;
+    padding: 17px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+    .ib-dashboard-func-panel-header h3 {
+        margin: 3px 0 0;
+        color: #191919;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+.ib-dashboard-func-panel-all {
+    color: #BEA256;
+    font-size: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+    .ib-dashboard-func-panel-all:hover {
+        color: #191919;
+    }
+
+.ib-dashboard-func-panel-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.ib-dashboard-func-panel-row {
+    min-height: 52px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-bottom: 1px solid rgba(25, 25, 25, 0.055);
+    color: #535333;
+    text-decoration: none;
+    transition: background .18s ease, color .18s ease;
+}
+
+    .ib-dashboard-func-panel-row:last-child {
+        border-bottom: 0;
+    }
+
+    .ib-dashboard-func-panel-row:hover {
+        background: rgba(248, 245, 239, 0.72);
+        color: #191919;
+    }
+
+    .ib-dashboard-func-panel-row span {
+        font-size: 11px;
+        font-weight: 500;
+    }
+
+    .ib-dashboard-func-panel-row strong {
+        min-width: 30px;
+        height: 26px;
+        padding: 0 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(216, 176, 113, 0.25);
+        border-radius: 7px;
+        background: #F8F5EF;
+        color: #BEA256;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+
+/* RESPONSIVO */
+
+@media (max-width: 800px) {
+
+    .ib-dashboard-func-bottom {
+        grid-template-columns: 1fr;
+    }
+}

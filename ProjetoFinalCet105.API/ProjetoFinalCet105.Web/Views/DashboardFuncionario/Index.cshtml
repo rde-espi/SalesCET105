@@ -1,0 +1,351 @@
+﻿@model ProjetoFinalCet105.Web.Models.DashboardFuncionarioViewModel
+
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Início";
+    Layout = "_FuncionarioLayout";
+
+    var cultura = new CultureInfo("pt-PT");
+
+    string Iniciais(string nome)
+    {
+        if (string.IsNullOrWhiteSpace(nome))
+            return "?";
+
+        var partes = nome.Split(
+            ' ',
+            StringSplitOptions.RemoveEmptyEntries);
+
+        return partes.Length == 1
+            ? partes[0][0].ToString().ToUpper()
+            : $"{partes[0][0]}{partes[^1][0]}".ToUpper();
+    }
+
+    string ClasseEstado(string estado)
+    {
+        var valor = estado?.Trim().ToLowerInvariant() ?? "";
+
+        if (valor.Contains("confirm"))
+            return "ib-dashboard-func-status-confirmada";
+
+        if (valor.Contains("curso"))
+            return "ib-dashboard-func-status-curso";
+
+        if (valor.Contains("cancel"))
+            return "ib-dashboard-func-status-cancelada";
+
+        return "ib-dashboard-func-status-pendente";
+    }
+}
+
+<section class="ib-dashboard-func">
+
+    <header class="ib-dashboard-func-header">
+
+        <div>
+            <span class="ib-section-eyebrow">INÍCIO</span>
+
+            <h1>
+                Bom dia, @Model.Funcionario.NomeCompleto
+            </h1>
+
+            <p>
+                @cultura.TextInfo.ToTitleCase(
+                    Model.Data.ToString(
+                        "dddd, d 'de' MMMM 'de' yyyy",
+                        cultura))
+            </p>
+        </div>
+
+        <a asp-controller="NovaMarcacaoFuncionario"
+           asp-action="Index"
+           class="ib-dashboard-func-new">
+            + Nova Marcação
+        </a>
+
+    </header>
+
+
+    <div class="ib-dashboard-func-summary">
+
+        <article class="ib-dashboard-func-kpi">
+            <span>HOJE</span>
+
+            <strong>
+                @Model.TotalMarcacoesHoje
+            </strong>
+
+            <small>
+                @(Model.TotalMarcacoesHoje == 1
+                    ? "marcação"
+                    : "marcações")
+            </small>
+        </article>
+
+
+        <article class="ib-dashboard-func-kpi">
+
+            <span>PRÓXIMA</span>
+
+            @{
+                var proxima =
+                    Model.MarcacoesHoje
+                        .Where(m =>
+                            m.DataHoraInicio >= DateTime.Now &&
+                            !m.EstadoMarcacaoNome
+                                .Contains(
+                                    "cancel",
+                                    StringComparison.OrdinalIgnoreCase))
+                        .OrderBy(m => m.DataHoraInicio)
+                        .FirstOrDefault();
+            }
+
+            @if (proxima != null)
+            {
+                <strong>
+                    @proxima.DataHoraInicio.ToString("HH:mm")
+                </strong>
+
+                <small>
+                    @proxima.ServicoNome
+                </small>
+            }
+            else
+            {
+                <strong>—</strong>
+                <small>Sem próximas marcações</small>
+            }
+
+        </article>
+
+
+       <a asp-controller="FaturasFuncionario"
+   asp-action="PorFaturar"
+   class="ib-dashboard-func-kpi ib-dashboard-func-kpi-link">
+
+    <span>POR FATURAR</span>
+
+    <strong>
+        @Model.TotalPorFaturar
+    </strong>
+
+    <small>
+        @(Model.TotalPorFaturar == 1
+            ? "marcação concluída"
+            : "marcações concluídas")
+    </small>
+
+    <span class="ib-dashboard-func-kpi-arrow">
+        →
+    </span>
+
+</a>
+
+    </div>
+
+
+    <article class="ib-dashboard-func-agenda">
+
+        <div class="ib-dashboard-func-agenda-header">
+
+            <div>
+                <span class="ib-section-eyebrow">
+                    AGENDA
+                </span>
+
+                <h2>A minha agenda de hoje</h2>
+
+                <p>
+                    Consulte as marcações previstas para hoje.
+                </p>
+            </div>
+
+            <a asp-controller="MinhaAgenda"
+               asp-action="Index"
+               asp-route-data="@Model.Data.ToString("yyyy-MM-dd")"
+               class="ib-dashboard-func-agenda-link">
+                Ver agenda completa →
+            </a>
+
+        </div>
+
+
+        @if (Model.MarcacoesHoje.Any())
+        {
+            <div class="ib-dashboard-func-list">
+
+                @foreach (var marcacao in Model.MarcacoesHoje)
+                {
+                    <div class="ib-dashboard-func-item">
+
+                        <div class="ib-dashboard-func-time">
+
+                            <strong>
+                                @marcacao.DataHoraInicio.ToString("HH:mm")
+                            </strong>
+
+                            <span>
+                                @marcacao.DataHoraFim.ToString("HH:mm")
+                            </span>
+
+                        </div>
+
+
+                        <div class="ib-dashboard-func-avatar">
+                            @Iniciais(marcacao.ClienteNome)
+                        </div>
+
+
+                        <div class="ib-dashboard-func-info">
+
+                            <strong>
+                                @marcacao.ClienteNome
+                            </strong>
+
+                            <span>
+                                @marcacao.ServicoNome
+                            </span>
+
+                        </div>
+
+
+                        <span class="ib-dashboard-func-status @ClasseEstado(marcacao.EstadoMarcacaoNome)">
+                            @marcacao.EstadoMarcacaoNome
+                        </span>
+
+                    </div>
+                }
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-dashboard-func-empty">
+
+                <div class="ib-dashboard-func-empty-icon">
+                    <svg viewBox="0 0 24 24"
+                         width="25"
+                         height="25"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.6">
+                        <rect x="3"
+                              y="5"
+                              width="18"
+                              height="16"
+                              rx="2" />
+                        <path d="M16 3v4M8 3v4M3 10h18" />
+                    </svg>
+                </div>
+
+                <strong>Agenda livre hoje</strong>
+
+                <span>
+                    Não existem marcações previstas para hoje.
+                </span>
+
+            </div>
+        }
+
+    </article>
+<div class="ib-dashboard-func-bottom">
+
+    <!-- PRÓXIMOS DIAS -->
+    <article class="ib-dashboard-func-panel">
+
+        <div class="ib-dashboard-func-panel-header">
+            <div>
+                <span class="ib-section-eyebrow">AGENDA</span>
+                <h3>Próximos dias</h3>
+            </div>
+
+            <a asp-controller="MinhaAgenda"
+               asp-action="Index"
+               class="ib-dashboard-func-panel-all">
+                Ver agenda →
+            </a>
+        </div>
+
+        <div class="ib-dashboard-func-panel-list">
+
+            <a asp-controller="MinhaAgenda"
+               asp-action="Index"
+               asp-route-data="@Model.Data.ToString("yyyy-MM-dd")"
+               class="ib-dashboard-func-panel-row">
+
+                <span>Hoje</span>
+
+                <strong>@Model.TotalHoje</strong>
+            </a>
+
+            <a asp-controller="MinhaAgenda"
+               asp-action="Index"
+               asp-route-data="@Model.Data.AddDays(1).ToString("yyyy-MM-dd")"
+               class="ib-dashboard-func-panel-row">
+
+                <span>Amanhã</span>
+
+                <strong>@Model.TotalAmanha</strong>
+            </a>
+
+            <a asp-controller="MinhaAgenda"
+               asp-action="Index"
+               class="ib-dashboard-func-panel-row">
+
+                <span>Esta semana</span>
+
+                <strong>@Model.TotalEstaSemana</strong>
+            </a>
+
+        </div>
+
+    </article>
+
+
+    <!-- ATIVIDADE -->
+    <article class="ib-dashboard-func-panel">
+
+        <div class="ib-dashboard-func-panel-header">
+            <div>
+                <span class="ib-section-eyebrow">RESUMO</span>
+                <h3>Atividade</h3>
+            </div>
+        </div>
+
+        <div class="ib-dashboard-func-panel-list">
+
+            <a asp-controller="MensagensFuncionario"
+               asp-action="Index"
+               class="ib-dashboard-func-panel-row">
+
+                <span>Mensagens não lidas</span>
+
+                <strong>@Model.MensagensNaoLidas</strong>
+            </a>
+
+            <a asp-controller="GestaoNotificacoes"
+               asp-action="Index"
+               class="ib-dashboard-func-panel-row">
+
+                <span>Notificações</span>
+
+                <strong>@Model.NotificacoesNaoLidas</strong>
+            </a>
+
+            <a asp-controller="FaturasFuncionario"
+               asp-action="PorFaturar"
+               class="ib-dashboard-func-panel-row">
+
+                <span>Por faturar</span>
+
+                <strong>@Model.TotalPorFaturar</strong>
+            </a>
+
+        </div>
+
+    </article>
+
+</div>
+
+</section>

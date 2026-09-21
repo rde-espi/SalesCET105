@@ -200,17 +200,17 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
             //Redirecionamento conforme o perfil
             if (response.Roles.Contains("Admin"))
             {
-                return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                return RedirectToAction("Index", "Dashboard");
             }
 
             if (response.Roles.Contains("Funcionario"))
             {
-                return RedirectToAction("Index", "Funcionarios", new { area = "Funcionario" });
+                return RedirectToAction("Index", "DashboardFuncionario");
             }
 
             if (response.Roles.Contains("Cliente"))
             {
-                return RedirectToAction("Index", "Perfil", new { area = "Cliente" });
+                return RedirectToAction("Index", "Perfil");
             }
 
 
@@ -277,10 +277,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             foreach (var role in response.Roles)
             {
-                claims.Add(
-                    new Claim(
-                        ClaimTypes.Role,
-                        role));
+                claims.Add( new Claim( ClaimTypes.Role, role));
             }
 
             var claimsIdentity = new ClaimsIdentity( claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -289,26 +286,17 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (response.Roles.Contains("Admin"))
             {
-                return RedirectToAction(
-                    "Index",
-                    "Dashboard",
-                    new { area = "Admin" });
+                return RedirectToAction( "Index", "Dashboard");
             }
 
             if (response.Roles.Contains("Funcionario"))
             {
-                return RedirectToAction(
-                    "Index",
-                    "Funcionarios",
-                    new { area = "Funcionario" });
+                return RedirectToAction("Index", "Funcionarios");
             }
 
             if (response.Roles.Contains("Cliente"))
             {
-                return RedirectToAction(
-                    "Index",
-                    "Perfil",
-                    new { area = "Cliente" });
+                return RedirectToAction("Index","Perfil");
             }
 
             return RedirectToAction("Index", "Home");
@@ -318,9 +306,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
         [HttpGet]
         public IActionResult PrimeiroAcesso(string email, string tokenConfirmacao, string tokenPassword)
         {
-            if (string.IsNullOrWhiteSpace(email) ||
-                string.IsNullOrWhiteSpace(tokenConfirmacao) ||
-                string.IsNullOrWhiteSpace(tokenPassword))
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(tokenConfirmacao) ||string.IsNullOrWhiteSpace(tokenPassword))
             {
                 return RedirectToAction("Login");
             }
