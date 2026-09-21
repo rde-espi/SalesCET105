@@ -6,7 +6,7 @@ using ProjetoFinalCet105.Web.Services;
 
 namespace ProjetoFinalCet105.Web.Controllers.Funcionario;
 
-[Authorize(Roles = "Funcionario")]
+//[Authorize(Roles = "Funcionario")]
 public class MensagensFuncionarioController : Controller
 {
     private readonly ApiService _apiService;
@@ -189,6 +189,96 @@ public class MensagensFuncionarioController : Controller
             TempData["ErrorMessage"] = "Não foi possível iniciar a conversa.";
 
             return RedirectToAction(nameof(Nova));
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ContadorNaoLidas()
+    {
+        try
+        {
+            var contador = await _apiService.GetAuthenticatedAsync<int>( "api/Conversas/contador-nao-lidas");
+
+            return Json(new
+            {
+                contador
+            });
+        }
+        catch (Exception)
+        {
+            return Json(new
+            {
+                contador = 0
+            });
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> MarcarComoLidas(int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest();
+        }
+
+        try
+        {
+            using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Put, $"api/Conversas/{id}/mensagens/lidas");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return StatusCode(
+                    (int)response.StatusCode
+                );
+            }
+
+            return Ok();
+        }
+        catch (Exception)
+        {
+            return StatusCode(500);
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> ContadorNaoLidasConversa(int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest();
+        }
+
+        try
+        {
+            var conversa = await _apiService.GetAuthenticatedAsync<ConversaViewModel>( $"api/Conversas/{id}");
+
+            if (conversa == null)
+            {
+                return Json(new
+                {
+                    conversaId = id,
+                    contador = 0
+                });
+            }
+
+            var contador =
+                conversa.Mensagens.Count(m =>
+                    !m.Lida &&
+                    m.RemetenteId != conversa.FuncionarioUserId);
+
+            return Json(new
+            {
+                conversaId = id,
+                contador
+            });
+        }
+        catch (Exception)
+        {
+            return Json(new
+            {
+                conversaId = id,
+                contador = 0
+            });
         }
     }
 }

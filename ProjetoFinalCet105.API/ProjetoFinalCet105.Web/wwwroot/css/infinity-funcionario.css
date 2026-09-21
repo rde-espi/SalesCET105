@@ -2056,3 +2056,96 @@ textarea.ib-form-control {
         justify-content: space-between;
     }
 }
+
+/* =========================================================
+   MENSAGENS — CONTADOR DE NÃO LIDAS
+   ========================================================= */
+
+.ib-mensagens-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    margin-left: auto;
+    border-radius: 999px;
+    background: #dc3545;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 2px 6px rgba(220, 53, 69, 0.28);
+}
+
+/* =========================================================
+   MENSAGENS — CONVERSAS NÃO LIDAS
+   ========================================================= */
+
+.ib-mensagens-func-item-unread {
+    background: rgba(216, 176, 113, 0.08);
+    border-left: 3px solid #D8B071;
+}
+
+    .ib-mensagens-func-item-unread:hover {
+        background: rgba(216, 176, 113, 0.13);
+    }
+
+    .ib-mensagens-func-item-unread .ib-mensagens-func-name {
+        font-weight: 700;
+        color: #191919;
+    }
+
+    .ib-mensagens-func-item-unread .ib-mensagens-func-preview {
+        font-weight: 600;
+        color: #535333;
+    }
+
+.ib-conversa-unread-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 21px;
+    height: 21px;
+    padding: 0 6px;
+    margin-left: 8px;
+    border-radius: 999px;
+    background: #D8B071;
+    color: #191919;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+    vertical-align: middle;
+    box-shadow: 0 2px 6px rgba(216, 176, 113, 0.28);
+}
+/* Nome + contador de mensagens não lidas */
+
+.ib-mensagens-func-name-row {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+    .ib-mensagens-func-name-row strong {
+        color: #24231f;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+.ib-conversa-unread-badge {
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 999px;
+    background: #D8B071;
+    color: #191919;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 2px 5px rgba(216, 176, 113, .22);
+}

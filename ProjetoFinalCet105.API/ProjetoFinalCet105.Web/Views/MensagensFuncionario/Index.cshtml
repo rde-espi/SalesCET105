@@ -75,6 +75,15 @@
                         !string.IsNullOrWhiteSpace(conversa.ClienteNome)
                             ? conversa.ClienteNome.Substring(0, 1).ToUpper()
                             : "C";
+                            var mensagensNaoLidas =
+    conversa.Mensagens?
+        .Count(m =>
+            !m.Lida &&
+            m.RemetenteId != conversa.FuncionarioUserId)
+    ?? 0;
+
+var temMensagensNaoLidas =
+    mensagensNaoLidas > 0;
 
                     var ultimaMensagem =
                         conversa.Mensagens?
@@ -85,25 +94,33 @@
                         ultimaMensagem?.DataEnvio
                         ?? conversa.DataCriacao;
 
-                    <div class="ib-mensagens-func-item">
-
+<div class="ib-mensagens-func-item @(temMensagensNaoLidas ? "ib-mensagens-func-item-unread" : "")"
+     data-conversa-id="@conversa.Id">
                         <div class="ib-mensagens-func-avatar">
                             @inicial
                         </div>
 
-                        <div class="ib-mensagens-func-content">
+                        <div class="ib-mensagens-func-top">
 
-                            <div class="ib-mensagens-func-top">
+    <div class="ib-mensagens-func-name-row">
 
-                                <strong>
-                                    @conversa.ClienteNome
-                                </strong>
+        <strong>
+            @conversa.ClienteNome
+        </strong>
 
-                                <span>
-                                    @data.ToString("dd/MM/yyyy HH:mm")
-                                </span>
+        <span class="ib-conversa-unread-badge"
+              data-unread-badge
+              style="@(temMensagensNaoLidas ? "" : "display:none;")">
+            @(mensagensNaoLidas > 99 ? "99+" : mensagensNaoLidas.ToString())
+        </span>
 
-                            </div>
+    </div>
+
+    <span>
+        @data.ToString("dd/MM/yyyy HH:mm")
+    </span>
+
+</div>
 
                             <div class="ib-mensagens-func-bottom">
 
@@ -140,7 +157,7 @@
 
                         </div>
 
-                    </div>
+                  
                 }
 
             </div>

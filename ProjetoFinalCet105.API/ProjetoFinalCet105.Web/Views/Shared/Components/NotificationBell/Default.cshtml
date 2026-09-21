@@ -9,12 +9,11 @@
             <path d="M10 21h4" />
         </svg>
 
-        @if (Model.NaoLidas > 0)
-        {
-            <span class="ib-bell-badge">
-                @Model.NaoLidas
-            </span>
-        }
+        <span id="notificationBadge"
+      class="ib-bell-badge"
+      style="@(Model.NaoLidas > 0 ? "" : "display:none;")">
+    @(Model.NaoLidas > 99 ? "99+" : Model.NaoLidas.ToString())
+</span>
 
     </button>
 

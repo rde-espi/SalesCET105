@@ -1,0 +1,7 @@
+﻿@model int
+
+<span id="mensagensNaoLidasBadge"
+      class="ib-mensagens-badge"
+      style="@(Model > 0 ? "" : "display:none;")">
+    @(Model > 99 ? "99+" : Model.ToString())
+</span>

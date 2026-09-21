@@ -192,8 +192,51 @@
                     .withAutomaticReconnect()
                     .build();
 
+                    async function atualizarContadorMensagens() {
+    try {
+        const response = await fetch(
+            '@Url.Action("ContadorNaoLidas", "MensagensFuncionario")',
+            {
+                method: "GET",
+                cache: "no-store"
+            }
+        );
+
+        if (!response.ok) {
+            return;
+        }
+
+        const data = await response.json();
+
+        const badge =
+            document.getElementById("mensagensNaoLidasBadge");
+
+        if (!badge) {
+            return;
+        }
+
+        const contador = Number(data.contador ?? 0);
+
+        if (contador > 0) {
+            badge.textContent =
+                contador > 99 ? "99+" : contador.toString();
+
+            badge.style.display = "inline-flex";
+        }
+        else {
+            badge.textContent = "0";
+            badge.style.display = "none";
+        }
+    }
+    catch (error) {
+        console.error(
+            "Erro ao atualizar contador de mensagens:",
+            error
+        );
+    }
+}
                 // Receber novas mensagens
-               connection.on("NovaMensagem", function (mensagem) {
+               connection.on("NovaMensagem", async function (mensagem) {
 
     console.log("Nova mensagem recebida:", mensagem);
 
@@ -254,6 +297,16 @@
     chat.appendChild(row);
 
     chat.scrollTop = chat.scrollHeight;
+    if (!enviadaPeloFuncionario) {
+    await fetch(
+        '@Url.Action("MarcarComoLidas", "MensagensFuncionario")?id=@Model.Id',
+        {
+            method: "POST"
+        }
+    );
+}
+
+await atualizarContadorMensagens();
 });
 connection.on("MensagensLidas", function () {
 
