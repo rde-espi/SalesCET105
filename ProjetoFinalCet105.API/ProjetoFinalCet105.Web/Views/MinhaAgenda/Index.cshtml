@@ -179,7 +179,10 @@
 
                 @foreach (var marcacao in Model.MarcacoesDia)
                 {
-                    <article class="ib-minha-agenda-item">
+                   <a asp-controller="MarcacoesFuncionario"
+   asp-action="Detalhes"
+   asp-route-id="@marcacao.Id"
+   class="ib-minha-agenda-item ib-minha-agenda-item-link">
 
                         <div class="ib-minha-agenda-time">
                             <strong>
@@ -206,8 +209,7 @@
                         <span class="ib-minha-agenda-status @ClasseEstado(marcacao.EstadoMarcacaoNome)">
                             @marcacao.EstadoMarcacaoNome
                         </span>
-
-                    </article>
+                        </a>
                 }
 
             </div>

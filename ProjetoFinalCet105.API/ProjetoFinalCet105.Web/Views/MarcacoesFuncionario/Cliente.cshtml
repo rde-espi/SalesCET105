@@ -1,0 +1,148 @@
+﻿@model ProjetoFinalCet105.Web.Models.ClienteHistoricoFuncionarioViewModel
+@{
+    ViewData["Title"] = "Detalhes do Cliente";
+    Layout = "_FuncionarioLayout";
+
+}
+
+<div class="ib-func-page">
+
+    <header class="ib-dashboard-func-header">
+
+        <div>
+            <span class="ib-section-eyebrow">
+                CLIENTE
+            </span>
+
+            <h1>@Model.ClienteNome</h1>
+
+            <p>
+                Consulte o histórico de marcações deste cliente consigo.
+            </p>
+        </div>
+
+        <a asp-controller="MinhaAgenda"
+           asp-action="Index"
+           class="ib-dashboard-func-new">
+            ← Voltar à Agenda
+        </a>
+
+    </header>
+
+@if (Model.Historico == null || !Model.Historico.Any())
+{
+        <div class="ib-func-card">
+
+            <div class="ib-cliente-historico-empty">
+                <strong>Sem histórico disponível</strong>
+
+                <span>
+                    Não existem marcações deste cliente associadas ao seu histórico.
+                </span>
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="ib-func-card">
+
+            <div class="ib-func-card-header">
+
+                <span class="ib-section-eyebrow">
+                    HISTÓRICO
+                </span>
+
+                <h2>Histórico de serviços</h2>
+
+                <p>
+                    Consulte as marcações e serviços realizados com este cliente.
+                </p>
+
+            </div>
+
+            <div class="ib-cliente-historico">
+
+                <div class="ib-cliente-historico-header">
+
+                    <span>Data</span>
+                    <span>Hora</span>
+                    <span>Serviço</span>
+                    <span>Profissional</span>
+                    <span>Estado</span>
+                    <span></span>
+
+                </div>
+
+@foreach (var marcacao in Model.Historico)
+{
+                    var estado = marcacao.EstadoMarcacaoNome?.Trim().ToLowerInvariant();
+
+                    var estadoClasse = estado switch
+                    {
+                        "confirmada" => "ib-minha-agenda-status-confirmada",
+                        "pendente" => "ib-minha-agenda-status-pendente",
+                        "cancelada" => "ib-minha-agenda-status-cancelada",
+                        "em curso" => "ib-minha-agenda-status-curso",
+                        _ => "ib-minha-agenda-status-pendente"
+                    };
+
+                    <div class="ib-cliente-historico-row">
+
+                        <div class="ib-cliente-historico-data">
+                            <strong>
+                                @marcacao.DataHoraInicio.ToString("dd/MM/yyyy")
+                            </strong>
+                        </div>
+
+                        <div class="ib-cliente-historico-hora">
+                            <strong>
+                                @marcacao.DataHoraInicio.ToString("HH:mm")
+                            </strong>
+
+                            <span>
+                                até @marcacao.DataHoraFim.ToString("HH:mm")
+                            </span>
+                        </div>
+
+                        <div class="ib-cliente-historico-servico">
+                            @marcacao.ServicoNome
+                        </div>
+
+                        <div class="ib-cliente-historico-profissional">
+                            @marcacao.FuncionarioNome
+                        </div>
+
+                        <div>
+                            <span class="ib-minha-agenda-status @estadoClasse">
+                                @marcacao.EstadoMarcacaoNome
+                            </span>
+                        </div>
+
+                        <div class="ib-cliente-historico-action">
+
+                            <a asp-controller="MarcacoesFuncionario"
+                               asp-action="Detalhes"
+                               asp-route-id="@marcacao.Id"
+                               class="ib-mensagens-func-open"
+                               title="Ver marcação"
+                               aria-label="Ver marcação">
+
+                                <svg viewBox="0 0 24 24"
+                                     aria-hidden="true">
+                                    <path d="m9 18 6-6-6-6"></path>
+                                </svg>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+    }
+
+</div>

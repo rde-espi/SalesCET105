@@ -7,7 +7,8 @@
 
 <div class="ib-func-page">
 
-    <div class="ib-func-page-heading">
+    <header class="ib-dashboard-func-header">
+
         <div>
             <span class="ib-section-eyebrow">
                 COMUNICAÇÃO
@@ -19,7 +20,15 @@
                 Consulte as conversas com os seus clientes.
             </p>
         </div>
-    </div>
+
+        <a asp-controller="MensagensFuncionario"
+           asp-action="Nova"
+           class="ib-dashboard-func-new">
+            + Nova Conversa
+        </a>
+
+    </header>
+    
 
     @if (TempData["ErrorMessage"] != null)
     {

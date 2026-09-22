@@ -2798,3 +2798,478 @@ textarea.ib-form-control {
         grid-template-columns: 1fr;
     }
 }
+/* =========================================================
+   FUNCIONÁRIO - DETALHES DA MARCAÇÃO
+   ========================================================= */
+
+.ib-marcacao-func {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.ib-marcacao-func-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+    .ib-marcacao-func-header h1 {
+        margin: 4px 0 5px;
+        color: #191919;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .ib-marcacao-func-header p {
+        margin: 0;
+        color: #817a70;
+        font-size: 12px;
+    }
+
+.ib-marcacao-func-back {
+    min-height: 38px;
+    padding: 0 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(216, 176, 113, 0.35);
+    border-radius: 8px;
+    background: #fff;
+    color: #535333;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color .18s ease, color .18s ease, background .18s ease;
+}
+
+    .ib-marcacao-func-back:hover {
+        border-color: #D8B071;
+        background: #F8F5EF;
+        color: #191919;
+    }
+
+.ib-marcacao-func-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 18px;
+    align-items: start;
+}
+
+.ib-marcacao-func-card {
+    border: 1px solid rgba(216, 176, 113, 0.22);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 6px 22px rgba(25, 25, 25, 0.04);
+}
+
+.ib-marcacao-func-main {
+    padding: 22px;
+}
+
+.ib-marcacao-func-card-header {
+    padding-bottom: 18px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+    .ib-marcacao-func-card-header h2 {
+        margin: 5px 0 0;
+        color: #191919;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+.ib-marcacao-func-status {
+    padding: 6px 10px;
+    border: 1px solid rgba(216, 176, 113, 0.28);
+    border-radius: 20px;
+    background: #F8F5EF;
+    color: #BEA256;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.ib-marcacao-func-data {
+    padding: 22px 0 5px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.ib-marcacao-func-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+    .ib-marcacao-func-field span,
+    .ib-marcacao-func-notes > span {
+        color: #817a70;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: .7px;
+    }
+
+    .ib-marcacao-func-field strong {
+        color: #191919;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+.ib-marcacao-func-notes {
+    margin-top: 18px;
+    padding: 15px;
+    border-radius: 9px;
+    background: #F8F5EF;
+}
+
+    .ib-marcacao-func-notes p {
+        margin: 6px 0 0;
+        color: #535333;
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+
+/* CLIENTE */
+
+.ib-marcacao-func-client {
+    padding: 24px 20px;
+    text-align: center;
+}
+
+    .ib-marcacao-func-client .ib-section-eyebrow {
+        display: block;
+        margin-bottom: 18px;
+    }
+
+.ib-marcacao-func-client-avatar {
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(216, 176, 113, 0.35);
+    border-radius: 50%;
+    background: #F8F5EF;
+    color: #BEA256;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.ib-marcacao-func-client h3 {
+    margin: 0;
+    color: #191919;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.ib-marcacao-func-client p {
+    margin: 8px auto 0;
+    max-width: 210px;
+    color: #817a70;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+
+/* RESPONSIVO */
+
+@media (max-width: 900px) {
+
+    .ib-marcacao-func-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-marcacao-func-data {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+
+    .ib-marcacao-func-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ib-marcacao-func-data {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-marcacao-func-card-header {
+        flex-direction: column;
+    }
+}
+
+.ib-minha-agenda-item-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+    .ib-minha-agenda-item-link:hover {
+        color: inherit;
+        text-decoration: none;
+        border-color: rgba(216, 176, 113, 0.55);
+        box-shadow: 0 6px 18px rgba(25, 25, 25, 0.06);
+        transform: translateY(-1px);
+    }
+
+.ib-marcacao-func-actions {
+    margin-top: 22px;
+    padding-top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+    .ib-marcacao-func-actions form {
+        margin: 0;
+    }
+
+.ib-marcacao-func-btn {
+    min-height: 38px;
+    padding: 0 15px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+
+    .ib-marcacao-func-btn:hover {
+        transform: translateY(-1px);
+    }
+
+.ib-marcacao-func-btn-primary {
+    border: 1px solid #D8B071;
+    background: #D8B071;
+    color: #191919;
+}
+
+    .ib-marcacao-func-btn-primary:hover {
+        border-color: #BEA256;
+        background: #BEA256;
+    }
+
+.ib-marcacao-func-btn-secondary {
+    border: 1px solid rgba(216, 176, 113, 0.40);
+    background: #fff;
+    color: #535333;
+}
+
+    .ib-marcacao-func-btn-secondary:hover {
+        border-color: #D8B071;
+        background: #F8F5EF;
+    }
+
+.ib-marcacao-func-btn-danger {
+    border: 1px solid rgba(150, 70, 70, 0.28);
+    background: #fff;
+    color: #8d4a4a;
+}
+
+    .ib-marcacao-func-btn-danger:hover {
+        border-color: rgba(150, 70, 70, 0.50);
+        background: rgba(150, 70, 70, 0.05);
+    }
+
+.ib-marcacao-func-btn {
+    min-height: 38px;
+    padding: 0 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a.ib-marcacao-func-btn:hover {
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   DETALHES DO CLIENTE - HISTÓRICO
+   ========================================================= */
+
+.ib-cliente-historico {
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid rgba(216, 176, 113, .18);
+    border-radius: 11px;
+    background: #FFFFFF;
+}
+
+
+/* Cabeçalho */
+
+.ib-cliente-historico-header,
+.ib-cliente-historico-row {
+    display: grid;
+    grid-template-columns: 120px 105px minmax(180px, 1.35fr) minmax(160px, 1fr) 115px 42px;
+    align-items: center;
+    column-gap: 18px;
+}
+
+.ib-cliente-historico-header {
+    min-height: 44px;
+    padding: 0 18px;
+    border-bottom: 1px solid rgba(216, 176, 113, .18);
+    background: #F8F5EF;
+    color: #817a70;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+
+/* Linhas */
+
+.ib-cliente-historico-row {
+    min-height: 72px;
+    padding: 11px 18px;
+    border-bottom: 1px solid rgba(216, 176, 113, .14);
+    background: #FFFFFF;
+    transition: background .18s ease;
+}
+
+    .ib-cliente-historico-row:last-child {
+        border-bottom: 0;
+    }
+
+    .ib-cliente-historico-row:hover {
+        background: rgba(248, 245, 239, .48);
+    }
+
+
+/* Data */
+
+.ib-cliente-historico-data strong {
+    color: #3d3934;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* Hora */
+
+.ib-cliente-historico-hora {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+    .ib-cliente-historico-hora strong {
+        color: #24231f;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .ib-cliente-historico-hora span {
+        color: #a29a8f;
+        font-size: 9px;
+    }
+
+
+/* Serviço */
+
+.ib-cliente-historico-servico {
+    min-width: 0;
+    overflow: hidden;
+    color: #535333;
+    font-size: 12px;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* Profissional */
+
+.ib-cliente-historico-profissional {
+    min-width: 0;
+    overflow: hidden;
+    color: #817a70;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* Ação */
+
+.ib-cliente-historico-action {
+    display: flex;
+    justify-content: flex-end;
+}
+
+
+/* Estado vazio */
+
+.ib-cliente-historico-empty {
+    min-height: 170px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-align: center;
+}
+
+    .ib-cliente-historico-empty strong {
+        color: #24231f;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .ib-cliente-historico-empty span {
+        color: #817a70;
+        font-size: 11px;
+    }
+
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 950px) {
+
+    .ib-cliente-historico {
+        overflow-x: auto;
+    }
+
+    .ib-cliente-historico-header,
+    .ib-cliente-historico-row {
+        min-width: 850px;
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    .ib-cliente-historico-header,
+    .ib-cliente-historico-row {
+        column-gap: 14px;
+    }
+
+    .ib-cliente-historico-row {
+        min-height: 68px;
+    }
+}

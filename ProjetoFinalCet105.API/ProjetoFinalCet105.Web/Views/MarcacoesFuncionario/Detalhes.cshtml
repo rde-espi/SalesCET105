@@ -1,0 +1,203 @@
+﻿@model ProjetoFinalCet105.Web.Models.MarcacaoClienteViewModel
+
+@{
+    ViewData["Title"] = "Detalhes da Marcação";
+    Layout = "_FuncionarioLayout";
+
+    var duracao = Model.DataHoraFim - Model.DataHoraInicio;
+    var estado = Model.EstadoMarcacaoNome?.Trim();
+
+var estaPendente = string.Equals(estado, "Pendente", StringComparison.OrdinalIgnoreCase);
+
+var estaConfirmada =string.Equals(estado, "Confirmada", StringComparison.OrdinalIgnoreCase);
+
+var podeCancelar =estaPendente || estaConfirmada;
+}
+
+<section class="ib-marcacao-func">
+
+    <header class="ib-marcacao-func-header">
+
+        <div>
+            <span class="ib-section-eyebrow">AGENDA</span>
+            <h1>Detalhes da Marcação</h1>
+            <p>Consulte a informação da marcação e do cliente.</p>
+        </div>
+
+        <a asp-controller="MinhaAgenda"
+           asp-action="Index"
+           asp-route-data="@Model.DataHoraInicio.ToString("yyyy-MM-dd")"
+           class="ib-marcacao-func-back">
+            ← Voltar à agenda
+        </a>
+
+    </header>
+
+
+    <div class="ib-marcacao-func-grid">
+
+        <article class="ib-marcacao-func-card ib-marcacao-func-main">
+
+            <div class="ib-marcacao-func-card-header">
+                <div>
+                    <span class="ib-section-eyebrow">MARCAÇÃO #@Model.Id</span>
+                    <h2>@Model.ServicoNome</h2>
+                </div>
+
+                <span class="ib-marcacao-func-status">
+                    @Model.EstadoMarcacaoNome
+                </span>
+            </div>
+
+
+            <div class="ib-marcacao-func-data">
+
+                <div class="ib-marcacao-func-field">
+                    <span>DATA</span>
+                    <strong>
+                        @Model.DataHoraInicio.ToString("dd/MM/yyyy")
+                    </strong>
+                </div>
+
+                <div class="ib-marcacao-func-field">
+                    <span>HORÁRIO</span>
+                    <strong>
+                        @Model.DataHoraInicio.ToString("HH:mm")
+                        —
+                        @Model.DataHoraFim.ToString("HH:mm")
+                    </strong>
+                </div>
+
+                <div class="ib-marcacao-func-field">
+                    <span>DURAÇÃO</span>
+                    <strong>
+                        @((int)duracao.TotalMinutes) min
+                    </strong>
+                </div>
+
+                <div class="ib-marcacao-func-field">
+                    <span>VALOR</span>
+                    <strong>
+                        @Model.Preco.ToString("C")
+                    </strong>
+                </div>
+
+            </div>
+
+
+            @if (!string.IsNullOrWhiteSpace(Model.Observacoes))
+            {
+                <div class="ib-marcacao-func-notes">
+                    <span>OBSERVAÇÕES</span>
+                    <p>@Model.Observacoes</p>
+                </div>
+            }
+
+            @if (estaPendente || estaConfirmada)
+            {
+    <div class="ib-marcacao-func-actions">
+
+        @if (estaPendente)
+        {
+            <form asp-controller="MarcacoesFuncionario"
+                  asp-action="Confirmar"
+                  asp-route-id="@Model.Id"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit"
+                        class="ib-marcacao-func-btn ib-marcacao-func-btn-primary">
+                    Confirmar marcação
+                </button>
+            </form>
+        }
+
+        @if (estaConfirmada)
+        {
+            <form asp-controller="MarcacoesFuncionario"
+                  asp-action="Concluir"
+                  asp-route-id="@Model.Id"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit"
+                        class="ib-marcacao-func-btn ib-marcacao-func-btn-primary">
+                    Concluir
+                </button>
+            </form>
+
+            <form asp-controller="MarcacoesFuncionario"
+                  asp-action="NaoCompareceu"
+                  asp-route-id="@Model.Id"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit"
+                        class="ib-marcacao-func-btn ib-marcacao-func-btn-secondary">
+                    Não compareceu
+                </button>
+            </form>
+        }
+
+        @if (podeCancelar)
+{
+    <a asp-controller="MarcacoesFuncionario"
+       asp-action="Editar"
+       asp-route-id="@Model.Id"
+       class="ib-marcacao-func-btn ib-marcacao-func-btn-secondary">
+        Alterar
+    </a>
+}
+
+        @if (podeCancelar)
+        {
+            <form asp-controller="MarcacoesFuncionario"
+                  asp-action="Cancelar"
+                  asp-route-id="@Model.Id"
+                  method="post"
+                  onsubmit="return confirm('Tem a certeza de que pretende cancelar esta marcação?');">
+
+                @Html.AntiForgeryToken()
+
+                <button type="submit"
+                        class="ib-marcacao-func-btn ib-marcacao-func-btn-danger">
+                    Cancelar
+                </button>
+            </form>
+        }
+
+    </div>
+}
+
+        </article>
+
+
+        <a asp-controller="MarcacoesFuncionario"
+           asp-action="Cliente"
+           asp-route-id="@Model.ClienteId"
+           class="ib-marcacao-func-card ib-marcacao-func-client"
+           style="text-decoration: none; color: inherit;">
+
+            <span class="ib-section-eyebrow">CLIENTE</span>
+
+            <div class="ib-marcacao-func-client-avatar">
+                @(string.IsNullOrWhiteSpace(Model.ClienteNome)
+                    ? "?"
+                    : Model.ClienteNome.Substring(0, 1).ToUpper())
+            </div>
+
+            <h3>@Model.ClienteNome</h3>
+
+            <p>
+                Consulte posteriormente o perfil e histórico
+                deste cliente.
+            </p>
+
+        </a>
+
+    </div>
+
+</section>

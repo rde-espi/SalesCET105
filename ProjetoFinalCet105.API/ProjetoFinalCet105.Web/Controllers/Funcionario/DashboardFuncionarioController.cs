@@ -21,8 +21,7 @@ public class DashboardFuncionarioController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var userId =
-            User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (string.IsNullOrWhiteSpace(userId))
         {
@@ -31,9 +30,7 @@ public class DashboardFuncionarioController : Controller
 
         try
         {
-            var funcionario =
-                await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>(
-                    $"api/Funcionarios/user/{userId}");
+            var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>( $"api/Funcionarios/user/{userId}");
 
             if (funcionario == null)
             {
