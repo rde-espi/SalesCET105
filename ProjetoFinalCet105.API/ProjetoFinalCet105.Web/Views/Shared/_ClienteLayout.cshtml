@@ -1,0 +1,418 @@
+﻿<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - Infinity Beauty</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@400;500;600&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="~/css/infinity-cliente.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/infinity-funcionario.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/infinity-admin.css" asp-append-version="true" />
+
+    <script src="~/js/mensagens-monitor.js"
+            asp-append-version="true"></script>
+
+    <script src="~/js/notificacoes-monitor.js"
+            asp-append-version="true"></script>
+</head>
+
+<body>
+
+    @{
+        var currentController =
+            ViewContext.RouteData.Values["controller"]?.ToString();
+    }
+
+    <div class="ib-cliente">
+
+    
+
+        <aside class="ib-cliente-sidebar"
+               id="clienteSidebar">
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="ib-cliente-logo">
+
+                <img src="~/images/logo-symbol.png"
+                     alt="Infinity Beauty" />
+
+                <div>
+                    <strong>INFINITY BEAUTY</strong>
+
+                    <span>
+                        CENTER | SPA | WELLNESS
+                    </span>
+                </div>
+
+            </a>
+
+
+            <nav class="ib-cliente-menu">
+
+                    <a asp-controller="DashboardCliente" asp-action="Index" class="ib-admin-menu-item @(currentController == "DashboardCliente" ? "active" : "")">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 11L12 3l9 8"></path>
+                        <path d="M5 10v11h14V10"></path>
+                        <path d="M9 21v-7h6v7"></path>
+                    </svg>
+
+                    <span>Início</span>
+                </a>
+
+
+                 <a asp-controller="MarcacoesCliente" asp-action="Index" class="ib-admin-menu-item @(currentController == "MarcacoesCliente" ? "active" : "")">
+
+
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3"
+                              y="5"
+                              width="18"
+                              height="16"
+                              rx="2"></rect>
+
+                        <path d="M16 3v4"></path>
+                        <path d="M8 3v4"></path>
+                        <path d="M3 11h18"></path>
+                    </svg>
+
+                    <span>Minhas marcações</span>
+                </a>
+
+
+                <a href="#"
+                   class="ib-cliente-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3"
+                              y="5"
+                              width="18"
+                              height="16"
+                              rx="2"></rect>
+
+                        <path d="M16 3v4"></path>
+                        <path d="M8 3v4"></path>
+                        <path d="M3 11h18"></path>
+                        <path d="M12 14v5"></path>
+                        <path d="M9.5 16.5h5"></path>
+                    </svg>
+
+                    <span>Nova marcação</span>
+                </a>
+
+
+                <a href="#"
+                   class="ib-cliente-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"></path>
+                        <path d="M9 8h6"></path>
+                        <path d="M9 12h6"></path>
+                    </svg>
+
+                    <span>As minhas faturas</span>
+                </a>
+
+
+                <a href="#"
+                   class="ib-cliente-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M4 4h16v12H8l-4 4z"></path>
+                        <path d="M8 9h8"></path>
+                        <path d="M8 12h5"></path>
+                    </svg>
+
+                    <span>Mensagens</span>
+
+                    @await Component.InvokeAsync(
+                        "MensagensNaoLidas")
+                </a>
+
+
+                <a href="#"
+                   class="ib-cliente-menu-item">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                        <path d="M10 21h4"></path>
+                    </svg>
+
+                    <span>Notificações</span>
+                </a>
+
+
+
+
+                <a asp-controller="Perfil"
+                   asp-action="Index"
+                   class="ib-cliente-menu-item @(currentController == "Perfil" ? "active" : "")">
+
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12"
+                                cy="8"
+                                r="4"></circle>
+
+                        <path d="M5 21c0-4 3.1-7 7-7s7 3 7 7"></path>
+                    </svg>
+
+                    <span>Meu perfil</span>
+                </a>
+
+
+                <a asp-controller="Servicos"
+                   asp-action="Index"
+                   class="ib-cliente-menu-item @(currentController == "Servicos" ? "active" : "")">
+
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12"
+                                cy="12"
+                                r="9"></circle>
+
+                        <path d="M12 7v10"></path>
+                        <path d="M7 12h10"></path>
+                    </svg>
+
+                    <span>Explorar serviços</span>
+                </a>
+
+            </nav>
+
+
+
+            <div class="ib-cliente-sidebar-footer">
+
+                <span class="ib-cliente-signature">
+                    Beleza,<br />
+                    bem-estar, sempre.
+                </span>
+
+                <a asp-controller="Home"
+                   asp-action="Index">
+
+                    ← Voltar ao site
+                </a>
+
+            </div>
+
+        </aside>
+
+
+  
+
+        <div class="ib-cliente-main">
+
+         
+
+            <header class="ib-cliente-topbar">
+
+                <button type="button"
+                        class="ib-cliente-menu-toggle"
+                        id="clienteMenuToggle"
+                        aria-label="Abrir menu"
+                        aria-expanded="false">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </button>
+
+
+                
+
+
+                <div class="ib-cliente-topbar-actions">
+
+                    @await Component.InvokeAsync(
+                        "NotificationBell")
+
+
+                    <span class="ib-cliente-topbar-divider">
+                    </span>
+
+
+                    <a asp-controller="Perfil"
+                       asp-action="Index"
+                       class="ib-cliente-profile"
+                       title="Meu perfil">
+
+                        @{
+                            var nome =
+                                User.Identity?.Name ?? "Cliente";
+
+                            var partesNome =
+                                nome.Split(
+                                    ' ',
+                                    StringSplitOptions.RemoveEmptyEntries);
+
+                            var iniciaisPerfil =
+                                partesNome.Length switch
+                                {
+                                    0 => "?",
+                                    1 => partesNome[0]
+                                        .Substring(0, 1)
+                                        .ToUpper(),
+
+                                    _ => $"{partesNome[0][0]}{partesNome[^1][0]}"
+                                        .ToUpper()
+                                };
+                        }
+
+
+                        <div class="ib-cliente-avatar">
+
+                            <span class="ib-cliente-avatar-iniciais">
+                                @iniciaisPerfil
+                            </span>
+
+                            <img src="@Url.Action("Fotografia", "Perfil")"
+                                 alt="@nome"
+                                 class="ib-cliente-avatar-foto"
+                                 onload="this.previousElementSibling.style.display='none';"
+                                 onerror="this.style.display='none';" />
+
+                        </div>
+
+
+                        <div class="ib-cliente-profile-info">
+
+                            <strong>
+                                @User.Identity?.Name
+                            </strong>
+
+                            <span>
+                                Cliente
+                            </span>
+
+                        </div>
+
+                    </a>
+
+
+                    <form asp-controller="Account"
+                          asp-action="Logout"
+                          method="post"
+                          class="ib-cliente-logout">
+
+                        @Html.AntiForgeryToken()
+
+                        <button type="submit">
+                            Sair
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </header>
+
+
+     
+
+            <main class="ib-cliente-content">
+
+                @RenderBody()
+
+            </main>
+
+
+ 
+
+            <footer class="ib-cliente-footer">
+
+                <span>
+                    © @DateTime.Now.Year Infinity Beauty.
+                    Todos os direitos reservados.
+                </span>
+
+                <div>
+
+                    <a href="#">
+                        Política de Privacidade
+                    </a>
+
+                    <a href="#">
+                        Termos e Condições
+                    </a>
+
+                    <a href="#">
+                        Suporte
+                    </a>
+
+                </div>
+
+            </footer>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        const clienteMenuToggle =
+            document.getElementById(
+                "clienteMenuToggle"
+            );
+
+        const clienteSidebar =
+            document.getElementById(
+                "clienteSidebar"
+            );
+
+        if (
+            clienteMenuToggle &&
+            clienteSidebar
+        ) {
+
+            clienteMenuToggle.addEventListener(
+                "click",
+                function () {
+
+                    clienteSidebar.classList.toggle(
+                        "open"
+                    );
+
+                    const isOpen =
+                        clienteSidebar.classList.contains(
+                            "open"
+                        );
+
+                    clienteMenuToggle.setAttribute(
+                        "aria-expanded",
+                        isOpen
+                    );
+                }
+            );
+        }
+
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@8.0.7/dist/browser/signalr.min.js">
+    </script>
+
+
+    @await RenderSectionAsync(
+        "Scripts",
+        required: false
+    )
+
+</body>
+
+</html>

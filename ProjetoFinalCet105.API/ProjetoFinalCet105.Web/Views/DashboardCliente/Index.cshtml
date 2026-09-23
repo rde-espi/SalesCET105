@@ -1,0 +1,244 @@
+﻿@model ProjetoFinalCet105.Web.Models.DashboardClienteViewModel
+
+@{
+    ViewData["Title"] = "Início";
+    Layout = "~/Views/Shared/_ClienteLayout.cshtml";
+}
+
+<!-- =========================
+     CABEÇALHO
+========================= -->
+
+<section class="ib-cliente-dashboard-header">
+
+    <div class="ib-cliente-dashboard-welcome">
+
+        <span class="ib-cliente-page-eyebrow">
+            ÁREA DE CLIENTE
+        </span>
+
+        <h1>
+            Olá, @Model.Cliente.NomeCompleto
+        </h1>
+
+        <p>
+            Acompanhe as suas marcações e mantenha tudo organizado num só lugar.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     RESUMO
+========================= -->
+
+<section class="ib-cliente-dashboard-kpis">
+
+    <!-- PRÓXIMAS MARCAÇÕES -->
+
+   <a href="@(Model.ProximaMarcacao != null
+    ? Url.Action("Detalhes", "MarcacoesCliente", new { id = Model.ProximaMarcacao.Id })
+    : Url.Action("Index", "MarcacoesCliente"))"
+   class="ib-cliente-kpi-card ib-cliente-kpi-link">
+
+        <div class="ib-cliente-kpi-icon">
+
+            <svg viewBox="0 0 24 24">
+                <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                <path d="M8 3v4M16 3v4M3 10h18"></path>
+                <path d="M8 14h2M12 14h2"></path>
+            </svg>
+
+        </div>
+
+        <div class="ib-cliente-kpi-content">
+
+            <strong class="ib-cliente-kpi-value">
+                @Model.TotalProximasMarcacoes
+            </strong>
+
+            <span class="ib-cliente-kpi-label">
+                Próximas marcações
+            </span>
+
+        </div>
+
+    </a>
+
+
+    <!-- CONCLUÍDAS -->
+
+    <a asp-controller="MarcacoesCliente"
+       asp-action="Index"
+       class="ib-cliente-kpi-card ib-cliente-kpi-link">
+
+        <div class="ib-cliente-kpi-icon">
+
+            <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="9"></circle>
+                <path d="M8 12l3 3 5-6"></path>
+            </svg>
+
+        </div>
+
+        <div class="ib-cliente-kpi-content">
+
+            <strong class="ib-cliente-kpi-value">
+                @Model.TotalMarcacoesConcluidas
+            </strong>
+
+            <span class="ib-cliente-kpi-label">
+                Marcações concluídas
+            </span>
+
+        </div>
+
+    </a>
+
+
+    <!-- MENSAGENS -->
+
+    <article class="ib-cliente-kpi-card">
+
+        <div class="ib-cliente-kpi-icon">
+
+            <svg viewBox="0 0 24 24">
+                <path d="M4 5h16v11H8l-4 4V5z"></path>
+            </svg>
+
+        </div>
+
+        <div class="ib-cliente-kpi-content">
+
+            <strong class="ib-cliente-kpi-value">
+                @Model.MensagensNaoLidas
+            </strong>
+
+            <span class="ib-cliente-kpi-label">
+                Mensagens não lidas
+            </span>
+
+        </div>
+
+    </article>
+
+
+    <!-- NOTIFICAÇÕES -->
+
+    <article class="ib-cliente-kpi-card">
+
+        <div class="ib-cliente-kpi-icon">
+
+            <svg viewBox="0 0 24 24">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                <path d="M10 21h4"></path>
+            </svg>
+
+        </div>
+
+        <div class="ib-cliente-kpi-content">
+
+            <strong class="ib-cliente-kpi-value">
+                @Model.NotificacoesNaoLidas
+            </strong>
+
+            <span class="ib-cliente-kpi-label">
+                Notificações não lidas
+            </span>
+
+        </div>
+
+    </article>
+
+</section>
+
+
+<!-- =========================
+     PRÓXIMA MARCAÇÃO
+========================= -->
+
+<section class="ib-cliente-agenda">
+
+    <div class="ib-cliente-agenda-header">
+
+        <div>
+
+            <span class="ib-cliente-section-eyebrow">
+                A SUA AGENDA
+            </span>
+
+            <h2>
+                Próxima marcação
+            </h2>
+
+            <p>
+                Consulte os detalhes da sua próxima visita.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    @if (Model.ProximaMarcacao != null)
+    {
+        <a asp-controller="MarcacoesCliente"
+           asp-action="Detalhes"
+           asp-route-id="@Model.ProximaMarcacao.Id"
+           class="ib-cliente-agenda-item ib-cliente-agenda-link">
+
+            <div class="ib-cliente-agenda-date">
+
+                <strong>
+                    @Model.ProximaMarcacao.DataHoraInicio.ToString("dd/MM")
+                </strong>
+
+                <span>
+                    @Model.ProximaMarcacao.DataHoraInicio.ToString("HH:mm")
+                </span>
+
+            </div>
+
+
+            <div class="ib-cliente-agenda-info">
+
+                <strong>
+                    @Model.ProximaMarcacao.ServicoNome
+                </strong>
+
+                <span>
+                    com @Model.ProximaMarcacao.FuncionarioNome
+                </span>
+
+            </div>
+
+
+            <div class="ib-cliente-agenda-status">
+                @Model.ProximaMarcacao.EstadoMarcacaoNome
+            </div>
+
+
+            <div class="ib-cliente-agenda-price">
+                @Model.ProximaMarcacao.Preco.ToString("C")
+            </div>
+
+        </a>
+    }
+    else
+    {
+        <div class="ib-cliente-agenda-empty">
+
+            <strong>
+                Sem próximas marcações
+            </strong>
+
+            <span>
+                Quando tiver uma marcação agendada, ela aparecerá aqui.
+            </span>
+
+        </div>
+    }
+
+</section>

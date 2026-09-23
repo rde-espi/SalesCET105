@@ -110,7 +110,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (response.Roles.Contains("Cliente"))
             {
-                return RedirectToAction("Index","Perfil");
+                return RedirectToAction("Index","DashboardCliente");
             }
 
             return RedirectToAction("Index", "Home");
@@ -210,7 +210,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (response.Roles.Contains("Cliente"))
             {
-                return RedirectToAction("Index", "Perfil");
+                return RedirectToAction("Index", "DashboardCliente");
             }
 
 
@@ -296,7 +296,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (response.Roles.Contains("Cliente"))
             {
-                return RedirectToAction("Index","Perfil");
+                return RedirectToAction("Index","DashboardCliente");
             }
 
             return RedirectToAction("Index", "Home");

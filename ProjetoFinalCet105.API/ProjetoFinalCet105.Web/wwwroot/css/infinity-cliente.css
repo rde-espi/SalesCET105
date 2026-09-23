@@ -1,0 +1,2643 @@
+﻿/* =========================
+   INFINITY BEAUTY - CLIENTE
+========================= */
+
+:root {
+    --cliente-dark: #121513;
+    --cliente-dark-soft: #191c19;
+    --cliente-gold: #d8b071;
+    --cliente-gold-dark: #b98838;
+    --cliente-bg: #f7f4ee;
+    --cliente-surface: #fffdfa;
+    --cliente-border: #e5ded3;
+    --cliente-text: #25231f;
+    --cliente-muted: #7b766e;
+    --cliente-sidebar-width: 225px;
+    --cliente-topbar-height: 66px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    background: var(--cliente-bg);
+    color: var(--cliente-text);
+    font-family: "Montserrat", sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+/* =========================
+   SHELL
+========================= */
+
+.ib-cliente {
+    min-height: 100vh;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.ib-cliente-sidebar {
+    width: var(--cliente-sidebar-width);
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient( 180deg, #111412 0%, #151816 60%, #121513 100% );
+    border-right: 1px solid rgba(216, 176, 113, 0.15);
+    box-shadow: 6px 0 30px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================
+   LOGO
+========================= */
+
+.ib-cliente-logo {
+    height: 120px;
+    padding: 10px 15px 13px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.11);
+}
+
+    .ib-cliente-logo img {
+        width: 92px;
+        height: 60px;
+        object-fit: contain;
+        margin-bottom: 3px;
+    }
+
+    .ib-cliente-logo > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .ib-cliente-logo strong {
+        color: #e2b85f;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 2px;
+        white-space: nowrap;
+    }
+
+    .ib-cliente-logo span {
+        margin-top: 5px;
+        color: #bfa66f;
+        font-size: 0.42rem;
+        font-weight: 500;
+        letter-spacing: 1.5px;
+        white-space: nowrap;
+    }
+
+
+/* =========================
+   MENU
+========================= */
+
+.ib-cliente-menu {
+    flex: 1;
+    padding: 7px 8px 15px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.ib-cliente-menu-item {
+    min-height: 41px;
+    margin-bottom: 1px;
+    padding: 0 13px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-radius: 5px;
+    color: #e1ddd5;
+    font-size: 0.72rem;
+    font-weight: 400;
+    transition: background 0.18s ease, color 0.18s ease;
+}
+
+    .ib-cliente-menu-item svg {
+        width: 20px;
+        height: 20px;
+        flex: 0 0 20px;
+        fill: none;
+        stroke: #d5a642;
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .ib-cliente-menu-item:hover {
+        background: rgba(216, 176, 113, 0.08);
+        color: white;
+    }
+
+    .ib-cliente-menu-item.active {
+        color: #fff;
+        background: linear-gradient( 90deg, #b77c23 0%, #d9aa51 100% );
+        box-shadow: 0 4px 15px rgba(182, 124, 35, 0.18);
+    }
+
+        .ib-cliente-menu-item.active svg {
+            stroke: #fff;
+        }
+
+
+/* O separador que colocámos especificamente no menu Cliente */
+
+.ib-cliente-menu-separator {
+    height: 1px;
+    margin: 8px 13px;
+    background: rgba(216, 176, 113, 0.18);
+}
+
+
+/* =========================
+   SIDEBAR FOOTER
+========================= */
+
+.ib-cliente-sidebar-footer {
+    padding: 18px 25px 23px;
+}
+
+.ib-cliente-signature {
+    display: block;
+    margin-bottom: 18px;
+    color: #d9a744;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.25rem;
+    font-style: italic;
+    line-height: 1.05;
+    transform: rotate(-3deg);
+}
+
+.ib-cliente-sidebar-footer a {
+    display: block;
+    padding-top: 13px;
+    border-top: 1px solid rgba(216, 176, 113, 0.32);
+    color: #9c978e;
+    font-size: 0.58rem;
+    transition: color 0.2s ease;
+}
+
+    .ib-cliente-sidebar-footer a:hover {
+        color: var(--cliente-gold);
+    }
+
+
+/* =========================
+   MAIN
+========================= */
+
+.ib-cliente-main {
+    min-height: 100vh;
+    margin-left: var(--cliente-sidebar-width);
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* =========================
+   TOPBAR
+========================= */
+
+.ib-cliente-topbar {
+    height: var(--cliente-topbar-height);
+    position: sticky;
+    top: 0;
+    z-index: 80;
+    padding: 0 25px;
+    display: flex;
+    align-items: center;
+    background: linear-gradient( 90deg, #161917 0%, #191b19 70%, #131614 100% );
+    border-bottom: 1px solid rgba(216, 176, 113, 0.18);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =========================
+   MENU MOBILE
+========================= */
+
+.ib-cliente-menu-toggle {
+    width: 38px;
+    height: 38px;
+    margin-right: 24px;
+    padding: 8px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    display: none;
+}
+
+    .ib-cliente-menu-toggle span {
+        width: 21px;
+        height: 1.5px;
+        display: block;
+        background: #f0ece4;
+    }
+
+
+/* =========================
+   TÍTULO TOPBAR
+========================= */
+
+.ib-cliente-topbar-brand {
+    display: flex;
+    flex-direction: column;
+}
+
+.ib-cliente-topbar-eyebrow {
+    color: #bfa66f;
+    font-size: 0.48rem;
+    font-weight: 500;
+    letter-spacing: 1.7px;
+}
+
+.ib-cliente-topbar-brand strong {
+    margin-top: 3px;
+    color: #f5f1e9;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* =========================
+   TOPBAR RIGHT
+========================= */
+
+.ib-cliente-topbar-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.ib-cliente-topbar-divider {
+    width: 1px;
+    height: 29px;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+
+/* =========================
+   PERFIL TOPBAR
+========================= */
+
+.ib-cliente-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ib-cliente-avatar {
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(216, 176, 113, 0.45);
+    border-radius: 50%;
+    background: linear-gradient( 135deg, #e5c783, #ad792e );
+    color: #171512;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.ib-cliente-avatar-foto {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.ib-cliente-avatar-iniciais {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.ib-cliente-profile-info {
+    min-width: 105px;
+    display: flex;
+    flex-direction: column;
+}
+
+    .ib-cliente-profile-info strong {
+        color: #f5f1e9;
+        font-size: 0.66rem;
+        font-weight: 500;
+    }
+
+    .ib-cliente-profile-info span {
+        margin-top: 3px;
+        color: #bcb6ad;
+        font-size: 0.56rem;
+    }
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+.ib-cliente-logout {
+    margin: 0;
+}
+
+    .ib-cliente-logout button {
+        padding: 6px 10px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 4px;
+        background: transparent;
+        color: #c8c2b9;
+        cursor: pointer;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.58rem;
+        transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+        .ib-cliente-logout button:hover {
+            color: var(--cliente-gold);
+            border-color: rgba(216, 176, 113, 0.5);
+        }
+
+
+/* =========================
+   CONTENT
+========================= */
+
+.ib-cliente-content {
+    flex: 1;
+    min-height: calc(100vh - var(--cliente-topbar-height));
+    padding: 27px 25px 35px;
+    background: linear-gradient( 135deg, #faf8f4 0%, #f6f1e9 100% );
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.ib-cliente-footer {
+    min-height: 55px;
+    padding: 0 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    border-top: 1px solid var(--cliente-border);
+    background: #faf8f4;
+    color: #777168;
+    font-size: 0.55rem;
+}
+
+    .ib-cliente-footer div {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+    }
+
+    .ib-cliente-footer a {
+        color: #625d56;
+    }
+
+        .ib-cliente-footer a:hover {
+            color: #a77936;
+        }
+
+
+/* =========================================================
+   NOTIFICATION BELL
+   Copiado da estrutura real do Admin
+========================================================= */
+
+.ib-notification-bell {
+    position: relative;
+}
+
+.ib-bell-button {
+    width: 42px;
+    height: 42px;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .ib-bell-button svg {
+        width: 22px;
+        height: 22px;
+        stroke: #f5f2eb;
+        stroke-width: 1.8;
+        fill: none;
+    }
+
+    .ib-bell-button:hover {
+        background: linear-gradient( 135deg, #e5c783, #ad792e );
+    }
+
+.ib-bell-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #C0392B;
+    color: white;
+    font-size: .65rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ib-bell-dropdown {
+    position: absolute;
+    top: 52px;
+    right: 0;
+    width: 340px;
+    background: white;
+    border-radius: 14px;
+    border: 1px solid rgba(25, 25, 25, .08);
+    box-shadow: 0 18px 45px rgba(0, 0, 0, .12);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: .22s;
+    z-index: 3000;
+}
+
+.ib-notification-bell:hover .ib-bell-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.ib-bell-header {
+    padding: 18px 18px 14px;
+    border-bottom: 1px solid #f0ece4;
+    display: flex;
+    justify-content: space-between;
+}
+
+.ib-bell-item {
+    padding: 14px 18px;
+    border-bottom: 1px solid #f7f4ef;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+    .ib-bell-item.unread {
+        background: rgba(216, 176, 113, .08);
+    }
+
+    .ib-bell-item strong {
+        font-size: .85rem;
+    }
+
+    .ib-bell-item span {
+        font-size: .78rem;
+        color: #666;
+    }
+
+    .ib-bell-item small {
+        color: #999;
+        font-size: .72rem;
+    }
+
+.ib-bell-footer {
+    display: block;
+    text-align: center;
+    padding: 14px;
+    color: var(--cliente-gold-dark);
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   CLASSES BASE DAS PÁGINAS CLIENTE
+   Mantemos estas próprias para as páginas que vamos criar.
+========================================================= */
+
+.ib-cliente-page {
+    width: 100%;
+}
+
+.ib-cliente-page-header {
+    margin-bottom: 24px;
+}
+
+.ib-cliente-page-eyebrow {
+    display: block;
+    margin-bottom: 7px;
+    color: #b98838;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 1.7px;
+    text-transform: uppercase;
+}
+
+.ib-cliente-page-title {
+    margin: 0;
+    color: #25231f;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+.ib-cliente-page-subtitle {
+    margin: 7px 0 0;
+    color: #7b766e;
+    font-size: 0.72rem;
+    line-height: 1.6;
+}
+
+
+/* =========================
+   CARDS BASE
+========================= */
+
+.ib-cliente-card {
+    border: 1px solid #e5ded3;
+    border-radius: 12px;
+    background: #fffdfa;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.04);
+}
+
+.ib-cliente-card-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid #e5ded3;
+}
+
+.ib-cliente-card-body {
+    padding: 20px;
+}
+
+
+/* =========================
+   BOTÕES BASE
+========================= */
+
+.ib-cliente-btn {
+    min-height: 38px;
+    padding: 0 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border-radius: 5px;
+    font-size: 0.68rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.ib-cliente-btn-primary {
+    border: 1px solid #b98838;
+    background: linear-gradient( 90deg, #b77c23, #d9aa51 );
+    color: #fff;
+}
+
+.ib-cliente-btn-secondary {
+    border: 1px solid #e5ded3;
+    background: #fffdfa;
+    color: #25231f;
+}
+
+
+/* =========================
+   FORMULÁRIOS BASE
+========================= */
+
+.ib-cliente-form-group {
+    margin-bottom: 17px;
+}
+
+.ib-cliente-label {
+    display: block;
+    margin-bottom: 6px;
+    color: #25231f;
+    font-size: 0.68rem;
+    font-weight: 500;
+}
+
+.ib-cliente-input,
+.ib-cliente-select,
+.ib-cliente-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd5c9;
+    border-radius: 5px;
+    outline: 0;
+    background: #fffdfa;
+    color: #25231f;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.7rem;
+}
+
+    .ib-cliente-input:focus,
+    .ib-cliente-select:focus,
+    .ib-cliente-textarea:focus {
+        border-color: #c99b4b;
+        box-shadow: 0 0 0 2px rgba(216, 176, 113, 0.10);
+    }
+
+
+/* =========================
+   SCROLLBARS
+========================= */
+
+html,
+body,
+.ib-cliente-menu {
+    scrollbar-width: thin;
+    scrollbar-color: #b9893f #171a17;
+}
+
+    html::-webkit-scrollbar,
+    body::-webkit-scrollbar,
+    .ib-cliente-menu::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    html::-webkit-scrollbar-track,
+    body::-webkit-scrollbar-track,
+    .ib-cliente-menu::-webkit-scrollbar-track {
+        background: #171a17;
+    }
+
+    html::-webkit-scrollbar-thumb,
+    body::-webkit-scrollbar-thumb,
+    .ib-cliente-menu::-webkit-scrollbar-thumb {
+        background: linear-gradient( 180deg, #d8b071, #a97935 );
+        border-radius: 10px;
+        border: 2px solid #171a17;
+    }
+
+        html::-webkit-scrollbar-thumb:hover,
+        body::-webkit-scrollbar-thumb:hover,
+        .ib-cliente-menu::-webkit-scrollbar-thumb:hover {
+            background: #d8b071;
+        }
+
+.ib-cliente-main {
+    scrollbar-width: thin;
+    scrollbar-color: #c39a55 #f1ece3;
+}
+
+    .ib-cliente-main::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .ib-cliente-main::-webkit-scrollbar-track {
+        background: #f1ece3;
+    }
+
+    .ib-cliente-main::-webkit-scrollbar-thumb {
+        background: #c39a55;
+        border-radius: 10px;
+        border: 2px solid #f1ece3;
+    }
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1050px) {
+
+    :root {
+        --cliente-sidebar-width: 205px;
+    }
+
+    .ib-cliente-profile-info {
+        display: none;
+    }
+}
+
+
+@media (max-width: 900px) {
+
+    .ib-cliente-sidebar {
+        display: flex;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        box-shadow: 10px 0 35px rgba(0, 0, 0, 0.25);
+    }
+
+        .ib-cliente-sidebar.open {
+            transform: translateX(0);
+        }
+
+    .ib-cliente-main {
+        margin-left: 0;
+    }
+
+    .ib-cliente-menu-toggle {
+        display: flex;
+    }
+
+    .ib-cliente-profile-info {
+        display: none;
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .ib-cliente-topbar {
+        padding: 0 14px;
+    }
+
+    .ib-cliente-topbar-brand {
+        display: none;
+    }
+
+    .ib-cliente-topbar-actions {
+        gap: 9px;
+    }
+
+    .ib-cliente-content {
+        padding: 20px 14px 28px;
+    }
+
+    .ib-cliente-footer {
+        padding: 15px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+        .ib-cliente-footer div {
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+    .ib-bell-dropdown {
+        width: min(340px, calc(100vw - 30px));
+        right: -85px;
+    }
+}
+/* =========================================================
+   DASHBOARD CLIENTE
+========================================================= */
+
+.ib-cliente-dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 26px;
+}
+
+.ib-cliente-dashboard-welcome h1 {
+    margin: 5px 0 6px;
+    color: var(--cliente-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.05;
+}
+
+.ib-cliente-dashboard-welcome p {
+    margin: 0;
+    color: var(--cliente-muted);
+    font-size: 0.75rem;
+}
+
+
+/* =========================
+   KPI GRID
+========================= */
+
+.ib-cliente-dashboard-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+
+/* =========================
+   KPI CARD
+========================= */
+
+.ib-cliente-kpi-card {
+    min-height: 120px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--cliente-surface);
+    border: 1px solid var(--cliente-border);
+    border-radius: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .ib-cliente-kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(35, 31, 25, 0.07);
+    }
+
+
+/* =========================
+   KPI ICON
+========================= */
+
+.ib-cliente-kpi-icon {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(216, 176, 113, 0.12);
+}
+
+    .ib-cliente-kpi-icon svg {
+        width: 21px;
+        height: 21px;
+        fill: none;
+        stroke: var(--cliente-gold-dark);
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+
+/* =========================
+   KPI CONTENT
+========================= */
+
+.ib-cliente-kpi-content {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.ib-cliente-kpi-value {
+    color: var(--cliente-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.ib-cliente-kpi-label {
+    margin-top: 7px;
+    color: var(--cliente-muted);
+    font-size: 0.66rem;
+    line-height: 1.35;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+
+    .ib-cliente-dashboard-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+
+    .ib-cliente-dashboard-kpis {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-cliente-dashboard-welcome h1 {
+        font-size: 1.7rem;
+    }
+}
+
+/* =========================================================
+   AGENDA CLIENTE
+========================================================= */
+
+.ib-cliente-agenda {
+    margin-top: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(216, 176, 113, 0.22);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 6px 22px rgba(25, 25, 25, 0.04);
+}
+
+
+/* CABEÇALHO */
+
+.ib-cliente-agenda-header {
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+    .ib-cliente-agenda-header h2 {
+        margin: 3px 0 3px;
+        color: #191919;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .ib-cliente-agenda-header p {
+        margin: 0;
+        color: #817a70;
+        font-size: 11px;
+    }
+
+
+/* MARCAÇÃO */
+
+.ib-cliente-agenda-item {
+    min-height: 82px;
+    padding: 14px 22px;
+    display: grid;
+    grid-template-columns: 80px minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 18px;
+}
+
+
+/* DATA E HORA */
+
+.ib-cliente-agenda-date {
+    display: flex;
+    flex-direction: column;
+}
+
+    .ib-cliente-agenda-date strong {
+        color: #191919;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .ib-cliente-agenda-date span {
+        margin-top: 2px;
+        color: #817a70;
+        font-size: 10px;
+    }
+
+
+/* SERVIÇO */
+
+.ib-cliente-agenda-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+    .ib-cliente-agenda-info strong {
+        overflow: hidden;
+        color: #24231f;
+        font-size: 13px;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .ib-cliente-agenda-info span {
+        margin-top: 3px;
+        color: #817a70;
+        font-size: 10px;
+    }
+
+
+/* ESTADO */
+
+.ib-cliente-agenda-status {
+    padding: 5px 9px;
+    border: 1px solid rgba(216, 176, 113, 0.3);
+    border-radius: 20px;
+    background: #F8F5EF;
+    color: #BEA256;
+    font-size: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* PREÇO */
+
+.ib-cliente-agenda-price {
+    color: #191919;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* SEM MARCAÇÕES */
+
+.ib-cliente-agenda-empty {
+    min-height: 110px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+    .ib-cliente-agenda-empty strong {
+        color: #191919;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .ib-cliente-agenda-empty span {
+        margin-top: 5px;
+        color: #817a70;
+        font-size: 11px;
+    }
+
+
+/* RESPONSIVE */
+
+@media (max-width: 700px) {
+
+    .ib-cliente-agenda-item {
+        grid-template-columns: 65px minmax(0, 1fr);
+    }
+
+    .ib-cliente-agenda-status,
+    .ib-cliente-agenda-price {
+        grid-column: 2;
+        justify-self: start;
+    }
+}
+
+/* =========================================================
+   MINHAS MARCAÇÕES
+========================================================= */
+
+.ib-cliente-bookings {
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid rgba(216, 176, 113, 0.22);
+    border-radius: 14px;
+    box-shadow: 0 6px 22px rgba(25, 25, 25, 0.04);
+}
+
+
+/* LINHA */
+
+.ib-cliente-booking-row {
+    min-height: 76px;
+    padding: 13px 20px;
+    display: grid;
+    grid-template-columns: 75px minmax(180px, 1fr) 80px 110px 85px 20px;
+    align-items: center;
+    gap: 16px;
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.14);
+    transition: background 0.18s ease, padding-left 0.18s ease;
+}
+
+    .ib-cliente-booking-row:last-child {
+        border-bottom: 0;
+    }
+
+    .ib-cliente-booking-row:hover {
+        padding-left: 23px;
+        background: #fcfaf6;
+        color: inherit;
+    }
+
+
+/* DATA */
+
+.ib-cliente-booking-date {
+    display: flex;
+    flex-direction: column;
+}
+
+    .ib-cliente-booking-date strong {
+        color: #191919;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .ib-cliente-booking-date span {
+        margin-top: 2px;
+        color: #817a70;
+        font-size: 10px;
+    }
+
+
+/* SERVIÇO */
+
+.ib-cliente-booking-service {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+    .ib-cliente-booking-service strong {
+        overflow: hidden;
+        color: #24231f;
+        font-size: 12px;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .ib-cliente-booking-service span {
+        margin-top: 3px;
+        color: #817a70;
+        font-size: 10px;
+    }
+
+
+/* TIPO */
+
+.ib-cliente-booking-type {
+    color: #817a70;
+    font-size: 9px;
+}
+
+
+/* ESTADO */
+
+.ib-cliente-booking-status {
+    width: fit-content;
+    padding: 5px 9px;
+    color: #BEA256;
+    background: #F8F5EF;
+    border: 1px solid rgba(216, 176, 113, 0.3);
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* PREÇO */
+
+.ib-cliente-booking-price {
+    color: #191919;
+    font-size: 11px;
+    font-weight: 700;
+    text-align: right;
+    white-space: nowrap;
+}
+
+
+/* SETA */
+
+.ib-cliente-booking-arrow {
+    color: #BEA256;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    line-height: 1;
+    text-align: right;
+}
+
+
+/* ESTADO VAZIO */
+
+.ib-cliente-bookings-empty {
+    min-height: 150px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+    .ib-cliente-bookings-empty strong {
+        color: #191919;
+        font-size: 13px;
+    }
+
+    .ib-cliente-bookings-empty span {
+        margin-top: 5px;
+        color: #817a70;
+        font-size: 11px;
+    }
+
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+
+    .ib-cliente-booking-row {
+        grid-template-columns: 65px minmax(150px, 1fr) auto 18px;
+    }
+
+    .ib-cliente-booking-type {
+        display: none;
+    }
+
+    .ib-cliente-booking-price {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .ib-cliente-booking-row {
+        grid-template-columns: 55px minmax(0, 1fr) 18px;
+    }
+
+    .ib-cliente-booking-status {
+        display: none;
+    }
+}
+
+/* =========================================================
+   DETALHES DA MARCAÇÃO
+========================================================= */
+
+.ib-cliente-back-link {
+    color: #817a70;
+    font-size: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.18s ease;
+}
+
+    .ib-cliente-back-link:hover {
+        color: #BEA256;
+    }
+
+
+/* CARD */
+
+.ib-cliente-booking-details {
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid rgba(216, 176, 113, 0.22);
+    border-radius: 14px;
+    box-shadow: 0 6px 22px rgba(25, 25, 25, 0.04);
+}
+
+
+/* CABEÇALHO */
+
+.ib-cliente-booking-details-header {
+    padding: 22px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+.ib-cliente-detail-eyebrow {
+    color: #BEA256;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+
+.ib-cliente-booking-details-header h2 {
+    margin: 4px 0 2px;
+    color: #191919;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.ib-cliente-booking-details-header p {
+    margin: 0;
+    color: #817a70;
+    font-size: 11px;
+}
+
+
+/* ESTADO */
+
+.ib-cliente-detail-status {
+    padding: 6px 11px;
+    color: #BEA256;
+    background: #F8F5EF;
+    border: 1px solid rgba(216, 176, 113, 0.3);
+    border-radius: 20px;
+    font-size: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+/* DADOS */
+
+.ib-cliente-detail-grid {
+    padding: 22px 24px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.ib-cliente-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+    .ib-cliente-detail-item span {
+        color: #817a70;
+        font-size: 9px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .ib-cliente-detail-item strong {
+        color: #24231f;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+
+/* DESCONTO */
+
+.ib-cliente-detail-discount {
+    margin: 0 24px;
+    padding: 16px 0;
+    display: flex;
+    gap: 50px;
+    border-top: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+    .ib-cliente-detail-discount div {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .ib-cliente-detail-discount span {
+        color: #817a70;
+        font-size: 9px;
+    }
+
+    .ib-cliente-detail-discount strong {
+        color: #BEA256;
+        font-size: 11px;
+    }
+
+
+/* OBSERVAÇÕES */
+
+.ib-cliente-detail-notes {
+    margin: 0 24px;
+    padding: 16px 0 22px;
+    border-top: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+    .ib-cliente-detail-notes span {
+        color: #817a70;
+        font-size: 9px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+    }
+
+    .ib-cliente-detail-notes p {
+        margin: 6px 0 0;
+        color: #24231f;
+        font-size: 11px;
+        line-height: 1.6;
+    }
+
+
+/* RESPONSIVE */
+
+@media (max-width: 800px) {
+
+    .ib-cliente-detail-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 550px) {
+
+    .ib-cliente-booking-details-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ib-cliente-detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   MINHAS MARCAÇÕES - GESTÃO
+========================================================= */
+
+.ib-cliente-marcacoes-page {
+    width: 100%;
+}
+
+
+/* =========================
+   PAINEL
+========================= */
+
+.ib-cliente-marcacoes-panel {
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid rgba(216, 176, 113, 0.22);
+    border-radius: 14px;
+    box-shadow: 0 6px 22px rgba(25, 25, 25, 0.04);
+}
+
+.ib-cliente-marcacoes-panel-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.14);
+}
+
+    .ib-cliente-marcacoes-panel-header h2 {
+        margin: 3px 0 2px;
+        color: #191919;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .ib-cliente-marcacoes-panel-header p {
+        margin: 0;
+        color: #817a70;
+        font-size: 10px;
+    }
+
+
+/* =========================
+   TOOLBAR
+========================= */
+
+.ib-cliente-marcacoes-toolbar {
+    padding: 14px 20px;
+    display: grid;
+    grid-template-columns: minmax(260px, 1fr) 180px 160px;
+    gap: 10px;
+    background: #fcfaf6;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.14);
+}
+
+
+/* PESQUISA */
+
+.ib-cliente-marcacoes-search {
+    height: 38px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: #fff;
+    border: 1px solid #e5ded3;
+    border-radius: 6px;
+}
+
+    .ib-cliente-marcacoes-search:focus-within {
+        border-color: rgba(190, 162, 86, 0.65);
+        box-shadow: 0 0 0 2px rgba(216, 176, 113, 0.08);
+    }
+
+    .ib-cliente-marcacoes-search svg {
+        width: 16px;
+        height: 16px;
+        flex: 0 0 16px;
+        fill: none;
+        stroke: #BEA256;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+    }
+
+    .ib-cliente-marcacoes-search input {
+        width: 100%;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        color: #24231f;
+        font-family: "Montserrat", sans-serif;
+        font-size: 10px;
+    }
+
+        .ib-cliente-marcacoes-search input::placeholder {
+            color: #9a948b;
+        }
+
+
+/* FILTROS */
+
+.ib-cliente-marcacoes-filter {
+    height: 38px;
+    padding: 0 30px 0 11px;
+    outline: none;
+    color: #535333;
+    background: #fff;
+    border: 1px solid #e5ded3;
+    border-radius: 6px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+    .ib-cliente-marcacoes-filter:focus {
+        border-color: rgba(190, 162, 86, 0.65);
+        box-shadow: 0 0 0 2px rgba(216, 176, 113, 0.08);
+    }
+
+
+/* =========================
+   TABELA
+========================= */
+
+.ib-cliente-marcacoes-table {
+    width: 100%;
+}
+
+.ib-cliente-marcacoes-table-header,
+.ib-cliente-marcacoes-row {
+    display: grid;
+    grid-template-columns: 135px minmax(200px, 1.5fr) minmax(150px, 1fr) 120px 90px 20px;
+    align-items: center;
+    gap: 16px;
+}
+
+
+/* CABEÇALHO */
+
+.ib-cliente-marcacoes-table-header {
+    min-height: 38px;
+    padding: 0 20px;
+    color: #817a70;
+    background: #f8f5ef;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.16);
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+
+/* LINHAS */
+
+.ib-cliente-marcacoes-row {
+    min-height: 66px;
+    padding: 10px 20px;
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.12);
+    transition: background 0.18s ease, box-shadow 0.18s ease;
+}
+
+    .ib-cliente-marcacoes-row:last-child {
+        border-bottom: 0;
+    }
+
+    .ib-cliente-marcacoes-row:hover {
+        color: inherit;
+        background: #fcfaf6;
+        box-shadow: inset 3px 0 0 #d8b071;
+    }
+
+
+/* DATA */
+
+.ib-cliente-marcacoes-date {
+    display: flex;
+    flex-direction: column;
+}
+
+    .ib-cliente-marcacoes-date strong {
+        color: #24231f;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .ib-cliente-marcacoes-date span {
+        margin-top: 3px;
+        color: #817a70;
+        font-size: 9px;
+    }
+
+
+/* SERVIÇO */
+
+.ib-cliente-marcacoes-service {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+    .ib-cliente-marcacoes-service strong {
+        overflow: hidden;
+        color: #24231f;
+        font-size: 11px;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .ib-cliente-marcacoes-service small {
+        margin-top: 3px;
+        color: #BEA256;
+        font-size: 8px;
+    }
+
+
+/* PROFISSIONAL */
+
+.ib-cliente-marcacoes-profissional {
+    overflow: hidden;
+    color: #535333;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* =========================
+   ESTADOS
+========================= */
+
+.ib-cliente-booking-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    min-width: 72px;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 8px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+
+    /* PENDENTE */
+
+    .ib-cliente-booking-status.pending {
+        color: #9a6b16;
+        background: #fff7df;
+        border: 1px solid #ead49b;
+    }
+
+
+    /* CONFIRMADA */
+
+    .ib-cliente-booking-status.confirmed {
+        color: #467157;
+        background: #edf7f0;
+        border: 1px solid #bfd9c7;
+    }
+
+
+    /* CONCLUÍDA */
+
+    .ib-cliente-booking-status.completed {
+        color: #8b6b32;
+        background: #f8f1e5;
+        border: 1px solid #ddc99e;
+    }
+
+
+    /* CANCELADA */
+
+    .ib-cliente-booking-status.cancelled {
+        color: #a14e4e;
+        background: #fbefef;
+        border: 1px solid #e6bebe;
+    }
+
+
+    /* NÃO COMPARECEU */
+
+    .ib-cliente-booking-status.no-show {
+        color: #685b5b;
+        background: #f1eeee;
+        border: 1px solid #d2c7c7;
+    }
+
+
+    /* OUTRO ESTADO */
+
+    .ib-cliente-booking-status.default {
+        color: #6f6a63;
+        background: #f4f2ee;
+        border: 1px solid #dcd7cf;
+    }
+
+
+/* =========================
+   VALOR
+========================= */
+
+.ib-cliente-marcacoes-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+    .ib-cliente-marcacoes-price strong {
+        color: #24231f;
+        font-size: 10px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .ib-cliente-marcacoes-price small {
+        margin-top: 2px;
+        color: #a14e4e;
+        font-size: 8px;
+    }
+
+
+/* SETA */
+
+.ib-cliente-marcacoes-arrow {
+    color: #BEA256;
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    text-align: right;
+}
+
+
+/* =========================
+   PAGINAÇÃO
+========================= */
+
+.ib-cliente-pagination {
+    min-height: 58px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: #fcfaf6;
+    border-top: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+.ib-cliente-pagination-info {
+    color: #817a70;
+    font-size: 9px;
+}
+
+    .ib-cliente-pagination-info strong {
+        color: #535333;
+        font-weight: 600;
+    }
+
+
+/* CONTROLOS */
+
+.ib-cliente-pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.ib-cliente-pagination-size {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #817a70;
+    font-size: 9px;
+}
+
+    .ib-cliente-pagination-size select {
+        height: 30px;
+        padding: 0 24px 0 8px;
+        color: #535333;
+        background: #fff;
+        border: 1px solid #e5ded3;
+        border-radius: 5px;
+        font-family: "Montserrat", sans-serif;
+        font-size: 9px;
+        outline: none;
+    }
+
+
+/* PÁGINAS */
+
+.ib-cliente-pagination-pages {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ib-cliente-pagination-numbers {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ib-cliente-pagination-arrow,
+.ib-cliente-pagination-number {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    color: #535333;
+    background: #fff;
+    border: 1px solid #e5ded3;
+    border-radius: 5px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 9px;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+    .ib-cliente-pagination-number.active {
+        color: #fff;
+        background: #BEA256;
+        border-color: #BEA256;
+    }
+
+    .ib-cliente-pagination-arrow:hover:not(:disabled),
+    .ib-cliente-pagination-number:hover:not(.active) {
+        color: #BEA256;
+        border-color: #D8B071;
+    }
+
+    .ib-cliente-pagination-arrow:disabled {
+        opacity: 0.4;
+        cursor: default;
+    }
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1050px) {
+
+    .ib-cliente-marcacoes-toolbar {
+        grid-template-columns: 1fr 160px 150px;
+    }
+
+    .ib-cliente-marcacoes-table-header,
+    .ib-cliente-marcacoes-row {
+        grid-template-columns: 115px minmax(170px, 1fr) minmax(120px, 1fr) 100px 20px;
+    }
+
+        .ib-cliente-marcacoes-table-header span:nth-child(5),
+        .ib-cliente-marcacoes-price {
+            display: none;
+        }
+}
+
+
+@media (max-width: 800px) {
+
+    .ib-cliente-marcacoes-toolbar {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-cliente-marcacoes-table-header {
+        display: none;
+    }
+
+    .ib-cliente-marcacoes-row {
+        grid-template-columns: 90px minmax(0, 1fr) auto 18px;
+    }
+
+    .ib-cliente-marcacoes-profissional {
+        display: none;
+    }
+
+    .ib-cliente-pagination {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .ib-cliente-pagination-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+
+@media (max-width: 550px) {
+
+    .ib-cliente-marcacoes-row {
+        grid-template-columns: 70px minmax(0, 1fr) 18px;
+    }
+
+    .ib-cliente-booking-status {
+        display: none;
+    }
+
+    .ib-cliente-pagination-controls {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+/* =========================================================
+   DASHBOARD - LINKS
+========================================================= */
+
+.ib-cliente-kpi-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    .ib-cliente-kpi-link:hover {
+        color: inherit;
+        text-decoration: none;
+    }
+
+.ib-cliente-agenda-link {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.18s ease, box-shadow 0.18s ease;
+}
+
+    .ib-cliente-agenda-link:hover {
+        color: inherit;
+        text-decoration: none;
+        background: #fcfaf6;
+        box-shadow: inset 3px 0 0 #d8b071;
+    }
+
+/* =========================================================
+   NOVA MARCAÇÃO — WIZARD
+========================================================= */
+
+.ib-booking {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.ib-booking-header {
+    margin-bottom: 26px;
+}
+
+    .ib-booking-header h1 {
+        margin: 5px 0 6px;
+        color: var(--cliente-text);
+        font-size: 1.65rem;
+        font-weight: 700;
+    }
+
+    .ib-booking-header p {
+        margin: 0;
+        color: var(--cliente-muted);
+        font-size: .88rem;
+    }
+
+
+/* ROADMAP */
+
+.ib-booking-roadmap {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    margin-bottom: 30px;
+    padding: 20px 24px;
+    background: #fff;
+    border: 1px solid var(--cliente-border);
+    border-radius: 10px;
+}
+
+.ib-booking-step {
+    flex: 0 0 auto;
+    min-width: 82px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    color: #aaa49b;
+    font-size: .72rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.ib-booking-step-number {
+    width: 31px;
+    height: 31px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d8d2c8;
+    border-radius: 50%;
+    background: #fff;
+    color: #9a958d;
+    font-size: .72rem;
+    transition: .2s ease;
+}
+
+.ib-booking-step.active {
+    color: var(--cliente-gold-dark);
+}
+
+    .ib-booking-step.active .ib-booking-step-number {
+        border-color: var(--cliente-gold);
+        background: var(--cliente-gold);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(216, 176, 113, .25);
+    }
+
+.ib-booking-step.completed .ib-booking-step-number {
+    border-color: var(--cliente-dark);
+    background: var(--cliente-dark);
+    color: #fff;
+}
+
+.ib-booking-step-line {
+    flex: 1;
+    height: 1px;
+    margin: 15px 8px 0;
+    background: #ded8ce;
+}
+
+
+/* PAINEL */
+
+.ib-booking-panel {
+    display: none;
+    padding: 28px;
+    background: #fff;
+    border: 1px solid var(--cliente-border);
+    border-radius: 12px;
+    box-shadow: 0 6px 22px rgba(25, 25, 25, .035);
+}
+
+    .ib-booking-panel.active {
+        display: block;
+    }
+
+.ib-booking-panel-heading {
+    margin-bottom: 28px;
+}
+
+.ib-booking-kicker {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--cliente-gold-dark);
+    font-size: .64rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+}
+
+.ib-booking-panel-heading h2 {
+    margin: 0 0 5px;
+    color: var(--cliente-text);
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.ib-booking-panel-heading p {
+    margin: 0;
+    color: var(--cliente-muted);
+    font-size: .83rem;
+}
+
+
+/* SECÇÕES */
+
+.ib-booking-section + .ib-booking-section {
+    margin-top: 30px;
+}
+
+.ib-booking-section h3 {
+    margin: 0 0 13px;
+    color: var(--cliente-text);
+    font-size: .82rem;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   CATEGORIAS — CARDS COM IMAGEM
+========================================================= */
+
+.ib-booking-category-scroll,
+.ib-booking-services-scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 2px 2px 10px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--cliente-gold-dark) #f1ece3;
+}
+
+    .ib-booking-category-scroll::-webkit-scrollbar,
+    .ib-booking-services-scroll::-webkit-scrollbar {
+        height: 7px;
+    }
+
+    .ib-booking-category-scroll::-webkit-scrollbar-track,
+    .ib-booking-services-scroll::-webkit-scrollbar-track {
+        background: #f1ece3;
+        border-radius: 10px;
+    }
+
+    .ib-booking-category-scroll::-webkit-scrollbar-thumb,
+    .ib-booking-services-scroll::-webkit-scrollbar-thumb {
+        background: var(--cliente-gold-dark);
+        border-radius: 10px;
+    }
+
+
+/* TRACK CATEGORIAS */
+
+.ib-booking-categories {
+    width: max-content;
+    min-width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+}
+
+
+/* CARD CATEGORIA */
+
+.ib-booking-category-card {
+    position: relative;
+    flex: 0 0 175px;
+    width: 175px;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--cliente-border);
+    border-radius: 9px;
+    background: #fff;
+    color: inherit;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+    .ib-booking-category-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(216, 176, 113, .75);
+        box-shadow: 0 6px 17px rgba(25, 25, 25, .07);
+    }
+
+    .ib-booking-category-card.selected {
+        border-color: var(--cliente-gold);
+        box-shadow: 0 0 0 1px var(--cliente-gold), 0 6px 17px rgba(216, 176, 113, .12);
+    }
+
+
+/* IMAGEM CATEGORIA */
+
+.ib-booking-category-image {
+    position: relative;
+    width: 100%;
+    height: 105px;
+    overflow: hidden;
+    background: #f2eee7;
+}
+
+    .ib-booking-category-image img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+    }
+
+.ib-booking-category-card:hover
+.ib-booking-category-image img {
+    transform: scale(1.03);
+}
+
+
+/* CONTEÚDO CATEGORIA */
+
+.ib-booking-category-content {
+    min-height: 56px;
+    padding: 10px 11px;
+    display: flex;
+    flex-direction: column;
+}
+
+    .ib-booking-category-content strong {
+        color: var(--cliente-text);
+        font-size: .72rem;
+        font-weight: 700;
+    }
+
+    .ib-booking-category-content > span {
+        margin-top: 4px;
+        overflow: hidden;
+        color: var(--cliente-muted);
+        font-size: .59rem;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+
+/* =========================================================
+   FALLBACK DAS IMAGENS
+========================================================= */
+
+.ib-booking-image-fallback {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient( 135deg, #eee7dc, #f8f5ef );
+}
+
+    .ib-booking-image-fallback span {
+        color: var(--cliente-gold-dark);
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+
+
+/* =========================================================
+   CHECK DE SELEÇÃO
+========================================================= */
+
+.ib-booking-card-check {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    background: var(--cliente-gold-dark);
+    color: #fff;
+    font-family: Arial, sans-serif;
+    font-size: .65rem;
+    font-weight: 700;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, .17);
+}
+
+.ib-booking-category-card.selected
+.ib-booking-card-check,
+.ib-booking-service-card.selected
+.ib-booking-card-check {
+    display: flex;
+}
+
+
+/* =========================================================
+   SERVIÇOS
+========================================================= */
+
+.ib-booking-services-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 13px;
+}
+
+    .ib-booking-services-heading h3 {
+        margin: 0 0 3px;
+    }
+
+#servicosAjuda {
+    display: block;
+    color: var(--cliente-muted);
+    font-size: .72rem;
+}
+
+
+/* TRACK SERVIÇOS */
+
+.ib-booking-services {
+    width: max-content;
+    min-width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 12px;
+}
+
+
+/* CARD SERVIÇO */
+
+.ib-booking-service-card {
+    position: relative;
+    flex: 0 0 230px;
+    width: 230px;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--cliente-border);
+    border-radius: 9px;
+    background: #fff;
+    color: inherit;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+    .ib-booking-service-card[hidden] {
+        display: none !important;
+    }
+
+    .ib-booking-service-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(216, 176, 113, .75);
+        box-shadow: 0 6px 17px rgba(25, 25, 25, .07);
+    }
+
+    .ib-booking-service-card.selected {
+        border-color: var(--cliente-gold);
+        box-shadow: 0 0 0 1px var(--cliente-gold), 0 6px 17px rgba(216, 176, 113, .12);
+    }
+
+
+/* IMAGEM SERVIÇO */
+
+.ib-booking-service-image {
+    position: relative;
+    width: 100%;
+    height: 125px;
+    overflow: hidden;
+    background: #f2eee7;
+}
+
+    .ib-booking-service-image img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        transition: transform .2s ease;
+    }
+
+.ib-booking-service-card:hover
+.ib-booking-service-image img {
+    transform: scale(1.03);
+}
+
+
+/* CONTEÚDO SERVIÇO */
+
+.ib-booking-service-content {
+    min-height: 118px;
+    padding: 12px;
+}
+
+.ib-booking-service-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+    .ib-booking-service-top > div {
+        min-width: 0;
+    }
+
+    .ib-booking-service-top h4 {
+        margin: 0;
+        color: var(--cliente-text);
+        font-size: .74rem;
+        font-weight: 700;
+    }
+
+    .ib-booking-service-top p {
+        min-height: 31px;
+        margin: 5px 0 0;
+        overflow: hidden;
+        color: var(--cliente-muted);
+        font-size: .6rem;
+        line-height: 1.45;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+
+/* DURAÇÃO + PREÇO */
+
+.ib-booking-service-meta {
+    margin-top: 11px;
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-top: 1px solid #eee9e1;
+}
+
+    .ib-booking-service-meta span {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--cliente-muted);
+        font-size: .62rem;
+        white-space: nowrap;
+    }
+
+    .ib-booking-service-meta svg {
+        width: 13px;
+        height: 13px;
+        fill: none;
+        stroke: var(--cliente-gold-dark);
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .ib-booking-service-meta strong {
+        color: var(--cliente-gold-dark);
+        font-size: .72rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+
+/* =========================================================
+   RESPONSIVO DOS CARDS
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .ib-booking-category-card {
+        flex-basis: 150px;
+        width: 150px;
+    }
+
+    .ib-booking-category-image {
+        height: 92px;
+    }
+
+    .ib-booking-service-card {
+        flex-basis: 205px;
+        width: 205px;
+    }
+
+    .ib-booking-service-image {
+        height: 110px;
+    }
+}
+/* EMPTY */
+
+.ib-booking-empty {
+    min-height: 155px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 25px;
+    border: 1px dashed #ddd5ca;
+    border-radius: 9px;
+    color: var(--cliente-muted);
+    text-align: center;
+}
+
+    .ib-booking-empty i {
+        margin-bottom: 4px;
+        color: var(--cliente-gold);
+        font-size: 1.3rem;
+    }
+
+    .ib-booking-empty strong {
+        color: var(--cliente-text);
+        font-size: .82rem;
+    }
+
+    .ib-booking-empty span {
+        font-size: .73rem;
+    }
+
+
+/* AÇÕES */
+
+.ib-booking-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-top: 32px;
+    padding-top: 22px;
+    border-top: 1px solid #eee9e1;
+}
+
+.ib-booking-btn-primary,
+.ib-booking-btn-secondary {
+    min-height: 39px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 18px;
+    border-radius: 6px;
+    font-size: .75rem;
+    font-weight: 650;
+    text-decoration: none;
+    transition: .18s ease;
+}
+
+.ib-booking-btn-primary {
+    border: 1px solid var(--cliente-dark);
+    background: var(--cliente-dark);
+    color: #fff;
+}
+
+    .ib-booking-btn-primary:hover:not(:disabled) {
+        background: var(--cliente-gold-dark);
+        border-color: var(--cliente-gold-dark);
+    }
+
+    .ib-booking-btn-primary:disabled {
+        opacity: .38;
+        cursor: not-allowed;
+    }
+
+.ib-booking-btn-secondary {
+    border: 1px solid var(--cliente-border);
+    background: #fff;
+    color: var(--cliente-text);
+}
+
+    .ib-booking-btn-secondary:hover {
+        border-color: var(--cliente-gold);
+        color: var(--cliente-text);
+    }
+
+
+/* RESPONSIVO */
+
+@media (max-width: 850px) {
+
+    .ib-booking-roadmap {
+        overflow-x: auto;
+    }
+
+    .ib-booking-step-line {
+        min-width: 38px;
+    }
+
+    .ib-booking-services {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .ib-booking-panel {
+        padding: 20px 16px;
+    }
+
+    .ib-booking-roadmap {
+        padding: 17px 12px;
+    }
+
+    .ib-booking-step {
+        min-width: 70px;
+    }
+
+    .ib-booking-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .ib-booking-btn-primary,
+    .ib-booking-btn-secondary {
+        width: 100%;
+    }
+}

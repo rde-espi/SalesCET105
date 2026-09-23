@@ -1,0 +1,422 @@
+﻿@model ProjetoFinalCet105.Web.Models.NovaMarcacaoClienteViewModel
+
+@{
+    ViewData["Title"] = "Nova marcação";
+    Layout = "~/Views/Shared/_ClienteLayout.cshtml";
+}
+
+<div class="ib-booking">
+
+    <!-- CABEÇALHO -->
+    <header class="ib-booking-header">
+        <span class="ib-cliente-page-eyebrow">NOVA MARCAÇÃO</span>
+
+        <h1>Marque o seu momento</h1>
+
+        <p>
+            Escolha o serviço, o profissional e o horário que mais lhe convém.
+        </p>
+    </header>
+
+
+    <!-- ROADMAP -->
+    <div class="ib-booking-roadmap">
+
+        <div class="ib-booking-step active" data-step="1">
+            <span class="ib-booking-step-number">1</span>
+            <span>Serviço</span>
+        </div>
+
+        <span class="ib-booking-step-line"></span>
+
+        <div class="ib-booking-step" data-step="2">
+            <span class="ib-booking-step-number">2</span>
+            <span>Profissional</span>
+        </div>
+
+        <span class="ib-booking-step-line"></span>
+
+        <div class="ib-booking-step" data-step="3">
+            <span class="ib-booking-step-number">3</span>
+            <span>Data e hora</span>
+        </div>
+
+        <span class="ib-booking-step-line"></span>
+
+        <div class="ib-booking-step" data-step="4">
+            <span class="ib-booking-step-number">4</span>
+            <span>Detalhes</span>
+        </div>
+
+        <span class="ib-booking-step-line"></span>
+
+        <div class="ib-booking-step" data-step="5">
+            <span class="ib-booking-step-number">5</span>
+            <span>Confirmar</span>
+        </div>
+
+    </div>
+
+
+    <form asp-action="Nova"
+          asp-controller="MarcacoesCliente"
+          method="post"
+          id="formNovaMarcacao">
+
+        @Html.AntiForgeryToken()
+
+        <input asp-for="ServicoId"
+               type="hidden"
+               id="ServicoId" />
+
+        <input asp-for="FuncionarioId"
+               type="hidden"
+               id="FuncionarioId" />
+
+        <input asp-for="DataHoraInicio"
+               type="hidden"
+               id="DataHoraInicio" />
+
+
+        <!-- =====================================================
+             PASSO 1 — SERVIÇO
+        ====================================================== -->
+
+        <section class="ib-booking-panel active"
+                 id="wizardEtapa1">
+
+            <div class="ib-booking-panel-heading">
+
+                <span class="ib-booking-kicker">
+                    PASSO 1 DE 5
+                </span>
+
+                <h2>Escolha o serviço</h2>
+
+                <p>
+                    Comece por selecionar uma categoria e depois escolha o serviço pretendido.
+                </p>
+
+            </div>
+
+
+            <!-- CATEGORIAS -->
+            <div class="ib-booking-section">
+
+                <h3>Escolha uma categoria</h3>
+
+                <div class="ib-booking-category-scroll">
+
+                    <div class="ib-booking-categories">
+
+                        @foreach (var categoria in Model.Categorias
+                            .Where(c => c.Ativa)
+                            .OrderBy(c => c.Nome))
+                        {
+                            <button type="button"
+                                    class="ib-booking-category-card"
+                                    data-categoria-id="@categoria.Id">
+
+                                <div class="ib-booking-category-image">
+
+                                    <img src="@Url.Action(
+                                                                                      "ImagemCategoria",
+                                                                                      "MarcacoesCliente",
+                                                                                      new { id = categoria.Id })"
+                                         alt="@categoria.Nome"
+                                         loading="lazy"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+
+                                    <div class="ib-booking-image-fallback">
+                                        <span>
+                                            @categoria.Nome.Substring(0, 1).ToUpper()
+                                        </span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="ib-booking-category-content">
+
+                                    <strong>
+                                        @categoria.Nome
+                                    </strong>
+
+                                    @if (!string.IsNullOrWhiteSpace(categoria.Descricao))
+                                    {
+                                        <span>
+                                            @categoria.Descricao
+                                        </span>
+                                    }
+
+                                </div>
+
+
+                                <span class="ib-booking-card-check"
+                                      aria-hidden="true">
+                                    ✓
+                                </span>
+
+                            </button>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SERVIÇOS -->
+            <div class="ib-booking-section">
+
+                <div class="ib-booking-services-heading">
+
+                    <div>
+                        <h3>Escolha o serviço</h3>
+
+                        <span id="servicosAjuda">
+                            Selecione primeiro uma categoria.
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="ib-booking-services-scroll">
+
+                    <div class="ib-booking-services"
+                         id="servicosTrack">
+
+                        @foreach (var servico in Model.Servicos
+                            .Where(s => s.Disponivel)
+                            .OrderBy(s => s.Nome))
+                        {
+                            <button type="button"
+                                    class="ib-booking-service-card"
+                                    data-servico-id="@servico.Id"
+                                    data-categoria-id="@servico.CategoriaId"
+                                    data-servico-nome="@servico.Nome"
+                                    hidden>
+
+                                <div class="ib-booking-service-image">
+
+                                    <img src="@Url.Action(
+                                                                                      "ImagemServico",
+                                                                                      "MarcacoesCliente",
+                                                                                      new { id = servico.Id })"
+                                         alt="@servico.Nome"
+                                         loading="lazy"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+
+                                    <div class="ib-booking-image-fallback">
+                                        <span>
+                                            @servico.Nome.Substring(0, 1).ToUpper()
+                                        </span>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="ib-booking-service-content">
+
+                                    <div class="ib-booking-service-top">
+
+                                        <div>
+                                            <h4>@servico.Nome</h4>
+
+                                            @if (!string.IsNullOrWhiteSpace(servico.Descricao))
+                                            {
+                                                <p>
+                                                    @servico.Descricao
+                                                </p>
+                                            }
+                                        </div>
+
+
+                                        <span class="ib-booking-card-check"
+                                              aria-hidden="true">
+                                            ✓
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="ib-booking-service-meta">
+
+                                        <span>
+                                            <svg viewBox="0 0 24 24"
+                                                 aria-hidden="true">
+                                                <circle cx="12"
+                                                        cy="12"
+                                                        r="9"></circle>
+
+                                                <path d="M12 7v5l3 2"></path>
+                                            </svg>
+
+                                            @servico.DuracaoMinutos min
+                                        </span>
+
+
+                                        <strong>
+                                            @servico.Preco.ToString("N2") €
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                            </button>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <span asp-validation-for="ServicoId"
+                  class="text-danger">
+            </span>
+
+
+            <!-- AÇÕES -->
+            <div class="ib-booking-actions">
+
+                <a asp-controller="MarcacoesCliente"
+                   asp-action="Index"
+                   class="ib-booking-btn-secondary">
+                    Cancelar
+                </a>
+
+
+                <button type="button"
+                        class="ib-booking-btn-primary"
+                        id="btnContinuarServico"
+                        disabled>
+                    Continuar
+                    <span aria-hidden="true">→</span>
+                </button>
+
+            </div>
+
+        </section>
+
+    </form>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const categoriaCards =
+                document.querySelectorAll(".ib-booking-category-card");
+
+            const servicoCards =
+                document.querySelectorAll(".ib-booking-service-card");
+
+            const servicoInput =
+                document.getElementById("ServicoId");
+
+            const continuarButton =
+                document.getElementById("btnContinuarServico");
+
+            const servicosAjuda =
+                document.getElementById("servicosAjuda");
+
+
+            categoriaCards.forEach(card => {
+
+                card.addEventListener("click", function () {
+
+                    const categoriaId =
+                        this.dataset.categoriaId;
+
+
+                    categoriaCards.forEach(item =>
+                        item.classList.remove("selected"));
+
+
+                    this.classList.add("selected");
+
+
+                    servicoInput.value = "";
+
+                    continuarButton.disabled = true;
+
+
+                    let quantidadeServicos = 0;
+
+
+                    servicoCards.forEach(servico => {
+
+                        servico.classList.remove("selected");
+
+
+                        if (servico.dataset.categoriaId === categoriaId) {
+
+                            servico.hidden = false;
+
+                            quantidadeServicos++;
+
+                        }
+                        else {
+
+                            servico.hidden = true;
+
+                        }
+
+                    });
+
+
+                    if (quantidadeServicos > 0) {
+
+                        servicosAjuda.textContent =
+                            "Selecione o serviço pretendido.";
+
+                    }
+                    else {
+
+                        servicosAjuda.textContent =
+                            "Não existem serviços disponíveis nesta categoria.";
+
+                    }
+
+                });
+
+            });
+
+
+            servicoCards.forEach(card => {
+
+                card.addEventListener("click", function () {
+
+                    servicoCards.forEach(item =>
+                        item.classList.remove("selected"));
+
+
+                    this.classList.add("selected");
+
+
+                    servicoInput.value =
+                        this.dataset.servicoId;
+
+
+                    continuarButton.disabled = false;
+
+                });
+
+            });
+
+        });
+
+    </script>
+
+}

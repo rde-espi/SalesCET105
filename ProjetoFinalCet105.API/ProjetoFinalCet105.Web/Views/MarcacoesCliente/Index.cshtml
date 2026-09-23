@@ -1,0 +1,608 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.MarcacaoClienteViewModel>
+
+@{
+    ViewData["Title"] = "Minhas marcações";
+    Layout = "~/Views/Shared/_ClienteLayout.cshtml";
+}
+
+<div class="ib-cliente-marcacoes-page">
+
+    <!-- CABEÇALHO -->
+    <section class="ib-cliente-page-header">
+        <div>
+            <span class="ib-cliente-page-eyebrow">
+                A MINHA AGENDA
+            </span>
+
+            <h1>Minhas marcações</h1>
+
+            <p>
+                Consulte as suas próximas marcações e o histórico de serviços.
+            </p>
+        </div>
+    </section>
+
+
+    <!-- PAINEL -->
+    <section class="ib-cliente-marcacoes-panel">
+
+        <header class="ib-cliente-marcacoes-panel-header">
+            <div>
+                <span class="ib-cliente-page-eyebrow">
+                    MARCAÇÕES
+                </span>
+
+                <h2>As minhas marcações</h2>
+
+                <p>
+                    Pesquise e filtre as suas marcações.
+                </p>
+            </div>
+        </header>
+
+
+        <!-- PESQUISA E FILTROS -->
+        <div class="ib-cliente-marcacoes-toolbar">
+
+            <div class="ib-cliente-marcacoes-search">
+
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="M20 20l-3.5-3.5"></path>
+                </svg>
+
+                <input type="text"
+                       id="pesquisaMarcacoes"
+                       placeholder="Pesquisar serviço ou profissional..." />
+
+            </div>
+
+
+            <select id="filtroEstado"
+                    class="ib-cliente-marcacoes-filter">
+
+                <option value="">Todos os estados</option>
+                <option value="pendente">Pendente</option>
+                <option value="confirmada">Confirmada</option>
+                <option value="concluida">Concluída</option>
+                <option value="cancelada">Cancelada</option>
+                <option value="não compareceu">Não Compareceu</option>
+
+            </select>
+
+
+            <select id="filtroPeriodo"
+                    class="ib-cliente-marcacoes-filter">
+
+                <option value="">Todas as datas</option>
+                <option value="hoje">Hoje</option>
+                <option value="futuras">Próximas</option>
+                <option value="passadas">Passadas</option>
+
+            </select>
+
+        </div>
+
+
+        @if (!Model.Any())
+        {
+            <div class="ib-cliente-bookings-empty">
+
+                <strong>Sem marcações registadas</strong>
+
+                <span>
+                    Ainda não existem marcações para apresentar.
+                </span>
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-cliente-marcacoes-table">
+
+                <!-- CABEÇALHO DA TABELA -->
+                <div class="ib-cliente-marcacoes-table-header">
+
+                    <span>Data</span>
+                    <span>Serviço</span>
+                    <span>Profissional</span>
+                    <span>Estado</span>
+                    <span>Valor</span>
+                    <span></span>
+
+                </div>
+
+
+                @foreach (var marcacao in Model)
+                {
+                    var estadoNormalizado =
+                        (marcacao.EstadoMarcacaoNome ?? "")
+                        .Trim()
+                        .ToLowerInvariant();
+
+                    var estadoClasse = estadoNormalizado switch
+                    {
+                        "pendente" => "pending",
+                        "confirmada" => "confirmed",
+                        "concluida" => "completed",
+                        "concluída" => "completed",
+                        "cancelada" => "cancelled",
+                        "não compareceu" => "no-show",
+                        "nao compareceu" => "no-show",
+                        _ => "default"
+                    };
+
+                    <a asp-controller="MarcacoesCliente"
+                       asp-action="Detalhes"
+                       asp-route-id="@marcacao.Id"
+                       class="ib-cliente-marcacoes-row"
+                       data-pesquisa="@($"{marcacao.ServicoNome} {marcacao.FuncionarioNome}".ToLowerInvariant())"
+                       data-estado="@estadoNormalizado"
+                       data-data="@marcacao.DataHoraInicio.ToString("yyyy-MM-dd")">
+
+                        <!-- DATA -->
+                        <div class="ib-cliente-marcacoes-date">
+
+                            <strong>
+                                @marcacao.DataHoraInicio.ToString("dd/MM/yyyy")
+                            </strong>
+
+                            <span>
+                                @marcacao.DataHoraInicio.ToString("HH:mm")
+                                –
+                                @marcacao.DataHoraFim.ToString("HH:mm")
+                            </span>
+
+                        </div>
+
+
+                        <!-- SERVIÇO -->
+                        <div class="ib-cliente-marcacoes-service">
+
+                            <strong>
+                                @marcacao.ServicoNome
+                            </strong>
+
+                            @if (!string.IsNullOrWhiteSpace(marcacao.PromoCode))
+                            {
+                                <small>
+                                    Promo: @marcacao.PromoCode
+                                </small>
+                            }
+
+                        </div>
+
+
+                        <!-- PROFISSIONAL -->
+                        <div class="ib-cliente-marcacoes-profissional">
+
+                            @marcacao.FuncionarioNome
+
+                        </div>
+
+
+                        <!-- ESTADO -->
+                        <div>
+
+                            <span class="ib-cliente-booking-status @estadoClasse">
+                                @marcacao.EstadoMarcacaoNome
+                            </span>
+
+                        </div>
+
+
+                        <!-- VALOR -->
+                        <div class="ib-cliente-marcacoes-price">
+
+                            <strong>
+                                @marcacao.Preco.ToString("0.00") €
+                            </strong>
+
+                            @if (marcacao.ValorDesconto.HasValue &&
+                                 marcacao.ValorDesconto.Value > 0)
+                            {
+                                <small>
+                                    -@marcacao.ValorDesconto.Value.ToString("0.00") €
+                                </small>
+                            }
+
+                        </div>
+
+
+                        <!-- SETA -->
+                        <div class="ib-cliente-marcacoes-arrow">
+                            ›
+                        </div>
+
+                    </a>
+                }
+
+            </div>
+        }
+
+
+        <!-- PAGINAÇÃO -->
+        <div class="ib-cliente-pagination"
+             id="paginacaoMarcacoes">
+
+            <div class="ib-cliente-pagination-info">
+
+                A mostrar
+                <strong id="paginaInicio">0</strong>–<strong id="paginaFim">0</strong>
+                de
+                <strong id="totalFiltrado">0</strong>
+                marcações
+
+            </div>
+
+
+            <div class="ib-cliente-pagination-controls">
+
+                <label class="ib-cliente-pagination-size">
+
+                    <span>Itens por página</span>
+
+                    <select id="itensPorPagina">
+                        <option value="5" selected>5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                    </select>
+
+                </label>
+
+
+                <div class="ib-cliente-pagination-pages">
+
+                    <button type="button"
+                            id="paginaAnterior"
+                            class="ib-cliente-pagination-arrow"
+                            aria-label="Página anterior">
+                        ‹
+                    </button>
+
+
+                    <div id="numerosPaginas"
+                         class="ib-cliente-pagination-numbers">
+                    </div>
+
+
+                    <button type="button"
+                            id="paginaSeguinte"
+                            class="ib-cliente-pagination-arrow"
+                            aria-label="Página seguinte">
+                        ›
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+@section Scripts
+{
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const pesquisa =
+                document.getElementById("pesquisaMarcacoes");
+
+            const filtroEstado =
+                document.getElementById("filtroEstado");
+
+            const filtroPeriodo =
+                document.getElementById("filtroPeriodo");
+
+            const linhas = Array.from(
+                document.querySelectorAll(".ib-cliente-marcacoes-row")
+            );
+
+            const itensPorPaginaSelect =
+                document.getElementById("itensPorPagina");
+
+            const paginaAnterior =
+                document.getElementById("paginaAnterior");
+
+            const paginaSeguinte =
+                document.getElementById("paginaSeguinte");
+
+            const numerosPaginas =
+                document.getElementById("numerosPaginas");
+
+            const paginaInicio =
+                document.getElementById("paginaInicio");
+
+            const paginaFim =
+                document.getElementById("paginaFim");
+
+            const totalFiltrado =
+                document.getElementById("totalFiltrado");
+
+            const paginacao =
+                document.getElementById("paginacaoMarcacoes");
+
+
+            let paginaAtual = 1;
+            let itensPorPagina = 5;
+            let linhasFiltradas = [];
+
+
+            function obterHoje() {
+
+                const agora = new Date();
+
+                return agora.getFullYear() + "-" +
+                    String(agora.getMonth() + 1).padStart(2, "0") + "-" +
+                    String(agora.getDate()).padStart(2, "0");
+            }
+
+
+            function obterLinhasFiltradas() {
+
+                const termo =
+                    pesquisa.value.trim().toLowerCase();
+
+                const estado =
+                    filtroEstado.value.trim().toLowerCase();
+
+                const periodo =
+                    filtroPeriodo.value;
+
+                const hoje = obterHoje();
+
+
+                return linhas.filter(function (linha) {
+
+                    const texto =
+                        linha.dataset.pesquisa || "";
+
+                    const estadoLinha =
+                        linha.dataset.estado || "";
+
+                    const data =
+                        linha.dataset.data || "";
+
+
+                    const correspondePesquisa =
+                        !termo || texto.includes(termo);
+
+                    const correspondeEstado =
+                        !estado || estadoLinha === estado;
+
+                    let correspondePeriodo = true;
+
+
+                    if (periodo === "hoje") {
+                        correspondePeriodo = data === hoje;
+                    }
+
+                    if (periodo === "futuras") {
+                        correspondePeriodo = data >= hoje;
+                    }
+
+                    if (periodo === "passadas") {
+                        correspondePeriodo = data < hoje;
+                    }
+
+
+                    return correspondePesquisa &&
+                        correspondeEstado &&
+                        correspondePeriodo;
+                });
+            }
+
+
+            function criarNumerosPaginas(totalPaginas) {
+
+                numerosPaginas.innerHTML = "";
+
+
+                if (totalPaginas <= 1) {
+                    return;
+                }
+
+
+                for (let numero = 1;
+                     numero <= totalPaginas;
+                     numero++) {
+
+                    const botao =
+                        document.createElement("button");
+
+                    botao.type = "button";
+                    botao.textContent = numero;
+                    botao.className =
+                        "ib-cliente-pagination-number";
+
+
+                    if (numero === paginaAtual) {
+                        botao.classList.add("active");
+                    }
+
+
+                    botao.addEventListener(
+                        "click",
+                        function () {
+
+                            paginaAtual = numero;
+
+                            mostrarPagina();
+                        }
+                    );
+
+
+                    numerosPaginas.appendChild(botao);
+                }
+            }
+
+
+            function mostrarPagina() {
+
+                linhas.forEach(function (linha) {
+                    linha.style.display = "none";
+                });
+
+
+                const totalItens =
+                    linhasFiltradas.length;
+
+                const totalPaginas =
+                    Math.max(
+                        1,
+                        Math.ceil(
+                            totalItens / itensPorPagina
+                        )
+                    );
+
+
+                if (paginaAtual > totalPaginas) {
+                    paginaAtual = totalPaginas;
+                }
+
+
+                const inicio =
+                    (paginaAtual - 1) * itensPorPagina;
+
+                const fim =
+                    Math.min(
+                        inicio + itensPorPagina,
+                        totalItens
+                    );
+
+
+                linhasFiltradas
+                    .slice(inicio, fim)
+                    .forEach(function (linha) {
+
+                        linha.style.display = "grid";
+                    });
+
+
+                totalFiltrado.textContent =
+                    totalItens;
+
+                paginaInicio.textContent =
+                    totalItens === 0
+                        ? 0
+                        : inicio + 1;
+
+                paginaFim.textContent =
+                    fim;
+
+
+                paginaAnterior.disabled =
+                    paginaAtual <= 1;
+
+                paginaSeguinte.disabled =
+                    paginaAtual >= totalPaginas;
+
+
+                criarNumerosPaginas(
+                    totalPaginas
+                );
+
+
+                if (paginacao) {
+
+                    paginacao.style.display =
+                        linhas.length > 0
+                            ? "flex"
+                            : "none";
+                }
+            }
+
+
+            function aplicarFiltros() {
+
+                paginaAtual = 1;
+
+                linhasFiltradas =
+                    obterLinhasFiltradas();
+
+                mostrarPagina();
+            }
+
+
+            pesquisa.addEventListener(
+                "input",
+                aplicarFiltros
+            );
+
+
+            filtroEstado.addEventListener(
+                "change",
+                aplicarFiltros
+            );
+
+
+            filtroPeriodo.addEventListener(
+                "change",
+                aplicarFiltros
+            );
+
+
+            itensPorPaginaSelect.addEventListener(
+                "change",
+                function () {
+
+                    itensPorPagina =
+                        parseInt(this.value);
+
+                    paginaAtual = 1;
+
+                    mostrarPagina();
+                }
+            );
+
+
+            paginaAnterior.addEventListener(
+                "click",
+                function () {
+
+                    if (paginaAtual > 1) {
+
+                        paginaAtual--;
+
+                        mostrarPagina();
+                    }
+                }
+            );
+
+
+            paginaSeguinte.addEventListener(
+                "click",
+                function () {
+
+                    const totalPaginas =
+                        Math.ceil(
+                            linhasFiltradas.length /
+                            itensPorPagina
+                        );
+
+
+                    if (paginaAtual < totalPaginas) {
+
+                        paginaAtual++;
+
+                        mostrarPagina();
+                    }
+                }
+            );
+
+
+            linhasFiltradas =
+                obterLinhasFiltradas();
+
+            mostrarPagina();
+
+        });
+
+    </script>
+}

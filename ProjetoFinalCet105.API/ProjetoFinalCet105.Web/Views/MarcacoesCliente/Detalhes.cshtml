@@ -1,0 +1,146 @@
+﻿@model ProjetoFinalCet105.Web.Models.MarcacaoClienteViewModel
+
+@{
+    ViewData["Title"] = "Detalhes da marcação";
+    Layout = "~/Views/Shared/_ClienteLayout.cshtml";
+}
+
+<section class="ib-cliente-page-header">
+
+    <div>
+        <span class="ib-cliente-page-eyebrow">
+            A MINHA AGENDA
+        </span>
+
+        <h1>Detalhes da marcação</h1>
+
+        <p>
+            Consulte todas as informações da sua marcação.
+        </p>
+    </div>
+
+    <a asp-controller="MarcacoesCliente"
+       asp-action="Index"
+       class="ib-cliente-back-link">
+        ← Voltar às marcações
+    </a>
+
+</section>
+
+
+<section class="ib-cliente-booking-details">
+
+    <!-- SERVIÇO -->
+
+    <div class="ib-cliente-booking-details-header">
+
+        <div>
+            <span class="ib-cliente-detail-eyebrow">
+                SERVIÇO
+            </span>
+
+            <h2>@Model.ServicoNome</h2>
+
+            <p>
+                com @Model.FuncionarioNome
+            </p>
+        </div>
+
+        <span class="ib-cliente-detail-status">
+            @Model.EstadoMarcacaoNome
+        </span>
+
+    </div>
+
+
+    <!-- INFORMAÇÃO PRINCIPAL -->
+
+    <div class="ib-cliente-detail-grid">
+
+        <div class="ib-cliente-detail-item">
+
+            <span>Data</span>
+
+            <strong>
+                @Model.DataHoraInicio.ToString("dd/MM/yyyy")
+            </strong>
+
+        </div>
+
+
+        <div class="ib-cliente-detail-item">
+
+            <span>Hora</span>
+
+            <strong>
+                @Model.DataHoraInicio.ToString("HH:mm")
+            </strong>
+
+        </div>
+
+
+        <div class="ib-cliente-detail-item">
+
+            <span>Profissional</span>
+
+            <strong>
+                @Model.FuncionarioNome
+            </strong>
+
+        </div>
+
+
+        <div class="ib-cliente-detail-item">
+
+            <span>Valor</span>
+
+            <strong>
+                @Model.Preco.ToString("C")
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    @if (Model.ValorDesconto > 0)
+    {
+        <div class="ib-cliente-detail-discount">
+
+            <div>
+                <span>Desconto aplicado</span>
+
+                <strong>
+                    @Model.ValorDesconto
+                </strong>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.PromoCode))
+            {
+                <div>
+                    <span>Código promocional</span>
+
+                    <strong>
+                        @Model.PromoCode
+                    </strong>
+                </div>
+            }
+
+        </div>
+    }
+
+
+    @if (!string.IsNullOrWhiteSpace(Model.Observacoes))
+    {
+        <div class="ib-cliente-detail-notes">
+
+            <span>Observações</span>
+
+            <p>
+                @Model.Observacoes
+            </p>
+
+        </div>
+    }
+
+</section>
