@@ -281,9 +281,9 @@ public class MarcacoesFuncionarioController : Controller
 
             var estadosFinais = new[]
             {
-            "Concluída",
-            "Cancelada",
-            "Não compareceu"
+                "Concluida",
+                "Cancelada",
+                "Não Compareceu"
             };
 
             var agora = DateTime.Now;

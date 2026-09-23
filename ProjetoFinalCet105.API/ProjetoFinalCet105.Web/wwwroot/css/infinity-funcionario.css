@@ -382,6 +382,15 @@
     background: rgba(120, 70, 70, .08);
     color: #805555;
 }
+.ib-minha-agenda-status-concluida {
+    background: rgba(72, 120, 82, .10);
+    color: #52705a;
+}
+
+.ib-minha-agenda-status-nao-compareceu {
+    background: rgba(120, 70, 70, .08);
+    color: #805555;
+}
 
 
 /* =========================================================
