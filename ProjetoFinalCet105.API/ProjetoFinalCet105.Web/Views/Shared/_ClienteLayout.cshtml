@@ -22,8 +22,7 @@
     <link rel="stylesheet" href="~/css/infinity-funcionario.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/infinity-admin.css" asp-append-version="true" />
 
-    <script src="~/js/mensagens-monitor.js"
-            asp-append-version="true"></script>
+    <script src="~/js/mensagens-cliente-monitor.js" asp-append-version="true"></script>
 
     <script src="~/js/notificacoes-monitor.js"
             asp-append-version="true"></script>
@@ -114,9 +113,7 @@
                 </a>
 
 
-                <a href="#"
-                   class="ib-cliente-menu-item">
-
+                 <a asp-controller="MensagensCliente" asp-action="Index" class="ib-admin-menu-item @(currentController == "MensagensCliente" ? "active" : "")">
                     <svg viewBox="0 0 24 24">
                         <path d="M4 4h16v12H8l-4 4z"></path>
                         <path d="M8 9h8"></path>
@@ -389,10 +386,7 @@
     </script>
 
 
-    @await RenderSectionAsync(
-        "Scripts",
-        required: false
-    )
+    @await RenderSectionAsync("Scripts", required: false)
 
 </body>
 

@@ -1,0 +1,177 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.ConversaViewModel>
+
+@{
+    ViewData["Title"] = "Mensagens";
+Layout = "_ClienteLayout";
+}
+
+<div class="ib-func-page">
+
+    <header class="ib-dashboard-func-header">
+
+        <div>
+            <span class="ib-section-eyebrow">
+                COMUNICAÇÃO
+            </span>
+
+            <h1>Mensagens</h1>
+
+            <p>
+                Consulte as suas conversas com os nossos profissionais.
+            </p>
+        </div>
+
+        <a asp-controller="MensagensCliente" asp-action="Nova" class="ib-dashboard-func-new">
+            + Nova Conversa
+            </a>
+
+    </header>
+    
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    <div class="ib-func-card">
+
+        <div class="ib-func-card-header">
+
+            <div>
+                <h2>Conversas</h2>
+
+                <p>
+                    Acompanhe as mensagens trocadas com os nossos profissionais.
+               </p>
+            </div>
+
+        </div>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="ib-mensagens-func-empty">
+
+                <div class="ib-mensagens-func-empty-icon">
+
+                    <svg viewBox="0 0 24 24"
+                         aria-hidden="true">
+
+                        <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+
+                    </svg>
+
+                </div>
+
+                <strong>Ainda não tem conversas</strong>
+
+                <span>
+                    As conversas com os seus clientes irão aparecer aqui.
+                </span>
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-mensagens-func-list">
+
+                @foreach (var conversa in Model)
+{
+    var inicial =
+        !string.IsNullOrWhiteSpace(conversa.FuncionarioNome)
+            ? conversa.FuncionarioNome.Substring(0, 1).ToUpper()
+            : "P";
+
+    var mensagensNaoLidas =
+    conversa.Mensagens?
+        .Count(m =>
+            !m.Lida &&
+            m.RemetenteId == conversa.FuncionarioUserId)
+    ?? 0;
+
+    var temMensagensNaoLidas =
+        mensagensNaoLidas > 0;
+
+    
+
+                    var ultimaMensagem =
+                        conversa.Mensagens?
+                            .OrderByDescending(m => m.DataEnvio)
+                            .FirstOrDefault();
+
+                    var data =
+                        ultimaMensagem?.DataEnvio
+                        ?? conversa.DataCriacao;
+
+<div class="ib-mensagens-func-item @(temMensagensNaoLidas ? "ib-mensagens-func-item-unread" : "")"
+     data-conversa-id="@conversa.Id">
+                        <div class="ib-mensagens-func-avatar">
+                            @inicial
+                        </div>
+
+                        <div class="ib-mensagens-func-top">
+
+    <div class="ib-mensagens-func-name-row">
+
+        <strong>
+    @conversa.FuncionarioNome
+</strong>
+        <span class="ib-conversa-unread-badge"
+              data-unread-badge
+              style="@(temMensagensNaoLidas ? "" : "display:none;")">
+            @(mensagensNaoLidas > 99 ? "99+" : mensagensNaoLidas.ToString())
+        </span>
+
+    </div>
+
+    <span>
+        @data.ToString("dd/MM/yyyy HH:mm")
+    </span>
+
+</div>
+
+                            <div class="ib-mensagens-func-bottom">
+
+                                <p>
+                                    @if (ultimaMensagem != null)
+                                    {
+                                        @ultimaMensagem.Texto
+                                    }
+                                    else
+                                    {
+                                        <span>
+                                            Conversa iniciada.
+                                        </span>
+                                    }
+                                </p>
+
+                                <a asp-controller="MensagensCliente"
+                                asp-action="Conversa"
+                                asp-route-id="@conversa.Id"
+                                class="ib-mensagens-func-open"
+                                title="Abrir conversa">
+
+                                    <svg viewBox="0 0 24 24"
+                                         aria-hidden="true">
+
+                                        <path d="M5 12h14" />
+                                        <path d="M13 6l6 6-6 6" />
+
+                                    </svg>
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                  
+                }
+
+            </div>
+        }
+
+    </div>
+
+</div>

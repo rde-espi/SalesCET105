@@ -3556,3 +3556,33 @@ body,
         width: 100%;
     }
 }
+
+/* =========================================================
+   MENSAGENS — CONVERSAS NÃO LIDAS
+   ========================================================= */
+
+.ib-mensagens-func-item-unread {
+    background: rgba(216, 176, 113, 0.08);
+    border-left: 3px solid #D8B071;
+}
+
+    .ib-mensagens-func-item-unread:hover {
+        background: rgba(216, 176, 113, 0.13);
+    }
+
+.ib-conversa-unread-badge {
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 999px;
+    background: #D8B071;
+    color: #191919;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 2px 5px rgba(216, 176, 113, .22);
+}
