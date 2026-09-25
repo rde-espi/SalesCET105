@@ -302,6 +302,490 @@
             </div>
 
         </section>
+        <!-- =====================================================
+     PASSO 2 — PROFISSIONAL
+====================================================== -->
+
+<section class="ib-booking-panel" id="wizardEtapa2">
+
+    <div class="ib-booking-panel-heading">
+
+        <span class="ib-booking-kicker">
+            PASSO 2 DE 5
+        </span>
+
+        <h2>Escolha o profissional</h2>
+
+        <p>
+            Selecione o profissional que pretende para realizar o serviço escolhido.
+        </p>
+
+    </div>
+
+
+    <div class="ib-booking-section">
+
+        <div id="profissionaisContainer">
+
+            <p>
+                A carregar profissionais...
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <span asp-validation-for="FuncionarioId"
+          class="text-danger">
+    </span>
+
+
+    <div class="ib-booking-actions">
+
+        <button type="button"
+                class="ib-booking-btn-secondary"
+                id="btnVoltarServico">
+            <span aria-hidden="true">←</span>
+            Voltar
+        </button>
+
+
+        <button type="button"
+                class="ib-booking-btn-primary"
+                id="btnContinuarProfissional"
+                disabled>
+            Continuar
+            <span aria-hidden="true">→</span>
+        </button>
+
+    </div>
+
+</section>
+<!-- =====================================================
+     PASSO 3 — DATA E HORA
+====================================================== -->
+
+<section class="ib-booking-panel"
+         id="wizardEtapa3">
+
+    <div class="ib-booking-panel-heading">
+
+        <span class="ib-booking-kicker">
+            PASSO 3 DE 5
+        </span>
+
+        <h2>Escolha a data e a hora</h2>
+
+        <p>
+            Consulte os próximos dias disponíveis e escolha o horário
+            que mais lhe convém.
+        </p>
+
+    </div>
+
+
+    <!-- DATAS -->
+    <div class="ib-booking-section">
+
+        <h3>Datas disponíveis</h3>
+
+        <div id="datasDisponiveisContainer">
+            <p>A carregar datas disponíveis...</p>
+        </div>
+
+    </div>
+
+
+    <!-- HORÁRIOS -->
+    <div class="ib-booking-section"
+         id="horariosSection"
+         hidden>
+
+        <h3>Horários disponíveis</h3>
+
+        <div id="horariosDisponiveisContainer">
+        </div>
+
+    </div>
+
+
+    <span asp-validation-for="DataHoraInicio"
+          class="text-danger">
+    </span>
+
+
+    <!-- AÇÕES -->
+    <div class="ib-booking-actions">
+
+        <button type="button"
+                class="ib-booking-btn-secondary"
+                id="btnVoltarProfissional">
+            <span aria-hidden="true">←</span>
+            Voltar
+        </button>
+
+
+        <button type="button"
+                class="ib-booking-btn-primary"
+                id="btnContinuarDataHora"
+                disabled>
+            Continuar
+            <span aria-hidden="true">→</span>
+        </button>
+
+    </div>
+
+</section>
+<!-- =====================================================
+     PASSO 4 — DETALHES
+====================================================== -->
+
+<section class="ib-booking-panel"
+         id="wizardEtapa4">
+
+    <div class="ib-booking-panel-heading">
+
+        <span class="ib-booking-kicker">
+            PASSO 4 DE 5
+        </span>
+
+        <h2>Detalhes da marcação</h2>
+
+        <p>
+            Se desejar, deixe alguma indicação adicional
+            para o profissional.
+        </p>
+
+    </div>
+
+
+    <div class="ib-booking-section">
+
+        <h3>Observações</h3>
+
+        <div class="ib-booking-observations">
+
+            <textarea asp-for="Observacoes"
+                      class="ib-booking-textarea"
+                      rows="5"
+                      maxlength="500"
+                      placeholder="Ex.: preferências, cuidados especiais ou outra informação que considere importante."></textarea>
+
+            <span asp-validation-for="Observacoes"
+                  class="text-danger">
+            </span>
+
+            <small class="ib-booking-field-hint">
+                Campo opcional · máximo 500 caracteres
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <div class="ib-booking-actions">
+
+        <button type="button"
+                class="ib-booking-btn-secondary"
+                id="btnVoltarDataHora">
+            <span aria-hidden="true">←</span>
+            Voltar
+        </button>
+
+
+        <button type="button"
+                class="ib-booking-btn-primary"
+                id="btnContinuarDetalhes">
+            Continuar
+            <span aria-hidden="true">→</span>
+        </button>
+
+    </div>
+
+</section>
+
+<!-- =====================================================
+     PASSO 5 — CONFIRMAR
+====================================================== -->
+
+<section class="ib-booking-panel"
+         id="wizardEtapa5">
+
+    <div class="ib-booking-panel-heading">
+
+    <span class="ib-booking-kicker">
+        PASSO 5 DE 5
+    </span>
+
+    <h2>Confirmar marcação</h2>
+
+    <p>
+        Reveja os detalhes da sua marcação antes de confirmar.
+    </p>
+
+</div>
+
+
+<div class="ib-booking-confirm-layout">
+
+    <!-- ==========================================
+         SERVIÇO
+    =========================================== -->
+
+    <div class="ib-booking-confirm-service">
+
+        <div class="ib-booking-confirm-service-image">
+
+            <img id="resumoServicoImagem"
+                 src=""
+                 alt=""
+                 hidden />
+
+            <div class="ib-booking-confirm-service-fallback"
+                 id="resumoServicoFallback">
+                <span id="resumoServicoInicial">—</span>
+            </div>
+
+        </div>
+
+
+        <div class="ib-booking-confirm-service-body">
+
+            <span class="ib-booking-confirm-label">
+                SERVIÇO
+            </span>
+
+            <h3 id="resumoServico">—</h3>
+
+            <p id="resumoServicoDescricao">
+                —
+            </p>
+
+
+            <div class="ib-booking-confirm-service-footer">
+
+                <div class="ib-booking-confirm-duration">
+
+                    <svg viewBox="0 0 24 24"
+                         aria-hidden="true">
+                        <circle cx="12"
+                                cy="12"
+                                r="9"></circle>
+                        <path d="M12 7v5l3 2"></path>
+                    </svg>
+
+                    <span id="resumoDuracao">
+                        —
+                    </span>
+
+                </div>
+
+
+                <strong id="resumoPrecoServico">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         PROFISSIONAL + DATA
+    =========================================== -->
+
+    <div class="ib-booking-confirm-details">
+
+        <span class="ib-booking-confirm-label">
+            PROFISSIONAL
+        </span>
+
+
+        <div class="ib-booking-confirm-professional">
+
+            <div class="ib-booking-confirm-professional-photo">
+
+                <img id="resumoProfissionalImagem"
+                     src=""
+                     alt=""
+                     hidden />
+
+                <div class="ib-booking-confirm-professional-fallback"
+                     id="resumoProfissionalFallback">
+                    <span id="resumoProfissionalInicial">—</span>
+                </div>
+
+            </div>
+
+
+            <div class="ib-booking-confirm-professional-info">
+
+                <strong id="resumoProfissional">
+                    —
+                </strong>
+
+                <span id="resumoProfissionalDescricao">
+                    Profissional selecionado
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="ib-booking-confirm-divider"></div>
+
+
+        <div class="ib-booking-confirm-datetime">
+
+            <div class="ib-booking-confirm-datetime-item">
+
+                <span class="ib-booking-confirm-label">
+                    DATA
+                </span>
+
+                <strong id="resumoData">
+                    —
+                </strong>
+
+            </div>
+
+
+            <div class="ib-booking-confirm-datetime-item">
+
+                <span class="ib-booking-confirm-label">
+                    HORA
+                </span>
+
+                <strong id="resumoHora">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="ib-booking-confirm-observation"
+             id="resumoObservacoesBloco"
+             hidden>
+
+            <div class="ib-booking-confirm-divider"></div>
+
+            <span class="ib-booking-confirm-label">
+                OBSERVAÇÕES
+            </span>
+
+            <p id="resumoObservacoes"></p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================
+     PROMO + TOTAL
+=========================================== -->
+
+<div class="ib-booking-confirm-bottom">
+
+    <div class="ib-booking-confirm-promo">
+
+        <span class="ib-booking-confirm-label">
+            CÓDIGO PROMOCIONAL
+        </span>
+
+        <div class="ib-booking-promo">
+
+            <input asp-for="PromoCode"
+                   class="ib-booking-promo-input"
+                   placeholder="Introduza o seu código"
+                   autocomplete="off" />
+
+            <button type="button"
+                    class="ib-booking-promo-button"
+                    id="btnAplicarPromo">
+                Aplicar
+            </button>
+
+        </div>
+
+        <span asp-validation-for="PromoCode"
+              class="text-danger">
+        </span>
+
+    </div>
+
+
+    <div class="ib-booking-confirm-total">
+
+    <div class="ib-booking-confirm-price-details"
+         id="resumoDescontoBloco"
+         hidden>
+
+        <div class="ib-booking-confirm-price-line">
+            <span>Valor do serviço</span>
+            <span id="resumoValorOriginal">—</span>
+        </div>
+
+        <div class="ib-booking-confirm-price-line ib-booking-confirm-discount">
+            <span id="resumoDescontoLabel">Desconto</span>
+            <span id="resumoValorDesconto">—</span>
+        </div>
+
+    </div>
+
+    <div class="ib-booking-confirm-total-final">
+
+        <span>
+            TOTAL A PAGAR
+        </span>
+
+        <strong id="resumoTotal">
+            —
+        </strong>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- ==========================================
+     AÇÕES
+=========================================== -->
+
+<div class="ib-booking-actions ib-booking-confirm-actions">
+
+    <button type="button"
+            class="ib-booking-btn-secondary"
+            id="btnVoltarDetalhes">
+
+        <span aria-hidden="true">←</span>
+        Voltar
+
+    </button>
+
+
+    <button type="submit"
+            class="ib-booking-btn-primary"
+            id="btnConfirmarMarcacao">
+
+        Confirmar marcação
+        <span aria-hidden="true">✓</span>
+
+    </button>
+
+</div>
+
+</section>
 
     </form>
 
@@ -330,7 +814,84 @@
 
             const servicosAjuda =
                 document.getElementById("servicosAjuda");
+                const etapa1 =
+    document.getElementById("wizardEtapa1");
 
+const etapa2 =
+    document.getElementById("wizardEtapa2");
+
+const voltarServicoButton =
+    document.getElementById("btnVoltarServico");
+
+const roadmapSteps =
+    document.querySelectorAll(".ib-booking-step");
+    const profissionaisContainer =
+    document.getElementById("profissionaisContainer");
+
+const funcionarioInput =
+    document.getElementById("FuncionarioId");
+
+const continuarProfissionalButton =
+    document.getElementById("btnContinuarProfissional");
+    const etapa3 =
+    document.getElementById("wizardEtapa3");
+
+const voltarProfissionalButton =
+    document.getElementById("btnVoltarProfissional");
+
+const continuarDataHoraButton =
+    document.getElementById("btnContinuarDataHora");
+    const datasDisponiveisContainer =
+    document.getElementById("datasDisponiveisContainer");
+
+const horariosSection =
+    document.getElementById("horariosSection");
+
+const horariosDisponiveisContainer =
+    document.getElementById("horariosDisponiveisContainer");
+
+const dataHoraInput =
+    document.getElementById("DataHoraInicio");
+const etapa4 =
+    document.getElementById("wizardEtapa4");
+
+const voltarDataHoraButton =
+    document.getElementById("btnVoltarDataHora");
+
+const continuarDetalhesButton =
+    document.getElementById("btnContinuarDetalhes");
+const etapa5 =
+    document.getElementById("wizardEtapa5");
+
+const voltarDetalhesButton =
+    document.getElementById("btnVoltarDetalhes");
+
+const resumoServico =
+    document.getElementById("resumoServico");
+
+const resumoProfissional =
+    document.getElementById("resumoProfissional");
+
+const resumoData =
+    document.getElementById("resumoData");
+
+const resumoHora =
+    document.getElementById("resumoHora");
+
+const btnAplicarPromo =
+    document.getElementById("btnAplicarPromo");
+
+const promoCodeInput =
+    document.getElementById("PromoCode");
+
+const resumoTotal =
+    document.getElementById("resumoTotal");
+
+const resumoPrecoServico =
+    document.getElementById("resumoPrecoServico");
+
+let precoEfetivoSelecionado = null;
+let duracaoEfetivaSelecionada = null;
 
             categoriaCards.forEach(card => {
 
@@ -414,8 +975,914 @@
                 });
 
             });
+            continuarButton.addEventListener("click", async function () {
+
+    if (!servicoInput.value) {
+        return;
+    }
+
+    etapa1.classList.remove("active");
+    etapa2.classList.add("active");
+
+    roadmapSteps[0].classList.remove("active");
+    roadmapSteps[0].classList.add("completed");
+
+    roadmapSteps[1].classList.add("active");
+
+    profissionaisContainer.innerHTML =
+        "<p>A carregar profissionais...</p>";
+
+    funcionarioInput.value = "";
+    continuarProfissionalButton.disabled = true;
+
+    try {
+
+        const response = await fetch(
+            `/MarcacoesCliente/FuncionariosPorServico?servicoId=${servicoInput.value}`
+        );
+
+        if (!response.ok) {
+            throw new Error("Erro ao carregar profissionais.");
+        }
+
+        const profissionais = await response.json();
+
+        if (!profissionais || profissionais.length === 0) {
+
+            profissionaisContainer.innerHTML =
+                "<p>Não existem profissionais disponíveis para este serviço.</p>";
+
+            return;
+        }
+
+        profissionaisContainer.innerHTML = "";
+
+        profissionais.forEach(profissional => {
+
+            const card = document.createElement("button");
+
+            card.type = "button";
+            card.className = "ib-booking-professional-card";
+            card.dataset.funcionarioId = profissional.id;
+
+            const avaliacao =
+                profissional.totalAvaliacoes > 0
+                    ? `★ ${Number(profissional.mediaAvaliacao).toFixed(1)} (${profissional.totalAvaliacoes})`
+                    : "Sem avaliações";
+
+            const biografia =
+                profissional.biografia
+                    ? `<p>${profissional.biografia}</p>`
+                    : "";
+
+            card.innerHTML = `
+                <div class="ib-booking-professional-image">
+                    <img src="${profissional.fotografiaUrl}"
+                         alt=""
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+
+                    <div class="ib-booking-image-fallback">
+                        <span>${profissional.nomeCompleto.charAt(0).toUpperCase()}</span>
+                    </div>
+                </div>
+
+                <div class="ib-booking-professional-content">
+                    <strong>${profissional.nomeCompleto}</strong>
+
+                    ${biografia}
+
+                    <span class="ib-booking-professional-rating">
+                        ${avaliacao}
+                    </span>
+                </div>
+
+                <span class="ib-booking-card-check"
+                      aria-hidden="true">
+                    ✓
+                </span>
+            `;
+
+            card.addEventListener("click", async function () {
+
+                document
+                    .querySelectorAll(".ib-booking-professional-card")
+                    .forEach(item =>
+                        item.classList.remove("selected"));
+
+                this.classList.add("selected");
+
+                funcionarioInput.value =
+                    this.dataset.funcionarioId;
+
+                continuarProfissionalButton.disabled = false;
+
+            });
+
+            profissionaisContainer.appendChild(card);
 
         });
+
+    }
+    catch (error) {
+
+        profissionaisContainer.innerHTML =
+            "<p>Não foi possível carregar os profissionais.</p>";
+
+    }
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+});
+
+
+
+voltarServicoButton.addEventListener("click", function () {
+
+    etapa2.classList.remove("active");
+    etapa1.classList.add("active");
+
+    roadmapSteps[1].classList.remove("active");
+
+    roadmapSteps[0].classList.remove("completed");
+    roadmapSteps[0].classList.add("active");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+});
+continuarProfissionalButton.addEventListener("click", async function () {
+
+    if (!funcionarioInput.value) {
+        return;
+    }
+
+    etapa2.classList.remove("active");
+    etapa3.classList.add("active");
+
+    roadmapSteps[1].classList.remove("active");
+    roadmapSteps[1].classList.add("completed");
+
+    roadmapSteps[2].classList.add("active");
+await carregarDatasDisponiveis();
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+});
+
+
+voltarProfissionalButton.addEventListener("click", function () {
+
+    etapa3.classList.remove("active");
+    etapa2.classList.add("active");
+
+    roadmapSteps[2].classList.remove("active");
+
+    roadmapSteps[1].classList.remove("completed");
+    roadmapSteps[1].classList.add("active");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+});
+
+continuarDataHoraButton.addEventListener("click", function () {
+
+    if (!dataHoraInput.value) {
+        return;
+    }
+
+    etapa3.classList.remove("active");
+    etapa4.classList.add("active");
+
+    roadmapSteps[2].classList.remove("active");
+    roadmapSteps[2].classList.add("completed");
+
+    roadmapSteps[3].classList.add("active");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+});
+
+voltarDataHoraButton.addEventListener("click", function () {
+
+    etapa4.classList.remove("active");
+    etapa3.classList.add("active");
+
+    roadmapSteps[3].classList.remove("active");
+
+    roadmapSteps[2].classList.remove("completed");
+    roadmapSteps[2].classList.add("active");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+});
+
+async function carregarDatasDisponiveis() {
+
+    datasDisponiveisContainer.innerHTML =
+        "<p>A carregar datas disponíveis...</p>";
+
+    horariosSection.hidden = true;
+    horariosDisponiveisContainer.innerHTML = "";
+
+    dataHoraInput.value = "";
+    continuarDataHoraButton.disabled = true;
+
+    try {
+
+        const response = await fetch(
+            `/MarcacoesCliente/DatasDisponiveis` +
+            `?funcionarioId=${funcionarioInput.value}` +
+            `&servicoId=${servicoInput.value}`
+        );
+
+        if (!response.ok) {
+            throw new Error("Erro ao carregar datas.");
+        }
+
+        const datas = await response.json();
+
+        if (!datas || datas.length === 0) {
+
+            datasDisponiveisContainer.innerHTML =
+                `<div class="ib-booking-availability-empty">
+                    Não existem datas disponíveis nos próximos 30 dias.
+                 </div>`;
+
+            return;
+        }
+
+        datasDisponiveisContainer.innerHTML = "";
+
+        datas.forEach(item => {
+
+            const card = document.createElement("button");
+
+            card.type = "button";
+            card.className = "ib-booking-date-card";
+            card.dataset.data = item.data;
+
+            card.innerHTML = `
+                <span class="ib-booking-date-weekday">
+                    ${item.diaSemana}
+                </span>
+
+                <strong class="ib-booking-date-day">
+                    ${item.dia}
+                </strong>
+
+                <span class="ib-booking-date-month">
+                    ${item.mes}
+                </span>
+
+                <span class="ib-booking-card-check"
+                      aria-hidden="true">
+                    ✓
+                </span>
+            `;
+
+            card.addEventListener("click", async function () {
+
+                document
+                    .querySelectorAll(".ib-booking-date-card")
+                    .forEach(item =>
+                        item.classList.remove("selected"));
+
+                this.classList.add("selected");
+
+                dataHoraInput.value = "";
+
+                continuarDataHoraButton.disabled = true;
+await carregarHorariosDisponiveis(
+    this.dataset.data
+);
+            });
+
+            datasDisponiveisContainer.appendChild(card);
+
+        });
+
+    }
+    catch (error) {
+
+        datasDisponiveisContainer.innerHTML =
+            `<div class="ib-booking-availability-empty">
+                Não foi possível carregar as datas disponíveis.
+             </div>`;
+
+    }
+}
+
+async function carregarHorariosDisponiveis(dataSelecionada) {
+
+    horariosSection.hidden = false;
+
+    horariosDisponiveisContainer.innerHTML =
+        "<p>A carregar horários disponíveis...</p>";
+
+    dataHoraInput.value = "";
+    continuarDataHoraButton.disabled = true;
+
+    try {
+
+        const response = await fetch(
+            `/MarcacoesCliente/HorariosDisponiveis` +
+            `?funcionarioId=${funcionarioInput.value}` +
+            `&servicoId=${servicoInput.value}` +
+            `&data=${dataSelecionada}`
+        );
+
+        if (!response.ok) {
+            throw new Error("Erro ao carregar horários.");
+        }
+
+        const horarios = await response.json();
+
+        if (!horarios || horarios.length === 0) {
+
+            horariosDisponiveisContainer.innerHTML =
+                `<div class="ib-booking-availability-empty">
+                    Não existem horários disponíveis para esta data.
+                 </div>`;
+
+            return;
+        }
+
+        horariosDisponiveisContainer.innerHTML = "";
+
+        horarios.forEach(horario => {
+
+            const dataHora = new Date(horario);
+
+            const horaFormatada =
+                dataHora.toLocaleTimeString("pt-PT", {
+                    hour: "2-digit",
+                    minute: "2-digit"
+                });
+
+            const button = document.createElement("button");
+
+            button.type = "button";
+            button.className = "ib-booking-time-card";
+            button.dataset.dataHora = horario;
+            button.textContent = horaFormatada;
+
+            button.addEventListener("click", function () {
+
+                document
+                    .querySelectorAll(".ib-booking-time-card")
+                    .forEach(item =>
+                        item.classList.remove("selected"));
+
+                this.classList.add("selected");
+
+                dataHoraInput.value =
+                    this.dataset.dataHora;
+
+                continuarDataHoraButton.disabled = false;
+
+            });
+
+            horariosDisponiveisContainer.appendChild(button);
+
+        });
+
+    }
+    catch (error) {
+
+        horariosDisponiveisContainer.innerHTML =
+            `<div class="ib-booking-availability-empty">
+                Não foi possível carregar os horários disponíveis.
+             </div>`;
+    }
+}
+function atualizarResumoMarcacao() {
+
+    const servicoSelecionado =
+        document.querySelector(".ib-booking-service-card.selected");
+
+    const profissionalSelecionado =
+        document.querySelector(".ib-booking-professional-card.selected");
+
+    const dataSelecionada =
+        document.querySelector(".ib-booking-date-card.selected");
+
+    const horarioSelecionado =
+        document.querySelector(".ib-booking-time-card.selected");
+
+
+    /* =========================================
+       SERVIÇO
+    ========================================= */
+
+    if (servicoSelecionado) {
+
+        const nome =
+            servicoSelecionado
+                .querySelector(".ib-booking-service-top h4")
+                ?.textContent
+                ?.trim() || "—";
+
+        const descricao =
+            servicoSelecionado
+                .querySelector(".ib-booking-service-top p")
+                ?.textContent
+                ?.trim() || "";
+
+        const duracaoBase =
+    servicoSelecionado
+        .querySelector(".ib-booking-service-meta span")
+        ?.textContent
+        ?.trim() || "—";
+
+const precoBase =
+    servicoSelecionado
+        .querySelector(".ib-booking-service-meta strong")
+        ?.textContent
+        ?.trim() || "—";
+
+
+const duracao =
+    duracaoEfetivaSelecionada != null
+        ? `${duracaoEfetivaSelecionada} min`
+        : duracaoBase;
+
+
+const preco =
+    precoEfetivoSelecionado != null
+        ? Number(precoEfetivoSelecionado)
+            .toLocaleString(
+                "pt-PT",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            ) + " €"
+        : precoBase;
+
+        const imagem =
+            servicoSelecionado
+                .querySelector(".ib-booking-service-image img");
+
+
+        resumoServico.textContent = nome;
+
+        document.getElementById("resumoServicoDescricao").textContent =
+            descricao || "Sem descrição adicional.";
+
+        document.getElementById("resumoDuracao").textContent =
+            duracao;
+
+        document.getElementById("resumoPrecoServico").textContent =
+            preco;
+
+        document.getElementById("resumoTotal").textContent =
+            preco;
+
+
+        /* IMAGEM DO SERVIÇO */
+
+        const resumoImagem =
+            document.getElementById("resumoServicoImagem");
+
+        const resumoFallback =
+            document.getElementById("resumoServicoFallback");
+
+        const resumoInicial =
+            document.getElementById("resumoServicoInicial");
+
+
+        resumoInicial.textContent =
+            nome.charAt(0).toUpperCase();
+
+
+        if (imagem && imagem.src) {
+
+    resumoImagem.onload = function () {
+        resumoImagem.hidden = false;
+        resumoFallback.style.display = "none";
+    };
+
+    resumoImagem.onerror = function () {
+        resumoImagem.hidden = true;
+        resumoImagem.removeAttribute("src");
+        resumoFallback.style.display = "flex";
+    };
+
+    resumoImagem.alt = nome;
+    resumoImagem.src = imagem.src;
+
+} else {
+
+    resumoImagem.hidden = true;
+    resumoImagem.removeAttribute("src");
+    resumoFallback.style.display = "flex";
+}
+    }
+
+
+    /* =========================================
+       PROFISSIONAL
+    ========================================= */
+
+    if (profissionalSelecionado) {
+
+        const nomeProfissional =
+            profissionalSelecionado
+                .querySelector(".ib-booking-professional-content strong")
+                ?.textContent
+                ?.trim() || "—";
+
+        const biografia =
+            profissionalSelecionado
+                .querySelector(".ib-booking-professional-content p")
+                ?.textContent
+                ?.trim() || "";
+
+        const fotografia =
+            profissionalSelecionado
+                .querySelector(".ib-booking-professional-image img");
+
+
+        resumoProfissional.textContent =
+            nomeProfissional;
+
+        document.getElementById("resumoProfissionalDescricao").textContent =
+            biografia || "Profissional selecionado";
+
+
+        /* FOTOGRAFIA */
+
+        const resumoFoto =
+            document.getElementById("resumoProfissionalImagem");
+
+        const resumoFotoFallback =
+            document.getElementById("resumoProfissionalFallback");
+
+        const resumoFotoInicial =
+            document.getElementById("resumoProfissionalInicial");
+
+
+        resumoFotoInicial.textContent =
+            nomeProfissional.charAt(0).toUpperCase();
+
+
+        if (fotografia && fotografia.src) {
+
+    resumoFoto.onload = function () {
+        resumoFoto.hidden = false;
+        resumoFotoFallback.style.display = "none";
+    };
+
+    resumoFoto.onerror = function () {
+        resumoFoto.hidden = true;
+        resumoFoto.removeAttribute("src");
+        resumoFotoFallback.style.display = "flex";
+    };
+
+    resumoFoto.alt = nomeProfissional;
+    resumoFoto.src = fotografia.src;
+
+} else {
+
+    resumoFoto.hidden = true;
+    resumoFoto.removeAttribute("src");
+    resumoFotoFallback.style.display = "flex";
+}
+    }
+
+
+    /* =========================================
+       DATA
+    ========================================= */
+
+    if (dataSelecionada) {
+
+        const diaSemana =
+            dataSelecionada
+                .querySelector(".ib-booking-date-weekday")
+                ?.textContent
+                ?.trim() || "";
+
+        const dia =
+            dataSelecionada
+                .querySelector(".ib-booking-date-day")
+                ?.textContent
+                ?.trim() || "";
+
+        const mes =
+            dataSelecionada
+                .querySelector(".ib-booking-date-month")
+                ?.textContent
+                ?.trim() || "";
+
+
+        resumoData.textContent =
+            `${diaSemana}, ${dia} ${mes}`.trim();
+    }
+
+
+    /* =========================================
+       HORA
+    ========================================= */
+
+    resumoHora.textContent =
+        horarioSelecionado
+            ?.textContent
+            ?.trim() || "—";
+
+
+    /* =========================================
+       OBSERVAÇÕES
+    ========================================= */
+
+    const observacoes =
+        document.getElementById("Observacoes")
+            ?.value
+            ?.trim() || "";
+
+    const observacoesBloco =
+        document.getElementById("resumoObservacoesBloco");
+
+    const resumoObservacoes =
+        document.getElementById("resumoObservacoes");
+
+
+    if (observacoes) {
+
+        resumoObservacoes.textContent =
+            observacoes;
+
+        observacoesBloco.hidden = false;
+
+    } else {
+
+        resumoObservacoes.textContent = "";
+        observacoesBloco.hidden = true;
+    }
+}
+continuarDetalhesButton.addEventListener("click", function () {
+
+    atualizarResumoMarcacao();
+
+    etapa4.classList.remove("active");
+    etapa5.classList.add("active");
+
+    roadmapSteps[3].classList.remove("active");
+    roadmapSteps[3].classList.add("completed");
+
+    roadmapSteps[4].classList.add("active");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+});
+
+voltarDetalhesButton.addEventListener("click", function () {
+
+    etapa5.classList.remove("active");
+    etapa4.classList.add("active");
+
+    roadmapSteps[4].classList.remove("active");
+
+    roadmapSteps[3].classList.remove("completed");
+    roadmapSteps[3].classList.add("active");
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+});
+
+       
+
+btnAplicarPromo?.addEventListener("click", async function () {
+
+    const codigo = promoCodeInput?.value?.trim();
+
+    if (!codigo) {
+        alert("Introduza um código promocional.");
+        promoCodeInput?.focus();
+        return;
+    }
+
+    const token =
+        document.querySelector(
+            'input[name="__RequestVerificationToken"]'
+        )?.value;
+
+    btnAplicarPromo.disabled = true;
+    btnAplicarPromo.textContent = "A validar...";
+
+    try {
+
+        const body = new URLSearchParams();
+        body.append("codigo", codigo);
+
+        const response = await fetch(
+            "/MarcacoesCliente/ValidarPromoCode",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/x-www-form-urlencoded; charset=UTF-8",
+
+                    "RequestVerificationToken":
+                        token ?? ""
+                },
+                body: body.toString()
+            }
+        );
+
+        if (!response.ok) {
+
+            let mensagem =
+                "O código promocional não é válido.";
+
+            const erro = await response.text();
+
+            if (erro) {
+                try {
+                    mensagem = JSON.parse(erro);
+                }
+                catch {
+                    mensagem = erro;
+                }
+            }
+
+            alert(mensagem);
+            return;
+        }
+
+        const resultado = await response.json();
+
+        console.log("PromoCode validado:", resultado);
+
+const percentagemDesconto =
+    Number(resultado.percentagemDesconto);
+
+const precoTexto =
+    resumoPrecoServico
+        ?.textContent
+        ?.trim() || "";
+
+const precoBase =
+    Number(
+        precoTexto
+            .replace("€", "")
+            .replace(/\s/g, "")
+            .replace(",", ".")
+    );
+
+if (
+    !Number.isFinite(precoBase) ||
+    !Number.isFinite(percentagemDesconto)
+) {
+    throw new Error(
+        "Não foi possível calcular o valor do desconto."
+    );
+}
+
+const valorDesconto =
+    precoBase * percentagemDesconto / 100;
+
+const totalComDesconto =
+    precoBase - valorDesconto;
+
+const formatarEuro = valor =>
+    valor.toLocaleString(
+        "pt-PT",
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }
+    ) + " €";
+
+
+const descontoBloco =
+    document.getElementById("resumoDescontoBloco");
+
+const valorOriginal =
+    document.getElementById("resumoValorOriginal");
+
+const descontoLabel =
+    document.getElementById("resumoDescontoLabel");
+
+const valorDescontoElement =
+    document.getElementById("resumoValorDesconto");
+
+
+valorOriginal.textContent =
+    formatarEuro(precoBase);
+
+descontoLabel.textContent =
+    `Desconto ${percentagemDesconto}%`;
+
+valorDescontoElement.textContent =
+    `− ${formatarEuro(valorDesconto)}`;
+
+resumoTotal.textContent =
+    formatarEuro(totalComDesconto);
+
+descontoBloco.hidden = false;
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Não foi possível validar o código promocional."
+        );
+    }
+    finally {
+
+        btnAplicarPromo.disabled = false;
+        btnAplicarPromo.textContent = "Aplicar";
+    }
+});
+
+promoCodeInput?.addEventListener("input", function () {
+
+    const descontoBloco =
+        document.getElementById("resumoDescontoBloco");
+
+    if (descontoBloco) {
+        descontoBloco.hidden = true;
+    }
+
+    const precoAtual =
+        resumoPrecoServico
+            ?.textContent
+            ?.trim() || "—";
+
+    resumoTotal.textContent =
+        precoAtual;
+});
+
+async function carregarDetalhesServicoProfissional() {
+
+    const funcionarioId =
+        Number(funcionarioInput.value);
+
+    const servicoId =
+        Number(servicoInput.value);
+
+    if (!funcionarioId || !servicoId) {
+        precoEfetivoSelecionado = null;
+        duracaoEfetivaSelecionada = null;
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `/MarcacoesCliente/DetalhesServicoProfissional` +
+            `?funcionarioId=${funcionarioId}` +
+            `&servicoId=${servicoId}`
+        );
+
+        if (!response.ok) {
+            throw new Error();
+        }
+
+        const dados = await response.json();
+
+        precoEfetivoSelecionado =
+            dados.precoPersonalizado ?? null;
+
+        duracaoEfetivaSelecionada =
+            dados.duracaoPersonalizadaMinutos ?? null;
+
+    }
+    catch {
+
+        precoEfetivoSelecionado = null;
+        duracaoEfetivaSelecionada = null;
+    }
+}
+
+});
+
+
 
     </script>
 

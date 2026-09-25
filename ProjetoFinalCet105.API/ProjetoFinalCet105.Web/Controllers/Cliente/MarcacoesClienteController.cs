@@ -142,6 +142,41 @@ public class MarcacoesClienteController : Controller
     }
 
     [HttpGet]
+    public async Task<IActionResult> DetalhesServicoProfissional( int funcionarioId, int servicoId)
+    {
+        if (funcionarioId <= 0 || servicoId <= 0)
+        {
+            return BadRequest();
+        }
+
+        try
+        {
+            var servicos = await _apiService.GetAuthenticatedAsync<List<FuncionarioServicoViewModel>>($"api/FuncionarioServicos/funcionario/{funcionarioId}");
+
+            var associacao = servicos?
+                .FirstOrDefault(fs =>
+                    fs.ServicoId == servicoId &&
+                    fs.Ativo);
+
+            if (associacao == null)
+            {
+                return NotFound();
+            }
+
+            return Json(new
+            {
+                precoPersonalizado = associacao.PrecoPersonalizado,
+
+                duracaoPersonalizadaMinutos = associacao.DuracaoPersonalizadaMinutos
+            });
+        }
+        catch
+        {
+            return StatusCode( StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    [HttpGet]
     public async Task<IActionResult> HorariosDisponiveis( int funcionarioId, int servicoId, DateTime data)
     {
         if (funcionarioId <= 0 || servicoId <= 0 ||  data == default)
@@ -162,6 +197,39 @@ public class MarcacoesClienteController : Controller
         catch
         {
             return Json(new List<DateTime>());
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ValidarPromoCode(string codigo)
+    {
+        if (string.IsNullOrWhiteSpace(codigo))
+        {
+            return BadRequest("Introduza um código promocional.");
+        }
+
+        try
+        {
+            var dto = new
+            {
+                Codigo = codigo.Trim()
+            };
+
+            using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/PromoCodes/validar", dto);
+
+            var conteudo = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return StatusCode((int)response.StatusCode, conteudo);
+            }
+
+            return Content( conteudo, "application/json");
+        }
+        catch
+        {
+            return StatusCode( StatusCodes.Status500InternalServerError, "Não foi possível validar o código promocional.");
         }
     }
 

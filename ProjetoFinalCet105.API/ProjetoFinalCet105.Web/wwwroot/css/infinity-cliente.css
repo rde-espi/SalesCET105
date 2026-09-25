@@ -2023,6 +2023,181 @@ body,
         font-size: .88rem;
     }
 
+/* =========================================================
+   PROFISSIONAIS — PASSO 2
+========================================================= */
+
+#profissionaisContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 14px;
+    width: 100%;
+    padding: 2px 2px 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--cliente-gold) transparent;
+}
+
+    #profissionaisContainer::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    #profissionaisContainer::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #profissionaisContainer::-webkit-scrollbar-thumb {
+        background: var(--cliente-gold);
+        border-radius: 20px;
+    }
+
+
+.ib-booking-professional-card {
+    position: relative;
+    flex: 0 0 230px;
+    width: 230px;
+    overflow: hidden;
+    padding: 0;
+    background: #fff;
+    border: 1px solid var(--cliente-border);
+    border-radius: 10px;
+    color: var(--cliente-text);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+    .ib-booking-professional-card:hover {
+        border-color: rgba(216, 176, 113, .65);
+        box-shadow: 0 7px 20px rgba(25, 25, 25, .07);
+        transform: translateY(-2px);
+    }
+
+    .ib-booking-professional-card.selected {
+        border-color: var(--cliente-gold);
+        box-shadow: 0 0 0 1px var(--cliente-gold);
+    }
+
+
+/* FOTOGRAFIA */
+
+.ib-booking-professional-image {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+    background: #f4f0e9;
+}
+
+    .ib-booking-professional-image img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .ib-booking-professional-image .ib-booking-image-fallback {
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .ib-booking-professional-image .ib-booking-image-fallback span {
+            color: var(--cliente-gold-dark);
+            font-family: "Cormorant Garamond", serif;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+
+/* CONTEÚDO */
+
+.ib-booking-professional-content {
+    min-height: 112px;
+    padding: 14px 15px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+    .ib-booking-professional-content strong {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--cliente-text);
+        font-size: .84rem;
+        font-weight: 600;
+        line-height: 1.35;
+    }
+
+    .ib-booking-professional-content p {
+        display: -webkit-box;
+        overflow: hidden;
+        margin: 0 0 10px;
+        color: var(--cliente-muted);
+        font-size: .7rem;
+        line-height: 1.5;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+
+/* AVALIAÇÃO */
+
+.ib-booking-professional-rating {
+    margin-top: auto;
+    color: var(--cliente-gold-dark);
+    font-size: .7rem;
+    font-weight: 600;
+}
+
+
+/* CHECK DE SELEÇÃO */
+
+.ib-booking-professional-card > .ib-booking-card-check {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 3;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cliente-gold);
+    border-radius: 50%;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(.8);
+    transition: opacity .18s ease, visibility .18s ease, transform .18s ease;
+}
+
+.ib-booking-professional-card.selected > .ib-booking-card-check {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 700px) {
+
+    .ib-booking-professional-card {
+        flex-basis: 205px;
+        width: 205px;
+    }
+
+    .ib-booking-professional-image {
+        height: 135px;
+    }
+}   
+
 
 /* ROADMAP */
 
@@ -2638,6 +2813,746 @@ body,
 
     .ib-booking-btn-primary,
     .ib-booking-btn-secondary {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   DATA E HORA — PASSO 3
+========================================================= */
+
+#datasDisponiveisContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    width: 100%;
+    padding: 2px 2px 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--cliente-gold) transparent;
+}
+
+    #datasDisponiveisContainer::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    #datasDisponiveisContainer::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    #datasDisponiveisContainer::-webkit-scrollbar-thumb {
+        background: var(--cliente-gold);
+        border-radius: 20px;
+    }
+
+
+.ib-booking-date-card {
+    position: relative;
+    flex: 0 0 92px;
+    width: 92px;
+    min-height: 105px;
+    padding: 14px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid var(--cliente-border);
+    border-radius: 10px;
+    color: var(--cliente-text);
+    cursor: pointer;
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease, background .18s ease;
+}
+
+    .ib-booking-date-card:hover {
+        border-color: rgba(216, 176, 113, .7);
+        box-shadow: 0 6px 16px rgba(25, 25, 25, .06);
+        transform: translateY(-2px);
+    }
+
+    .ib-booking-date-card.selected {
+        background: #fcfaf6;
+        border-color: var(--cliente-gold);
+        box-shadow: 0 0 0 1px var(--cliente-gold);
+    }
+
+
+.ib-booking-date-weekday {
+    margin-bottom: 5px;
+    color: var(--cliente-muted);
+    font-size: .62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+}
+
+
+.ib-booking-date-day {
+    color: var(--cliente-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.65rem;
+    font-weight: 600;
+    line-height: 1;
+}
+
+
+.ib-booking-date-month {
+    margin-top: 6px;
+    color: var(--cliente-gold-dark);
+    font-size: .63rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+}
+
+
+/* CHECK */
+
+.ib-booking-date-card > .ib-booking-card-check {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cliente-gold);
+    border-radius: 50%;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(.8);
+    transition: opacity .18s ease, visibility .18s ease, transform .18s ease;
+}
+
+.ib-booking-date-card.selected > .ib-booking-card-check {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+
+/* SEM DISPONIBILIDADE */
+
+.ib-booking-availability-empty {
+    width: 100%;
+    padding: 18px;
+    background: #fcfaf6;
+    border: 1px dashed var(--cliente-border);
+    border-radius: 8px;
+    color: var(--cliente-muted);
+    font-size: .75rem;
+    text-align: center;
+}
+/* HORÁRIOS */
+
+#horariosDisponiveisContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding-top: 2px;
+}
+
+
+.ib-booking-time-card {
+    min-width: 78px;
+    height: 40px;
+    padding: 0 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid var(--cliente-border);
+    border-radius: 8px;
+    color: var(--cliente-text);
+    font-size: .72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+    .ib-booking-time-card:hover {
+        border-color: var(--cliente-gold);
+        transform: translateY(-1px);
+    }
+
+    .ib-booking-time-card.selected {
+        background: var(--cliente-gold);
+        border-color: var(--cliente-gold);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(216, 176, 113, .22);
+    }
+
+/* =========================================================
+   DETALHES — PASSO 4
+========================================================= */
+
+.ib-booking-observations {
+    width: 100%;
+    max-width: 760px;
+}
+
+
+.ib-booking-textarea {
+    width: 100%;
+    min-height: 125px;
+    padding: 14px 16px;
+    border: 1px solid var(--cliente-border);
+    border-radius: 9px;
+    background: #fff;
+    color: var(--cliente-text);
+    font-family: inherit;
+    font-size: .78rem;
+    line-height: 1.55;
+    resize: vertical;
+    outline: none;
+    transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+
+    .ib-booking-textarea:focus {
+        border-color: var(--cliente-gold);
+        box-shadow: 0 0 0 3px rgba(216, 176, 113, .10);
+    }
+
+
+    .ib-booking-textarea::placeholder {
+        color: #aaa49b;
+    }
+
+
+.ib-booking-field-hint {
+    display: block;
+    margin-top: 7px;
+    color: var(--cliente-muted);
+    font-size: .67rem;
+}
+
+/* =========================================================
+   CONFIRMAR — PASSO 5
+   LAYOUT PREMIUM — OPÇÃO 4
+========================================================= */
+
+.ib-booking-confirm-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.12fr) minmax(330px, .88fr);
+    gap: 18px;
+}
+
+
+/* =========================================================
+   LABELS
+========================================================= */
+
+.ib-booking-confirm-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--cliente-gold-dark);
+    font-size: .61rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   CARD DO SERVIÇO
+========================================================= */
+
+.ib-booking-confirm-service {
+    min-height: 238px;
+    display: grid;
+    grid-template-columns: 44% 56%;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--cliente-border);
+    border-radius: 11px;
+}
+
+
+.ib-booking-confirm-service-image {
+    position: relative;
+    min-height: 238px;
+    overflow: hidden;
+    background: #f2eee7;
+}
+
+
+    .ib-booking-confirm-service-image img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+    }
+
+
+.ib-booking-confirm-service-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient( 135deg, #eee7dc 0%, #f8f5ef 100% );
+}
+
+
+    .ib-booking-confirm-service-fallback span {
+        color: var(--cliente-gold-dark);
+        font-family: "Cormorant Garamond", serif;
+        font-size: 2.7rem;
+        font-weight: 600;
+    }
+
+
+.ib-booking-confirm-service-body {
+    min-width: 0;
+    padding: 25px 25px 22px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+    .ib-booking-confirm-service-body h3 {
+        margin: 0;
+        color: var(--cliente-text);
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.15;
+    }
+
+
+    .ib-booking-confirm-service-body > p {
+        margin: 10px 0 18px;
+        color: var(--cliente-muted);
+        font-size: .7rem;
+        line-height: 1.65;
+    }
+
+
+.ib-booking-confirm-service-footer {
+    margin-top: auto;
+    padding-top: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    border-top: 1px solid #eee9e1;
+}
+
+
+.ib-booking-confirm-duration {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--cliente-muted);
+    font-size: .69rem;
+}
+
+
+    .ib-booking-confirm-duration svg {
+        width: 15px;
+        height: 15px;
+        fill: none;
+        stroke: var(--cliente-gold-dark);
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+
+.ib-booking-confirm-service-footer > strong {
+    color: var(--cliente-gold-dark);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.32rem;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   CARD PROFISSIONAL / DATA / HORA
+========================================================= */
+
+.ib-booking-confirm-details {
+    min-height: 238px;
+    padding: 22px 23px;
+    background: #fff;
+    border: 1px solid var(--cliente-border);
+    border-radius: 11px;
+}
+
+
+.ib-booking-confirm-professional {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+
+.ib-booking-confirm-professional-photo {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+    overflow: hidden;
+    border: 1px solid rgba(216, 176, 113, .45);
+    border-radius: 50%;
+    background: #f2eee7;
+}
+
+
+    .ib-booking-confirm-professional-photo img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+    }
+
+
+.ib-booking-confirm-professional-fallback {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient( 135deg, #e7d5ad, #c3954e );
+}
+
+
+    .ib-booking-confirm-professional-fallback span {
+        color: #fff;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+
+.ib-booking-confirm-professional-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+
+    .ib-booking-confirm-professional-info strong {
+        overflow: hidden;
+        color: var(--cliente-text);
+        font-size: .8rem;
+        font-weight: 650;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+
+    .ib-booking-confirm-professional-info span {
+        margin-top: 4px;
+        color: var(--cliente-muted);
+        font-size: .65rem;
+    }
+
+
+.ib-booking-confirm-divider {
+    height: 1px;
+    margin: 17px 0;
+    background: #eee9e1;
+}
+
+
+/* DATA + HORA */
+
+.ib-booking-confirm-datetime {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 25px;
+}
+
+
+.ib-booking-confirm-datetime-item {
+    min-width: 0;
+}
+
+
+    .ib-booking-confirm-datetime-item strong {
+        display: block;
+        color: var(--cliente-text);
+        font-size: .78rem;
+        font-weight: 650;
+    }
+
+
+/* OBSERVAÇÕES */
+
+.ib-booking-confirm-observation p {
+    margin: 0;
+    color: var(--cliente-muted);
+    font-size: .68rem;
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   PROMOCODE + TOTAL
+========================================================= */
+
+.ib-booking-confirm-bottom {
+    margin-top: 18px;
+    padding: 20px 22px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 30px;
+    background: #fcfaf6;
+    border: 1px solid var(--cliente-border);
+    border-radius: 11px;
+}
+
+
+.ib-booking-confirm-promo {
+    min-width: 0;
+}
+
+
+.ib-booking-promo {
+    width: 100%;
+    max-width: 470px;
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+}
+
+
+.ib-booking-promo-input {
+    min-width: 0;
+    height: 41px;
+    flex: 1;
+    padding: 0 13px;
+    outline: none;
+    background: #fff;
+    border: 1px solid var(--cliente-border);
+    border-radius: 7px;
+    color: var(--cliente-text);
+    font-family: inherit;
+    font-size: .72rem;
+    transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+
+    .ib-booking-promo-input:focus {
+        border-color: var(--cliente-gold);
+        box-shadow: 0 0 0 3px rgba(216, 176, 113, .10);
+    }
+
+
+.ib-booking-promo-button {
+    height: 41px;
+    padding: 0 19px;
+    border: 1px solid var(--cliente-gold);
+    border-radius: 7px;
+    background: #fff;
+    color: var(--cliente-gold-dark);
+    font-family: inherit;
+    font-size: .7rem;
+    font-weight: 650;
+    cursor: pointer;
+    transition: background .18s ease, color .18s ease;
+}
+
+
+    .ib-booking-promo-button:hover {
+        background: var(--cliente-gold);
+        color: #fff;
+    }
+
+
+/* TOTAL */
+
+.ib-booking-confirm-total {
+    min-width: 175px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+
+    .ib-booking-confirm-total span {
+        color: var(--cliente-muted);
+        font-size: .59rem;
+        font-weight: 700;
+        letter-spacing: .11em;
+    }
+
+
+    .ib-booking-confirm-total strong {
+        margin-top: 5px;
+        color: var(--cliente-gold-dark);
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.75rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+/* =========================================================
+   DETALHE DO TOTAL / DESCONTO
+========================================================= */
+
+.ib-booking-confirm-price-details {
+    min-width: 205px;
+    margin-right: 26px;
+    padding-right: 26px;
+    border-right: 1px solid #e8e1d7;
+}
+
+.ib-booking-confirm-price-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 22px;
+    margin-bottom: 6px;
+    color: var(--cliente-muted);
+    font-size: .64rem;
+    white-space: nowrap;
+}
+
+    .ib-booking-confirm-price-line:last-child {
+        margin-bottom: 0;
+    }
+
+    .ib-booking-confirm-price-line span:last-child {
+        color: var(--cliente-text);
+        font-weight: 600;
+    }
+
+.ib-booking-confirm-discount,
+.ib-booking-confirm-discount span:last-child {
+    color: var(--cliente-gold-dark);
+}
+
+.ib-booking-confirm-total-final {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+    .ib-booking-confirm-total-final > span {
+        color: var(--cliente-muted);
+        font-size: .59rem;
+        font-weight: 700;
+        letter-spacing: .11em;
+    }
+
+    .ib-booking-confirm-total-final > strong {
+        margin-top: 5px;
+        color: var(--cliente-gold-dark);
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.75rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+
+/* Quando existe desconto, o total passa a mostrar
+   detalhe + valor final lado a lado */
+
+.ib-booking-confirm-total:has( .ib-booking-confirm-price-details:not([hidden]) ) {
+    min-width: 390px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 650px) {
+
+    .ib-booking-confirm-total:has( .ib-booking-confirm-price-details:not([hidden]) ) {
+        min-width: 0;
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ib-booking-confirm-price-details {
+        min-width: 0;
+        width: 100%;
+        margin: 0 0 15px;
+        padding: 0 0 15px;
+        border-right: 0;
+        border-bottom: 1px solid #e8e1d7;
+    }
+
+    .ib-booking-confirm-total-final {
+        align-items: flex-start;
+    }
+}
+/* =========================================================
+   AÇÕES DO PASSO 5
+========================================================= */
+
+.ib-booking-confirm-actions {
+    margin-top: 22px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .ib-booking-confirm-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-booking-confirm-service {
+        grid-template-columns: 230px minmax(0, 1fr);
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .ib-booking-confirm-service {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-booking-confirm-service-image {
+        min-height: 190px;
+    }
+
+    .ib-booking-confirm-bottom {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-booking-confirm-total {
+        min-width: 0;
+        align-items: flex-start;
+        padding-top: 16px;
+        border-top: 1px solid #eee9e1;
+    }
+}
+
+
+@media (max-width: 520px) {
+
+    .ib-booking-confirm-datetime {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .ib-booking-promo {
+        flex-direction: column;
+    }
+
+    .ib-booking-promo-button {
         width: 100%;
     }
 }

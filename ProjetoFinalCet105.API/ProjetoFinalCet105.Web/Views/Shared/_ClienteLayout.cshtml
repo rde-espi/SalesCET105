@@ -32,21 +32,16 @@
 <body>
 
     @{
-        var currentController =
-            ViewContext.RouteData.Values["controller"]?.ToString();
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();    
     }
 
     <div class="ib-cliente">
 
     
 
-        <aside class="ib-cliente-sidebar"
-               id="clienteSidebar">
-
-            <a asp-controller="Home"
-               asp-action="Index"
-               class="ib-cliente-logo">
-
+        <aside class="ib-cliente-sidebar" id="clienteSidebar">
+            <a asp-controller="Home" asp-action="Index" class="ib-cliente-logo">
                 <img src="~/images/logo-symbol.png"
                      alt="Infinity Beauty" />
 
@@ -60,11 +55,9 @@
 
             </a>
 
-
             <nav class="ib-cliente-menu">
 
                     <a asp-controller="DashboardCliente" asp-action="Index" class="ib-admin-menu-item @(currentController == "DashboardCliente" ? "active" : "")">
-
                     <svg viewBox="0 0 24 24">
                         <path d="M3 11L12 3l9 8"></path>
                         <path d="M5 10v11h14V10"></path>
@@ -73,12 +66,9 @@
 
                     <span>Início</span>
                 </a>
-
-
-                 <a asp-controller="MarcacoesCliente" asp-action="Index" class="ib-admin-menu-item @(currentController == "MarcacoesCliente" ? "active" : "")">
-
-
-                    <svg viewBox="0 0 24 24">
+                
+                
+                <a asp-controller="MarcacoesCliente" asp-action="Index" class="ib-admin-menu-item @(currentController == "MarcacoesCliente" && currentAction != "Nova" ? "active" : "")">                    <svg viewBox="0 0 24 24">
                         <rect x="3"
                               y="5"
                               width="18"
@@ -92,11 +82,8 @@
 
                     <span>Minhas marcações</span>
                 </a>
-
-
-                <a href="#"
-                   class="ib-cliente-menu-item">
-
+                
+                <a asp-controller="MarcacoesCliente" asp-action="Nova" class="ib-admin-menu-item @(currentController == "MarcacoesCliente" && currentAction == "Nova" ? "active" : "")">
                     <svg viewBox="0 0 24 24">
                         <rect x="3"
                               y="5"
@@ -115,8 +102,7 @@
                 </a>
 
 
-                <a href="#"
-                   class="ib-cliente-menu-item">
+                <a href="#" class="ib-cliente-menu-item">
 
                     <svg viewBox="0 0 24 24">
                         <path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"></path>
@@ -139,8 +125,7 @@
 
                     <span>Mensagens</span>
 
-                    @await Component.InvokeAsync(
-                        "MensagensNaoLidas")
+                    @await Component.InvokeAsync("MensagensNaoLidas")
                 </a>
 
 
@@ -158,9 +143,7 @@
 
 
 
-                <a asp-controller="Perfil"
-                   asp-action="Index"
-                   class="ib-cliente-menu-item @(currentController == "Perfil" ? "active" : "")">
+                <a asp-controller="Perfil" asp-action="Index" class="ib-cliente-menu-item @(currentController == "Perfil" ? "active" : "")">
 
                     <svg viewBox="0 0 24 24">
                         <circle cx="12"
@@ -174,9 +157,7 @@
                 </a>
 
 
-                <a asp-controller="Servicos"
-                   asp-action="Index"
-                   class="ib-cliente-menu-item @(currentController == "Servicos" ? "active" : "")">
+                <a asp-controller="Servicos" asp-action="Index" class="ib-cliente-menu-item @(currentController == "Servicos" ? "active" : "")">
 
                     <svg viewBox="0 0 24 24">
                         <circle cx="12"
