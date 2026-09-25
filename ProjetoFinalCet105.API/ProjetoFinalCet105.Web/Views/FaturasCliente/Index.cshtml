@@ -1,0 +1,410 @@
+﻿@model ProjetoFinalCet105.Web.Models.GestaoFaturasViewModel
+
+@{
+    ViewData["Title"] = "As minhas faturas";
+    Layout = "_ClienteLayout";
+}
+
+<div class="ib-categories-page">
+
+    <div class="ib-categories-heading">
+
+    <div>
+        <span class="ib-section-eyebrow">ÁREA DE CLIENTE</span>
+        <h1>As minhas faturas</h1>
+        <p>Consulte e descarregue as faturas associadas às suas marcações.</p>
+    </div>
+
+</div>
+
+    <!-- KPIs -->
+<div class="ib-category-kpi-grid ib-kpi-grid-4">
+        <div class="ib-category-kpi-card">
+            <span>Total de faturas</span>
+            <strong>@Model.TotalFaturas</strong>
+            <small>Registos emitidos</small>
+        </div>
+
+        <div class="ib-category-kpi-card">
+            <span>Emitidas</span>
+            <strong>@Model.Emitidas</strong>
+            <small>Faturas válidas</small>
+        </div>
+
+        <div class="ib-category-kpi-card">
+            <span>Anuladas</span>
+            <strong>@Model.Anuladas</strong>
+            <small>Documentos anulados</small>
+        </div>
+
+        <div class="ib-category-kpi-card ib-category-kpi-highlight">
+            <span>Total faturado</span>
+            <strong>@Model.TotalFaturado.ToString("C")</strong>
+            <small>Exclui faturas anuladas</small>
+        </div>
+
+    </div>
+
+    <!-- PAINEL -->
+    <div class="ib-category-panel">
+
+        <div class="ib-category-panel-header">
+            <div>
+                <span class="ib-section-eyebrow">FATURAÇÃO</span>
+                <h2>Histórico de faturas</h2>
+                <p>Consulte os documentos emitidos e respetivo estado.</p>
+            </div>
+        </div>       
+       
+
+        <!-- FILTROS -->
+        <div class="ib-faturas-filters">
+
+            <div class="ib-category-search">
+                <input type="text"
+                       id="pesquisaFatura"
+                       placeholder="Pesquisar nº da fatura ou cliente..." />
+            </div>
+
+            <select id="filtroEstado"
+                    class="ib-faturas-filter-select">
+                <option value="">Todos os estados</option>
+                <option value="emitida">Emitidas</option>
+                <option value="anulada">Anuladas</option>
+            </select>
+
+            <select id="filtroPeriodo"
+                    class="ib-faturas-filter-select">
+                <option value="">Todo o período</option>
+                <option value="hoje">Hoje</option>
+                <option value="mes">Este mês</option>
+                <option value="ano">Este ano</option>
+            </select>
+
+        </div>
+
+        <!-- TABELA -->
+        <div class="ib-faturas-table-wrap">
+
+            <div class="ib-faturas-table-header">
+                <span>Nº FATURA</span>
+                <span>DATA</span>
+                <span>CLIENTE</span>
+                <span>MARCAÇÃO</span>
+                <span>TOTAL</span>
+                <span>ESTADO</span>
+                <span></span>
+            </div>
+
+            <div id="faturasLista">
+
+                @foreach (var fatura in Model.Faturas)
+                {
+                    var anulada = string.Equals(
+                        fatura.Estado,
+                        "Anulada",
+                        StringComparison.OrdinalIgnoreCase);
+                        var nomesCliente = (fatura.NomeCliente ?? string.Empty)
+    .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+var iniciaisCliente = string.Join("", nomesCliente
+    .Take(2)
+    .Select(n => char.ToUpper(n[0])));
+
+                    <div class="ib-faturas-row"
+                         data-search="@($"{fatura.Numero} {fatura.NomeCliente}".ToLowerInvariant())"
+                         data-estado="@(anulada ? "anulada" : "emitida")"
+                         data-data="@fatura.DataEmissao.ToString("yyyy-MM-dd")">
+
+                        <div class="ib-fatura-numero">
+                            <strong>@fatura.Numero</strong>
+
+                            @if (!string.IsNullOrWhiteSpace(fatura.Serie))
+                            {
+                                <small>Série @fatura.Serie</small>
+                            }
+                        </div>
+
+                        <div class="ib-fatura-data">
+                            <strong>@fatura.DataEmissao.ToString("dd/MM/yyyy")</strong>
+                            <small>@fatura.DataEmissao.ToString("HH:mm")</small>
+                        </div>
+
+                        <div class="ib-employee-person">
+
+    <div class="ib-employee-avatar">
+        <span class="ib-employee-initials">
+            @(string.IsNullOrWhiteSpace(iniciaisCliente)
+                ? "?"
+                : iniciaisCliente)
+        </span>
+    </div>
+
+    <div class="ib-category-name">
+        <strong>@fatura.NomeCliente</strong>
+
+        @if (!string.IsNullOrWhiteSpace(fatura.NifCliente))
+        {
+            <small>NIF @fatura.NifCliente</small>
+        }
+    </div>
+
+</div>
+
+                        <div class="ib-fatura-marcacao">
+                            <strong>#@fatura.MarcacaoId</strong>
+                            <small>@fatura.DataMarcacao.ToString("dd/MM/yyyy")</small>
+                        </div>
+
+                        <div class="ib-fatura-total">
+                            @fatura.Total.ToString("C")
+                        </div>
+
+                        <div>
+                            <span class="ib-fatura-status @(anulada ? "cancelled" : "active")">
+                                @fatura.Estado
+                            </span>
+                        </div>
+
+                        <div class="ib-category-actions">
+
+                            <!-- Detalhes -->
+                            <a asp-controller="FaturasCliente"
+                            asp-action="Detalhes" asp-route-id="@fatura.Id" class="ib-category-action-btn" title="Ver detalhes" aria-label="Ver detalhes da fatura">
+
+    <svg viewBox="0 0 24 24">
+        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"></path>
+        <circle cx="12" cy="12" r="2.5"></circle>
+    </svg>
+
+</a>
+
+                            <!-- PDF -->
+                           <a asp-controller="FaturasCliente"
+   asp-action="Pdf"
+   asp-route-id="@fatura.Id"
+   class="ib-category-action-btn"
+   title="Descarregar PDF"
+   aria-label="Descarregar PDF da fatura">
+
+    <svg viewBox="0 0 24 24">
+        <path d="M12 3v12"></path>
+        <path d="M7 10l5 5 5-5"></path>
+        <path d="M5 20h14"></path>
+    </svg>
+
+</a>
+
+                            
+
+                        </div>
+
+                    </div>
+                }
+
+                @if (!Model.Faturas.Any())
+                {
+                    <div class="ib-faturas-empty">
+                        <strong>Sem faturas emitidas</strong>
+                        <span>As faturas emitidas serão apresentadas aqui.</span>
+                    </div>
+                }
+
+            </div>
+
+            <!-- PAGINAÇÃO -->
+            <div class="ib-faturas-pagination">
+
+                <div class="ib-faturas-page-size">
+                    <span>Mostrar</span>
+
+                    <select id="pageSize">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="50">50</option>
+                    </select>
+
+                    <span>por página</span>
+                </div>
+
+                <div class="ib-faturas-page-info"
+                     id="pageInfo">
+                </div>
+
+                <div class="ib-faturas-page-buttons">
+                    <button type="button"
+                            id="paginaAnterior">
+                        ‹
+                    </button>
+
+                    <span id="paginaAtual">1</span>
+
+                    <button type="button"
+                            id="paginaSeguinte">
+                        ›
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+<script>
+(() => {
+
+    const pesquisa = document.getElementById("pesquisaFatura");
+    const estado = document.getElementById("filtroEstado");
+    const periodo = document.getElementById("filtroPeriodo");
+    const pageSize = document.getElementById("pageSize");
+
+    const anterior = document.getElementById("paginaAnterior");
+    const seguinte = document.getElementById("paginaSeguinte");
+    const paginaAtualElement = document.getElementById("paginaAtual");
+    const pageInfo = document.getElementById("pageInfo");
+
+    const rows =
+        Array.from(document.querySelectorAll(".ib-faturas-row"));
+
+    let paginaAtual = 1;
+
+    function obterFiltradas() {
+
+        const texto =
+            (pesquisa?.value || "").trim().toLowerCase();
+
+        const estadoSelecionado =
+            estado?.value || "";
+
+        const periodoSelecionado =
+            periodo?.value || "";
+
+        const hoje = new Date();
+
+        return rows.filter(row => {
+
+            const correspondePesquisa =
+                !texto ||
+                row.dataset.search.includes(texto);
+
+            const correspondeEstado =
+                !estadoSelecionado ||
+                row.dataset.estado === estadoSelecionado;
+
+            let correspondePeriodo = true;
+
+            if (periodoSelecionado) {
+
+                const data =
+                    new Date(row.dataset.data + "T00:00:00");
+
+                if (periodoSelecionado === "hoje") {
+
+                    correspondePeriodo =
+                        data.getFullYear() === hoje.getFullYear() &&
+                        data.getMonth() === hoje.getMonth() &&
+                        data.getDate() === hoje.getDate();
+                }
+
+                if (periodoSelecionado === "mes") {
+
+                    correspondePeriodo =
+                        data.getFullYear() === hoje.getFullYear() &&
+                        data.getMonth() === hoje.getMonth();
+                }
+
+                if (periodoSelecionado === "ano") {
+
+                    correspondePeriodo =
+                        data.getFullYear() === hoje.getFullYear();
+                }
+            }
+
+            return correspondePesquisa &&
+                   correspondeEstado &&
+                   correspondePeriodo;
+        });
+    }
+
+    function renderizar() {
+
+        const filtradas = obterFiltradas();
+
+        const tamanho =
+            parseInt(pageSize?.value || "10");
+
+        const totalPaginas =
+            Math.max(1, Math.ceil(filtradas.length / tamanho));
+
+        if (paginaAtual > totalPaginas)
+            paginaAtual = totalPaginas;
+
+        const inicio =
+            (paginaAtual - 1) * tamanho;
+
+        const fim =
+            inicio + tamanho;
+
+        rows.forEach(row =>
+            row.style.display = "none");
+
+        filtradas
+            .slice(inicio, fim)
+            .forEach(row =>
+                row.style.display = "grid");
+
+        paginaAtualElement.textContent =
+            paginaAtual;
+
+        anterior.disabled =
+            paginaAtual <= 1;
+
+        seguinte.disabled =
+            paginaAtual >= totalPaginas;
+
+        if (filtradas.length === 0) {
+
+            pageInfo.textContent =
+                "0 registos";
+
+        } else {
+
+            pageInfo.textContent =
+                `${inicio + 1}-${Math.min(fim, filtradas.length)} de ${filtradas.length}`;
+        }
+    }
+
+    function reiniciar() {
+        paginaAtual = 1;
+        renderizar();
+    }
+
+    pesquisa?.addEventListener("input", reiniciar);
+    estado?.addEventListener("change", reiniciar);
+    periodo?.addEventListener("change", reiniciar);
+    pageSize?.addEventListener("change", reiniciar);
+
+    anterior?.addEventListener("click", () => {
+        if (paginaAtual > 1) {
+            paginaAtual--;
+            renderizar();
+        }
+    });
+
+    seguinte?.addEventListener("click", () => {
+        paginaAtual++;
+        renderizar();
+    });
+
+    renderizar();
+
+})();
+</script>
+
+}
