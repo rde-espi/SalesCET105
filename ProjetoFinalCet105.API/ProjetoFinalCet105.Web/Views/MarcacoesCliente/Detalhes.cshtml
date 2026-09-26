@@ -10,8 +10,20 @@
     .Trim()
     .ToLowerInvariant();
 
-var podeAvaliar = estadoNormalizado == "concluida" || estadoNormalizado == "concluída";
-var feedback = ViewBag.Feedback as FeedbackViewModel;
+    var podeAvaliar = estadoNormalizado == "concluida" || estadoNormalizado == "concluída";
+    var feedback = ViewBag.Feedback as FeedbackViewModel;
+    var podeCancelar = estadoNormalizado == "pendente" || estadoNormalizado == "confirmada";
+    var duracao = Model.DataHoraFim - Model.DataHoraInicio;
+
+    var partesNomeFuncionario = (Model.FuncionarioNome ?? "")
+    .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+var iniciaisFuncionario = partesNomeFuncionario.Length switch
+{
+    0 => "?",
+    1 => partesNomeFuncionario[0][0].ToString().ToUpper(),
+    _ => $"{partesNomeFuncionario[0][0]}{partesNomeFuncionario[^1][0]}".ToUpper()
+};
 }
 
 <section class="ib-cliente-page-header">
@@ -30,178 +42,228 @@ var feedback = ViewBag.Feedback as FeedbackViewModel;
 
     <a asp-controller="MarcacoesCliente"
        asp-action="Index"
-       class="ib-cliente-back-link">
+       class="ib-cliente-detail-back-button">
         ← Voltar às marcações
     </a>
 
 </section>
 
 
-<section class="ib-cliente-booking-details">
+<div class="ib-cliente-detail-layout">
 
-    <!-- SERVIÇO -->
+    <section class="ib-cliente-booking-details">
 
-    <div class="ib-cliente-booking-details-header">
+        <!-- SERVIÇO -->
 
-        <div>
-            <span class="ib-cliente-detail-eyebrow">
-                SERVIÇO
-            </span>
-
-            <h2>@Model.ServicoNome</h2>
-
-            <p>
-                com @Model.FuncionarioNome
-            </p>
-        </div>
-
-        <span class="ib-cliente-detail-status">
-            @Model.EstadoMarcacaoNome
-        </span>
-
-    </div>
-
-
-    <!-- INFORMAÇÃO PRINCIPAL -->
-
-    <div class="ib-cliente-detail-grid">
-
-        <div class="ib-cliente-detail-item">
-
-            <span>Data</span>
-
-            <strong>
-                @Model.DataHoraInicio.ToString("dd/MM/yyyy")
-            </strong>
-
-        </div>
-
-
-        <div class="ib-cliente-detail-item">
-
-            <span>Hora</span>
-
-            <strong>
-                @Model.DataHoraInicio.ToString("HH:mm")
-            </strong>
-
-        </div>
-
-
-        <div class="ib-cliente-detail-item">
-
-            <span>Profissional</span>
-
-            <strong>
-                @Model.FuncionarioNome
-            </strong>
-
-        </div>
-
-
-        <div class="ib-cliente-detail-item">
-
-            <span>Valor</span>
-
-            <strong>
-                @Model.Preco.ToString("C")
-            </strong>
-
-        </div>
-
-    </div>
-
-
-    @if (Model.ValorDesconto > 0)
-    {
-        <div class="ib-cliente-detail-discount">
+        <div class="ib-cliente-booking-details-header">
 
             <div>
-                <span>Desconto aplicado</span>
+                <span class="ib-cliente-detail-eyebrow">
+                    MARCAÇÃO #@Model.Id
+                </span>
+
+                <h2>@Model.ServicoNome</h2>
+
+                <p>
+                    com @Model.FuncionarioNome
+                </p>
+            </div>
+
+            <span class="ib-cliente-detail-status">
+                @Model.EstadoMarcacaoNome
+            </span>
+
+        </div>
+
+
+        <div class="ib-cliente-detail-grid">
+
+            <div class="ib-cliente-detail-item">
+                <span>DATA</span>
 
                 <strong>
-                    @Model.ValorDesconto
+                    @Model.DataHoraInicio.ToString("dd/MM/yyyy")
                 </strong>
             </div>
 
-            @if (!string.IsNullOrWhiteSpace(Model.PromoCode))
-            {
+            <div class="ib-cliente-detail-item">
+                <span>HORÁRIO</span>
+
+                <strong>
+                    @Model.DataHoraInicio.ToString("HH:mm")
+                    —
+                    @Model.DataHoraFim.ToString("HH:mm")
+                </strong>
+            </div>
+
+            <div class="ib-cliente-detail-item">
+                <span>DURAÇÃO</span>
+
+                <strong>
+                    @((int)duracao.TotalMinutes) min
+                </strong>
+            </div>
+
+            <div class="ib-cliente-detail-item">
+                <span>VALOR</span>
+
+                <strong>
+                    @Model.Preco.ToString("C")
+                </strong>
+            </div>
+
+        </div>
+
+
+        @if (Model.ValorDesconto > 0)
+        {
+            <div class="ib-cliente-detail-discount">
+
                 <div>
-                    <span>Código promocional</span>
+                    <span>Desconto aplicado</span>
 
                     <strong>
-                        @Model.PromoCode
+                        @Model.ValorDesconto
                     </strong>
                 </div>
-            }
 
-        </div>
-    }
+                @if (!string.IsNullOrWhiteSpace(Model.PromoCode))
+                {
+                    <div>
+                        <span>Código promocional</span>
 
+                        <strong>
+                            @Model.PromoCode
+                        </strong>
+                    </div>
+                }
 
-    @if (!string.IsNullOrWhiteSpace(Model.Observacoes))
-    {
-        <div class="ib-cliente-detail-notes">
-
-            <span>Observações</span>
-
-            <p>
-                @Model.Observacoes
-            </p>
-
-        </div>
-    }
-
-    @if (podeAvaliar)
-{
-    <div class="ib-cliente-detail-feedback">
-
-        <div>
-            <span class="ib-cliente-detail-feedback-eyebrow">
-                A SUA EXPERIÊNCIA
-            </span>
-
-            @if (feedback == null)
-            {
-                <h3>Como correu o seu serviço?</h3>
-
-                <p>
-                    Partilhe a sua experiência e avalie o profissional
-                    que realizou o serviço.
-                </p>
-            }
-            else
-            {
-                <h3>Obrigado pela sua avaliação</h3>
-
-                <p>
-                    Já avaliou esta experiência. Pode consultar
-                    os detalhes da sua avaliação.
-                </p>
-            }
-        </div>
-
-
-        @if (feedback == null)
-        {
-            <a asp-controller="FeedbackCliente"
-               asp-action="Avaliar"
-               asp-route-marcacaoId="@Model.Id"
-               class="ib-cliente-detail-feedback-button">
-                Avaliar experiência
-            </a>
-        }
-        else
-        {
-            <a asp-controller="FeedbackCliente"
-               asp-action="Detalhes"
-               asp-route-id="@feedback.Id"
-               class="ib-cliente-detail-feedback-button">
-                Ver a minha avaliação
-            </a>
+            </div>
         }
 
-    </div>
-}
 
-</section>
+        @if (!string.IsNullOrWhiteSpace(Model.Observacoes))
+        {
+            <div class="ib-cliente-detail-notes">
+
+                <span>Observações</span>
+
+                <p>
+                    @Model.Observacoes
+                </p>
+
+            </div>
+        }
+
+        @if (podeAvaliar)
+        {
+            <div class="ib-cliente-detail-feedback">
+
+                <div>
+                    <span class="ib-cliente-detail-feedback-eyebrow">
+                        A SUA EXPERIÊNCIA
+                    </span>
+
+                    @if (feedback == null)
+                    {
+                        <h3>Como correu o seu serviço?</h3>
+
+                        <p>
+                            Partilhe a sua experiência e avalie o profissional
+                            que realizou o serviço.
+                        </p>
+                    }
+                    else
+                    {
+                        <h3>Obrigado pela sua avaliação</h3>
+
+                        <p>
+                            Já avaliou esta experiência. Pode consultar
+                            os detalhes da sua avaliação.
+                        </p>
+                    }
+                </div>
+
+
+                @if (feedback == null)
+                {
+                    <a asp-controller="FeedbackCliente"
+                       asp-action="Avaliar"
+                       asp-route-marcacaoId="@Model.Id"
+                       class="ib-cliente-detail-feedback-button">
+                        Avaliar experiência
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="FeedbackCliente"
+                       asp-action="Detalhes"
+                       asp-route-id="@feedback.Id"
+                       class="ib-cliente-detail-feedback-button">
+                        Ver a minha avaliação
+                    </a>
+                }
+
+            </div>
+        }
+        @if (podeCancelar)
+        {
+            <div class="ib-cliente-detail-actions">
+
+                <a asp-controller="MarcacoesCliente"
+                   asp-action="Editar"
+                   asp-route-id="@Model.Id"
+                   class="ib-cliente-detail-btn ib-cliente-detail-btn-secondary">
+                    Alterar
+                </a>
+
+                <form asp-controller="MarcacoesCliente"
+                      asp-action="Cancelar"
+                      asp-route-id="@Model.Id"
+                      method="post"
+                      onsubmit="return confirm('Tem a certeza de que pretende cancelar esta marcação?');">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit"
+                            class="ib-cliente-detail-btn ib-cliente-detail-btn-danger">
+                        Cancelar
+                    </button>
+
+                </form>
+
+            </div>
+        }
+    </section>
+
+    <aside class="ib-cliente-professional-card">
+
+        <span class="ib-cliente-detail-eyebrow">
+            PROFISSIONAL
+        </span>
+
+        <div class="ib-cliente-professional-avatar">
+
+    <span class="ib-cliente-professional-initials">
+        @iniciaisFuncionario
+    </span>
+
+    <img src="@Url.Action(
+                    "FotografiaFuncionario",
+                    "MarcacoesCliente",
+                    new { id = Model.FuncionarioId })"
+         alt="@Model.FuncionarioNome"
+         class="ib-cliente-professional-photo"
+         onerror="this.style.display='none';" />
+
+</div>
+
+        <h3>@Model.FuncionarioNome</h3>
+
+        <p>
+            Profissional responsável pela sua marcação.
+        </p>
+
+    </aside>
+
+</div>

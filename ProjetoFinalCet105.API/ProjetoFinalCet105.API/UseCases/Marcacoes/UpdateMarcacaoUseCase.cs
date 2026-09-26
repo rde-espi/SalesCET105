@@ -46,7 +46,7 @@ namespace ProjetoFinalCet105.API.UseCases.Marcacoes
         {
             string quemAlterou = "";
 
-            var marcacaoAtual = await _marcacaoRepository.GetByIdAsync(id);
+            var marcacaoAtual = await _marcacaoRepository.GetByIdWithDetailsAsync(id);
 
             if (marcacaoAtual == null)
             {

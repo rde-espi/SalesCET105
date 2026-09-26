@@ -477,8 +477,149 @@ public class MarcacoesClienteController : Controller
     }
 
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Cancelar(int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest();
+        }
+
+        try
+        {
+            using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Delete, $"api/Marcacoes/{id}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["ErrorMessage"] = "Não foi possível cancelar a marcação.";
+
+                return RedirectToAction(nameof(Detalhes), new { id });
+            }
+
+            TempData["SuccessMessage"] = "Marcação cancelada com sucesso.";
+
+            return RedirectToAction(nameof(Index));
+        }
+        catch
+        {
+            TempData["ErrorMessage"] = "Não foi possível cancelar a marcação.";
+
+            return RedirectToAction( nameof(Detalhes), new { id });
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Editar(int id)
+    {
+        if (id <= 0)
+        {
+            return BadRequest();
+        }
+
+        try
+        {
+            var marcacao = await _apiService.GetAuthenticatedAsync<MarcacaoClienteViewModel>( $"api/Marcacoes/{id}");
+
+            if (marcacao == null)
+            {
+                TempData["ErrorMessage"] = "A marcação não foi encontrada.";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            var servicos = await _apiService.GetAuthenticatedAsync<List<FuncionarioServicoViewModel>>($"api/FuncionarioServicos/funcionario/{marcacao.FuncionarioId}");
+
+            var model = new EditarMarcacaoViewModel
+            {
+                Id = marcacao.Id,
+                ServicoId = marcacao.ServicoId,
+                FuncionarioId = marcacao.FuncionarioId,
+                DataHoraInicio = marcacao.DataHoraInicio,
+                Observacoes = marcacao.Observacoes,
+                ClienteNome = marcacao.ClienteNome,
+                FuncionarioNome = marcacao.FuncionarioNome,
+
+                Servicos = servicos?
+                    .Where(s => s.Ativo)
+                    .OrderBy(s => s.ServicoNome)
+                    .ToList()
+                    ?? new List<FuncionarioServicoViewModel>()
+            };
+
+            return View(model);
+        }
+        catch
+        {
+            TempData["ErrorMessage"] = "Não foi possível carregar a marcação.";
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
 
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Editar( EditarMarcacaoViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            await CarregarServicosEdicao(model);
+
+            return View(model);
+        }
+
+        try
+        {
+            var dto = new
+            {
+                model.ServicoId,
+                model.DataHoraInicio,
+                model.Observacoes
+            };
+
+            using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Put, $"api/Marcacoes/{model.Id}",  dto);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var erro = await response.Content.ReadAsStringAsync();
+
+                ModelState.AddModelError(
+                    string.Empty,
+                    string.IsNullOrWhiteSpace(erro)
+                        ? "Não foi possível alterar a marcação."
+                        : erro.Trim('"'));
+
+                await CarregarServicosEdicao(model);
+
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Marcação alterada com sucesso.";
+
+            return RedirectToAction( nameof(Detalhes),new { id = model.Id });
+        }
+        catch
+        {
+            ModelState.AddModelError( string.Empty, "Ocorreu um erro ao alterar a marcação.");
+
+            await CarregarServicosEdicao(model);
+
+            return View(model);
+        }
+    }
+
+
+    private async Task CarregarServicosEdicao(EditarMarcacaoViewModel model)
+    {
+        model.Servicos = await _apiService.GetAuthenticatedAsync<List<FuncionarioServicoViewModel>>($"api/FuncionarioServicos/funcionario/{model.FuncionarioId}")
+            ?? new List<FuncionarioServicoViewModel>();
+
+        model.Servicos = model.Servicos
+            .Where(s => s.Ativo)
+            .OrderBy(s => s.ServicoNome)
+            .ToList();
+    }
 
 
 
