@@ -100,7 +100,9 @@
 
     <!-- MENSAGENS -->
 
-    <article class="ib-cliente-kpi-card">
+    <a asp-controller="MensagensCliente"
+       asp-action="Index"
+       class="ib-cliente-kpi-card ib-cliente-kpi-link">
 
         <div class="ib-cliente-kpi-icon">
 
@@ -122,38 +124,77 @@
 
         </div>
 
-    </article>
+    </a>
 
 
-    <!-- NOTIFICAÇÕES -->
+   <!-- NOTIFICAÇÕES -->
 
-    <article class="ib-cliente-kpi-card">
+<a asp-controller="GestaoNotificacoes"
+   asp-action="Index"
+   class="ib-cliente-kpi-card ib-cliente-kpi-link">
 
-        <div class="ib-cliente-kpi-icon">
+    <div class="ib-cliente-kpi-icon">
 
-            <svg viewBox="0 0 24 24">
-                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
-                <path d="M10 21h4"></path>
-            </svg>
+        <svg viewBox="0 0 24 24">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+            <path d="M10 21h4"></path>
+        </svg>
 
-        </div>
+    </div>
 
-        <div class="ib-cliente-kpi-content">
+    <div class="ib-cliente-kpi-content">
 
-            <strong class="ib-cliente-kpi-value">
-                @Model.NotificacoesNaoLidas
-            </strong>
+        <strong class="ib-cliente-kpi-value">
+            @Model.NotificacoesNaoLidas
+        </strong>
 
-            <span class="ib-cliente-kpi-label">
-                Notificações não lidas
-            </span>
+        <span class="ib-cliente-kpi-label">
+            Notificações não lidas
+        </span>
 
-        </div>
+    </div>
 
-    </article>
+</a>
 
 </section>
+@if (Model.MarcacaoPendenteAvaliacao != null)
+{
+    <section class="ib-cliente-dashboard-feedback">
 
+        <div class="ib-cliente-dashboard-feedback-icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 3.5l2.6 5.27 5.82.85-4.21 4.1.99 5.8L12 16.78 6.8 19.52l.99-5.8-4.21-4.1 5.82-.85L12 3.5z"></path>
+            </svg>
+        </div>
+
+        <div class="ib-cliente-dashboard-feedback-content">
+
+            <span class="ib-cliente-section-eyebrow">
+                A SUA EXPERIÊNCIA
+            </span>
+
+            <h2>
+                Como correu a sua visita?
+            </h2>
+
+            <p>
+                A sua marcação de
+                <strong>@Model.MarcacaoPendenteAvaliacao.ServicoNome</strong>
+                com @Model.MarcacaoPendenteAvaliacao.FuncionarioNome
+                já foi concluída. Partilhe a sua opinião.
+            </p>
+
+        </div>
+
+        <a asp-controller="FeedbackCliente"
+           asp-action="Avaliar"
+           asp-route-marcacaoId="@Model.MarcacaoPendenteAvaliacao.Id"
+           class="ib-cliente-dashboard-feedback-button">
+            Avaliar experiência
+        </a>
+
+    </section>
+}
 
 <!-- =========================
      PRÓXIMA MARCAÇÃO

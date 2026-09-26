@@ -6300,3 +6300,99 @@ body,
 .ib-cliente-marcacoes-status .ib-cliente-booking-status {
     margin: 0;
 }
+/* =========================================================
+   DASHBOARD CLIENTE — AVALIAÇÃO PENDENTE
+   ========================================================= */
+
+.ib-cliente-dashboard-feedback {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 20px;
+    margin-bottom: 24px;
+
+    .ib-cliente-dashboard-feedback-icon {
+        flex: 0 0 46px;
+        width: 46px;
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(216, 176, 113, 0.12);
+    }
+
+        .ib-cliente-dashboard-feedback-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: var(--cliente-gold);
+            stroke-width: 1.7;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+    .ib-cliente-dashboard-feedback-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+        .ib-cliente-dashboard-feedback-content h2 {
+            margin: 3px 0 5px;
+            color: var(--cliente-text);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .ib-cliente-dashboard-feedback-content p {
+            margin: 0;
+            color: var(--cliente-muted);
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+            .ib-cliente-dashboard-feedback-content p strong {
+                color: var(--cliente-text);
+                font-weight: 600;
+            }
+
+    .ib-cliente-dashboard-feedback-button {
+        flex-shrink: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        padding: 0 18px;
+        border: 1px solid var(--cliente-gold);
+        border-radius: 10px;
+        background: var(--cliente-gold);
+        color: var(--cliente-dark);
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+        .ib-cliente-dashboard-feedback-button:hover {
+            background: var(--cliente-gold-dark);
+            border-color: var(--cliente-gold-dark);
+            color: var(--cliente-dark);
+            transform: translateY(-1px);
+        }
+
+    @media (max-width: 760px) {
+
+        .ib-cliente-dashboard-feedback {
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .ib-cliente-dashboard-feedback-content {
+            flex: 1 1 calc(100% - 70px);
+        }
+
+        .ib-cliente-dashboard-feedback-button {
+            width: 100%;
+            margin-top: 2px;
+        }
+    }

@@ -64,11 +64,41 @@ public class DashboardClienteController : Controller
 
             var totalProximasMarcacoes = proximasMarcacoes.Count;
 
-            var totalMarcacoesConcluidas = marcacoes.Count(m =>
-                string.Equals(
-                    m.EstadoMarcacaoNome,
-                    "Concluida",
-                    StringComparison.OrdinalIgnoreCase));
+            var marcacoesConcluidas = marcacoes
+    .Where(m =>
+    {
+        var estado = (m.EstadoMarcacaoNome ?? "")
+            .Trim()
+            .ToLowerInvariant();
+
+        return estado == "concluida" || estado == "concluída";
+    })
+    .OrderByDescending(m => m.DataHoraInicio)
+    .ToList();
+
+            var totalMarcacoesConcluidas = marcacoesConcluidas.Count;
+
+            MarcacaoClienteViewModel? marcacaoPendenteAvaliacao = null;
+
+            foreach (var marcacao in marcacoesConcluidas)
+            {
+                try
+                {
+                    var feedback = await _apiService.GetAuthenticatedAsync<FeedbackViewModel>( $"api/Feedbacks/marcacao/{marcacao.Id}");
+
+                    if (feedback == null)
+                    {
+                        marcacaoPendenteAvaliacao = marcacao;
+                        break;
+                    }
+                }
+                catch (HttpRequestException ex)
+                    when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    marcacaoPendenteAvaliacao = marcacao;
+                    break;
+                }
+            }
 
             var mensagensNaoLidas = await _apiService.GetAuthenticatedAsync<int>("api/Conversas/contador-nao-lidas");
 
@@ -78,6 +108,7 @@ public class DashboardClienteController : Controller
             {
                 Cliente = cliente,
                 ProximaMarcacao = proximaMarcacao,
+                MarcacaoPendenteAvaliacao = marcacaoPendenteAvaliacao,
                 TotalProximasMarcacoes = totalProximasMarcacoes,
                 TotalMarcacoesConcluidas = totalMarcacoesConcluidas,
                 MensagensNaoLidas = mensagensNaoLidas,

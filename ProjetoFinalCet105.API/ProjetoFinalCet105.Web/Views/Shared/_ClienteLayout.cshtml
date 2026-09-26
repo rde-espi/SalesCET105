@@ -56,7 +56,7 @@
 
             <nav class="ib-cliente-menu">
 
-                    <a asp-controller="DashboardCliente" asp-action="Index" class="ib-admin-menu-item @(currentController == "DashboardCliente" ? "active" : "")">
+                    <a asp-controller="DashboardCliente" asp-action="Index" class="ib-cliente-menu-item @(currentController == "DashboardCliente" ? "active" : "")">
                     <svg viewBox="0 0 24 24">
                         <path d="M3 11L12 3l9 8"></path>
                         <path d="M5 10v11h14V10"></path>
@@ -67,7 +67,7 @@
                 </a>
                 
                 
-                <a asp-controller="MarcacoesCliente" asp-action="Index" class="ib-admin-menu-item @(currentController == "MarcacoesCliente" && currentAction != "Nova" ? "active" : "")">                    <svg viewBox="0 0 24 24">
+                <a asp-controller="MarcacoesCliente" asp-action="Index" class="ib-cliente-menu-item @(currentController == "MarcacoesCliente" && currentAction != "Nova" ? "active" : "")">                    <svg viewBox="0 0 24 24">
                         <rect x="3"
                               y="5"
                               width="18"
@@ -82,7 +82,7 @@
                     <span>Minhas marcações</span>
                 </a>
                 
-                <a asp-controller="MarcacoesCliente" asp-action="Nova" class="ib-admin-menu-item @(currentController == "MarcacoesCliente" && currentAction == "Nova" ? "active" : "")">
+                <a asp-controller="MarcacoesCliente" asp-action="Nova" class="ib-cliente-menu-item @(currentController == "MarcacoesCliente" && currentAction == "Nova" ? "active" : "")">
                     <svg viewBox="0 0 24 24">
                         <rect x="3"
                               y="5"
@@ -101,7 +101,7 @@
                 </a>
 
 
-                    <a asp-controller="FaturasCliente" asp-action="Index" class="ib-admin-menu-item @(currentController == "FaturasCliente" ? "active" : "")">
+                    <a asp-controller="FaturasCliente" asp-action="Index" class="ib-cliente-menu-item @(currentController == "FaturasCliente" ? "active" : "")">
 
                     <svg viewBox="0 0 24 24">
                         <path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"></path>
@@ -113,7 +113,7 @@
                 </a>
 
 
-                 <a asp-controller="MensagensCliente" asp-action="Index" class="ib-admin-menu-item @(currentController == "MensagensCliente" ? "active" : "")">
+                 <a asp-controller="MensagensCliente" asp-action="Index" class="ib-cliente-menu-item @(currentController == "MensagensCliente" ? "active" : "")">
                     <svg viewBox="0 0 24 24">
                         <path d="M4 4h16v12H8l-4 4z"></path>
                         <path d="M8 9h8"></path>
@@ -126,7 +126,7 @@
                 </a>
 
 
-                <a asp-controller="GestaoNotificacoes" asp-action="Index" class="ib-admin-menu-item @(currentController == "GestaoNotificacoes" ? "active" : "")">
+                <a asp-controller="GestaoNotificacoes" asp-action="Index" class="ib-cliente-menu-item @(currentController == "GestaoNotificacoes" ? "active" : "")">
 
                     <svg viewBox="0 0 24 24">
                         <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
@@ -152,7 +152,7 @@
                 </a>
 
 
-                <a asp-controller="ExplorarServicos" asp-action="Index" class="ib-cliente-menu-item @(currentController == "Servicos" ? "active" : "")">
+                <a asp-controller="ExplorarServicos" asp-action="Index" class="ib-cliente-menu-item @(currentController == "ExplorarServicos" ? "active" : "")">
 
                     <svg viewBox="0 0 24 24">
                         <circle cx="12"

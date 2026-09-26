@@ -5,6 +5,7 @@ public class DashboardClienteViewModel
     public ClienteViewModel Cliente { get; set; } = new();
 
     public MarcacaoClienteViewModel? ProximaMarcacao { get; set; }
+    public MarcacaoClienteViewModel? MarcacaoPendenteAvaliacao { get; set; }
 
     public int TotalProximasMarcacoes { get; set; }
 
