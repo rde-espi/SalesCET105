@@ -3282,3 +3282,70 @@ a.ib-marcacao-func-btn:hover {
         min-height: 68px;
     }
 }
+
+/* =========================================================
+   NOTIFICAÇÕES - AÇÕES DE ELIMINAÇÃO
+   ========================================================= */
+
+/* Eliminar todas - ação global */
+.ib-notification-delete-all {
+    min-height: 38px;
+    padding: 0 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid rgba(150, 70, 70, 0.28);
+    border-radius: 10px;
+    background: #fff;
+    color: #8f4545;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease;
+}
+
+    .ib-notification-delete-all svg {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+    }
+
+    .ib-notification-delete-all:hover {
+        background: rgba(143, 69, 69, 0.07);
+        border-color: rgba(143, 69, 69, 0.45);
+        color: #713535;
+    }
+
+    .ib-notification-delete-all:active {
+        transform: translateY(1px);
+    }
+
+
+/* Eliminar uma notificação */
+.ib-notification-delete {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: transparent;
+    color: #a59c91;
+    cursor: pointer;
+    transition: background .2s ease, border-color .2s ease, color .2s ease;
+}
+
+    .ib-notification-delete svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    .ib-notification-delete:hover {
+        background: rgba(143, 69, 69, 0.07);
+        border-color: rgba(143, 69, 69, 0.16);
+        color: #8f4545;
+    }

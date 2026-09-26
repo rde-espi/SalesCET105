@@ -30,7 +30,7 @@ public class DashboardFuncionarioController : Controller
 
         try
         {
-            var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>( $"api/Funcionarios/user/{userId}");
+            var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>($"api/Funcionarios/user/{userId}");
 
             if (funcionario == null)
             {
@@ -49,7 +49,7 @@ public class DashboardFuncionarioController : Controller
 
             var totalEstaSemana = marcacoes.Count(m => m.DataHoraInicio >= inicioSemana && m.DataHoraInicio < fimSemana);
 
-            
+
 
 
             var marcacoesHoje = marcacoes
@@ -59,7 +59,7 @@ public class DashboardFuncionarioController : Controller
 
             var mensagensNaoLidas = await _apiService.GetAuthenticatedAsync<int>("api/Conversas/contador-nao-lidas");
 
-            var notificacoesNaoLidas = await _apiService.GetAuthenticatedAsync<int>( "api/Notificacoes/contador-nao-lidas");
+            var notificacoesNaoLidas = await _apiService.GetAuthenticatedAsync<int>("api/Notificacoes/contador-nao-lidas");
 
             var faturas = await _apiService.GetAuthenticatedAsync<List<FaturaViewModel>>("api/Faturas") ?? new List<FaturaViewModel>();
 
@@ -67,7 +67,7 @@ public class DashboardFuncionarioController : Controller
                 .Select(f => f.MarcacaoId)
                 .ToHashSet();
 
-            var totalPorFaturar = marcacoes.Count(m => string.Equals(m.EstadoMarcacaoNome,"Concluida", StringComparison.OrdinalIgnoreCase) && !marcacoesFaturadas.Contains(m.Id));
+            var totalPorFaturar = marcacoes.Count(m => string.Equals(m.EstadoMarcacaoNome, "Concluida", StringComparison.OrdinalIgnoreCase) && !marcacoesFaturadas.Contains(m.Id));
 
             var model = new DashboardFuncionarioViewModel
             {

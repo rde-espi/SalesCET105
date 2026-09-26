@@ -892,6 +892,9 @@ const resumoPrecoServico =
 
 let precoEfetivoSelecionado = null;
 let duracaoEfetivaSelecionada = null;
+const servicoPreSelecionadoId = Number(servicoInput.value);
+
+const funcionarioPreSelecionadoId = Number(funcionarioInput.value);
 
             categoriaCards.forEach(card => {
 
@@ -992,8 +995,10 @@ let duracaoEfetivaSelecionada = null;
     profissionaisContainer.innerHTML =
         "<p>A carregar profissionais...</p>";
 
+if (!funcionarioPreSelecionadoId) {
     funcionarioInput.value = "";
-    continuarProfissionalButton.disabled = true;
+}
+continuarProfissionalButton.disabled = true;
 
     try {
 
@@ -1078,9 +1083,34 @@ let duracaoEfetivaSelecionada = null;
 
             });
 
+            if (funcionarioPreSelecionadoId > 0 &&
+    Number(profissional.id) === funcionarioPreSelecionadoId) {
+
+    card.classList.add("selected");
+
+    funcionarioInput.value =
+        funcionarioPreSelecionadoId;
+
+    continuarProfissionalButton.disabled = false;
+}
+
             profissionaisContainer.appendChild(card);
 
         });
+
+        if (funcionarioPreSelecionadoId > 0 &&
+    Number(funcionarioInput.value) === funcionarioPreSelecionadoId) {
+
+    etapa2.classList.remove("active");
+    etapa3.classList.add("active");
+
+    roadmapSteps[1].classList.remove("active");
+    roadmapSteps[1].classList.add("completed");
+
+    roadmapSteps[2].classList.add("active");
+
+    await carregarDatasDisponiveis();
+}
 
     }
     catch (error) {
@@ -1840,11 +1870,9 @@ promoCodeInput?.addEventListener("input", function () {
 
 async function carregarDetalhesServicoProfissional() {
 
-    const funcionarioId =
-        Number(funcionarioInput.value);
+    const funcionarioId = Number(funcionarioInput.value);
 
-    const servicoId =
-        Number(servicoInput.value);
+    const servicoId = Number(servicoInput.value);
 
     if (!funcionarioId || !servicoId) {
         precoEfetivoSelecionado = null;
@@ -1880,7 +1908,19 @@ async function carregarDetalhesServicoProfissional() {
     }
 }
 
+if (servicoPreSelecionadoId > 0) {
+
+    servicoInput.value =
+        servicoPreSelecionadoId;
+
+    continuarButton.disabled = false;
+
+    continuarButton.click();
+}
+
 });
+
+
 
 
 

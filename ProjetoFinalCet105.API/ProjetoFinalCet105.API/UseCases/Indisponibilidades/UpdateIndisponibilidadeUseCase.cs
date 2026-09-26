@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-using ProjetoFinalCet105.API.DTOs;
+﻿using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
 using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.Services.IndisponibilidadeService;

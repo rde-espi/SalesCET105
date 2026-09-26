@@ -71,15 +71,60 @@
 
         </div>
 
-        @if (!User.IsInRole("Admin"))
-        {
-           <a asp-controller="Perfil"
-   asp-action="AlterarFotografia"
-   class="ib-profile-btn">
-    <i class="bi bi-camera"></i>
-    Alterar fotografia
-</a>
-        }
+        @if (User.IsInRole("Cliente"))
+{
+    <a asp-controller="Perfil"
+       asp-action="AlterarFotografiaCliente"
+       class="ib-profile-btn">
+
+        <svg viewBox="0 0 24 24"
+             width="16"
+             height="16"
+             aria-hidden="true">
+            <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h2l1.2-1.5h4.6L15.5 6h2A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linejoin="round" />
+
+            <circle cx="12"
+                    cy="12.5"
+                    r="3.2"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8" />
+        </svg>
+
+        Alterar fotografia
+    </a>
+}
+else if (User.IsInRole("Funcionario"))
+{
+    <a asp-controller="Perfil"
+       asp-action="AlterarFotografia"
+       class="ib-profile-btn">
+
+        <svg viewBox="0 0 24 24"
+             width="16"
+             height="16"
+             aria-hidden="true">
+            <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h2l1.2-1.5h4.6L15.5 6h2A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linejoin="round" />
+
+            <circle cx="12"
+                    cy="12.5"
+                    r="3.2"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8" />
+        </svg>
+
+        Alterar fotografia
+    </a>
+}
 
     </section>
 
@@ -101,12 +146,22 @@
                     </p>
                 </div>
 
-                @if (!User.IsInRole("Admin"))
-                {
-                   <a asp-controller="Perfil" asp-action="Editar"  class="ib-profile-btn">
-                   Editar dados
-                   </a>
-                }
+                @if (User.IsInRole("Cliente"))
+{
+    <a asp-controller="Perfil"
+       asp-action="EditarCliente"
+       class="ib-profile-btn">
+        Editar dados
+    </a>
+}
+else if (User.IsInRole("Funcionario"))
+{
+    <a asp-controller="Perfil"
+       asp-action="Editar"
+       class="ib-profile-btn">
+        Editar dados
+    </a>
+}
 
             </div>
 

@@ -15,7 +15,7 @@ public class MensagensNaoLidasViewComponent : ViewComponent
 
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        var contador = await _apiService.GetAuthenticatedAsync<int>( "api/Conversas/contador-nao-lidas");
+        var contador = await _apiService.GetAuthenticatedAsync<int>("api/Conversas/contador-nao-lidas");
 
         return View(contador);
     }

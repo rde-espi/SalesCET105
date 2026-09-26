@@ -20,7 +20,7 @@ public class GestaoFuncionarioServicosController : Controller
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>( "api/Funcionarios") ?? new List<FuncionarioViewModel>();
+        var funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>("api/Funcionarios") ?? new List<FuncionarioViewModel>();
 
         return View(funcionarios
             .Where(f => f.Ativo)
@@ -30,14 +30,14 @@ public class GestaoFuncionarioServicosController : Controller
     [HttpGet]
     public async Task<IActionResult> Editar(int id)
     {
-        var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>( $"api/Funcionarios/{id}");
+        var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>($"api/Funcionarios/{id}");
 
         if (funcionario == null)
         {
             return NotFound();
         }
 
-        var servicos = await _apiService.GetAuthenticatedAsync<List<ServicoViewModel>>("api/Servicos")  ?? new List<ServicoViewModel>();
+        var servicos = await _apiService.GetAuthenticatedAsync<List<ServicoViewModel>>("api/Servicos") ?? new List<ServicoViewModel>();
         var associacoes = await _apiService.GetAuthenticatedAsync<List<FuncionarioServicoViewModel>>($"api/FuncionarioServicos/funcionario/{id}") ?? new List<FuncionarioServicoViewModel>();
 
         var model = new FuncionarioFormViewModel
@@ -74,28 +74,28 @@ public class GestaoFuncionarioServicosController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Editar( int id, FuncionarioFormViewModel model)
+    public async Task<IActionResult> Editar(int id, FuncionarioFormViewModel model)
     {
         if (id != model.Id)
         {
             return BadRequest();
         }
 
-        var atualizado = await AtualizarServicosFuncionarioAsync( model.Id, model.Servicos);
+        var atualizado = await AtualizarServicosFuncionarioAsync(model.Id, model.Servicos);
 
         if (!atualizado)
         {
             TempData["ErrorMessage"] = "Não foi possível atualizar os serviços do profissional.";
 
-            return RedirectToAction( nameof(Editar), new { id = model.Id });
+            return RedirectToAction(nameof(Editar), new { id = model.Id });
         }
 
         TempData["SuccessMessage"] = "Serviços do profissional atualizados com sucesso.";
 
-        return RedirectToAction( nameof(Editar), new { id = model.Id });
+        return RedirectToAction(nameof(Editar), new { id = model.Id });
     }
 
-    private async Task<bool> AtualizarServicosFuncionarioAsync( int funcionarioId,IEnumerable<FuncionarioServicoSelecaoViewModel> servicos)
+    private async Task<bool> AtualizarServicosFuncionarioAsync(int funcionarioId, IEnumerable<FuncionarioServicoSelecaoViewModel> servicos)
     {
         foreach (var servico in servicos)
         {
@@ -110,7 +110,7 @@ public class GestaoFuncionarioServicosController : Controller
                     Ativo = true
                 };
 
-                using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post,"api/FuncionarioServicos", dto);
+                using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/FuncionarioServicos", dto);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -147,7 +147,7 @@ public class GestaoFuncionarioServicosController : Controller
                     Ativo = true
                 };
 
-                using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Put, $"api/FuncionarioServicos/{associacao.Id}", dto);
+                using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Put, $"api/FuncionarioServicos/{associacao.Id}", dto);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -160,7 +160,7 @@ public class GestaoFuncionarioServicosController : Controller
             // Associação ativa foi desmarcada
             if (!servico.Selecionado && associacao.Ativo)
             {
-                using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Delete, $"api/FuncionarioServicos/{associacao.Id}");
+                using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Delete, $"api/FuncionarioServicos/{associacao.Id}");
 
                 if (!response.IsSuccessStatusCode)
                 {

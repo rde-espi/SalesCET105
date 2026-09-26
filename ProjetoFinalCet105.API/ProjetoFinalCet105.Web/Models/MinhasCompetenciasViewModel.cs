@@ -4,5 +4,5 @@ public class MinhasCompetenciasViewModel
 {
     public List<CompetenciaViewModel> CompetenciasDisponiveis { get; set; } = new List<CompetenciaViewModel>();
 
-    public List<FuncionarioCompetenciaViewModel> CompetenciasFuncionario { get; set; }= new List<FuncionarioCompetenciaViewModel>();
+    public List<FuncionarioCompetenciaViewModel> CompetenciasFuncionario { get; set; } = new List<FuncionarioCompetenciaViewModel>();
 }

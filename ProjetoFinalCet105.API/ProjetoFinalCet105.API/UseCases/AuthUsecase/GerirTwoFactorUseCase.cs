@@ -25,7 +25,7 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
 
             if (!user.Ativo)
             {
-                return UseCaseResult<bool>.Falha( "O utilizador encontra-se desativado.");
+                return UseCaseResult<bool>.Falha("O utilizador encontra-se desativado.");
             }
 
             var ativo = await _userManager.GetTwoFactorEnabledAsync(user);
@@ -44,14 +44,14 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
 
             if (!user.Ativo)
             {
-                return UseCaseResult<bool>.Falha( "O utilizador encontra-se desativado.");
+                return UseCaseResult<bool>.Falha("O utilizador encontra-se desativado.");
             }
 
-            var resultado = await _userManager.SetTwoFactorEnabledAsync( user, ativo);
+            var resultado = await _userManager.SetTwoFactorEnabledAsync(user, ativo);
 
             if (!resultado.Succeeded)
             {
-                var erros = string.Join( " ", resultado.Errors.Select(e => e.Description));
+                var erros = string.Join(" ", resultado.Errors.Select(e => e.Description));
 
                 return UseCaseResult<bool>.Falha(erros);
             }

@@ -32,14 +32,14 @@ public class PerfilController : Controller
 
         if (User.IsInRole("Funcionario"))
         {
-            var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>( $"api/Funcionarios/user/{userId}");
+            var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>($"api/Funcionarios/user/{userId}");
 
             if (funcionario == null)
             {
                 return NotFound();
             }
 
-            response = await _apiService.SendAuthenticatedAsync( HttpMethod.Get, $"api/Funcionarios/{funcionario.Id}/fotografia");
+            response = await _apiService.SendAuthenticatedAsync(HttpMethod.Get, $"api/Funcionarios/{funcionario.Id}/fotografia");
         }
         else if (User.IsInRole("Cliente"))
         {
@@ -91,6 +91,8 @@ public class PerfilController : Controller
                     return NotFound();
                 }
 
+                var googleCalendar = await _apiService.GetAuthenticatedAsync<GoogleCalendarStatusViewModel>("api/GoogleCalendar/status");
+
                 var model = new PerfilViewModel
                 {
                     UserId = cliente.Id,
@@ -102,6 +104,8 @@ public class PerfilController : Controller
                     Morada = cliente.Morada,
                     CodigoPostal = cliente.CodigoPostal,
                     Localidade = cliente.Localidade,
+                    GoogleCalendarLigado = googleCalendar?.Ligado ?? false,
+                    GoogleEmail = googleCalendar?.GoogleEmail,
 
                     FotografiaUrl = Url.Action("Fotografia", "Perfil")
                 };
@@ -112,7 +116,7 @@ public class PerfilController : Controller
             if (User.IsInRole("Funcionario"))
             {
                 var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>($"api/Funcionarios/user/{userId}");
-                
+
 
                 if (funcionario == null)
                 {
@@ -147,7 +151,7 @@ public class PerfilController : Controller
 
             if (User.IsInRole("Admin"))
             {
-                var googleCalendar = await _apiService.GetAuthenticatedAsync<GoogleCalendarStatusViewModel>( "api/GoogleCalendar/status");
+                var googleCalendar = await _apiService.GetAuthenticatedAsync<GoogleCalendarStatusViewModel>("api/GoogleCalendar/status");
 
                 var model = new PerfilViewModel
                 {
@@ -171,9 +175,9 @@ public class PerfilController : Controller
         }
         catch
         {
-            TempData["ErrorMessage"] ="Não foi possível carregar o perfil.";
+            TempData["ErrorMessage"] = "Não foi possível carregar o perfil.";
 
-            return RedirectToAction( "Index", "Home");
+            return RedirectToAction("Index", "Home");
         }
     }
 
@@ -187,14 +191,14 @@ public class PerfilController : Controller
             return NotFound();
         }
 
-        var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>( $"api/Funcionarios/user/{userId}");
+        var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>($"api/Funcionarios/user/{userId}");
 
         if (funcionario == null)
         {
             return NotFound();
         }
 
-        using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Get, $"api/Funcionarios/{funcionario.Id}/fotografia");
+        using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Get, $"api/Funcionarios/{funcionario.Id}/fotografia");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -225,7 +229,7 @@ public class PerfilController : Controller
 
         try
         {
-            var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>( $"api/Funcionarios/user/{userId}");
+            var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>($"api/Funcionarios/user/{userId}");
 
             if (funcionario == null)
             {
@@ -275,7 +279,7 @@ public class PerfilController : Controller
 
         try
         {
-            var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>( $"api/Funcionarios/user/{userId}");
+            var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>($"api/Funcionarios/user/{userId}");
 
             if (funcionario == null)
             {
@@ -289,23 +293,23 @@ public class PerfilController : Controller
 
             using var content = new MultipartFormDataContent();
 
-            content.Add( new StringContent(model.NomeCompleto),"NomeCompleto");
+            content.Add(new StringContent(model.NomeCompleto), "NomeCompleto");
 
             content.Add(new StringContent(model.Email), "Email");
 
             if (!string.IsNullOrWhiteSpace(model.Telefone))
             {
-                content.Add( new StringContent(model.Telefone), "Telefone");
+                content.Add(new StringContent(model.Telefone), "Telefone");
             }
 
             if (!string.IsNullOrWhiteSpace(model.Biografia))
             {
-                content.Add( new StringContent(model.Biografia), "Biografia");
+                content.Add(new StringContent(model.Biografia), "Biografia");
             }
 
-            content.Add( new StringContent(model.Disponivel.ToString()), "Disponivel");
+            content.Add(new StringContent(model.Disponivel.ToString()), "Disponivel");
 
-            using var response = await _apiService.SendAuthenticatedMultipartAsync( HttpMethod.Put, $"api/Funcionarios/{funcionario.Id}", content);
+            using var response = await _apiService.SendAuthenticatedMultipartAsync(HttpMethod.Put, $"api/Funcionarios/{funcionario.Id}", content);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -326,7 +330,7 @@ public class PerfilController : Controller
         }
         catch
         {
-            ModelState.AddModelError( string.Empty, "Ocorreu um erro ao atualizar o perfil.");
+            ModelState.AddModelError(string.Empty, "Ocorreu um erro ao atualizar o perfil.");
 
             return View(model);
         }
@@ -354,7 +358,7 @@ public class PerfilController : Controller
 
             try
             {
-                using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Get,$"api/Funcionarios/{funcionario.Id}/fotografia");
+                using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Get, $"api/Funcionarios/{funcionario.Id}/fotografia");
 
                 temFotografia = response.IsSuccessStatusCode;
             }
@@ -385,7 +389,7 @@ public class PerfilController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AlterarFotografia( AlterarFotografiaPerfilViewModel model)
+    public async Task<IActionResult> AlterarFotografia(AlterarFotografiaPerfilViewModel model)
     {
         if (!User.IsInRole("Funcionario"))
             return Forbid();
@@ -397,14 +401,14 @@ public class PerfilController : Controller
 
         if (model.Fotografia == null || model.Fotografia.Length == 0)
         {
-            ModelState.AddModelError( nameof(model.Fotografia),"Selecione uma fotografia.");
+            ModelState.AddModelError(nameof(model.Fotografia), "Selecione uma fotografia.");
 
             return View(model);
         }
 
         try
         {
-            var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>( $"api/Funcionarios/user/{userId}");
+            var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>($"api/Funcionarios/user/{userId}");
 
             if (funcionario == null)
                 return NotFound();
@@ -414,31 +418,31 @@ public class PerfilController : Controller
 
             using var content = new MultipartFormDataContent();
 
-            content.Add( new StringContent(funcionario.NomeCompleto), "NomeCompleto");
+            content.Add(new StringContent(funcionario.NomeCompleto), "NomeCompleto");
 
-            content.Add( new StringContent(funcionario.Email ?? string.Empty), "Email");
+            content.Add(new StringContent(funcionario.Email ?? string.Empty), "Email");
 
             if (!string.IsNullOrWhiteSpace(funcionario.Telefone))
             {
-                content.Add( new StringContent(funcionario.Telefone), "Telefone");
+                content.Add(new StringContent(funcionario.Telefone), "Telefone");
             }
 
             if (!string.IsNullOrWhiteSpace(funcionario.Biografia))
             {
-                content.Add( new StringContent(funcionario.Biografia), "Biografia");
+                content.Add(new StringContent(funcionario.Biografia), "Biografia");
             }
 
-            content.Add( new StringContent(funcionario.Disponivel.ToString()), "Disponivel");
+            content.Add(new StringContent(funcionario.Disponivel.ToString()), "Disponivel");
 
-            await using var stream =  model.Fotografia.OpenReadStream();
+            await using var stream = model.Fotografia.OpenReadStream();
 
             using var fileContent = new StreamContent(stream);
 
-            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue( model.Fotografia.ContentType);
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(model.Fotografia.ContentType);
 
-            content.Add( fileContent, "Fotografia", model.Fotografia.FileName);
+            content.Add(fileContent, "Fotografia", model.Fotografia.FileName);
 
-            using var response = await _apiService.SendAuthenticatedMultipartAsync( HttpMethod.Put, $"api/Funcionarios/{funcionario.Id}", content);
+            using var response = await _apiService.SendAuthenticatedMultipartAsync(HttpMethod.Put, $"api/Funcionarios/{funcionario.Id}", content);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -459,7 +463,7 @@ public class PerfilController : Controller
         }
         catch
         {
-            ModelState.AddModelError( string.Empty, "Ocorreu um erro ao atualizar a fotografia.");
+            ModelState.AddModelError(string.Empty, "Ocorreu um erro ao atualizar a fotografia.");
 
             return View(model);
         }
@@ -485,7 +489,7 @@ public class PerfilController : Controller
                 NovaPassword = model.NovaPassword
             };
 
-            using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Auth/alterar-password", dados);
+            using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Auth/alterar-password", dados);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -506,7 +510,7 @@ public class PerfilController : Controller
         }
         catch
         {
-            ModelState.AddModelError( string.Empty, "Ocorreu um erro ao alterar a palavra-passe.");
+            ModelState.AddModelError(string.Empty, "Ocorreu um erro ao alterar a palavra-passe.");
 
             return View(model);
         }
@@ -517,7 +521,7 @@ public class PerfilController : Controller
     {
         try
         {
-            var estado = await _apiService.GetAuthenticatedAsync<TwoFactorViewModel>( "api/Auth/2fa");
+            var estado = await _apiService.GetAuthenticatedAsync<TwoFactorViewModel>("api/Auth/2fa");
 
             if (estado == null)
             {
@@ -547,7 +551,7 @@ public class PerfilController : Controller
                 Ativo = model.Ativo
             };
 
-            using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Put,"api/Auth/2fa",  dados);
+            using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Put, "api/Auth/2fa", dados);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -575,7 +579,7 @@ public class PerfilController : Controller
     {
         try
         {
-            var resultado = await _apiService.GetAuthenticatedAsync<GoogleCalendarConectarViewModel>( "api/GoogleCalendar/conectar");
+            var resultado = await _apiService.GetAuthenticatedAsync<GoogleCalendarConectarViewModel>("api/GoogleCalendar/conectar");
 
             if (resultado == null || string.IsNullOrWhiteSpace(resultado.AuthorizationUrl))
             {
@@ -620,4 +624,284 @@ public class PerfilController : Controller
             return RedirectToAction(nameof(Index));
         }
     }
+
+    [HttpGet]
+    public async Task<IActionResult> EditarCliente()
+    {
+        if (!User.IsInRole("Cliente"))
+        {
+            return Forbid();
+        }
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Unauthorized();
+        }
+
+        try
+        {
+            var cliente = await _apiService.GetAuthenticatedAsync<ClienteViewModel>($"api/Clientes/{userId}");
+
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+
+            var model = new EditarPerfilClienteViewModel
+            {
+                ClienteId = cliente.Id,
+                NomeCompleto = cliente.NomeCompleto,
+                Email = cliente.Email,
+                Telefone = cliente.Telefone,
+                Contribuinte = cliente.Contribuinte,
+                Morada = cliente.Morada,
+                CodigoPostal = cliente.CodigoPostal,
+                Localidade = cliente.Localidade
+            };
+
+            return View("EditarCliente", model);
+        }
+        catch
+        {
+            TempData["ErrorMessage"] = "Não foi possível carregar os dados do perfil.";
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditarCliente(EditarPerfilClienteViewModel model)
+    {
+        if (!User.IsInRole("Cliente"))
+        {
+            return Forbid();
+        }
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Unauthorized();
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return View("EditarCliente", model);
+        }
+
+        try
+        {
+            var cliente = await _apiService.GetAuthenticatedAsync<ClienteViewModel>($"api/Clientes/{userId}");
+
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+
+            using var content = new MultipartFormDataContent();
+
+            content.Add(new StringContent(model.NomeCompleto), "NomeCompleto");
+
+            content.Add(new StringContent(model.Email), "Email");
+
+            if (!string.IsNullOrWhiteSpace(model.Telefone))
+            {
+                content.Add(new StringContent(model.Telefone), "Telefone");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Contribuinte))
+            {
+                content.Add(new StringContent(model.Contribuinte), "Contribuinte");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Morada))
+            {
+                content.Add(new StringContent(model.Morada), "Morada");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.CodigoPostal))
+            {
+                content.Add(new StringContent(model.CodigoPostal), "CodigoPostal");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Localidade))
+            {
+                content.Add(new StringContent(model.Localidade), "Localidade");
+            }
+
+            using var response = await _apiService.SendAuthenticatedMultipartAsync(HttpMethod.Put, $"api/Clientes/{userId}", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var erro = await response.Content.ReadAsStringAsync();
+
+                ModelState.AddModelError(
+                    string.Empty,
+                    string.IsNullOrWhiteSpace(erro)
+                        ? "Não foi possível atualizar o perfil."
+                        : erro);
+
+                return View("EditarCliente", model);
+            }
+
+            TempData["SuccessMessage"] = "Perfil atualizado com sucesso.";
+
+            return RedirectToAction(nameof(Index));
+        }
+        catch
+        {
+            ModelState.AddModelError(string.Empty, "Ocorreu um erro ao atualizar o perfil.");
+
+            return View("EditarCliente", model);
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> AlterarFotografiaCliente()
+    {
+        if (!User.IsInRole("Cliente"))
+            return Forbid();
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrWhiteSpace(userId))
+            return Unauthorized();
+
+        try
+        {
+            var cliente = await _apiService.GetAuthenticatedAsync<ClienteViewModel>($"api/Clientes/{userId}");
+
+            if (cliente == null)
+                return NotFound();
+
+            var temFotografia = false;
+
+            try
+            {
+                using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Get, $"api/Clientes/{userId}/fotografia");
+
+                temFotografia = response.IsSuccessStatusCode;
+            }
+            catch
+            {
+                temFotografia = false;
+            }
+
+            var model = new AlterarFotografiaPerfilViewModel
+            {
+                NomeCompleto = cliente.NomeCompleto,
+                TemFotografia = temFotografia,
+                FotografiaUrl = temFotografia
+                    ? Url.Action("Fotografia", "Perfil")
+                    : null
+            };
+
+            return View("AlterarFotografiaCliente", model);
+        }
+        catch
+        {
+            TempData["ErrorMessage"] = "Não foi possível carregar a fotografia do perfil.";
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AlterarFotografiaCliente(AlterarFotografiaPerfilViewModel model)
+    {
+        if (!User.IsInRole("Cliente"))
+            return Forbid();
+
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrWhiteSpace(userId))
+            return Unauthorized();
+
+        if (model.Fotografia == null || model.Fotografia.Length == 0)
+        {
+            ModelState.AddModelError(nameof(model.Fotografia), "Selecione uma fotografia.");
+
+            return View("AlterarFotografiaCliente", model);
+        }
+
+        try
+        {
+            var cliente = await _apiService.GetAuthenticatedAsync<ClienteViewModel>($"api/Clientes/{userId}");
+
+            if (cliente == null)
+                return NotFound();
+
+            model.NomeCompleto = cliente.NomeCompleto;
+            model.FotografiaUrl = Url.Action("Fotografia", "Perfil");
+
+            using var content = new MultipartFormDataContent();
+
+            content.Add(new StringContent(cliente.NomeCompleto), "NomeCompleto");
+
+            content.Add(new StringContent(cliente.Email ?? string.Empty), "Email");
+
+            if (!string.IsNullOrWhiteSpace(cliente.Telefone))
+            {
+                content.Add(new StringContent(cliente.Telefone), "Telefone");
+            }
+
+            if (!string.IsNullOrWhiteSpace(cliente.Contribuinte))
+            {
+                content.Add(new StringContent(cliente.Contribuinte), "Contribuinte");
+            }
+
+            if (!string.IsNullOrWhiteSpace(cliente.Morada))
+            {
+                content.Add(new StringContent(cliente.Morada), "Morada");
+            }
+
+            if (!string.IsNullOrWhiteSpace(cliente.CodigoPostal))
+            {
+                content.Add(new StringContent(cliente.CodigoPostal), "CodigoPostal");
+            }
+
+            if (!string.IsNullOrWhiteSpace(cliente.Localidade))
+            {
+                content.Add(new StringContent(cliente.Localidade), "Localidade");
+            }
+
+            await using var stream = model.Fotografia.OpenReadStream();
+
+            using var fileContent = new StreamContent(stream);
+
+            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(model.Fotografia.ContentType);
+
+            content.Add(fileContent, "Fotografia", model.Fotografia.FileName);
+
+            using var response = await _apiService.SendAuthenticatedMultipartAsync(HttpMethod.Put, $"api/Clientes/{userId}", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var erro = await response.Content.ReadAsStringAsync();
+
+                ModelState.AddModelError(
+                    string.Empty,
+                    string.IsNullOrWhiteSpace(erro)
+                        ? "Não foi possível atualizar a fotografia."
+                        : erro);
+
+                return View("AlterarFotografiaCliente", model);
+            }
+
+            TempData["SuccessMessage"] = "Fotografia atualizada com sucesso.";
+
+            return RedirectToAction(nameof(Index));
+        }
+        catch
+        {
+            ModelState.AddModelError(string.Empty, "Ocorreu um erro ao atualizar a fotografia.");
+
+            return View("AlterarFotografiaCliente", model);
+        }
+    }
+
 }

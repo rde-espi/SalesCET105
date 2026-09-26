@@ -3586,3 +3586,1510 @@ body,
     line-height: 1;
     box-shadow: 0 2px 5px rgba(216, 176, 113, .22);
 }
+
+/* =========================================================
+   NOTIFICAÇÕES - AÇÕES DE ELIMINAÇÃO
+   ========================================================= */
+
+/* Eliminar todas - ação global */
+.ib-notification-delete-all {
+    min-height: 38px;
+    padding: 0 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid rgba(150, 70, 70, 0.28);
+    border-radius: 10px;
+    background: #fff;
+    color: #8f4545;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease;
+}
+
+    .ib-notification-delete-all svg {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+    }
+
+    .ib-notification-delete-all:hover {
+        background: rgba(143, 69, 69, 0.07);
+        border-color: rgba(143, 69, 69, 0.45);
+        color: #713535;
+    }
+
+    .ib-notification-delete-all:active {
+        transform: translateY(1px);
+    }
+
+
+/* Eliminar uma notificação */
+.ib-notification-delete {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: transparent;
+    color: #a59c91;
+    cursor: pointer;
+    transition: background .2s ease, border-color .2s ease, color .2s ease;
+}
+
+    .ib-notification-delete svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    .ib-notification-delete:hover {
+        background: rgba(143, 69, 69, 0.07);
+        border-color: rgba(143, 69, 69, 0.16);
+        color: #8f4545;
+    }
+
+/* =========================================================
+   PERFIL CLIENTE - EDIÇÃO
+   Réplica visual do perfil do Funcionário
+   ========================================================= */
+
+.ib-cliente-profile-editar-cliente {
+    width: 100%;
+    display: block;
+}
+
+.ib-cliente-profile-section-header {
+    width: 100%;
+    display: block;
+    margin-bottom: 22px;
+}
+
+.ib-cliente-profile-eyebrow {
+    display: block;
+    margin-bottom: 6px;
+    color: #BEA256;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+}
+
+.ib-cliente-profile-section-header h2 {
+    margin: 0 0 6px;
+    color: #24231f;
+    font-size: 1.45rem;
+    font-weight: 600;
+}
+
+.ib-cliente-profile-section-header p {
+    margin: 0;
+    color: #918b82;
+    font-size: .78rem;
+    line-height: 1.55;
+}
+
+
+/* Card principal */
+
+.ib-cliente-profile-card {
+    overflow: hidden;
+    border: 1px solid rgba(216, 176, 113, .18);
+    border-radius: 14px;
+    background: #FFFFFF;
+    box-shadow: 0 5px 18px rgba(25, 25, 25, .035);
+}
+
+.ib-cliente-profile-card-header {
+    padding: 20px 22px;
+    border-bottom: 1px solid rgba(216, 176, 113, .14);
+}
+
+    .ib-cliente-profile-card-header h2 {
+        margin: 0 0 4px;
+        color: #3d3934;
+        font-size: .9rem;
+        font-weight: 600;
+    }
+
+    .ib-cliente-profile-card-header p {
+        margin: 0;
+        color: #918b82;
+        font-size: .68rem;
+    }
+
+
+/* Corpo */
+
+.ib-cliente-profile-card form {
+    padding: 22px;
+}
+
+.ib-cliente-profile-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+
+/* Cards internos */
+
+.ib-cliente-profile-form-card {
+    padding: 22px;
+    border: 1px solid rgba(216, 176, 113, .16);
+    border-radius: 12px;
+    background: #FFFFFF;
+}
+
+.ib-cliente-profile-form-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(216, 176, 113, .12);
+}
+
+.ib-cliente-profile-form-card-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: rgba(216, 176, 113, .10);
+    color: #BEA256;
+}
+
+    .ib-cliente-profile-form-card-icon svg {
+        width: 19px;
+        height: 19px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+.ib-cliente-profile-form-card-header h2 {
+    margin: 0 0 3px;
+    color: #3d3934;
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+.ib-cliente-profile-form-card-header p {
+    margin: 0;
+    color: #918b82;
+    font-size: .66rem;
+    line-height: 1.45;
+}
+
+
+/* Campos */
+
+.ib-cliente-profile-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 17px;
+}
+
+    .ib-cliente-profile-field:last-child {
+        margin-bottom: 0;
+    }
+
+    .ib-cliente-profile-field label {
+        color: #535333;
+        font-size: .7rem;
+        font-weight: 600;
+    }
+
+        .ib-cliente-profile-field label span {
+            color: #BEA256;
+        }
+
+    .ib-cliente-profile-field input {
+        width: 100%;
+        height: 44px;
+        padding: 0 13px;
+        border: 1px solid rgba(216, 176, 113, .22);
+        border-radius: 9px;
+        background: #FFFFFF;
+        color: #3d3934;
+        font-family: inherit;
+        font-size: .75rem;
+        outline: none;
+        transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+        .ib-cliente-profile-field input:hover {
+            border-color: rgba(216, 176, 113, .42);
+        }
+
+        .ib-cliente-profile-field input:focus {
+            border-color: #D8B071;
+            box-shadow: 0 0 0 3px rgba(216, 176, 113, .10);
+        }
+
+
+/* Validação */
+
+.ib-cliente-profile-field-validation,
+.ib-cliente-profile-form-validation {
+    color: #a94442;
+    font-size: .67rem;
+}
+
+    .ib-cliente-profile-form-validation:empty {
+        display: none;
+    }
+
+    .ib-cliente-profile-form-validation:not(:empty) {
+        margin-bottom: 18px;
+    }
+
+
+/* Rodapé / ações */
+
+.ib-cliente-profile-form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(216, 176, 113, .14);
+}
+
+.ib-cliente-profile-cancel-btn,
+.ib-cliente-profile-save-btn {
+    min-height: 40px;
+    padding: 0 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: .7rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.ib-cliente-profile-cancel-btn {
+    border: 1px solid rgba(216, 176, 113, .24);
+    background: #FFFFFF;
+    color: #535333;
+}
+
+    .ib-cliente-profile-cancel-btn:hover {
+        border-color: #D8B071;
+        color: #BEA256;
+    }
+
+.ib-cliente-profile-save-btn {
+    border: 1px solid #D8B071;
+    background: #D8B071;
+    color: #191919;
+}
+
+    .ib-cliente-profile-save-btn svg {
+        width: 15px;
+        height: 15px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .ib-cliente-profile-save-btn:hover {
+        background: #BEA256;
+        border-color: #BEA256;
+        box-shadow: 0 5px 15px rgba(216, 176, 113, .18);
+    }
+
+    .ib-cliente-profile-cancel-btn:active,
+    .ib-cliente-profile-save-btn:active {
+        transform: translateY(1px);
+    }
+
+
+/* Responsivo */
+
+@media (max-width: 900px) {
+
+    .ib-cliente-profile-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 650px) {
+
+    .ib-cliente-profile-card form,
+    .ib-cliente-profile-form-card {
+        padding: 18px;
+    }
+
+    .ib-cliente-profile-form-footer {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .ib-cliente-profile-cancel-btn,
+    .ib-cliente-profile-save-btn {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   PERFIL CLIENTE — ALTERAR FOTOGRAFIA
+   ========================================================= */
+
+.ib-profile-photo-upload {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 290px;
+    padding: 28px;
+    cursor: pointer;
+}
+
+.ib-profile-photo-upload-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+}
+
+.ib-profile-photo-preview {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+    background: #f4efe7;
+    box-shadow: 0 0 0 1px rgba(216, 176, 113, .45), 0 8px 24px rgba(25, 25, 25, .10);
+}
+
+#fotoFallback,
+#fotoPreview {
+    width: 100%;
+    height: 100%;
+}
+
+#fotoFallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    #fotoFallback img,
+    #fotoPreview {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    #fotoFallback span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        color: #BEA256;
+        font-size: 2.2rem;
+        font-weight: 700;
+        letter-spacing: .04em;
+    }
+
+#fotoPreview[hidden] {
+    display: none;
+}
+
+#fotoFallback[hidden] {
+    display: none;
+}
+
+.ib-profile-photo-upload-content > strong {
+    margin-top: 3px;
+    color: #191919;
+    font-size: .96rem;
+    font-weight: 700;
+}
+
+.ib-profile-photo-upload-content > span {
+    color: #817a70;
+    font-size: .82rem;
+}
+
+.ib-profile-photo-upload-content > small {
+    margin-top: 2px;
+    color: #a09a91;
+    font-size: .73rem;
+}
+
+/* Hover da zona de upload */
+
+.ib-profile-photo-upload:hover .ib-profile-photo-preview {
+    box-shadow: 0 0 0 2px rgba(216, 176, 113, .60), 0 10px 28px rgba(25, 25, 25, .12);
+}
+
+/* Botão escolher fotografia dentro do card */
+
+.ib-category-image-card > .ib-category-back-btn {
+    width: fit-content;
+    margin-top: 18px;
+}
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .ib-profile-photo-upload {
+        min-height: 250px;
+        padding: 22px 16px;
+    }
+
+    .ib-profile-photo-preview {
+        width: 125px;
+        height: 125px;
+    }
+
+    #fotoFallback span {
+        font-size: 1.8rem;
+    }
+}
+
+.ib-profile-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+    .ib-profile-btn svg {
+        flex: 0 0 auto;
+    }
+
+/* =========================================================
+   CLIENTE — EXPLORAR SERVIÇOS
+   ========================================================= */
+
+.ib-explore-page {
+    width: 100%;
+}
+
+
+/* CABEÇALHO */
+
+.ib-explore-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+    .ib-explore-heading h1 {
+        margin: 5px 0 7px;
+        color: #191919;
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1.15;
+    }
+
+    .ib-explore-heading p {
+        margin: 0;
+        color: #817a70;
+        font-size: .92rem;
+    }
+
+.ib-explore-book-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 43px;
+    padding: 0 18px;
+    border: 1px solid #191919;
+    border-radius: 8px;
+    background: #191919;
+    color: #fff;
+    font-size: .84rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: .2s ease;
+}
+
+    .ib-explore-book-btn svg {
+        width: 17px;
+        height: 17px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .ib-explore-book-btn:hover {
+        border-color: #BEA256;
+        background: #BEA256;
+        color: #fff;
+    }
+
+
+/* PESQUISA */
+
+.ib-explore-tools {
+    margin-bottom: 18px;
+}
+
+.ib-explore-search {
+    position: relative;
+    width: min(430px, 100%);
+}
+
+    .ib-explore-search svg {
+        position: absolute;
+        top: 50%;
+        left: 15px;
+        width: 17px;
+        height: 17px;
+        transform: translateY(-50%);
+        fill: none;
+        stroke: #817a70;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        pointer-events: none;
+    }
+
+    .ib-explore-search input {
+        width: 100%;
+        height: 44px;
+        padding: 0 16px 0 43px;
+        border: 1px solid rgba(216, 176, 113, .28);
+        border-radius: 9px;
+        outline: none;
+        background: #fff;
+        color: #191919;
+        font-size: .86rem;
+        transition: .2s ease;
+    }
+
+        .ib-explore-search input::placeholder {
+            color: #a09a91;
+        }
+
+        .ib-explore-search input:focus {
+            border-color: #D8B071;
+            box-shadow: 0 0 0 3px rgba(216, 176, 113, .10);
+        }
+
+
+/* FILTROS */
+
+.ib-explore-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: 25px;
+}
+
+.ib-explore-category {
+    min-height: 35px;
+    padding: 0 15px;
+    border: 1px solid rgba(216, 176, 113, .30);
+    border-radius: 999px;
+    background: #fff;
+    color: #535333;
+    font-size: .78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+    .ib-explore-category:hover {
+        border-color: #D8B071;
+        color: #BEA256;
+    }
+
+    .ib-explore-category.active {
+        border-color: #191919;
+        background: #191919;
+        color: #fff;
+    }
+
+
+/* GRELHA */
+
+.ib-explore-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+}
+
+
+/* CARD */
+
+.ib-explore-card {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgba(216, 176, 113, .22);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 5px 18px rgba(25, 25, 25, .045);
+    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+
+    .ib-explore-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(216, 176, 113, .50);
+        box-shadow: 0 12px 30px rgba(25, 25, 25, .08);
+    }
+
+
+/* IMAGEM */
+
+.ib-explore-card-image {
+    position: relative;
+    width: 100%;
+    height: 205px;
+    overflow: hidden;
+    background: #f4efe7;
+}
+
+    .ib-explore-card-image > img {
+        position: relative;
+        z-index: 2;
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform .35s ease;
+    }
+
+.ib-explore-card:hover .ib-explore-card-image > img {
+    transform: scale(1.025);
+}
+
+.ib-explore-card-image-fallback {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient( 135deg, #f8f5ef, #eee5d8 );
+}
+
+    .ib-explore-card-image-fallback span {
+        color: #BEA256;
+        font-size: 2.3rem;
+        font-weight: 700;
+    }
+
+
+/* CONTEÚDO */
+
+.ib-explore-card-body {
+    padding: 19px 20px 20px;
+}
+
+.ib-explore-card-category {
+    margin-bottom: 7px;
+    color: #BEA256;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+}
+
+.ib-explore-card-body h2 {
+    margin: 0 0 9px;
+    color: #191919;
+    font-size: 1.08rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.ib-explore-card-description {
+    display: -webkit-box;
+    min-height: 40px;
+    margin: 0 0 17px;
+    overflow: hidden;
+    color: #817a70;
+    font-size: .8rem;
+    line-height: 1.55;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+
+/* PREÇO / DURAÇÃO */
+
+.ib-explore-card-meta {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 14px 0;
+    border-top: 1px solid rgba(216, 176, 113, .18);
+    border-bottom: 1px solid rgba(216, 176, 113, .18);
+}
+
+    .ib-explore-card-meta > div {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .ib-explore-card-meta span {
+        color: #817a70;
+        font-size: .68rem;
+    }
+
+    .ib-explore-card-meta strong {
+        color: #535333;
+        font-size: .82rem;
+        font-weight: 700;
+    }
+
+.ib-explore-card-price {
+    text-align: right;
+}
+
+    .ib-explore-card-price strong {
+        color: #BEA256;
+        font-size: 1rem;
+    }
+
+
+/* AÇÕES */
+
+.ib-explore-card-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+    margin-top: 16px;
+}
+
+.ib-explore-details-btn,
+.ib-explore-card-book-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 39px;
+    padding: 0 12px;
+    border-radius: 7px;
+    font-size: .77rem;
+    font-weight: 650;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+.ib-explore-details-btn {
+    border: 1px solid rgba(25, 25, 25, .16);
+    background: #fff;
+    color: #535333;
+}
+
+    .ib-explore-details-btn:disabled {
+        opacity: 1;
+        cursor: default;
+    }
+
+.ib-explore-card-book-btn {
+    border: 1px solid #D8B071;
+    background: #D8B071;
+    color: #191919;
+}
+
+    .ib-explore-card-book-btn svg {
+        width: 15px;
+        height: 15px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .ib-explore-card-book-btn:hover {
+        border-color: #BEA256;
+        background: #BEA256;
+        color: #191919;
+    }
+
+
+/* ESTADOS VAZIOS */
+
+.ib-explore-empty,
+.ib-explore-no-results {
+    padding: 55px 25px;
+    border: 1px solid rgba(216, 176, 113, .22);
+    border-radius: 14px;
+    background: #fff;
+    text-align: center;
+}
+
+.ib-explore-empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background: #f8f5ef;
+    color: #BEA256;
+}
+
+    .ib-explore-empty-icon svg {
+        width: 23px;
+        height: 23px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.6;
+    }
+
+.ib-explore-empty h2,
+.ib-explore-no-results h3 {
+    margin: 0 0 7px;
+    color: #191919;
+    font-size: 1rem;
+}
+
+.ib-explore-empty p,
+.ib-explore-no-results p {
+    margin: 0;
+    color: #817a70;
+    font-size: .8rem;
+}
+
+
+/* O ATRIBUTO HIDDEN DEVE REALMENTE ESCONDER O ELEMENTO */
+
+.ib-explore-card[hidden],
+.ib-explore-no-results[hidden] {
+    display: none !important;
+}
+
+
+/* RESPONSIVO */
+
+@media (max-width: 1100px) {
+    .ib-explore-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+
+    .ib-explore-heading {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .ib-explore-book-btn {
+        align-self: flex-start;
+    }
+
+    .ib-explore-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-explore-card-image {
+        height: 220px;
+    }
+}
+
+/* =========================================================
+   CLIENTE — DETALHES DO SERVIÇO
+   ========================================================= */
+
+.ib-service-detail-page {
+    width: 100%;
+}
+
+
+/* VOLTAR */
+
+.ib-service-detail-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 22px;
+    color: #817a70;
+    font-size: .79rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color .2s ease;
+}
+
+    .ib-service-detail-back svg {
+        width: 17px;
+        height: 17px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .ib-service-detail-back:hover {
+        color: #BEA256;
+    }
+
+
+/* HERO */
+
+.ib-service-detail-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(360px, .92fr);
+    overflow: hidden;
+    border: 1px solid rgba(216, 176, 113, .22);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 7px 24px rgba(25, 25, 25, .055);
+}
+
+
+/* IMAGEM */
+
+.ib-service-detail-image {
+    position: relative;
+    min-height: 510px;
+    overflow: hidden;
+    background: #f4efe7;
+}
+
+    .ib-service-detail-image > img {
+        position: relative;
+        z-index: 2;
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 510px;
+        object-fit: cover;
+    }
+
+.ib-service-detail-image-fallback {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient( 135deg, #f8f5ef 0%, #eee5d8 100% );
+}
+
+    .ib-service-detail-image-fallback span {
+        color: #BEA256;
+        font-size: 4rem;
+        font-weight: 700;
+    }
+
+
+/* CONTEÚDO */
+
+.ib-service-detail-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 48px 46px;
+}
+
+    .ib-service-detail-content h1 {
+        margin: 8px 0 16px;
+        color: #191919;
+        font-size: clamp(1.8rem, 2.4vw, 2.55rem);
+        font-weight: 700;
+        line-height: 1.15;
+    }
+
+.ib-service-detail-description {
+    margin: 0 0 28px;
+    color: #817a70;
+    font-size: .9rem;
+    line-height: 1.7;
+}
+
+
+/* DURAÇÃO / PREÇO */
+
+.ib-service-detail-info {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.ib-service-detail-info-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    padding: 15px;
+    border: 1px solid rgba(216, 176, 113, .22);
+    border-radius: 10px;
+    background: #F8F5EF;
+}
+
+.ib-service-detail-info-icon {
+    display: flex;
+    flex: 0 0 38px;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #fff;
+    color: #BEA256;
+}
+
+    .ib-service-detail-info-icon svg {
+        width: 19px;
+        height: 19px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+.ib-service-detail-info-item > div:last-child {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ib-service-detail-info-item span {
+    color: #817a70;
+    font-size: .67rem;
+}
+
+.ib-service-detail-info-item strong {
+    color: #191919;
+    font-size: .88rem;
+    font-weight: 700;
+}
+
+
+/* NOTA */
+
+.ib-service-detail-note {
+    position: relative;
+    margin-bottom: 27px;
+    padding: 11px 13px 11px 16px;
+    border-radius: 7px;
+    background: rgba(216, 176, 113, .10);
+    color: #817a70;
+    font-size: .72rem;
+    line-height: 1.5;
+}
+
+    .ib-service-detail-note::before {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 3px;
+        border-radius: 7px 0 0 7px;
+        background: #D8B071;
+        content: "";
+    }
+
+
+/* CTA */
+
+.ib-service-detail-actions {
+    display: flex;
+}
+
+.ib-service-detail-book {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 45px;
+    padding: 0 22px;
+    border: 1px solid #D8B071;
+    border-radius: 8px;
+    background: #D8B071;
+    color: #191919;
+    font-size: .82rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+    .ib-service-detail-book svg {
+        width: 16px;
+        height: 16px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .ib-service-detail-book:hover {
+        border-color: #BEA256;
+        background: #BEA256;
+        color: #191919;
+        transform: translateY(-1px);
+    }
+
+
+/* RESPONSIVO */
+
+@media (max-width: 1000px) {
+
+    .ib-service-detail-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-service-detail-image,
+    .ib-service-detail-image > img {
+        min-height: 360px;
+        max-height: 440px;
+    }
+
+    .ib-service-detail-content {
+        padding: 35px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .ib-service-detail-content {
+        padding: 27px 20px;
+    }
+
+    .ib-service-detail-info {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-service-detail-book {
+        width: 100%;
+    }
+
+    .ib-service-detail-image,
+    .ib-service-detail-image > img {
+        min-height: 280px;
+    }
+}
+
+/* =========================================================
+   CLIENTE — DETALHE SERVIÇO / PROFISSIONAIS
+   ========================================================= */
+
+.ib-service-professionals {
+    margin-top: 32px;
+    padding: 32px;
+    border: 1px solid rgba(216, 176, 113, .22);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 7px 24px rgba(25, 25, 25, .045);
+}
+
+
+/* CABEÇALHO */
+
+.ib-service-professionals-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 25px;
+}
+
+    .ib-service-professionals-heading h2 {
+        margin: 6px 0 6px;
+        color: #191919;
+        font-size: 1.35rem;
+        font-weight: 700;
+    }
+
+    .ib-service-professionals-heading p {
+        margin: 0;
+        color: #817a70;
+        font-size: .82rem;
+    }
+
+.ib-service-professionals-count {
+    flex: 0 0 auto;
+    padding: 7px 12px;
+    border: 1px solid rgba(216, 176, 113, .30);
+    border-radius: 999px;
+    background: #F8F5EF;
+    color: #817a70;
+    font-size: .7rem;
+    font-weight: 600;
+}
+
+
+/* GRELHA */
+
+.ib-service-professionals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+
+/* CARD */
+
+.ib-service-professional-card {
+    display: grid;
+    grid-template-columns: 105px minmax(0, 1fr);
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgba(216, 176, 113, .22);
+    border-radius: 12px;
+    background: #FDFCF9;
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+    .ib-service-professional-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(216, 176, 113, .55);
+        box-shadow: 0 8px 22px rgba(25, 25, 25, .065);
+    }
+
+
+/* FOTOGRAFIA */
+
+.ib-service-professional-photo {
+    position: relative;
+    width: 105px;
+    min-height: 165px;
+    overflow: hidden;
+    background: #f4efe7;
+}
+
+    .ib-service-professional-photo > img {
+        position: absolute;
+        z-index: 2;
+        inset: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+.ib-service-professional-fallback {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient( 145deg, #f8f5ef, #eee5d8 );
+}
+
+    .ib-service-professional-fallback span {
+        color: #BEA256;
+        font-size: 1.55rem;
+        font-weight: 700;
+        letter-spacing: .04em;
+    }
+
+
+/* CONTEÚDO */
+
+.ib-service-professional-content {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    padding: 16px;
+}
+
+    .ib-service-professional-content h3 {
+        margin: 0 0 6px;
+        overflow: hidden;
+        color: #191919;
+        font-size: .9rem;
+        font-weight: 700;
+        line-height: 1.3;
+        text-overflow: ellipsis;
+    }
+
+
+/* AVALIAÇÃO */
+
+.ib-service-professional-rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 19px;
+    margin-bottom: 8px;
+    color: #817a70;
+    font-size: .68rem;
+}
+
+    .ib-service-professional-rating svg {
+        width: 14px;
+        height: 14px;
+        fill: #D8B071;
+        stroke: #D8B071;
+        stroke-width: 1.2;
+    }
+
+    .ib-service-professional-rating strong {
+        color: #535333;
+        font-size: .7rem;
+    }
+
+    .ib-service-professional-rating span {
+        color: #817a70;
+    }
+
+    .ib-service-professional-rating.is-empty {
+        color: #a09a91;
+        font-size: .68rem;
+    }
+
+
+/* BIOGRAFIA */
+
+.ib-service-professional-bio {
+    display: -webkit-box;
+    margin: 0 0 12px;
+    overflow: hidden;
+    color: #817a70;
+    font-size: .72rem;
+    line-height: 1.5;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+
+/* BOTÃO */
+
+.ib-service-professional-book {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 34px;
+    margin-top: auto;
+    padding: 0 10px;
+    border: 1px solid rgba(216, 176, 113, .45);
+    border-radius: 7px;
+    background: #fff;
+    color: #BEA256;
+    font-size: .7rem;
+    font-weight: 700;
+}
+
+    .ib-service-professional-book:disabled {
+        opacity: 1;
+        cursor: default;
+    }
+
+
+/* SEM PROFISSIONAIS */
+
+.ib-service-professionals-empty {
+    padding: 38px 20px;
+    border: 1px dashed rgba(216, 176, 113, .35);
+    border-radius: 12px;
+    background: #FDFCF9;
+    text-align: center;
+}
+
+.ib-service-professionals-empty-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    background: #F8F5EF;
+    color: #BEA256;
+}
+
+    .ib-service-professionals-empty-icon svg {
+        width: 21px;
+        height: 21px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+.ib-service-professionals-empty h3 {
+    margin: 0 0 6px;
+    color: #191919;
+    font-size: .9rem;
+}
+
+.ib-service-professionals-empty p {
+    margin: 0;
+    color: #817a70;
+    font-size: .75rem;
+}
+
+
+/* RESPONSIVO */
+
+@media (max-width: 1200px) {
+
+    .ib-service-professionals-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 750px) {
+
+    .ib-service-professionals {
+        padding: 22px 18px;
+    }
+
+    .ib-service-professionals-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .ib-service-professionals-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 460px) {
+
+    .ib-service-professional-card {
+        grid-template-columns: 85px minmax(0, 1fr);
+    }
+
+    .ib-service-professional-photo {
+        width: 85px;
+    }
+}

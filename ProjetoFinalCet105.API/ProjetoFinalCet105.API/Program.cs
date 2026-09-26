@@ -346,6 +346,7 @@ builder.Services.AddScoped<ConfirmarEmailUseCase>();
 builder.Services.AddScoped<ReenviarConfirmacaoEmailUseCase>();
 builder.Services.AddScoped<MarcarNotificacaoLidaUseCase>();
 builder.Services.AddScoped<MarcarTodasComoLidasUseCase>();
+builder.Services.AddScoped<DeleteTodasNotificacoesUseCase>();
 builder.Services.AddScoped<EnviarMensagemUseCase>();
 builder.Services.AddScoped<CriarConversaUseCase>();
 builder.Services.AddScoped<GetMinhasConversasUseCase>();

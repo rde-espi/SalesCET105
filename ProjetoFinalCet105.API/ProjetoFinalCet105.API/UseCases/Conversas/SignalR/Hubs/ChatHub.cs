@@ -1,9 +1,7 @@
 ﻿using System.Security.Claims;
-using System.Text.RegularExpressions;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 
 using ProjetoFinalCet105.API.Repositories;
 

@@ -11,7 +11,7 @@ public class MensagensFuncionarioController : Controller
 {
     private readonly ApiService _apiService;
 
-    public MensagensFuncionarioController( ApiService apiService)
+    public MensagensFuncionarioController(ApiService apiService)
     {
         _apiService = apiService;
     }
@@ -21,7 +21,7 @@ public class MensagensFuncionarioController : Controller
     {
         try
         {
-            var conversas = await _apiService.GetAuthenticatedAsync<List<ConversaViewModel>>("api/Conversas")?? new List<ConversaViewModel>();
+            var conversas = await _apiService.GetAuthenticatedAsync<List<ConversaViewModel>>("api/Conversas") ?? new List<ConversaViewModel>();
 
             conversas = conversas
                 .OrderByDescending(c =>
@@ -36,7 +36,7 @@ public class MensagensFuncionarioController : Controller
         {
             TempData["ErrorMessage"] = "Não foi possível carregar as suas mensagens.";
 
-            return View( new List<ConversaViewModel>());
+            return View(new List<ConversaViewModel>());
         }
     }
 
@@ -59,7 +59,7 @@ public class MensagensFuncionarioController : Controller
                 return RedirectToAction(nameof(Index));
             }
 
-            using var marcarLidasResponse = await _apiService.SendAuthenticatedAsync( HttpMethod.Put, $"api/Conversas/{id}/mensagens/lidas");
+            using var marcarLidasResponse = await _apiService.SendAuthenticatedAsync(HttpMethod.Put, $"api/Conversas/{id}/mensagens/lidas");
 
             return View(conversa);
         }
@@ -82,7 +82,7 @@ public class MensagensFuncionarioController : Controller
 
         if (string.IsNullOrWhiteSpace(texto))
         {
-            return RedirectToAction( nameof(Conversa),new { id });
+            return RedirectToAction(nameof(Conversa), new { id });
         }
 
         try
@@ -92,7 +92,7 @@ public class MensagensFuncionarioController : Controller
                 Texto = texto.Trim()
             };
 
-            using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, $"api/Conversas/{id}/mensagens", dados);
+            using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, $"api/Conversas/{id}/mensagens", dados);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -104,7 +104,7 @@ public class MensagensFuncionarioController : Controller
             TempData["ErrorMessage"] = "Não foi possível enviar a mensagem.";
         }
 
-        return RedirectToAction( nameof(Conversa), new { id });
+        return RedirectToAction(nameof(Conversa), new { id });
     }
 
     [HttpGet]
@@ -128,7 +128,7 @@ public class MensagensFuncionarioController : Controller
     {
         try
         {
-            var clientes = await _apiService.GetAuthenticatedAsync<List<ClienteViewModel>>( "api/Clientes") ?? new List<ClienteViewModel>();
+            var clientes = await _apiService.GetAuthenticatedAsync<List<ClienteViewModel>>("api/Clientes") ?? new List<ClienteViewModel>();
 
             clientes = clientes
                 .Where(c => c.Ativo)
@@ -164,11 +164,11 @@ public class MensagensFuncionarioController : Controller
                 DestinatarioId = destinatarioId
             };
 
-            using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post,"api/Conversas", dados);
+            using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Conversas", dados);
 
             if (!response.IsSuccessStatusCode)
             {
-                TempData["ErrorMessage"] ="Não foi possível iniciar a conversa.";
+                TempData["ErrorMessage"] = "Não foi possível iniciar a conversa.";
 
                 return RedirectToAction(nameof(Nova));
             }
@@ -182,7 +182,7 @@ public class MensagensFuncionarioController : Controller
                 return RedirectToAction(nameof(Nova));
             }
 
-            return RedirectToAction( nameof(Conversa), new { id = conversa.Id });
+            return RedirectToAction(nameof(Conversa), new { id = conversa.Id });
         }
         catch (Exception)
         {
@@ -197,7 +197,7 @@ public class MensagensFuncionarioController : Controller
     {
         try
         {
-            var contador = await _apiService.GetAuthenticatedAsync<int>( "api/Conversas/contador-nao-lidas");
+            var contador = await _apiService.GetAuthenticatedAsync<int>("api/Conversas/contador-nao-lidas");
 
             return Json(new
             {
@@ -250,7 +250,7 @@ public class MensagensFuncionarioController : Controller
 
         try
         {
-            var conversa = await _apiService.GetAuthenticatedAsync<ConversaViewModel>( $"api/Conversas/{id}");
+            var conversa = await _apiService.GetAuthenticatedAsync<ConversaViewModel>($"api/Conversas/{id}");
 
             if (conversa == null)
             {

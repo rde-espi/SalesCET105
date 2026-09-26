@@ -87,7 +87,7 @@ public class FaturasClienteController : Controller
     {
         try
         {
-            var response = await _apiService.SendAuthenticatedJsonAsync<object>(HttpMethod.Get, $"api/Faturas/{id}/pdf",null);
+            var response = await _apiService.SendAuthenticatedJsonAsync<object>(HttpMethod.Get, $"api/Faturas/{id}/pdf", null);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -98,14 +98,14 @@ public class FaturasClienteController : Controller
 
             var pdf = await response.Content.ReadAsByteArrayAsync();
 
-            var fatura = await _apiService.GetAuthenticatedAsync<FaturaViewModel>( $"api/Faturas/{id}");
+            var fatura = await _apiService.GetAuthenticatedAsync<FaturaViewModel>($"api/Faturas/{id}");
 
             var nomeFicheiro =
                 string.IsNullOrWhiteSpace(fatura?.Numero)
                     ? $"Fatura_{id}.pdf"
                     : $"Fatura_{fatura.Numero.Replace("/", "_")}.pdf";
 
-            return File( pdf, "application/pdf", nomeFicheiro);
+            return File(pdf, "application/pdf", nomeFicheiro);
         }
         catch
         {

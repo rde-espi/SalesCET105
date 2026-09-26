@@ -10,13 +10,13 @@ public class GetMeuFeedbackResumoUseCase
     private readonly GetFeedbackResumoFuncionarioUseCase
         _getFeedbackResumoFuncionarioUseCase;
 
-    public GetMeuFeedbackResumoUseCase( IFuncionarioRepository funcionarioRepository, GetFeedbackResumoFuncionarioUseCase getFeedbackResumoFuncionarioUseCase)
+    public GetMeuFeedbackResumoUseCase(IFuncionarioRepository funcionarioRepository, GetFeedbackResumoFuncionarioUseCase getFeedbackResumoFuncionarioUseCase)
     {
         _funcionarioRepository = funcionarioRepository;
         _getFeedbackResumoFuncionarioUseCase = getFeedbackResumoFuncionarioUseCase;
     }
 
-    public async Task<UseCaseResult<FeedbackResumoDTO>> ExecuteAsync( string userId)
+    public async Task<UseCaseResult<FeedbackResumoDTO>> ExecuteAsync(string userId)
     {
         var funcionario = await _funcionarioRepository.GetFuncionarioByUserIdAsync(userId);
 

@@ -26,7 +26,7 @@ public class MarcacoesClienteController : Controller
     {
         try
         {
-            var marcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoClienteViewModel>>( "api/Marcacoes") ?? new List<MarcacaoClienteViewModel>();
+            var marcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoClienteViewModel>>("api/Marcacoes") ?? new List<MarcacaoClienteViewModel>();
 
             marcacoes = marcacoes
                 .OrderByDescending(m => m.DataHoraInicio)
@@ -75,19 +75,26 @@ public class MarcacoesClienteController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Nova()
+    public async Task<IActionResult> Nova(int? servicoId = null, int? funcionarioId = null)
     {
         try
         {
-            var model = new NovaMarcacaoClienteViewModel();
+            var model = new NovaMarcacaoClienteViewModel
+            {
+                ServicoId = servicoId ?? 0,
+                FuncionarioId = funcionarioId ?? 0
+            };
 
             await CarregarServicos(model);
+
+            ViewBag.ServicoPreSelecionadoId = servicoId;
+            ViewBag.FuncionarioPreSelecionadoId = funcionarioId;
 
             return View(model);
         }
         catch
         {
-            TempData["ErrorMessage"] =  "Não foi possível preparar a nova marcação.";
+            TempData["ErrorMessage"] = "Não foi possível preparar a nova marcação.";
 
             return RedirectToAction(nameof(Index));
         }
@@ -103,7 +110,7 @@ public class MarcacoesClienteController : Controller
 
         try
         {
-            var funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>( $"api/Funcionarios/servico/{servicoId}") ?? new List<FuncionarioViewModel>();
+            var funcionarios = await _apiService.GetAuthenticatedAsync<List<FuncionarioViewModel>>($"api/Funcionarios/servico/{servicoId}") ?? new List<FuncionarioViewModel>();
 
             var resultado = new List<FuncionarioMarcacaoClienteViewModel>();
 
@@ -113,7 +120,7 @@ public class MarcacoesClienteController : Controller
 
                 try
                 {
-                    resumo = await _apiService.GetAuthenticatedAsync<FeedbackResumoViewModel>( $"api/Feedbacks/funcionario/{funcionario.Id}/resumo");
+                    resumo = await _apiService.GetAuthenticatedAsync<FeedbackResumoViewModel>($"api/Feedbacks/funcionario/{funcionario.Id}/resumo");
                 }
                 catch
                 {
@@ -142,7 +149,7 @@ public class MarcacoesClienteController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> DetalhesServicoProfissional( int funcionarioId, int servicoId)
+    public async Task<IActionResult> DetalhesServicoProfissional(int funcionarioId, int servicoId)
     {
         if (funcionarioId <= 0 || servicoId <= 0)
         {
@@ -172,14 +179,14 @@ public class MarcacoesClienteController : Controller
         }
         catch
         {
-            return StatusCode( StatusCodes.Status500InternalServerError);
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 
     [HttpGet]
-    public async Task<IActionResult> HorariosDisponiveis( int funcionarioId, int servicoId, DateTime data)
+    public async Task<IActionResult> HorariosDisponiveis(int funcionarioId, int servicoId, DateTime data)
     {
-        if (funcionarioId <= 0 || servicoId <= 0 ||  data == default)
+        if (funcionarioId <= 0 || servicoId <= 0 || data == default)
         {
             return Json(new List<DateTime>());
         }
@@ -216,7 +223,7 @@ public class MarcacoesClienteController : Controller
                 Codigo = codigo.Trim()
             };
 
-            using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/PromoCodes/validar", dto);
+            using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/PromoCodes/validar", dto);
 
             var conteudo = await response.Content.ReadAsStringAsync();
 
@@ -225,11 +232,11 @@ public class MarcacoesClienteController : Controller
                 return StatusCode((int)response.StatusCode, conteudo);
             }
 
-            return Content( conteudo, "application/json");
+            return Content(conteudo, "application/json");
         }
         catch
         {
-            return StatusCode( StatusCodes.Status500InternalServerError, "Não foi possível validar o código promocional.");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Não foi possível validar o código promocional.");
         }
     }
 
@@ -254,7 +261,7 @@ public class MarcacoesClienteController : Controller
                 model.PromoCode
             };
 
-            using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Marcacoes", dto);
+            using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Marcacoes", dto);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -277,7 +284,7 @@ public class MarcacoesClienteController : Controller
         }
         catch
         {
-            ModelState.AddModelError( string.Empty, "Ocorreu um erro ao criar a marcação.");
+            ModelState.AddModelError(string.Empty, "Ocorreu um erro ao criar a marcação.");
 
             await CarregarServicos(model);
 
@@ -293,7 +300,7 @@ public class MarcacoesClienteController : Controller
             return NotFound();
         }
 
-        using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Get, $"api/Funcionarios/{id}/fotografia");
+        using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Get, $"api/Funcionarios/{id}/fotografia");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -374,7 +381,7 @@ public class MarcacoesClienteController : Controller
             return NotFound();
         }
 
-        using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Get, $"api/Categorias/{id}/imagem");
+        using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Get, $"api/Categorias/{id}/imagem");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -402,7 +409,7 @@ public class MarcacoesClienteController : Controller
             return NotFound();
         }
 
-        using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Get, $"api/Servicos/{id}/imagem");
+        using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Get, $"api/Servicos/{id}/imagem");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -434,7 +441,7 @@ public class MarcacoesClienteController : Controller
     {
         var servicos = await _apiService.GetAuthenticatedAsync<List<ServicoViewModel>>("api/Servicos");
 
-        var categorias =await _apiService.GetAuthenticatedAsync<List<CategoriaViewModel>>( "api/Categorias");
+        var categorias = await _apiService.GetAuthenticatedAsync<List<CategoriaViewModel>>("api/Categorias");
 
         model.Servicos = servicos?
             .Where(s => s.Disponivel)

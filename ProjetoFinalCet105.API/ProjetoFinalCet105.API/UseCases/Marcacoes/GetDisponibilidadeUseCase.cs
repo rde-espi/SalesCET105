@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 using ProjetoFinalCet105.API.Repositories;
-using ProjetoFinalCet105.API.Services;
 using ProjetoFinalCet105.API.Services.MarcacaoService;
 using ProjetoFinalCet105.API.UseCases.Common;
 

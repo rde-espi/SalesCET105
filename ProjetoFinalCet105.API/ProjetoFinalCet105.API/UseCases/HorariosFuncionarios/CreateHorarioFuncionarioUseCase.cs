@@ -22,14 +22,14 @@ namespace ProjetoFinalCet105.API.UseCases.HorariosFuncionarios
             _horarioFuncionarioService = horarioFuncionarioService;
         }
 
-        public async Task<UseCaseResult<HorarioFuncionarioDTO>> ExecuteAsync(string userId,bool isFuncionario,bool isAdmin, NovoHorarioFuncionarioDTO dto)
+        public async Task<UseCaseResult<HorarioFuncionarioDTO>> ExecuteAsync(string userId, bool isFuncionario, bool isAdmin, NovoHorarioFuncionarioDTO dto)
         {
             // 1. Determinar o funcionário
-            var funcionarioIdResult = await ObterFuncionarioIdAsync( userId, isFuncionario, isAdmin, dto.FuncionarioId);
+            var funcionarioIdResult = await ObterFuncionarioIdAsync(userId, isFuncionario, isAdmin, dto.FuncionarioId);
 
             if (!funcionarioIdResult.Sucesso)
             {
-                return UseCaseResult<HorarioFuncionarioDTO>.Falha( funcionarioIdResult.Erro!, funcionarioIdResult.TipoErro);
+                return UseCaseResult<HorarioFuncionarioDTO>.Falha(funcionarioIdResult.Erro!, funcionarioIdResult.TipoErro);
             }
 
             var funcionarioId = funcionarioIdResult.Dados;
@@ -39,7 +39,7 @@ namespace ProjetoFinalCet105.API.UseCases.HorariosFuncionarios
 
             if (funcionario == null)
             {
-                return UseCaseResult<HorarioFuncionarioDTO>.Falha( "Funcionário não encontrado.", TipoErro.NaoEncontrado);
+                return UseCaseResult<HorarioFuncionarioDTO>.Falha("Funcionário não encontrado.", TipoErro.NaoEncontrado);
             }
 
             if (!funcionario.Ativo)
@@ -48,15 +48,15 @@ namespace ProjetoFinalCet105.API.UseCases.HorariosFuncionarios
             }
 
             // 3. Validar período
-            var periodoResult = _horarioFuncionarioService.ValidarPeriodo( dto.HoraInicio, dto.HoraFim);
+            var periodoResult = _horarioFuncionarioService.ValidarPeriodo(dto.HoraInicio, dto.HoraFim);
 
             if (!periodoResult.Sucesso)
             {
-                return UseCaseResult<HorarioFuncionarioDTO>.Falha( periodoResult.Erro!, periodoResult.TipoErro);
+                return UseCaseResult<HorarioFuncionarioDTO>.Falha(periodoResult.Erro!, periodoResult.TipoErro);
             }
 
             // 4. Verificar se já existe horário para este dia
-            var horarioExistente = await _horarioFuncionarioRepository.GetByFuncionarioEDiaAsync( funcionarioId, dto.DiaSemana);
+            var horarioExistente = await _horarioFuncionarioRepository.GetByFuncionarioEDiaAsync(funcionarioId, dto.DiaSemana);
 
             try
             {
@@ -120,11 +120,11 @@ namespace ProjetoFinalCet105.API.UseCases.HorariosFuncionarios
             }
             catch (Exception)
             {
-                return UseCaseResult<HorarioFuncionarioDTO>.Falha( "Ocorreu um erro ao guardar o horário do funcionário.");
+                return UseCaseResult<HorarioFuncionarioDTO>.Falha("Ocorreu um erro ao guardar o horário do funcionário.");
             }
         }
 
-        private async Task<UseCaseResult<int>> ObterFuncionarioIdAsync(string userId, bool isFuncionario,bool isAdmin,int? funcionarioIdDto)
+        private async Task<UseCaseResult<int>> ObterFuncionarioIdAsync(string userId, bool isFuncionario, bool isAdmin, int? funcionarioIdDto)
         {
             // Funcionário cria horário apenas para si próprio
             if (isFuncionario && !isAdmin)
@@ -133,7 +133,7 @@ namespace ProjetoFinalCet105.API.UseCases.HorariosFuncionarios
 
                 if (funcionario == null)
                 {
-                    return UseCaseResult<int>.Falha( "Funcionário autenticado não encontrado.", TipoErro.Proibido);
+                    return UseCaseResult<int>.Falha("Funcionário autenticado não encontrado.", TipoErro.Proibido);
                 }
 
                 return UseCaseResult<int>.Ok(funcionario.Id);
@@ -144,10 +144,10 @@ namespace ProjetoFinalCet105.API.UseCases.HorariosFuncionarios
             {
                 if (!funcionarioIdDto.HasValue)
                 {
-                    return UseCaseResult<int>.Falha( "É necessário indicar o funcionário.");
+                    return UseCaseResult<int>.Falha("É necessário indicar o funcionário.");
                 }
 
-                return UseCaseResult<int>.Ok( funcionarioIdDto.Value);
+                return UseCaseResult<int>.Ok(funcionarioIdDto.Value);
             }
 
             return UseCaseResult<int>.Falha("Utilizador sem permissão.", TipoErro.Proibido);

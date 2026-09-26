@@ -22,7 +22,7 @@ public class MinhasCompetenciasController : Controller
     {
         try
         {
-            var competenciasFuncionario = await _apiService.GetAuthenticatedAsync<List<FuncionarioCompetenciaViewModel>>( "api/FuncionarioCompetencias") ?? new List<FuncionarioCompetenciaViewModel>();
+            var competenciasFuncionario = await _apiService.GetAuthenticatedAsync<List<FuncionarioCompetenciaViewModel>>("api/FuncionarioCompetencias") ?? new List<FuncionarioCompetenciaViewModel>();
 
             var competenciasDisponiveis = await _apiService.GetAuthenticatedAsync<List<CompetenciaViewModel>>("api/Competencias") ?? new List<CompetenciaViewModel>();
 
@@ -50,7 +50,7 @@ public class MinhasCompetenciasController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Adicionar( FuncionarioCompetenciaRequestViewModel model)
+    public async Task<IActionResult> Adicionar(FuncionarioCompetenciaRequestViewModel model)
     {
         if (model.CompetenciaId <= 0)
         {
@@ -59,7 +59,7 @@ public class MinhasCompetenciasController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/FuncionarioCompetencias", model);
+        using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/FuncionarioCompetencias", model);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -86,13 +86,13 @@ public class MinhasCompetenciasController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Delete, $"api/FuncionarioCompetencias/{id}");
+        using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Delete, $"api/FuncionarioCompetencias/{id}");
 
         if (!response.IsSuccessStatusCode)
         {
             var erro = await response.Content.ReadAsStringAsync();
 
-            TempData["ErrorMessage"] = string.IsNullOrWhiteSpace(erro) ? "Não foi possível remover a competência.": erro;
+            TempData["ErrorMessage"] = string.IsNullOrWhiteSpace(erro) ? "Não foi possível remover a competência." : erro;
 
             return RedirectToAction(nameof(Index));
         }
@@ -113,7 +113,7 @@ public class MinhasCompetenciasController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Put,$"api/FuncionarioCompetencias/{model.Id}", model);
+        using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Put, $"api/FuncionarioCompetencias/{model.Id}", model);
 
         if (!response.IsSuccessStatusCode)
         {

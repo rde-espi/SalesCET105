@@ -1,0 +1,309 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.ServicoViewModel>
+@using ProjetoFinalCet105.Web.Models
+
+@{
+    ViewData["Title"] = "Explorar serviços";
+    Layout = "_ClienteLayout";
+
+    var categorias =
+        ViewBag.Categorias as List<CategoriaViewModel>
+        ?? new List<CategoriaViewModel>();
+}
+
+<div class="ib-explore-page">
+
+    <!-- CABEÇALHO -->
+    <section class="ib-explore-heading">
+        <div>
+            <span class="ib-section-eyebrow">EXPLORE</span>
+
+            <h1>Os nossos serviços</h1>
+
+            <p>
+                Descubra os tratamentos disponíveis e encontre
+                o cuidado ideal para si.
+            </p>
+        </div>
+
+        <a asp-controller="MarcacoesCliente"
+           asp-action="Nova"
+           class="ib-explore-book-btn">
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                <path d="M8 3v4M16 3v4M3 10h18"></path>
+            </svg>
+
+            Nova marcação
+        </a>
+    </section>
+
+
+    <!-- PESQUISA -->
+    <section class="ib-explore-tools">
+
+        <div class="ib-explore-search">
+
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m20 20-4-4"></path>
+            </svg>
+
+            <input type="search"
+                   id="pesquisaServico"
+                   placeholder="Pesquisar serviço..."
+                   autocomplete="off" />
+
+        </div>
+
+    </section>
+
+
+    <!-- CATEGORIAS -->
+    <section class="ib-explore-categories">
+
+        <button type="button"
+                class="ib-explore-category active"
+                data-categoria="all">
+            Todos
+        </button>
+
+        @foreach (var categoria in categorias)
+        {
+            <button type="button"
+                    class="ib-explore-category"
+                    data-categoria="@categoria.Id">
+                @categoria.Nome
+            </button>
+        }
+
+    </section>
+
+
+    <!-- SERVIÇOS -->
+    @if (Model == null || Model.Count == 0)
+    {
+        <section class="ib-explore-empty">
+
+            <div class="ib-explore-empty-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path d="M8 12h8"></path>
+                </svg>
+            </div>
+
+            <h2>Sem serviços disponíveis</h2>
+
+            <p>
+                Neste momento não existem serviços disponíveis
+                para marcação.
+            </p>
+
+        </section>
+    }
+    else
+    {
+        <section class="ib-explore-grid"
+                 id="servicosGrid">
+
+            @foreach (var servico in Model)
+            {
+                <article class="ib-explore-card"
+                         data-nome="@servico.Nome.ToLowerInvariant()"
+                         data-categoria="@servico.CategoriaId">
+
+                    <div class="ib-explore-card-image">
+
+                        <img src="@Url.Action(
+                                      "ImagemServico",
+                                      "ExplorarServicos",
+                                      new { id = servico.Id })"
+                             alt="@servico.Nome"
+                             loading="lazy"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+
+                        <div class="ib-explore-card-image-fallback">
+                            <span>
+                                @(string.IsNullOrWhiteSpace(servico.Nome)
+                                    ? "IB"
+                                    : servico.Nome.Substring(0, 1).ToUpper())
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="ib-explore-card-body">
+
+                        <div class="ib-explore-card-category">
+                            @servico.CategoriaNome
+                        </div>
+
+                        <h2>@servico.Nome</h2>
+
+                        @if (!string.IsNullOrWhiteSpace(servico.Descricao))
+                        {
+                            <p class="ib-explore-card-description">
+                                @servico.Descricao
+                            </p>
+                        }
+
+
+                        <div class="ib-explore-card-meta">
+
+                            <div>
+                                <span>Duração</span>
+                                <strong>
+                                    @servico.DuracaoMinutos min
+                                </strong>
+                            </div>
+
+                            <div class="ib-explore-card-price">
+                                <span>A partir de</span>
+                                <strong>
+                                    @servico.Preco.ToString("N2") €
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="ib-explore-card-actions">
+
+                           <a asp-controller="ExplorarServicos"
+   asp-action="Detalhes"
+   asp-route-id="@servico.Id"
+   class="ib-explore-details-btn">
+    Ver detalhes
+</a>
+
+                            <a asp-controller="MarcacoesCliente"
+                               asp-action="Nova"
+                               class="ib-explore-card-book-btn">
+
+                                Marcar
+
+                                <svg viewBox="0 0 24 24"
+                                     aria-hidden="true">
+                                    <path d="M5 12h14"></path>
+                                    <path d="m14 7 5 5-5 5"></path>
+                                </svg>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </article>
+            }
+
+        </section>
+
+
+        <!-- SEM RESULTADOS DA PESQUISA -->
+        <section class="ib-explore-no-results"
+                 id="semResultados"
+                 hidden>
+
+            <h3>Nenhum serviço encontrado</h3>
+
+            <p>
+                Experimente alterar a pesquisa ou selecionar
+                outra categoria.
+            </p>
+
+        </section>
+    }
+
+</div>
+
+
+@section Scripts
+{
+    <script>
+        (() => {
+
+            const pesquisa =
+                document.getElementById('pesquisaServico');
+
+            const categorias =
+                document.querySelectorAll('.ib-explore-category');
+
+            const cards =
+                document.querySelectorAll('.ib-explore-card');
+
+            const semResultados =
+                document.getElementById('semResultados');
+
+            let categoriaSelecionada = 'all';
+
+
+            function filtrarServicos() {
+
+                const termo =
+                    (pesquisa?.value || '')
+                        .trim()
+                        .toLowerCase();
+
+                let visiveis = 0;
+
+
+                cards.forEach(card => {
+
+                    const nome =
+                        card.dataset.nome || '';
+
+                    const categoria =
+                        card.dataset.categoria || '';
+
+                    const correspondePesquisa =
+                        nome.includes(termo);
+
+                    const correspondeCategoria =
+                        categoriaSelecionada === 'all' ||
+                        categoria === categoriaSelecionada;
+
+                    const mostrar =
+                        correspondePesquisa &&
+                        correspondeCategoria;
+
+                    card.hidden = !mostrar;
+
+                    if (mostrar)
+                        visiveis++;
+                });
+
+
+                if (semResultados) {
+                    semResultados.hidden =
+                        visiveis !== 0;
+                }
+            }
+
+
+            pesquisa?.addEventListener(
+                'input',
+                filtrarServicos);
+
+
+            categorias.forEach(botao => {
+
+                botao.addEventListener('click', () => {
+
+                    categorias.forEach(item =>
+                        item.classList.remove('active'));
+
+                    botao.classList.add('active');
+
+                    categoriaSelecionada =
+                        botao.dataset.categoria || 'all';
+
+                    filtrarServicos();
+                });
+
+            });
+
+        })();
+    </script>
+}

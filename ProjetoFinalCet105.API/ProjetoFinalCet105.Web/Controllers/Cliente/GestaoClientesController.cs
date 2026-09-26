@@ -22,7 +22,7 @@ public class GestaoClientesController : Controller
         try
         {
             var clientes = await _apiService.GetAuthenticatedAsync<List<ClienteViewModel>>("api/Clientes");
-            
+
             clientes ??= new List<ClienteViewModel>();
 
             return View(clientes);

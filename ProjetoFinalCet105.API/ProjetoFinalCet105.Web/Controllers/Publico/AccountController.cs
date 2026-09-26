@@ -65,11 +65,11 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                 Codigo = model.Codigo
             };
 
-            var response = await _apiService.PostAsync<object, LoginResponseViewModel>( "api/Auth/verificar-2fa",  request);
+            var response = await _apiService.PostAsync<object, LoginResponseViewModel>("api/Auth/verificar-2fa", request);
 
             if (response == null || string.IsNullOrWhiteSpace(response.Token))
             {
-                ModelState.AddModelError(  string.Empty, "Código de autenticação inválido.");
+                ModelState.AddModelError(string.Empty, "Código de autenticação inválido.");
 
                 return View(model);
             }
@@ -94,7 +94,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var claimsIdentity = new ClaimsIdentity( claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
@@ -105,12 +105,12 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (response.Roles.Contains("Funcionario"))
             {
-                return RedirectToAction( "Index", "Funcionarios");
+                return RedirectToAction("Index", "Funcionarios");
             }
 
             if (response.Roles.Contains("Cliente"))
             {
-                return RedirectToAction("Index","DashboardCliente");
+                return RedirectToAction("Index", "DashboardCliente");
             }
 
             return RedirectToAction("Index", "Home");
@@ -233,7 +233,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                 IdToken = idToken
             };
 
-            var response = await _apiService.PostAsync<object, LoginResponseViewModel>( "api/Auth/google", request);
+            var response = await _apiService.PostAsync<object, LoginResponseViewModel>("api/Auth/google", request);
 
             if (response == null)
             {
@@ -244,7 +244,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (response.RequiresTwoFactor)
             {
-                HttpContext.Session.SetString( "TwoFactorUserId", response.UserId);
+                HttpContext.Session.SetString("TwoFactorUserId", response.UserId);
 
                 return RedirectToAction(nameof(TwoFactor));
             }
@@ -256,15 +256,15 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                 return RedirectToAction(nameof(Login));
             }
 
-            HttpContext.Session.SetString( "JwtToken", response.Token);
+            HttpContext.Session.SetString("JwtToken", response.Token);
 
             HttpContext.Session.SetString("UserId", response.UserId);
 
             HttpContext.Session.SetString("NomeCompleto", response.NomeCompleto);
 
-            HttpContext.Session.SetString( "Email", response.Email);
+            HttpContext.Session.SetString("Email", response.Email);
 
-            HttpContext.Session.SetString( "Roles", string.Join(",", response.Roles));
+            HttpContext.Session.SetString("Roles", string.Join(",", response.Roles));
 
             var claims = new List<Claim>
     {
@@ -277,16 +277,16 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             foreach (var role in response.Roles)
             {
-                claims.Add( new Claim( ClaimTypes.Role, role));
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var claimsIdentity = new ClaimsIdentity( claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-            await HttpContext.SignInAsync( CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
             if (response.Roles.Contains("Admin"))
             {
-                return RedirectToAction( "Index", "Dashboard");
+                return RedirectToAction("Index", "Dashboard");
             }
 
             if (response.Roles.Contains("Funcionario"))
@@ -296,7 +296,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (response.Roles.Contains("Cliente"))
             {
-                return RedirectToAction("Index","DashboardCliente");
+                return RedirectToAction("Index", "DashboardCliente");
             }
 
             return RedirectToAction("Index", "Home");
@@ -306,7 +306,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
         [HttpGet]
         public IActionResult PrimeiroAcesso(string email, string tokenConfirmacao, string tokenPassword)
         {
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(tokenConfirmacao) ||string.IsNullOrWhiteSpace(tokenPassword))
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(tokenConfirmacao) || string.IsNullOrWhiteSpace(tokenPassword))
             {
                 return RedirectToAction("Login");
             }

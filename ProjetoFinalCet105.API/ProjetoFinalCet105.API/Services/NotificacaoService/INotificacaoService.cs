@@ -1,6 +1,4 @@
-﻿using ProjetoFinalCet105.API.Entities;
-
-namespace ProjetoFinalCet105.API.Services.NotificacaoService
+﻿namespace ProjetoFinalCet105.API.Services.NotificacaoService
 {
     public interface INotificacaoService
     {

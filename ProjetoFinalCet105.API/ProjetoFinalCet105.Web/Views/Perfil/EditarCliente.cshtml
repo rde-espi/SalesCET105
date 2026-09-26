@@ -1,0 +1,213 @@
+﻿@model ProjetoFinalCet105.Web.Models.EditarPerfilClienteViewModel
+
+@{
+    ViewData["Title"] = "Editar Perfil";
+    Layout = "_ClienteLayout";
+}
+
+<div class="ib-cliente-profile-editar-cliente">
+
+    <div class="ib-cliente-profile-section-header">
+
+        <span class="ib-cliente-profile-eyebrow">
+            MEU PERFIL
+        </span>
+
+        <h2>
+            Editar dados pessoais
+        </h2>
+
+        <p>
+            Atualize os seus dados pessoais e de contacto.
+        </p>
+
+    </div>
+
+
+    <div class="ib-cliente-profile-card">
+
+        <div class="ib-cliente-profile-card-header">
+            <div>
+                <h2>Dados pessoais</h2>
+                <p>Informação associada ao seu perfil de cliente.</p>
+            </div>
+        </div>
+
+
+        <form asp-controller="Perfil"
+              asp-action="EditarCliente"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input asp-for="ClienteId" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="ib-cliente-profile-form-validation">
+            </div>
+
+
+            <div class="ib-cliente-profile-form-grid">
+
+                <!-- DADOS PRINCIPAIS -->
+                <div class="ib-cliente-profile-form-card">
+
+                    <div class="ib-cliente-profile-form-card-header">
+
+                        <div class="ib-cliente-profile-form-card-icon">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="8" r="4"></circle>
+                                <path d="M5 21c0-4 3.1-7 7-7s7 3 7 7"></path>
+                            </svg>
+                        </div>
+
+                        <div>
+                            <h2>Informação pessoal</h2>
+                            <p>Dados de identificação e contacto do seu perfil.</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="ib-cliente-profile-field">
+                        <label asp-for="NomeCompleto">
+                            Nome completo <span>*</span>
+                        </label>
+
+                        <input asp-for="NomeCompleto" />
+
+                        <span asp-validation-for="NomeCompleto"
+                              class="ib-cliente-profile-field-validation"></span>
+                    </div>
+
+
+                    <div class="ib-cliente-profile-field">
+                        <label asp-for="Email">
+                            Email <span>*</span>
+                        </label>
+
+                        <input asp-for="Email"
+                               type="email" />
+
+                        <span asp-validation-for="Email"
+                              class="ib-cliente-profile-field-validation"></span>
+                    </div>
+
+
+                    <div class="ib-cliente-profile-field">
+                        <label asp-for="Telefone">
+                            Telefone
+                        </label>
+
+                        <input asp-for="Telefone"
+                               type="tel" />
+
+                        <span asp-validation-for="Telefone"
+                              class="ib-cliente-profile-field-validation"></span>
+                    </div>
+
+
+                    <div class="ib-cliente-profile-field">
+                        <label asp-for="Contribuinte">
+                            NIF
+                        </label>
+
+                        <input asp-for="Contribuinte"
+                               inputmode="numeric" />
+
+                        <span asp-validation-for="Contribuinte"
+                              class="ib-cliente-profile-field-validation"></span>
+                    </div>
+
+                </div>
+
+
+                <!-- MORADA -->
+                <div class="ib-cliente-profile-form-card">
+
+                    <div class="ib-cliente-profile-form-card-header">
+
+                        <div class="ib-cliente-profile-form-card-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 21s7-5.2 7-12a7 7 0 1 0-14 0c0 6.8 7 12 7 12z"></path>
+                                <circle cx="12" cy="9" r="2.5"></circle>
+                            </svg>
+                        </div>
+
+                        <div>
+                            <h2>Morada</h2>
+                            <p>Informação de localização associada ao seu perfil.</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="ib-cliente-profile-field">
+                        <label asp-for="Morada">
+                            Morada
+                        </label>
+
+                        <input asp-for="Morada" />
+
+                        <span asp-validation-for="Morada"
+                              class="ib-cliente-profile-field-validation"></span>
+                    </div>
+
+
+                    <div class="ib-cliente-profile-field">
+                        <label asp-for="CodigoPostal">
+                            Código postal
+                        </label>
+
+                        <input asp-for="CodigoPostal" />
+
+                        <span asp-validation-for="CodigoPostal"
+                              class="ib-cliente-profile-field-validation"></span>
+                    </div>
+
+
+                    <div class="ib-cliente-profile-field">
+                        <label asp-for="Localidade">
+                            Localidade
+                        </label>
+
+                        <input asp-for="Localidade" />
+
+                        <span asp-validation-for="Localidade"
+                              class="ib-cliente-profile-field-validation"></span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="ib-cliente-profile-form-footer">
+
+                <a asp-controller="Perfil"
+                   asp-action="Index"
+                   class="ib-cliente-profile-cancel-btn">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="ib-cliente-profile-save-btn">
+
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5 12l4 4L19 6"></path>
+                    </svg>
+
+                    Guardar alterações
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

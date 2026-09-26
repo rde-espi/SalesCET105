@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 using ProjetoFinalCet105.API.DTOs;
 using ProjetoFinalCet105.API.Entities;
-using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.UseCases.Cliente;
 
 namespace ProjetoFinalCet105.API.Controllers

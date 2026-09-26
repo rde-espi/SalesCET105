@@ -22,7 +22,7 @@ public class MensagensClienteController : Controller
     {
         try
         {
-            var conversas = await _apiService.GetAuthenticatedAsync<List<ConversaViewModel>>( "api/Conversas") ?? new List<ConversaViewModel>();
+            var conversas = await _apiService.GetAuthenticatedAsync<List<ConversaViewModel>>("api/Conversas") ?? new List<ConversaViewModel>();
 
             conversas = conversas
                 .OrderByDescending(c =>
@@ -60,7 +60,7 @@ public class MensagensClienteController : Controller
                 return RedirectToAction(nameof(Index));
             }
 
-            using var marcarLidasResponse = await _apiService.SendAuthenticatedAsync( HttpMethod.Put, $"api/Conversas/{id}/mensagens/lidas");
+            using var marcarLidasResponse = await _apiService.SendAuthenticatedAsync(HttpMethod.Put, $"api/Conversas/{id}/mensagens/lidas");
 
             return View(conversa);
         }
@@ -93,7 +93,7 @@ public class MensagensClienteController : Controller
                 Texto = texto.Trim()
             };
 
-            using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, $"api/Conversas/{id}/mensagens", dados);
+            using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, $"api/Conversas/{id}/mensagens", dados);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -129,7 +129,7 @@ public class MensagensClienteController : Controller
     {
         try
         {
-            var contador = await _apiService.GetAuthenticatedAsync<int>( "api/Conversas/contador-nao-lidas");
+            var contador = await _apiService.GetAuthenticatedAsync<int>("api/Conversas/contador-nao-lidas");
 
             return Json(new
             {
@@ -155,7 +155,7 @@ public class MensagensClienteController : Controller
 
         try
         {
-            using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Put, $"api/Conversas/{id}/mensagens/lidas");
+            using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Put, $"api/Conversas/{id}/mensagens/lidas");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -166,7 +166,7 @@ public class MensagensClienteController : Controller
         }
         catch
         {
-            return StatusCode( StatusCodes.Status500InternalServerError);
+            return StatusCode(StatusCodes.Status500InternalServerError);
         }
     }
 
@@ -254,7 +254,7 @@ public class MensagensClienteController : Controller
                 DestinatarioId = destinatarioId
             };
 
-            using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Conversas",dados);
+            using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Conversas", dados);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -273,7 +273,7 @@ public class MensagensClienteController : Controller
                 return RedirectToAction(nameof(Nova));
             }
 
-            return RedirectToAction( nameof(Conversa), new { id = conversa.Id });
+            return RedirectToAction(nameof(Conversa), new { id = conversa.Id });
         }
         catch
         {

@@ -1,9 +1,7 @@
 ﻿using System.Security.Claims;
 
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 
-using ProjetoFinalCet105.API.Repositories;
 using ProjetoFinalCet105.API.Services.AdminTemporario;
 
 namespace ProjetoFinalCet105.API.Authorization

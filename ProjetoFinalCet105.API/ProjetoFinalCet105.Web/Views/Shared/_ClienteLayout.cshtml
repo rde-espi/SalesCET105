@@ -126,8 +126,7 @@
                 </a>
 
 
-                <a href="#"
-                   class="ib-cliente-menu-item">
+                <a asp-controller="GestaoNotificacoes" asp-action="Index" class="ib-admin-menu-item @(currentController == "GestaoNotificacoes" ? "active" : "")">
 
                     <svg viewBox="0 0 24 24">
                         <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
@@ -141,7 +140,6 @@
 
 
                 <a asp-controller="Perfil" asp-action="Index" class="ib-cliente-menu-item @(currentController == "Perfil" ? "active" : "")">
-
                     <svg viewBox="0 0 24 24">
                         <circle cx="12"
                                 cy="8"
@@ -154,7 +152,7 @@
                 </a>
 
 
-                <a asp-controller="Servicos" asp-action="Index" class="ib-cliente-menu-item @(currentController == "Servicos" ? "active" : "")">
+                <a asp-controller="ExplorarServicos" asp-action="Index" class="ib-cliente-menu-item @(currentController == "Servicos" ? "active" : "")">
 
                     <svg viewBox="0 0 24 24">
                         <circle cx="12"

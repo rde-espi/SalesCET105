@@ -148,9 +148,9 @@ public class FaturasFuncionarioController : Controller
     {
         try
         {
-            var marcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoClienteViewModel>>( "api/Marcacoes") ?? new List<MarcacaoClienteViewModel>();
+            var marcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoClienteViewModel>>("api/Marcacoes") ?? new List<MarcacaoClienteViewModel>();
 
-            var faturas = await _apiService.GetAuthenticatedAsync<List<FaturaViewModel>>( "api/Faturas") ?? new List<FaturaViewModel>();
+            var faturas = await _apiService.GetAuthenticatedAsync<List<FaturaViewModel>>("api/Faturas") ?? new List<FaturaViewModel>();
 
             var marcacoesFaturadas = faturas
                 .Select(f => f.MarcacaoId)

@@ -31,7 +31,7 @@ public class DashboardClienteController : Controller
 
         try
         {
-            var cliente = await _apiService.GetAuthenticatedAsync<ClienteViewModel>( $"api/Clientes/{userId}");
+            var cliente = await _apiService.GetAuthenticatedAsync<ClienteViewModel>($"api/Clientes/{userId}");
 
             if (cliente == null)
             {
@@ -70,9 +70,9 @@ public class DashboardClienteController : Controller
                     "Concluida",
                     StringComparison.OrdinalIgnoreCase));
 
-            var mensagensNaoLidas = await _apiService.GetAuthenticatedAsync<int>( "api/Conversas/contador-nao-lidas");
+            var mensagensNaoLidas = await _apiService.GetAuthenticatedAsync<int>("api/Conversas/contador-nao-lidas");
 
-            var notificacoesNaoLidas = await _apiService.GetAuthenticatedAsync<int>( "api/Notificacoes/contador-nao-lidas");
+            var notificacoesNaoLidas = await _apiService.GetAuthenticatedAsync<int>("api/Notificacoes/contador-nao-lidas");
 
             var model = new DashboardClienteViewModel
             {

@@ -27,7 +27,7 @@ public class MarcacoesFuncionarioController : Controller
 
         try
         {
-            var marcacao = await _apiService.GetAuthenticatedAsync<MarcacaoClienteViewModel>( $"api/Marcacoes/{id}");
+            var marcacao = await _apiService.GetAuthenticatedAsync<MarcacaoClienteViewModel>($"api/Marcacoes/{id}");
 
             if (marcacao == null)
             {
@@ -48,21 +48,21 @@ public class MarcacoesFuncionarioController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Confirmar(int id)
     {
-        return await AlterarEstado( id, 2, "Marcação confirmada com sucesso.");
+        return await AlterarEstado(id, 2, "Marcação confirmada com sucesso.");
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Concluir(int id)
     {
-        return await AlterarEstado( id, 3, "Marcação concluída com sucesso.");
+        return await AlterarEstado(id, 3, "Marcação concluída com sucesso.");
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> NaoCompareceu(int id)
     {
-        return await AlterarEstado( id, 5,"Marcação registada como não compareceu.");
+        return await AlterarEstado(id, 5, "Marcação registada como não compareceu.");
     }
 
     [HttpPost]
@@ -74,7 +74,7 @@ public class MarcacoesFuncionarioController : Controller
 
         try
         {
-            using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Delete, $"api/Marcacoes/{id}");
+            using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Delete, $"api/Marcacoes/{id}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -95,7 +95,7 @@ public class MarcacoesFuncionarioController : Controller
         }
     }
 
-    private async Task<IActionResult> AlterarEstado(int id,int estadoMarcacaoId,string mensagemSucesso)
+    private async Task<IActionResult> AlterarEstado(int id, int estadoMarcacaoId, string mensagemSucesso)
     {
         if (id <= 0)
             return BadRequest();
@@ -107,7 +107,7 @@ public class MarcacoesFuncionarioController : Controller
                 EstadoMarcacaoId = estadoMarcacaoId
             };
 
-            using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Patch, $"api/Marcacoes/{id}/estado", dto);
+            using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Patch, $"api/Marcacoes/{id}/estado", dto);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -191,7 +191,7 @@ public class MarcacoesFuncionarioController : Controller
             };
 
             using var response =
-                await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Put,$"api/Marcacoes/{model.Id}", dto);
+                await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Put, $"api/Marcacoes/{model.Id}", dto);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -210,11 +210,11 @@ public class MarcacoesFuncionarioController : Controller
 
             TempData["SuccessMessage"] = "Marcação alterada com sucesso.";
 
-            return RedirectToAction( nameof(Detalhes), new { id = model.Id });
+            return RedirectToAction(nameof(Detalhes), new { id = model.Id });
         }
         catch
         {
-            ModelState.AddModelError( string.Empty, "Ocorreu um erro ao alterar a marcação.");
+            ModelState.AddModelError(string.Empty, "Ocorreu um erro ao alterar a marcação.");
 
             await CarregarServicosEdicao(model);
 
@@ -223,7 +223,7 @@ public class MarcacoesFuncionarioController : Controller
     }
 
 
-    private async Task CarregarServicosEdicao( EditarMarcacaoViewModel model)
+    private async Task CarregarServicosEdicao(EditarMarcacaoViewModel model)
     {
         model.Servicos = await _apiService.GetAuthenticatedAsync<List<FuncionarioServicoViewModel>>($"api/FuncionarioServicos/funcionario/{model.FuncionarioId}")
             ?? new List<FuncionarioServicoViewModel>();
@@ -236,7 +236,7 @@ public class MarcacoesFuncionarioController : Controller
 
 
     [HttpGet]
-    public async Task<IActionResult> HorariosDisponiveis( int funcionarioId, int servicoId, DateTime data)
+    public async Task<IActionResult> HorariosDisponiveis(int funcionarioId, int servicoId, DateTime data)
     {
         try
         {
@@ -264,7 +264,7 @@ public class MarcacoesFuncionarioController : Controller
 
         try
         {
-            var marcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoClienteViewModel>>( "api/Marcacoes") ?? new List<MarcacaoClienteViewModel>();
+            var marcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoClienteViewModel>>("api/Marcacoes") ?? new List<MarcacaoClienteViewModel>();
 
             var marcacoesCliente = marcacoes
                 .Where(m => m.ClienteId == id)

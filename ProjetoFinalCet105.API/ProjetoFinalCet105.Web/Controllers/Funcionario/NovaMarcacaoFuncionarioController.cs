@@ -30,7 +30,7 @@ public class NovaMarcacaoFuncionarioController : Controller
 
         try
         {
-            var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>( $"api/Funcionarios/user/{userId}");
+            var funcionario = await _apiService.GetAuthenticatedAsync<FuncionarioViewModel>($"api/Funcionarios/user/{userId}");
 
             if (funcionario == null)
             {
@@ -45,14 +45,14 @@ public class NovaMarcacaoFuncionarioController : Controller
         }
         catch
         {
-            TempData["ErrorMessage"] ="Não foi possível preparar a nova marcação.";
+            TempData["ErrorMessage"] = "Não foi possível preparar a nova marcação.";
 
-            return RedirectToAction( "Index", "MinhaAgenda");
+            return RedirectToAction("Index", "MinhaAgenda");
         }
     }
 
     [HttpGet]
-    public async Task<IActionResult> HorariosDisponiveis( int servicoId,DateTime data)
+    public async Task<IActionResult> HorariosDisponiveis(int servicoId, DateTime data)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -76,7 +76,7 @@ public class NovaMarcacaoFuncionarioController : Controller
                 $"&servicoId={servicoId}" +
                 $"&data={data:yyyy-MM-dd}");
 
-            return Json( horarios ?? new List<DateTime>());
+            return Json(horarios ?? new List<DateTime>());
         }
         catch
         {
@@ -86,11 +86,11 @@ public class NovaMarcacaoFuncionarioController : Controller
 
     private async Task CarregarDados(NovaMarcacaoFuncionarioViewModel model, int funcionarioId)
     {
-        var clientes =await _apiService.GetAuthenticatedAsync<List<ClienteViewModel>>("api/Clientes");
+        var clientes = await _apiService.GetAuthenticatedAsync<List<ClienteViewModel>>("api/Clientes");
 
-        var funcionarioServicos = await _apiService.GetAuthenticatedAsync<List<FuncionarioServicoViewModel>>( $"api/FuncionarioServicos/funcionario/{funcionarioId}");
+        var funcionarioServicos = await _apiService.GetAuthenticatedAsync<List<FuncionarioServicoViewModel>>($"api/FuncionarioServicos/funcionario/{funcionarioId}");
 
-        var servicos = await _apiService.GetAuthenticatedAsync<List<ServicoViewModel>>( "api/Servicos");
+        var servicos = await _apiService.GetAuthenticatedAsync<List<ServicoViewModel>>("api/Servicos");
 
         model.Clientes = clientes?
             .Where(c => c.Ativo)
@@ -115,9 +115,9 @@ public class NovaMarcacaoFuncionarioController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Index( NovaMarcacaoFuncionarioViewModel model)
+    public async Task<IActionResult> Index(NovaMarcacaoFuncionarioViewModel model)
     {
-        var userId = User.FindFirstValue( ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (string.IsNullOrWhiteSpace(userId))
         {
@@ -139,12 +139,12 @@ public class NovaMarcacaoFuncionarioController : Controller
         {
             TempData["ErrorMessage"] = "Não foi possível identificar o funcionário.";
 
-            return RedirectToAction( "Index", "MinhaAgenda");
+            return RedirectToAction("Index", "MinhaAgenda");
         }
 
         if (!ModelState.IsValid)
         {
-            await CarregarDados( model, funcionario.Id);
+            await CarregarDados(model, funcionario.Id);
 
             return View(model);
         }
@@ -165,22 +165,22 @@ public class NovaMarcacaoFuncionarioController : Controller
             {
                 var erro = await response.Content.ReadAsStringAsync();
 
-                ModelState.AddModelError(string.Empty, string.IsNullOrWhiteSpace(erro) ? "Não foi possível criar a marcação.": erro.Trim('"'));
+                ModelState.AddModelError(string.Empty, string.IsNullOrWhiteSpace(erro) ? "Não foi possível criar a marcação." : erro.Trim('"'));
 
-                await CarregarDados( model, funcionario.Id);
+                await CarregarDados(model, funcionario.Id);
 
                 return View(model);
             }
 
             TempData["SuccessMessage"] = "Marcação criada com sucesso.";
 
-            return RedirectToAction( "Index", "MinhaAgenda");
+            return RedirectToAction("Index", "MinhaAgenda");
         }
         catch
         {
-            ModelState.AddModelError( string.Empty, "Ocorreu um erro ao criar a marcação.");
+            ModelState.AddModelError(string.Empty, "Ocorreu um erro ao criar a marcação.");
 
-            await CarregarDados( model, funcionario.Id);
+            await CarregarDados(model, funcionario.Id);
 
             return View(model);
         }

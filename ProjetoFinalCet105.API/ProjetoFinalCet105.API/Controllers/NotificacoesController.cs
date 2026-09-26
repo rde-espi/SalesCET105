@@ -19,13 +19,15 @@ namespace ProjetoFinalCet105.API.Controllers
             _notificacaoRepository;
         private readonly MarcarNotificacaoLidaUseCase _marcarNotificacaoLidaUseCase;
         private readonly MarcarTodasComoLidasUseCase _marcarTodasComoLidasUseCase;
+        private readonly DeleteTodasNotificacoesUseCase _deleteTodasNotificacoesUseCase;
 
         public NotificacoesController(INotificacaoRepository notificacaoRepository, MarcarNotificacaoLidaUseCase marcarNotificacaoLidaUseCase,
-            MarcarTodasComoLidasUseCase marcarTodasComoLidasUseCase)
+            MarcarTodasComoLidasUseCase marcarTodasComoLidasUseCase, DeleteTodasNotificacoesUseCase deleteTodasNotificacoesUseCase)
         {
             _notificacaoRepository = notificacaoRepository;
             _marcarNotificacaoLidaUseCase = marcarNotificacaoLidaUseCase;
             _marcarTodasComoLidasUseCase = marcarTodasComoLidasUseCase;
+            _deleteTodasNotificacoesUseCase = deleteTodasNotificacoesUseCase;
         }
 
         [HttpGet]
@@ -150,6 +152,48 @@ namespace ProjetoFinalCet105.API.Controllers
             if (!resultado.Sucesso)
             {
                 return TratarErro(resultado);
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> EliminarNotificacao(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var notificacao = await _notificacaoRepository.GetByIdAndUserIdAsync(id, userId);
+
+            if (notificacao == null)
+            {
+                return NotFound();
+            }
+
+            await _notificacaoRepository.DeleteAsync(notificacao);
+
+            return NoContent();
+        }
+
+        [HttpDelete("todas")]
+        public async Task<IActionResult> EliminarTodasNotificacoes()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var resultado = await _deleteTodasNotificacoesUseCase.ExecuteAsync(userId);
+
+            if (!resultado.Sucesso)
+            {
+                return BadRequest(resultado.Erro);
             }
 
             return NoContent();

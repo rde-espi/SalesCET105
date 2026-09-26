@@ -81,4 +81,54 @@ public class GestaoNotificacoesController : Controller
 
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Eliminar(int id)
+    {
+        try
+        {
+            var response = await _apiService.SendAuthenticatedJsonAsync<object>(HttpMethod.Delete, $"api/Notificacoes/{id}", null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["SuccessMessage"] = "Notificação eliminada com sucesso.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Não foi possível eliminar a notificação.";
+            }
+        }
+        catch
+        {
+            TempData["ErrorMessage"] = "Não foi possível eliminar a notificação.";
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EliminarTodas()
+    {
+        try
+        {
+            var response = await _apiService.SendAuthenticatedJsonAsync<object>(HttpMethod.Delete, "api/Notificacoes/todas", null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["SuccessMessage"] = "Todas as notificações foram eliminadas com sucesso.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Não foi possível eliminar as notificações.";
+            }
+        }
+        catch
+        {
+            TempData["ErrorMessage"] = "Não foi possível eliminar as notificações.";
+        }
+
+        return RedirectToAction(nameof(Index));
+    }
 }

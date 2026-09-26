@@ -2,11 +2,11 @@
 
 @{
     ViewData["Title"] = "Autenticação de dois fatores";
-
-    if (User.IsInRole("Admin"))
-        Layout = "_AdminLayout";
-    else if (User.IsInRole("Funcionario"))
-        Layout = "_FuncionarioLayout";
+Layout = User.IsInRole("Admin")
+    ? "_AdminLayout"
+    : User.IsInRole("Cliente")
+        ? "_ClienteLayout"
+        : "_FuncionarioLayout";
 }
 
 <div class="ib-dashboard-section-header">

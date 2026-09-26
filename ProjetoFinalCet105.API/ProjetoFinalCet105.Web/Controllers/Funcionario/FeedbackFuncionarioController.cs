@@ -22,9 +22,9 @@ public class FeedbackFuncionarioController : Controller
     {
         try
         {
-            var feedbacks = await _apiService.GetAuthenticatedAsync<List<FeedbackViewModel>>( "api/Feedbacks/meus") ?? new List<FeedbackViewModel>();
+            var feedbacks = await _apiService.GetAuthenticatedAsync<List<FeedbackViewModel>>("api/Feedbacks/meus") ?? new List<FeedbackViewModel>();
 
-            var resumo = await _apiService.GetAuthenticatedAsync<FeedbackResumoViewModel>( "api/Feedbacks/meus/resumo") ?? new FeedbackResumoViewModel();
+            var resumo = await _apiService.GetAuthenticatedAsync<FeedbackResumoViewModel>("api/Feedbacks/meus/resumo") ?? new FeedbackResumoViewModel();
 
             var model = new FeedbackFuncionarioViewModel
             {
