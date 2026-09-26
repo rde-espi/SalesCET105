@@ -26,11 +26,45 @@ public class MarcacoesClienteController : Controller
     {
         try
         {
-            var marcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoClienteViewModel>>("api/Marcacoes") ?? new List<MarcacaoClienteViewModel>();
+            var marcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoClienteViewModel>>("api/Marcacoes")?? new List<MarcacaoClienteViewModel>();
 
             marcacoes = marcacoes
                 .OrderByDescending(m => m.DataHoraInicio)
                 .ToList();
+
+            var marcacoesAvaliadas = new HashSet<int>();
+
+            var marcacoesConcluidas = marcacoes
+                .Where(m =>
+                {
+                    var estado = (m.EstadoMarcacaoNome ?? "")
+                        .Trim()
+                        .ToLowerInvariant();
+
+                    return estado == "concluida" ||
+                           estado == "concluída";
+                })
+                .ToList();
+
+            foreach (var marcacao in marcacoesConcluidas)
+            {
+                try
+                {
+                    var feedback = await _apiService.GetAuthenticatedAsync<FeedbackViewModel>($"api/Feedbacks/marcacao/{marcacao.Id}");
+
+                    if (feedback != null)
+                    {
+                        marcacoesAvaliadas.Add(marcacao.Id);
+                    }
+                }
+                catch (HttpRequestException ex)
+                    when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    // Esta marcação ainda não foi avaliada.
+                }
+            }
+
+            ViewBag.MarcacoesAvaliadas = marcacoesAvaliadas;
 
             return View(marcacoes);
         }
@@ -38,7 +72,7 @@ public class MarcacoesClienteController : Controller
         {
             TempData["ErrorMessage"] = "Não foi possível carregar as suas marcações.";
 
-            return View(new List<MarcacaoClienteViewModel>());
+            return View( new List<MarcacaoClienteViewModel>());
         }
     }
 
@@ -63,6 +97,20 @@ public class MarcacoesClienteController : Controller
             {
                 return NotFound();
             }
+
+            FeedbackViewModel? feedback = null;
+
+            try
+            {
+                feedback = await _apiService.GetAuthenticatedAsync<FeedbackViewModel>( $"api/Feedbacks/marcacao/{marcacao.Id}");
+            }
+            catch (HttpRequestException ex)
+                when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                // 404 significa que esta marcação ainda não foi avaliada.
+            }
+
+            ViewBag.Feedback = feedback;
 
             return View(marcacao);
         }

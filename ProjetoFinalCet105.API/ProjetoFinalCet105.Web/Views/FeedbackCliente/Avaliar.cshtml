@@ -1,0 +1,309 @@
+﻿@model ProjetoFinalCet105.Web.Models.FeedbackClienteViewModel
+
+@{
+    ViewData["Title"] = "Avaliar experiência";
+    Layout = "_ClienteLayout";
+}
+
+<div class="ib-feedback-client-page">
+
+    <div class="ib-feedback-client-header">
+        <a asp-controller="MarcacoesCliente"
+           asp-action="Detalhes"
+           asp-route-id="@Model.MarcacaoId"
+           class="ib-feedback-back">
+            ← Voltar à marcação
+        </a>
+
+        <span class="ib-feedback-eyebrow">A SUA EXPERIÊNCIA</span>
+
+        <h1>Avaliar experiência</h1>
+
+        <p>
+            A sua opinião ajuda-nos a melhorar e ajuda outros clientes
+            a conhecer melhor os nossos profissionais.
+        </p>
+    </div>
+
+
+    <div class="ib-feedback-client-card">
+
+        <div class="ib-feedback-appointment">
+
+            <div class="ib-feedback-appointment-icon">
+                <svg viewBox="0 0 24 24"
+                     width="24"
+                     height="24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.7">
+                    <path d="M4 19V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v11" />
+                    <path d="M8 3v6M16 3v6M4 11h16" />
+                </svg>
+            </div>
+
+            <div>
+                <span class="ib-feedback-appointment-label">
+                    Serviço realizado
+                </span>
+
+                <h2>@Model.ServicoNome</h2>
+
+                <p>
+                    com <strong>@Model.FuncionarioNome</strong>
+                </p>
+
+                <span class="ib-feedback-appointment-date">
+                    @Model.DataHoraInicio.ToString(
+                        "dd 'de' MMMM 'de' yyyy · HH:mm",
+                        new System.Globalization.CultureInfo("pt-PT"))
+                </span>
+            </div>
+
+        </div>
+
+
+        <form asp-action="Avaliar"
+              method="post"
+              class="ib-feedback-form">
+
+            @Html.AntiForgeryToken()
+
+            <input asp-for="MarcacaoId" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="ib-feedback-validation"></div>
+
+
+            <div class="ib-feedback-question">
+
+                <h3>Como foi a sua experiência?</h3>
+
+                <p>
+                    Selecione de 1 a 5 estrelas.
+                </p>
+
+
+                <div class="ib-feedback-stars"
+                     id="feedbackStars">
+
+                    @for (var i = 1; i <= 5; i++)
+                    {
+                        <button type="button"
+                                class="ib-feedback-star"
+                                data-value="@i"
+                                aria-label="@i estrela@(i > 1 ? "s" : "")">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 2.8l2.84 5.75 6.35.92-4.59 4.48 1.08 6.32L12 17.28l-5.68 2.99 1.08-6.32-4.59-4.48 6.35-.92L12 2.8z" />
+                            </svg>
+                        </button>
+                    }
+
+                </div>
+
+                <input asp-for="Classificacao"
+                       type="hidden"
+                       id="Classificacao" />
+
+                <div class="ib-feedback-rating-text"
+                     id="feedbackRatingText">
+                    Selecione uma classificação
+                </div>
+
+                <span asp-validation-for="Classificacao"
+                      class="ib-feedback-field-error"></span>
+
+            </div>
+
+
+            <div class="ib-feedback-comment-field">
+
+                <div class="ib-feedback-field-heading">
+                    <div>
+                        <label asp-for="Comentario">
+                            Conte-nos um pouco mais
+                        </label>
+
+                        <span>
+                            Opcional
+                        </span>
+                    </div>
+
+                    <span id="feedbackCharacterCount">
+                        0 / 1000
+                    </span>
+                </div>
+
+                <textarea asp-for="Comentario"
+                          id="Comentario"
+                          maxlength="1000"
+                          rows="6"
+                          placeholder="Conte-nos como correu a sua experiência..."></textarea>
+
+                <span asp-validation-for="Comentario"
+                      class="ib-feedback-field-error"></span>
+
+            </div>
+
+
+            <div class="ib-feedback-actions">
+
+                <a asp-controller="MarcacoesCliente"
+                   asp-action="Detalhes"
+                   asp-route-id="@Model.MarcacaoId"
+                   class="ib-feedback-cancel">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="ib-feedback-submit"
+                        id="feedbackSubmit"
+                        disabled>
+                    Enviar avaliação
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const stars =
+                Array.from(
+                    document.querySelectorAll(".ib-feedback-star")
+                );
+
+            const classificacaoInput =
+                document.getElementById("Classificacao");
+
+            const ratingText =
+                document.getElementById("feedbackRatingText");
+
+            const submitButton =
+                document.getElementById("feedbackSubmit");
+
+            const comentario =
+                document.getElementById("Comentario");
+
+            const characterCount =
+                document.getElementById("feedbackCharacterCount");
+
+
+            const textos = {
+                1: "Muito insatisfeita",
+                2: "Insatisfeita",
+                3: "Satisfeita",
+                4: "Muito satisfeita",
+                5: "Excelente"
+            };
+
+
+            function atualizarEstrelas(valor) {
+
+                stars.forEach(function (star) {
+
+                    const starValue =
+                        Number(star.dataset.value);
+
+                    star.classList.toggle(
+                        "active",
+                        starValue <= valor
+                    );
+
+                });
+
+                if (valor > 0) {
+
+                    ratingText.textContent =
+                        valor + "/5 · " + textos[valor];
+
+                    submitButton.disabled = false;
+
+                } else {
+
+                    ratingText.textContent =
+                        "Selecione uma classificação";
+
+                    submitButton.disabled = true;
+                }
+            }
+
+
+            stars.forEach(function (star) {
+
+                star.addEventListener(
+                    "mouseenter",
+                    function () {
+
+                        atualizarEstrelas(
+                            Number(star.dataset.value)
+                        );
+                    }
+                );
+
+
+                star.addEventListener(
+                    "click",
+                    function () {
+
+                        const valor =
+                            Number(star.dataset.value);
+
+                        classificacaoInput.value =
+                            valor;
+
+                        atualizarEstrelas(valor);
+                    }
+                );
+
+            });
+
+
+            document
+                .getElementById("feedbackStars")
+                .addEventListener(
+                    "mouseleave",
+                    function () {
+
+                        atualizarEstrelas(
+                            Number(
+                                classificacaoInput.value
+                            ) || 0
+                        );
+                    }
+                );
+
+
+            function atualizarContador() {
+
+                characterCount.textContent =
+                    comentario.value.length +
+                    " / 1000";
+            }
+
+
+            comentario.addEventListener(
+                "input",
+                atualizarContador
+            );
+
+
+            atualizarContador();
+
+            atualizarEstrelas(
+                Number(classificacaoInput.value) || 0
+            );
+
+        });
+    </script>
+}

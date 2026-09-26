@@ -1,8 +1,17 @@
 ﻿@model ProjetoFinalCet105.Web.Models.MarcacaoClienteViewModel
+@using ProjetoFinalCet105.Web.Models
 
 @{
     ViewData["Title"] = "Detalhes da marcação";
     Layout = "~/Views/Shared/_ClienteLayout.cshtml";
+
+    var estadoNormalizado =
+    (Model.EstadoMarcacaoNome ?? "")
+    .Trim()
+    .ToLowerInvariant();
+
+var podeAvaliar = estadoNormalizado == "concluida" || estadoNormalizado == "concluída";
+var feedback = ViewBag.Feedback as FeedbackViewModel;
 }
 
 <section class="ib-cliente-page-header">
@@ -142,5 +151,57 @@
 
         </div>
     }
+
+    @if (podeAvaliar)
+{
+    <div class="ib-cliente-detail-feedback">
+
+        <div>
+            <span class="ib-cliente-detail-feedback-eyebrow">
+                A SUA EXPERIÊNCIA
+            </span>
+
+            @if (feedback == null)
+            {
+                <h3>Como correu o seu serviço?</h3>
+
+                <p>
+                    Partilhe a sua experiência e avalie o profissional
+                    que realizou o serviço.
+                </p>
+            }
+            else
+            {
+                <h3>Obrigado pela sua avaliação</h3>
+
+                <p>
+                    Já avaliou esta experiência. Pode consultar
+                    os detalhes da sua avaliação.
+                </p>
+            }
+        </div>
+
+
+        @if (feedback == null)
+        {
+            <a asp-controller="FeedbackCliente"
+               asp-action="Avaliar"
+               asp-route-marcacaoId="@Model.Id"
+               class="ib-cliente-detail-feedback-button">
+                Avaliar experiência
+            </a>
+        }
+        else
+        {
+            <a asp-controller="FeedbackCliente"
+               asp-action="Detalhes"
+               asp-route-id="@feedback.Id"
+               class="ib-cliente-detail-feedback-button">
+                Ver a minha avaliação
+            </a>
+        }
+
+    </div>
+}
 
 </section>

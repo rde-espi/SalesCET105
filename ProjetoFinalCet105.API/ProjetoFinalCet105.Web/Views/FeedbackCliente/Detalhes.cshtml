@@ -1,0 +1,172 @@
+﻿@model ProjetoFinalCet105.Web.Models.FeedbackClienteViewModel
+
+@{
+    ViewData["Title"] = "A minha avaliação";
+    Layout = "_ClienteLayout";
+}
+
+<div class="ib-feedback-client-page">
+
+    <div class="ib-feedback-client-header">
+
+        <a asp-controller="MarcacoesCliente"
+           asp-action="Detalhes"
+           asp-route-id="@Model.MarcacaoId"
+           class="ib-feedback-back">
+            ← Voltar à marcação
+        </a>
+
+        <span class="ib-feedback-eyebrow">
+            A SUA EXPERIÊNCIA
+        </span>
+
+        <h1>A minha avaliação</h1>
+
+        <p>
+            Consulte a avaliação que deixou sobre esta experiência.
+        </p>
+
+    </div>
+
+
+    <div class="ib-feedback-client-card">
+
+        <div class="ib-feedback-appointment">
+
+            <div class="ib-feedback-appointment-icon">
+                <svg viewBox="0 0 24 24"
+                     width="24"
+                     height="24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.7">
+                    <path d="M4 19V8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v11" />
+                    <path d="M8 3v6M16 3v6M4 11h16" />
+                </svg>
+            </div>
+
+            <div>
+                <span class="ib-feedback-appointment-label">
+                    Serviço realizado
+                </span>
+
+                <h2>@Model.ServicoNome</h2>
+
+                <p>
+                    com <strong>@Model.FuncionarioNome</strong>
+                </p>
+
+                <span class="ib-feedback-appointment-date">
+                    @Model.DataHoraInicio.ToString(
+                        "dd 'de' MMMM 'de' yyyy · HH:mm",
+                        new System.Globalization.CultureInfo("pt-PT"))
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="ib-feedback-details-body">
+
+            <div class="ib-feedback-details-rating">
+
+                <span class="ib-feedback-details-label">
+                    A sua classificação
+                </span>
+
+                <div class="ib-feedback-details-stars"
+                     aria-label="Classificação: @Model.Classificacao em 5">
+
+                    @for (var i = 1; i <= 5; i++)
+                    {
+                        <svg viewBox="0 0 24 24"
+                             class="@(i <= Model.Classificacao ? "active" : "")">
+                            <path d="M12 2.8l2.84 5.75 6.35.92-4.59 4.48 1.08 6.32L12 17.28l-5.68 2.99 1.08-6.32-4.59-4.48 6.35-.92L12 2.8z" />
+                        </svg>
+                    }
+
+                    <strong>
+                        @Model.Classificacao/5
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="ib-feedback-details-comment">
+
+                <span class="ib-feedback-details-label">
+                    O seu comentário
+                </span>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Comentario))
+                {
+                    <p>@Model.Comentario</p>
+                }
+                else
+                {
+                    <p class="ib-feedback-details-empty">
+                        Não adicionou nenhum comentário.
+                    </p>
+                }
+
+            </div>
+
+
+            @if (Model.DataCriacao.HasValue)
+            {
+                <div class="ib-feedback-details-date">
+                    Avaliação enviada em
+                    <strong>
+                        @Model.DataCriacao.Value.ToString(
+                            "dd 'de' MMMM 'de' yyyy",
+                            new System.Globalization.CultureInfo("pt-PT"))
+                    </strong>
+                </div>
+            }
+
+
+            <div class="ib-feedback-actions">
+
+                <a asp-controller="MarcacoesCliente"
+                   asp-action="Detalhes"
+                   asp-route-id="@Model.MarcacaoId"
+                   class="ib-feedback-cancel">
+                    Voltar
+                </a>
+
+                <a asp-controller="FeedbackCliente"
+                   asp-action="Editar"
+                   asp-route-id="@Model.Id"
+                   class="ib-feedback-edit-button">
+                    Editar avaliação
+                </a>
+
+                <form asp-controller="FeedbackCliente"
+                      asp-action="Eliminar"
+                      asp-route-id="@Model.Id"
+                      method="post"
+                      class="ib-feedback-delete-form"
+                      onsubmit="return confirm('Tem a certeza de que pretende eliminar esta avaliação?');">
+
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"
+                           name="marcacaoId"
+                           value="@Model.MarcacaoId" />
+
+                    <button type="submit"
+                            class="ib-feedback-delete-button">
+                        Eliminar
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

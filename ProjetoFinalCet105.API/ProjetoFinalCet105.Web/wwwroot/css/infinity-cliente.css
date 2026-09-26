@@ -5093,3 +5093,1210 @@ body,
         width: 85px;
     }
 }
+
+/* =========================================================
+   FEEDBACK CLIENTE
+   ========================================================= */
+
+.ib-feedback-client-page {
+    width: 100%;
+    max-width: 980px;
+    margin: 0 auto;
+    padding-bottom: 48px;
+}
+
+
+/* Header
+   ========================================================= */
+
+.ib-feedback-client-header {
+    margin-bottom: 28px;
+}
+
+.ib-feedback-back {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 26px;
+    color: var(--ib-gray, #535333);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+    .ib-feedback-back:hover {
+        color: var(--ib-gold-dark, #BEA256);
+    }
+
+.ib-feedback-eyebrow {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--ib-gold-dark, #BEA256);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.ib-feedback-client-header h1 {
+    margin: 0 0 8px;
+    color: var(--ib-black, #191919);
+    font-size: clamp(1.75rem, 3vw, 2.35rem);
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.ib-feedback-client-header > p {
+    max-width: 650px;
+    margin: 0;
+    color: #817a70;
+    font-size: 0.95rem;
+    line-height: 1.65;
+}
+
+
+/* Card principal
+   ========================================================= */
+
+.ib-feedback-client-card {
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid rgba(216, 176, 113, 0.22);
+    border-radius: 22px;
+    box-shadow: 0 12px 35px rgba(25, 25, 25, 0.055);
+}
+
+
+/* Informação da marcação
+   ========================================================= */
+
+.ib-feedback-appointment {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 26px 30px;
+    background: linear-gradient( 135deg, rgba(248, 245, 239, 0.95), rgba(255, 255, 255, 0.96) );
+    border-bottom: 1px solid rgba(216, 176, 113, 0.18);
+}
+
+.ib-feedback-appointment-icon {
+    display: flex;
+    flex: 0 0 48px;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    color: var(--ib-gold-dark, #BEA256);
+    background: rgba(216, 176, 113, 0.11);
+    border: 1px solid rgba(216, 176, 113, 0.25);
+    border-radius: 14px;
+}
+
+.ib-feedback-appointment-label {
+    display: block;
+    margin-bottom: 4px;
+    color: #817a70;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.ib-feedback-appointment h2 {
+    margin: 0 0 4px;
+    color: var(--ib-black, #191919);
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.ib-feedback-appointment p {
+    margin: 0 0 6px;
+    color: var(--ib-gray, #535333);
+    font-size: 0.9rem;
+}
+
+.ib-feedback-appointment-date {
+    color: #817a70;
+    font-size: 0.82rem;
+}
+
+
+/* Formulário
+   ========================================================= */
+
+.ib-feedback-form {
+    padding: 34px 30px 30px;
+}
+
+.ib-feedback-validation {
+    margin-bottom: 20px;
+    color: #a43e3e;
+    font-size: 0.85rem;
+}
+
+    .ib-feedback-validation:empty {
+        display: none;
+    }
+
+
+/* Classificação
+   ========================================================= */
+
+.ib-feedback-question {
+    padding-bottom: 32px;
+    text-align: center;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+    .ib-feedback-question h3 {
+        margin: 0 0 6px;
+        color: var(--ib-black, #191919);
+        font-size: 1.15rem;
+        font-weight: 700;
+    }
+
+    .ib-feedback-question > p {
+        margin: 0;
+        color: #817a70;
+        font-size: 0.88rem;
+    }
+
+.ib-feedback-stars {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 22px 0 12px;
+}
+
+.ib-feedback-star {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    color: #d8d2c9;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    transition: color 0.18s ease, transform 0.18s ease;
+}
+
+    .ib-feedback-star svg {
+        width: 38px;
+        height: 38px;
+        overflow: visible;
+        fill: transparent;
+        stroke: currentColor;
+        stroke-width: 1.35;
+        transition: fill 0.18s ease, stroke 0.18s ease;
+    }
+
+    .ib-feedback-star:hover {
+        transform: translateY(-2px) scale(1.06);
+    }
+
+    .ib-feedback-star.active {
+        color: var(--ib-gold, #D8B071);
+    }
+
+        .ib-feedback-star.active svg {
+            fill: currentColor;
+            stroke: currentColor;
+        }
+
+.ib-feedback-rating-text {
+    min-height: 21px;
+    color: var(--ib-gold-dark, #BEA256);
+    font-size: 0.87rem;
+    font-weight: 650;
+}
+
+
+/* Comentário
+   ========================================================= */
+
+.ib-feedback-comment-field {
+    padding-top: 30px;
+}
+
+.ib-feedback-field-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+    .ib-feedback-field-heading > div {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+    }
+
+    .ib-feedback-field-heading label {
+        margin: 0;
+        color: var(--ib-black, #191919);
+        font-size: 0.9rem;
+        font-weight: 700;
+    }
+
+    .ib-feedback-field-heading > div > span {
+        padding: 3px 8px;
+        color: #817a70;
+        background: #f5f2ec;
+        border-radius: 20px;
+        font-size: 0.68rem;
+        font-weight: 600;
+    }
+
+#feedbackCharacterCount {
+    color: #9a9389;
+    font-size: 0.74rem;
+}
+
+.ib-feedback-comment-field textarea {
+    display: block;
+    width: 100%;
+    min-height: 145px;
+    padding: 15px 16px;
+    color: var(--ib-black, #191919);
+    background: #fdfcf9;
+    border: 1px solid rgba(83, 83, 51, 0.15);
+    border-radius: 13px;
+    outline: none;
+    resize: vertical;
+    font: inherit;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+    .ib-feedback-comment-field textarea::placeholder {
+        color: #aaa39a;
+    }
+
+    .ib-feedback-comment-field textarea:focus {
+        background: #ffffff;
+        border-color: rgba(216, 176, 113, 0.72);
+        box-shadow: 0 0 0 3px rgba(216, 176, 113, 0.10);
+    }
+
+.ib-feedback-field-error {
+    display: block;
+    margin-top: 6px;
+    color: #a43e3e;
+    font-size: 0.78rem;
+}
+
+
+/* Ações
+   ========================================================= */
+
+.ib-feedback-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 30px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+.ib-feedback-cancel,
+.ib-feedback-submit {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 21px;
+    border-radius: 11px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.ib-feedback-cancel {
+    color: var(--ib-gray, #535333);
+    background: #ffffff;
+    border: 1px solid rgba(83, 83, 51, 0.18);
+}
+
+    .ib-feedback-cancel:hover {
+        color: var(--ib-black, #191919);
+        background: #f8f5ef;
+        border-color: rgba(83, 83, 51, 0.28);
+    }
+
+.ib-feedback-submit {
+    color: #ffffff;
+    cursor: pointer;
+    background: var(--ib-black, #191919);
+    border: 1px solid var(--ib-black, #191919);
+}
+
+    .ib-feedback-submit:not(:disabled):hover {
+        transform: translateY(-1px);
+        background: #24231f;
+        box-shadow: 0 7px 18px rgba(25, 25, 25, 0.14);
+    }
+
+    .ib-feedback-submit:disabled {
+        color: #a7a29b;
+        cursor: not-allowed;
+        background: #e7e4df;
+        border-color: #e7e4df;
+    }
+
+
+/* Responsivo
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .ib-feedback-client-page {
+        padding-bottom: 30px;
+    }
+
+    .ib-feedback-client-header {
+        margin-bottom: 20px;
+    }
+
+    .ib-feedback-appointment {
+        padding: 22px 20px;
+    }
+
+    .ib-feedback-form {
+        padding: 28px 20px 22px;
+    }
+
+    .ib-feedback-stars {
+        gap: 3px;
+    }
+
+    .ib-feedback-star {
+        width: 42px;
+        height: 42px;
+    }
+
+        .ib-feedback-star svg {
+            width: 34px;
+            height: 34px;
+        }
+
+    .ib-feedback-field-heading {
+        align-items: flex-start;
+    }
+
+    .ib-feedback-actions {
+        flex-direction: column-reverse;
+    }
+
+    .ib-feedback-cancel,
+    .ib-feedback-submit {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .ib-feedback-appointment {
+        gap: 13px;
+    }
+
+    .ib-feedback-appointment-icon {
+        flex-basis: 42px;
+        width: 42px;
+        height: 42px;
+    }
+
+    .ib-feedback-stars {
+        gap: 0;
+    }
+
+    .ib-feedback-star {
+        width: 39px;
+    }
+
+        .ib-feedback-star svg {
+            width: 31px;
+            height: 31px;
+        }
+}
+
+/* =========================================================
+   FEEDBACK CLIENTE — DETALHES
+   ========================================================= */
+
+.ib-feedback-details-body {
+    padding: 32px 30px 30px;
+}
+
+
+/* Classificação
+   ========================================================= */
+
+.ib-feedback-details-rating {
+    padding-bottom: 28px;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+.ib-feedback-details-label {
+    display: block;
+    margin-bottom: 12px;
+    color: #817a70;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.ib-feedback-details-stars {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+    .ib-feedback-details-stars svg {
+        width: 29px;
+        height: 29px;
+        color: #d8d2c9;
+        fill: transparent;
+        stroke: currentColor;
+        stroke-width: 1.35;
+    }
+
+        .ib-feedback-details-stars svg.active {
+            color: var(--ib-gold, #D8B071);
+            fill: currentColor;
+            stroke: currentColor;
+        }
+
+    .ib-feedback-details-stars strong {
+        margin-left: 9px;
+        color: var(--ib-black, #191919);
+        font-size: 0.9rem;
+        font-weight: 700;
+    }
+
+
+/* Comentário
+   ========================================================= */
+
+.ib-feedback-details-comment {
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+    .ib-feedback-details-comment p {
+        margin: 0;
+        color: var(--ib-gray, #535333);
+        font-size: 0.92rem;
+        line-height: 1.75;
+        white-space: pre-line;
+    }
+
+    .ib-feedback-details-comment .ib-feedback-details-empty {
+        color: #9a9389;
+        font-style: italic;
+    }
+
+
+/* Data da avaliação
+   ========================================================= */
+
+.ib-feedback-details-date {
+    padding-top: 20px;
+    color: #938b80;
+    font-size: 0.78rem;
+}
+
+    .ib-feedback-details-date strong {
+        color: var(--ib-gray, #535333);
+        font-weight: 600;
+    }
+
+
+/* Botões Editar / Eliminar
+   ========================================================= */
+
+.ib-feedback-edit-button,
+.ib-feedback-delete-button {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 21px;
+    border-radius: 11px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.ib-feedback-edit-button {
+    color: #ffffff;
+    background: var(--ib-black, #191919);
+    border: 1px solid var(--ib-black, #191919);
+}
+
+    .ib-feedback-edit-button:hover {
+        color: #ffffff;
+        transform: translateY(-1px);
+        background: #24231f;
+        box-shadow: 0 7px 18px rgba(25, 25, 25, 0.14);
+    }
+
+.ib-feedback-delete-form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.ib-feedback-delete-button {
+    color: #9b3d3d;
+    cursor: pointer;
+    background: #ffffff;
+    border: 1px solid rgba(155, 61, 61, 0.24);
+}
+
+    .ib-feedback-delete-button:hover {
+        color: #843333;
+        background: rgba(155, 61, 61, 0.055);
+        border-color: rgba(155, 61, 61, 0.38);
+    }
+
+
+/* Responsivo
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .ib-feedback-details-body {
+        padding: 28px 20px 22px;
+    }
+
+    .ib-feedback-actions .ib-feedback-delete-form {
+        width: 100%;
+    }
+
+    .ib-feedback-edit-button,
+    .ib-feedback-delete-button {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   FEEDBACK CLIENTE — AJUSTE VISUAL FINAL
+   ========================================================= */
+
+/* Página
+   ========================================================= */
+
+.ib-feedback-client-page {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ib-feedback-client-header {
+    margin-bottom: 24px;
+}
+
+.ib-feedback-back {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 22px;
+    color: var(--cliente-muted);
+    font-size: 10px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+    .ib-feedback-back:hover {
+        color: var(--cliente-gold-dark);
+    }
+
+.ib-feedback-eyebrow {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--cliente-gold-dark);
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 1.7px;
+    text-transform: uppercase;
+}
+
+.ib-feedback-client-header h1 {
+    margin: 0;
+    color: var(--cliente-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.1;
+}
+
+.ib-feedback-client-header > p {
+    max-width: 650px;
+    margin: 7px 0 0;
+    color: var(--cliente-muted);
+    font-size: 0.72rem;
+    line-height: 1.6;
+}
+
+
+/* Card
+   ========================================================= */
+
+.ib-feedback-client-card {
+    width: 100%;
+    overflow: hidden;
+    background: var(--cliente-surface);
+    border: 1px solid rgba(216, 176, 113, 0.22);
+    border-radius: 14px;
+    box-shadow: 0 6px 22px rgba(25, 25, 25, 0.04);
+}
+
+
+/* Informação da marcação
+   ========================================================= */
+
+.ib-feedback-appointment {
+    min-height: 94px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #fcfaf6;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+.ib-feedback-appointment-icon {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cliente-gold-dark);
+    background: rgba(216, 176, 113, 0.10);
+    border: 1px solid rgba(216, 176, 113, 0.25);
+    border-radius: 10px;
+}
+
+    .ib-feedback-appointment-icon svg {
+        width: 19px;
+        height: 19px;
+    }
+
+.ib-feedback-appointment-label {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--cliente-muted);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.ib-feedback-appointment h2 {
+    margin: 0 0 2px;
+    color: var(--cliente-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.1;
+}
+
+.ib-feedback-appointment p {
+    margin: 0 0 3px;
+    color: var(--cliente-muted);
+    font-size: 10px;
+}
+
+.ib-feedback-appointment-date {
+    color: var(--cliente-muted);
+    font-size: 9px;
+}
+
+
+/* Formulário
+   ========================================================= */
+
+.ib-feedback-form {
+    padding: 28px 24px 24px;
+}
+
+.ib-feedback-question {
+    padding: 2px 0 28px;
+    text-align: center;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.14);
+}
+
+    .ib-feedback-question h3 {
+        margin: 0 0 5px;
+        color: var(--cliente-text);
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .ib-feedback-question > p {
+        margin: 0;
+        color: var(--cliente-muted);
+        font-size: 10px;
+    }
+
+
+/* Estrelas
+   ========================================================= */
+
+.ib-feedback-stars {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin: 17px 0 8px;
+}
+
+.ib-feedback-star {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #d8d2c9;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: transform .16s ease, color .16s ease;
+}
+
+    .ib-feedback-star svg {
+        width: 30px;
+        height: 30px;
+        fill: transparent;
+        stroke: currentColor;
+        stroke-width: 1.35;
+    }
+
+    .ib-feedback-star:hover {
+        transform: translateY(-2px);
+    }
+
+    .ib-feedback-star.active {
+        color: var(--cliente-gold);
+    }
+
+        .ib-feedback-star.active svg {
+            fill: currentColor;
+            stroke: currentColor;
+        }
+
+.ib-feedback-rating-text {
+    min-height: 18px;
+    color: var(--cliente-gold-dark);
+    font-size: 9px;
+    font-weight: 600;
+}
+
+
+/* Comentário
+   ========================================================= */
+
+.ib-feedback-comment-field {
+    padding-top: 24px;
+}
+
+.ib-feedback-field-heading {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+    .ib-feedback-field-heading > div {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .ib-feedback-field-heading label {
+        margin: 0;
+        color: var(--cliente-text);
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .ib-feedback-field-heading > div > span {
+        padding: 3px 7px;
+        color: var(--cliente-muted);
+        background: #f4f1eb;
+        border-radius: 20px;
+        font-size: 8px;
+    }
+
+#feedbackCharacterCount {
+    color: var(--cliente-muted);
+    font-size: 8px;
+}
+
+.ib-feedback-comment-field textarea {
+    width: 100%;
+    min-height: 125px;
+    padding: 12px 13px;
+    color: var(--cliente-text);
+    background: #fff;
+    border: 1px solid var(--cliente-border);
+    border-radius: 7px;
+    outline: none;
+    resize: vertical;
+    font-family: "Montserrat", sans-serif;
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+    .ib-feedback-comment-field textarea:focus {
+        border-color: rgba(190, 162, 86, 0.65);
+        box-shadow: 0 0 0 2px rgba(216, 176, 113, 0.08);
+    }
+
+    .ib-feedback-comment-field textarea::placeholder {
+        color: #aaa49b;
+    }
+
+
+/* Validação
+   ========================================================= */
+
+.ib-feedback-validation,
+.ib-feedback-field-error {
+    color: #a14e4e;
+    font-size: 9px;
+}
+
+    .ib-feedback-validation:empty,
+    .ib-feedback-field-error:empty {
+        display: none;
+    }
+
+
+/* Ações
+   ========================================================= */
+
+.ib-feedback-actions {
+    margin-top: 24px;
+    padding-top: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 9px;
+    border-top: 1px solid rgba(216, 176, 113, 0.14);
+}
+
+.ib-feedback-cancel,
+.ib-feedback-submit,
+.ib-feedback-edit-button,
+.ib-feedback-delete-button {
+    min-height: 38px;
+    padding: 0 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.ib-feedback-cancel {
+    color: var(--cliente-text);
+    background: var(--cliente-surface);
+    border: 1px solid var(--cliente-border);
+}
+
+    .ib-feedback-cancel:hover {
+        color: var(--cliente-gold-dark);
+        border-color: var(--cliente-gold);
+    }
+
+.ib-feedback-submit,
+.ib-feedback-edit-button {
+    color: #fff;
+    background: linear-gradient(90deg, #b77c23, #d9aa51);
+    border: 1px solid var(--cliente-gold-dark);
+    cursor: pointer;
+}
+
+    .ib-feedback-submit:not(:disabled):hover,
+    .ib-feedback-edit-button:hover {
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(185, 136, 56, 0.18);
+    }
+
+    .ib-feedback-submit:disabled {
+        color: #aaa59e;
+        background: #e5e1da;
+        border-color: #e5e1da;
+        cursor: not-allowed;
+    }
+
+
+/* =========================================================
+   FEEDBACK — DETALHES DA AVALIAÇÃO
+   ========================================================= */
+
+.ib-feedback-details-body {
+    padding: 26px 24px 24px;
+}
+
+.ib-feedback-details-rating {
+    padding-bottom: 22px;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.14);
+}
+
+.ib-feedback-details-label {
+    display: block;
+    margin-bottom: 9px;
+    color: var(--cliente-muted);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.ib-feedback-details-stars {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+    .ib-feedback-details-stars svg {
+        width: 24px;
+        height: 24px;
+        color: #d8d2c9;
+        fill: transparent;
+        stroke: currentColor;
+        stroke-width: 1.35;
+    }
+
+        .ib-feedback-details-stars svg.active {
+            color: var(--cliente-gold);
+            fill: currentColor;
+            stroke: currentColor;
+        }
+
+    .ib-feedback-details-stars strong {
+        margin-left: 8px;
+        color: var(--cliente-text);
+        font-size: 10px;
+    }
+
+.ib-feedback-details-comment {
+    padding: 22px 0;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.14);
+}
+
+    .ib-feedback-details-comment p {
+        margin: 0;
+        color: var(--cliente-text);
+        font-size: 10px;
+        line-height: 1.7;
+        white-space: pre-line;
+    }
+
+    .ib-feedback-details-comment .ib-feedback-details-empty {
+        color: var(--cliente-muted);
+        font-style: italic;
+    }
+
+.ib-feedback-details-date {
+    padding-top: 17px;
+    color: var(--cliente-muted);
+    font-size: 9px;
+}
+
+    .ib-feedback-details-date strong {
+        color: var(--cliente-text);
+        font-weight: 600;
+    }
+
+.ib-feedback-delete-form {
+    display: inline-flex;
+    margin: 0;
+}
+
+.ib-feedback-delete-button {
+    color: #a14e4e;
+    background: #fff;
+    border: 1px solid #e6bebe;
+    cursor: pointer;
+}
+
+    .ib-feedback-delete-button:hover {
+        color: #913f3f;
+        background: #fbefef;
+    }
+
+
+/* =========================================================
+   FEEDBACK DENTRO DOS DETALHES DA MARCAÇÃO
+   ========================================================= */
+
+.ib-cliente-detail-feedback {
+    margin: 0 24px;
+    padding: 20px 0 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    border-top: 1px solid rgba(216, 176, 113, 0.16);
+}
+
+    .ib-cliente-detail-feedback > div {
+        min-width: 0;
+    }
+
+.ib-cliente-detail-feedback-eyebrow {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--cliente-gold-dark);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+}
+
+.ib-cliente-detail-feedback h3 {
+    margin: 0 0 4px;
+    color: var(--cliente-text);
+    font-family: "Cormorant Garamond", serif;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.ib-cliente-detail-feedback p {
+    margin: 0;
+    color: var(--cliente-muted);
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.ib-cliente-detail-feedback-button {
+    min-height: 38px;
+    padding: 0 16px;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: linear-gradient(90deg, #b77c23, #d9aa51);
+    border: 1px solid var(--cliente-gold-dark);
+    border-radius: 5px;
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: box-shadow .18s ease, transform .18s ease;
+}
+
+    .ib-cliente-detail-feedback-button:hover {
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(185, 136, 56, 0.18);
+    }
+
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .ib-feedback-appointment {
+        padding: 18px;
+    }
+
+    .ib-feedback-form,
+    .ib-feedback-details-body {
+        padding: 22px 18px 18px;
+    }
+
+    .ib-feedback-actions {
+        flex-direction: column-reverse;
+    }
+
+    .ib-feedback-cancel,
+    .ib-feedback-submit,
+    .ib-feedback-edit-button,
+    .ib-feedback-delete-form,
+    .ib-feedback-delete-button {
+        width: 100%;
+    }
+
+    .ib-cliente-detail-feedback {
+        margin: 0 18px;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .ib-cliente-detail-feedback-button {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   MINHAS MARCAÇÕES — ESTADO DA AVALIAÇÃO
+   ========================================================= */
+
+.ib-cliente-marcacoes-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+/* Estado secundário da avaliação */
+.ib-cliente-feedback-state {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    width: fit-content;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+}
+
+    /* Avaliação já realizada */
+    .ib-cliente-feedback-state.evaluated {
+        color: #8a744c;
+    }
+
+        .ib-cliente-feedback-state.evaluated::before {
+            content: "★";
+            color: var(--cliente-gold);
+            font-size: 10px;
+        }
+
+    /* Ainda pode avaliar */
+    .ib-cliente-feedback-state.pending {
+        color: var(--cliente-muted);
+    }
+
+        .ib-cliente-feedback-state.pending::before {
+            content: "☆";
+            color: var(--cliente-gold-dark);
+            font-size: 11px;
+        }
+
+/* Mantém o badge principal independente */
+.ib-cliente-marcacoes-status .ib-cliente-booking-status {
+    margin: 0;
+}

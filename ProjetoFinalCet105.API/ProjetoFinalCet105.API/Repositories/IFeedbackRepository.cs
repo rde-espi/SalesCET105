@@ -9,5 +9,6 @@ namespace ProjetoFinalCet105.API.Repositories
         Task<Feedback?> GetByIdWithDetailsAsync(int id);
 
         Task<bool> ExisteFeedbackMarcacaoAsync(int marcacaoId);
+        Task<Feedback?> GetByMarcacaoIdWithDetailsAsync(int marcacaoId);
     }
 }

@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Minhas marcações";
     Layout = "~/Views/Shared/_ClienteLayout.cshtml";
+
+    var marcacoesAvaliadas =  ViewBag.MarcacoesAvaliadas as HashSet<int> ?? new HashSet<int>();
 }
 
 <div class="ib-cliente-marcacoes-page">
@@ -131,6 +133,8 @@
                         "nao compareceu" => "no-show",
                         _ => "default"
                     };
+                    var concluida = estadoNormalizado == "concluida" || estadoNormalizado == "concluída";
+                    var avaliada =  marcacoesAvaliadas.Contains(marcacao.Id);
 
                     <a asp-controller="MarcacoesCliente"
                        asp-action="Detalhes"
@@ -182,13 +186,28 @@
 
 
                         <!-- ESTADO -->
-                        <div>
-
+                        <div class="ib-cliente-marcacoes-status">
                             <span class="ib-cliente-booking-status @estadoClasse">
                                 @marcacao.EstadoMarcacaoNome
-                            </span>
-
-                        </div>
+                                </span>
+                                
+                                @if (concluida)
+                                {
+                                    if (avaliada)
+                                    {
+                                        <span class="ib-cliente-feedback-state evaluated">
+                                            Avaliada
+                                            </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="ib-cliente-feedback-state pending">
+                                            Por avaliar
+                                            </span>
+                                    }
+                                    }
+                                    
+                                </div>
 
 
                         <!-- VALOR -->

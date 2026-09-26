@@ -38,5 +38,16 @@ namespace ProjetoFinalCet105.API.Repositories
             .AsNoTracking()
             .FirstOrDefaultAsync(f => f.Id == id);
         }
+
+        public async Task<Feedback?> GetByMarcacaoIdWithDetailsAsync(int marcacaoId)
+        {
+            return await _context.Feedbacks
+                .Include(f => f.Marcacao)
+                    .ThenInclude(m => m.Servico)
+                .Include(f => f.Cliente)
+                .Include(f => f.Funcionario)
+                    .ThenInclude(funcionario => funcionario.User)
+                .FirstOrDefaultAsync(f => f.MarcacaoId == marcacaoId);
+        }
     }
 }

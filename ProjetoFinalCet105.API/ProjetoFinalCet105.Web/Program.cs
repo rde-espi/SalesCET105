@@ -70,8 +70,7 @@ app.Use(async (context, next) =>
 
         if (string.IsNullOrWhiteSpace(jwtToken))
         {
-            await context.SignOutAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme);
+            await context.SignOutAsync( CookieAuthenticationDefaults.AuthenticationScheme);
 
             context.Session.Clear();
 

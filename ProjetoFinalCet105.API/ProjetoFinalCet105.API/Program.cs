@@ -312,6 +312,7 @@ builder.Services.AddScoped<IOcupacaoAgendaService, OcupacaoAgendaService>();
 
 //UseCases
 builder.Services.AddScoped<CreateFeedbackUseCase>();
+builder.Services.AddScoped<GetFeedbackByMarcacaoUseCase>();
 builder.Services.AddScoped<CreateMarcacaoUseCase>();
 builder.Services.AddScoped<UpdateMarcacaoUseCase>();
 builder.Services.AddScoped<CancelarMarcacaoUseCase>();
