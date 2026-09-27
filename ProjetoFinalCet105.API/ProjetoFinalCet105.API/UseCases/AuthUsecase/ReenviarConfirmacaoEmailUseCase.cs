@@ -27,8 +27,7 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
         {
             if (string.IsNullOrWhiteSpace(dto.Email))
             {
-                return UseCaseResult<bool>.Falha(
-                    "O email é obrigatório.");
+                return UseCaseResult<bool>.Falha( "O email é obrigatório.");
             }
 
             var user = await _userManager.FindByEmailAsync(dto.Email);

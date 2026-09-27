@@ -42,6 +42,7 @@
                 </div>
 
 
+
                 <div class="ib-form-group">
 
                     <label asp-for="Email">
@@ -91,7 +92,7 @@
                     </label>
 
 
-                    <a href="#">
+                    <a asp-controller="Account" asp-action="RecuperarPassword">
                         Esqueceu a password?
                     </a>
 
@@ -118,13 +119,38 @@
                         Ainda não tem conta?
                     </span>
 
-                    <a href="#">
+                    <a asp-controller="Account" asp-action="Registar">
                         Criar conta
                     </a>
 
                 </div>
 
             </form>
+            @if (ViewBag.EmailNaoConfirmado == true)
+            {
+                <div class="ib-login-confirmacao">
+
+                    <span>Não recebeu o email de confirmação?</span>
+
+                    <form asp-controller="Account"
+                          asp-action="ReenviarCodigoConfirmacao"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden"
+                               name="email"
+                               value="@ViewBag.EmailConfirmacao" />
+
+                        <button type="submit"
+                                class="ib-login-confirmacao-link">
+                            Reenviar email de confirmação
+                        </button>
+
+                    </form>
+
+                </div>
+            }
 
         </div>
 

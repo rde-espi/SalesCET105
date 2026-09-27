@@ -1830,3 +1830,89 @@ main {
         grid-template-columns: 1fr;
     }
 }
+
+/* =========================================================
+   INFINITY BEAUTY — REGISTO DE CLIENTE
+   ========================================================= */
+
+.ib-register-container {
+    max-width: 1180px;
+}
+
+.ib-register-form {
+    width: 100%;
+}
+
+.ib-register-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+    .ib-register-row .ib-form-group {
+        min-width: 0;
+    }
+
+/* Tablet / Mobile */
+@media (max-width: 768px) {
+    .ib-register-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+}
+
+.ib-link-button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--ib-gold-dark);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+    .ib-link-button:hover {
+        text-decoration: underline;
+    }
+
+/* =========================================
+   LOGIN - EMAIL AINDA NÃO CONFIRMADO
+========================================= */
+
+.ib-login-confirmacao {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(216, 176, 113, 0.25);
+    text-align: center;
+}
+
+    .ib-login-confirmacao span {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 13px;
+        color: #817a70;
+    }
+
+    .ib-login-confirmacao form {
+        margin: 0;
+    }
+
+.ib-login-confirmacao-link {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: #BEA256;
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+    .ib-login-confirmacao-link:hover {
+        color: #191919;
+        text-decoration: underline;
+    }

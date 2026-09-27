@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using ProjetoFinalCet105.Web.Models;
@@ -16,6 +17,175 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
         public AccountController(ApiService apiService)
         {
             _apiService = apiService;
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Registar()
+        {
+            return View(new RegistarClienteViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Registar(RegistarClienteViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            using var content = new MultipartFormDataContent();
+
+            content.Add( new StringContent(model.NomeCompleto), "NomeCompleto");
+
+            content.Add( new StringContent(model.Email), "Email");
+
+            content.Add( new StringContent(model.Password), "Password");
+
+            if (!string.IsNullOrWhiteSpace(model.Telefone))
+            {
+                content.Add( new StringContent(model.Telefone), "Telefone");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Contribuinte))
+            {
+                content.Add( new StringContent(model.Contribuinte), "Contribuinte");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Morada))
+            {
+                content.Add( new StringContent(model.Morada), "Morada");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.CodigoPostal))
+            {
+                content.Add( new StringContent(model.CodigoPostal), "CodigoPostal");
+            }
+
+            if (!string.IsNullOrWhiteSpace(model.Localidade))
+            {
+                content.Add( new StringContent(model.Localidade), "Localidade");
+            }
+
+            if (model.Fotografia != null &&
+                model.Fotografia.Length > 0)
+            {
+                var streamContent = new StreamContent(model.Fotografia.OpenReadStream());
+
+                streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue( model.Fotografia.ContentType);
+
+                content.Add( streamContent, "Fotografia", model.Fotografia.FileName);
+            }
+
+            var response = await _apiService.SendAuthenticatedMultipartAsync( HttpMethod.Post, "api/Clientes", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var erroApi = await response.Content.ReadAsStringAsync();
+
+                erroApi = erroApi.Trim().Trim('"');
+
+                ModelState.AddModelError(
+                    string.Empty,
+                    string.IsNullOrWhiteSpace(erroApi)
+                        ? "Não foi possível criar a conta. Verifique os dados introduzidos."
+                        : erroApi);
+
+                return View(model);
+            }
+
+            return RedirectToAction( nameof(ConfirmarEmail), new { email = model.Email });
+        }
+
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmarEmail(string email, string? token = null)
+        {
+            
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return View(new ConfirmarEmailViewModel
+                {
+                    Email = email
+                });
+            }
+                        
+            var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Auth/confirmar-email",
+                new
+                {
+                    email,
+                    token
+                });
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return View(new ConfirmarEmailViewModel
+                {
+                    Email = email,
+                    Codigo = string.Empty
+                });
+            }
+
+            TempData["SuccessMessage"] = "Conta confirmada com sucesso. Já pode iniciar sessão.";
+
+            return RedirectToAction(nameof(Login));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ConfirmarEmail(ConfirmarEmailViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Auth/confirmar-email",
+                new
+                {
+                    email = model.Email,
+                    token = model.Codigo
+                });
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError( string.Empty, "O código de confirmação é inválido ou expirou.");
+
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] =  "Conta confirmada com sucesso. Já pode iniciar sessão.";
+
+            return RedirectToAction(nameof(Login));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReenviarCodigoConfirmacao(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Auth/reenviar-confirmacao-email",
+                new
+                {
+                    email
+                });
+
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["ErrorMessage"] = "Não foi possível reenviar o código de confirmação.";
+
+                return RedirectToAction( nameof(ConfirmarEmail), new { email });
+            }
+
+            TempData["SuccessMessage"] = "Enviámos um novo código de confirmação para o seu email.";
+
+            return RedirectToAction(nameof(ConfirmarEmail), new { email });
         }
 
 
@@ -116,6 +286,93 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult RecuperarPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RecuperarPassword( RecuperarPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Auth/recuperar-password",
+                new
+                {
+                    email = model.Email
+                });
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError( string.Empty, "Não foi possível processar o pedido. Tente novamente.");
+
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Se existir uma conta associada a este email, receberá instruções para recuperar a palavra-passe.";
+
+            return RedirectToAction(nameof(Login));
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ResetPassword( string email, string token)
+        {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token))
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            return View(new ResetPasswordViewModel
+            {
+                Email = email,
+                Token = token
+            });
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword( ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Auth/reset-password",
+                new
+                {
+                    email = model.Email,
+                    token = model.Token,
+                    novaPassword = model.NovaPassword
+                });
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var erroApi = await response.Content.ReadAsStringAsync();
+
+                ModelState.AddModelError(
+                    string.Empty,
+                    string.IsNullOrWhiteSpace(erroApi)
+                        ? "Não foi possível alterar a palavra-passe."
+                        : erroApi.Trim().Trim('"'));
+
+                return View(model);
+            }
+
+            TempData["SuccessMessage"] = "Palavra-passe alterada com sucesso. Já pode iniciar sessão.";
+
+            return RedirectToAction(nameof(Login));
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -132,11 +389,31 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                 Password = model.Password
             };
 
-            var response = await _apiService.PostAsync<object, LoginResponseViewModel>("api/Auth/login", request);
+            var apiResponse = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Auth/login", request);
+            if (!apiResponse.IsSuccessStatusCode)
+            {
+                var erroApi = await apiResponse.Content.ReadAsStringAsync();
+
+                if (erroApi.Contains( "Confirme o seu email", StringComparison.OrdinalIgnoreCase))
+                {
+                    ModelState.AddModelError( string.Empty, "Confirme o seu email antes de iniciar sessão.");
+
+                    ViewBag.EmailNaoConfirmado = true;
+                    ViewBag.EmailConfirmacao = model.Email;
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty,"Email ou password incorretos.");
+                }
+
+                return View(model);
+            }
+
+            var response = await apiResponse.Content.ReadFromJsonAsync<LoginResponseViewModel>();
 
             if (response == null)
             {
-                ModelState.AddModelError(string.Empty, "Email ou password incorretos.");
+                ModelState.AddModelError( string.Empty, "Não foi possível concluir o login.");
 
                 return View(model);
             }

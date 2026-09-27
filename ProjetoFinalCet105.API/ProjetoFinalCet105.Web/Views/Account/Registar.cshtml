@@ -1,0 +1,256 @@
+﻿@model ProjetoFinalCet105.Web.Models.RegistarClienteViewModel
+
+@{
+    ViewData["Title"] = "Criar conta";
+    Layout = "_PublicLayout";
+}
+
+<section class="ib-login-page">
+
+    <div class="ib-login-container ib-register-container">
+        <div class="ib-login-panel">
+
+            <div class="ib-login-heading">
+
+                <span>
+                    ÁREA DE CLIENTE
+                </span>
+
+                <h1>
+                    Criar conta.
+                </h1>
+
+                <p>
+                    Registe-se na Infinity Beauty para gerir
+                    as suas marcações e acompanhar os seus serviços.
+                </p>
+
+            </div>
+
+            <form asp-controller="Account"
+                  asp-action="Registar"
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="ib-login-form ib-register-form">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="ib-login-error">
+                </div>
+
+                <div class="ib-form-group">
+
+                    <label asp-for="NomeCompleto">
+                        Nome completo
+                    </label>
+
+                    <input asp-for="NomeCompleto"
+                           placeholder="Introduza o seu nome completo"
+                           autocomplete="name" />
+
+                    <span asp-validation-for="NomeCompleto"
+                          class="ib-field-error">
+                    </span>
+
+                </div>
+
+                <div class="ib-form-group">
+
+                    <label asp-for="Email">
+                        Email
+                    </label>
+
+                    <input asp-for="Email"
+                           type="email"
+                           placeholder="exemplo@email.pt"
+                           autocomplete="email" />
+
+                    <span asp-validation-for="Email"
+                          class="ib-field-error">
+                    </span>
+
+                </div>
+
+                <div class="ib-register-row">
+
+                    <div class="ib-form-group">
+                        <label asp-for="Password">
+                            Password
+                        </label>
+
+                        <input asp-for="Password"
+                               type="password"
+                               placeholder="Crie uma password"
+                               autocomplete="new-password" />
+
+                        <span asp-validation-for="Password"
+                              class="ib-field-error">
+                        </span>
+                    </div>
+
+                    <div class="ib-form-group">
+                        <label asp-for="ConfirmarPassword">
+                            Confirmar password
+                        </label>
+
+                        <input asp-for="ConfirmarPassword"
+                               type="password"
+                               placeholder="Repita a password"
+                               autocomplete="new-password" />
+
+                        <span asp-validation-for="ConfirmarPassword"
+                              class="ib-field-error">
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="ib-register-row">
+
+                    <div class="ib-form-group">
+                        <label asp-for="Telefone">
+                            Telefone
+                        </label>
+
+                        <input asp-for="Telefone"
+                               placeholder="Ex.: 912 345 678"
+                               autocomplete="tel" />
+
+                        <span asp-validation-for="Telefone"
+                              class="ib-field-error">
+                        </span>
+                    </div>
+
+                    <div class="ib-form-group">
+                        <label asp-for="Contribuinte">
+                            NIF
+                        </label>
+
+                        <input asp-for="Contribuinte"
+                               placeholder="Número de identificação fiscal"
+                               inputmode="numeric" />
+
+                        <span asp-validation-for="Contribuinte"
+                              class="ib-field-error">
+                        </span>
+                    </div>
+
+                </div>
+                <div class="ib-form-group">
+
+                    <label asp-for="Morada">
+                        Morada
+                    </label>
+
+                    <input asp-for="Morada"
+                           placeholder="Introduza a sua morada"
+                           autocomplete="street-address" />
+
+                    <span asp-validation-for="Morada"
+                          class="ib-field-error">
+                    </span>
+
+                </div>
+
+                <div class="ib-register-row">
+
+                    <div class="ib-form-group">
+                        <label asp-for="CodigoPostal">
+                            Código postal
+                        </label>
+
+                        <input asp-for="CodigoPostal"
+                               placeholder="0000-000"
+                               autocomplete="postal-code" />
+
+                        <span asp-validation-for="CodigoPostal"
+                              class="ib-field-error">
+                        </span>
+                    </div>
+
+                    <div class="ib-form-group">
+                        <label asp-for="Localidade">
+                            Localidade
+                        </label>
+
+                        <input asp-for="Localidade"
+                               placeholder="Introduza a localidade"
+                               autocomplete="address-level2" />
+
+                        <span asp-validation-for="Localidade"
+                              class="ib-field-error">
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="ib-form-group">
+
+                    <label asp-for="Fotografia">
+                        Fotografia
+                    </label>
+
+                    <input asp-for="Fotografia"
+                           type="file"
+                           accept="image/*" />
+
+                    <span asp-validation-for="Fotografia"
+                          class="ib-field-error">
+                    </span>
+
+                </div>
+
+                <button type="submit"
+                        class="ib-login-submit">
+                    Criar conta
+                </button>
+
+                <div class="ib-login-register">
+
+                    <span>
+                        Já tem conta?
+                    </span>
+
+                    <a asp-controller="Account"
+                       asp-action="Login">
+                        Entrar
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="ib-login-image">
+
+            <div class="ib-login-image-overlay"></div>
+
+            <div class="ib-login-image-copy">
+
+                <span>
+                    INFINITY BEAUTY
+                </span>
+
+                <h2>
+                    O seu espaço.<br />
+                    O seu bem-estar.
+                </h2>
+
+                <p>
+                    Crie a sua conta e tenha a sua experiência
+                    Infinity Beauty sempre consigo.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,103 @@
+﻿@model ProjetoFinalCet105.Web.Models.ConfirmarEmailViewModel
+
+@{
+    ViewData["Title"] = "Confirmar email";
+    Layout = "_PublicLayout";
+}
+
+<section class="ib-login-page">
+
+    <div class="ib-login-container">
+
+        <div class="ib-login-panel">
+
+            <div class="ib-login-heading">
+
+                <span>
+                    CONFIRMAÇÃO DE CONTA
+                </span>
+
+               <h1>Verifique o seu email</h1>
+
+<p class="ib-login-subtitle">
+    Enviámos um email de confirmação para
+    <strong>@Model.Email</strong>.
+</p>
+
+<p class="ib-confirm-email-text">
+    Para ativar a sua conta, abra o email que recebeu
+    e clique em <strong>“Confirmar o meu email”</strong>.
+</p>
+
+            </div>
+
+            
+                <div class="ib-login-register">
+
+    <span>
+    Não recebeu o email?
+</span>
+
+    <form asp-controller="Account"
+          asp-action="ReenviarCodigoConfirmacao"
+          method="post"
+          style="display: inline;">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden"
+               name="email"
+               value="@Model.Email" />
+
+        <button type="submit"
+                class="ib-link-button">
+Reenviar email de confirmação
+</button>
+
+    </form>
+
+</div>
+
+                <div class="ib-login-register">
+
+                    <a asp-controller="Account"
+                       asp-action="Login">
+                        Voltar ao login
+                    </a>
+
+                </div>
+
+
+        </div>
+
+        <div class="ib-login-image">
+
+            <div class="ib-login-image-overlay"></div>
+
+            <div class="ib-login-image-copy">
+
+                <span>
+                    INFINITY BEAUTY
+                </span>
+
+                <h2>
+                    Falta apenas<br />
+                    um passo.
+                </h2>
+
+                <p>
+                    Confirme o seu email para concluir
+                    a criação da sua conta.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

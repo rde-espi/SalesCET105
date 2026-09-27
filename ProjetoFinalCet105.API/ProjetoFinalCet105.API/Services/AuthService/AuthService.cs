@@ -77,20 +77,53 @@ namespace ProjetoFinalCet105.API.Services.AuthService
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
+            var webBaseUrl = _configuration["WebSettings:BaseUrl"];
+
+            if (string.IsNullOrWhiteSpace(webBaseUrl))
+            {
+                throw new InvalidOperationException(
+                    "A configuração WebSettings:BaseUrl não foi definida.");
+            }
+
+            var emailCodificado = Uri.EscapeDataString(user.Email);
+            var tokenCodificado = Uri.EscapeDataString(token);
+
+            var link =
+                $"{webBaseUrl}/Account/ConfirmarEmail" +
+                $"?email={emailCodificado}&token={tokenCodificado}";
+
             var mensagem = $@"
-        <h2>Confirmação de email</h2>
+    <h2>Confirme o seu email</h2>
 
-        <p>Olá {user.NomeCompleto},</p>
+    <p>Olá {user.NomeCompleto},</p>
 
-        <p>Obrigado pelo seu registo.</p>
+    <p>Obrigado por criar a sua conta na Infinity Beauty.</p>
 
-        <p>Utilize o seguinte código para confirmar
-        o seu endereço de email:</p>
+    <p>
+        Para concluir o seu registo e ativar a sua conta,
+        confirme o seu endereço de email através do botão abaixo:
+    </p>
 
-        <p><strong>{token}</strong></p>
+    <p style=""margin: 30px 0;"">
+        <a href=""{link}""
+           style=""background-color:#191919;
+                  color:#D8B071;
+                  padding:14px 24px;
+                  text-decoration:none;
+                  border-radius:4px;
+                  font-weight:bold;"">
+            Confirmar o meu email
+        </a>
+    </p>
 
-        <p>Se não efetuou este registo,
-        ignore esta mensagem.</p>";
+    <p>
+        Se não criou esta conta, pode ignorar esta mensagem.
+    </p>
+
+    <p>
+        Infinity Beauty<br>
+        CENTER | SPA | WELLNESS
+    </p>";
 
             await _emailService.EnviarEmailAsync(user.Email, "Confirmação de email", mensagem);
         }
