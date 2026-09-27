@@ -190,8 +190,10 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string? returnUrl = null)
         {
+            ViewBag.ReturnUrl = returnUrl;
+
             return View();
         }
 
@@ -250,6 +252,10 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
             HttpContext.Session.SetString("Email", response.Email);
             HttpContext.Session.SetString("Roles", string.Join(",", response.Roles));
 
+            var returnUrl = HttpContext.Session.GetString("TwoFactorReturnUrl");
+
+            HttpContext.Session.Remove("TwoFactorReturnUrl");
+
             HttpContext.Session.Remove("TwoFactorUserId");
 
             var claims = new List<Claim>
@@ -267,6 +273,10 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return LocalRedirect(returnUrl);
+            }
 
             if (response.Roles.Contains("Admin"))
             {
@@ -275,7 +285,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (response.Roles.Contains("Funcionario"))
             {
-                return RedirectToAction("Index", "Funcionarios");
+                return RedirectToAction("Index", "DashboardFuncionario");
             }
 
             if (response.Roles.Contains("Cliente"))
@@ -376,7 +386,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
             if (!ModelState.IsValid)
             {
@@ -424,6 +434,11 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
             {
                 HttpContext.Session.SetString("TwoFactorUserId", response.UserId);
 
+                if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    HttpContext.Session.SetString( "TwoFactorReturnUrl", returnUrl);
+                }
+
                 return RedirectToAction("TwoFactor");
             }
 
@@ -440,17 +455,11 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
             HttpContext.Session.SetString("JwtToken", response.Token);
             var claims = new List<Claim>
             {
-                new Claim(
-                    ClaimTypes.NameIdentifier,
-                    response.UserId),
+                new Claim( ClaimTypes.NameIdentifier, response.UserId),
 
-                new Claim(
-                    ClaimTypes.Name,
-                    response.NomeCompleto),
+                new Claim( ClaimTypes.Name, response.NomeCompleto),
 
-                new Claim(
-                    ClaimTypes.Email,
-                    response.Email)
+                new Claim( ClaimTypes.Email,  response.Email)
             };
 
             HttpContext.Session.SetString("UserId", response.UserId);
@@ -474,6 +483,11 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
+            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return LocalRedirect(returnUrl);
+            }
+
             //Redirecionamento conforme o perfil
             if (response.Roles.Contains("Admin"))
             {
@@ -496,7 +510,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> GoogleLogin(string idToken)
+        public async Task<IActionResult> GoogleLogin(string idToken, string? returnUrl = null)
         {
             if (string.IsNullOrWhiteSpace(idToken))
             {
@@ -521,7 +535,12 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (response.RequiresTwoFactor)
             {
-                HttpContext.Session.SetString("TwoFactorUserId", response.UserId);
+                HttpContext.Session.SetString( "TwoFactorUserId", response.UserId);
+
+                if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    HttpContext.Session.SetString( "TwoFactorReturnUrl", returnUrl);
+                }
 
                 return RedirectToAction(nameof(TwoFactor));
             }
@@ -561,6 +580,11 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
 
+            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return LocalRedirect(returnUrl);
+            }
+
             if (response.Roles.Contains("Admin"))
             {
                 return RedirectToAction("Index", "Dashboard");
@@ -568,7 +592,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (response.Roles.Contains("Funcionario"))
             {
-                return RedirectToAction("Index", "Funcionarios");
+                return RedirectToAction("Index", "DashboardFuncionario");
             }
 
             if (response.Roles.Contains("Cliente"))

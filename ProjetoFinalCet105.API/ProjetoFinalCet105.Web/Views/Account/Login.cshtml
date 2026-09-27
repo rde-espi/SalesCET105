@@ -35,6 +35,9 @@
                   class="ib-login-form">
 
                 @Html.AntiForgeryToken()
+                <input type="hidden"
+                    name="returnUrl"
+                    value="@ViewBag.ReturnUrl" />
 
 
                 <div asp-validation-summary="ModelOnly"
@@ -219,8 +222,14 @@
 
             form.appendChild(token);
 
-            const antiForgeryToken =
-                document.querySelector('input[name="__RequestVerificationToken"]');
+            const returnUrl = document.createElement("input");
+            returnUrl.type = "hidden";
+            returnUrl.name = "returnUrl";
+            returnUrl.value = '@ViewBag.ReturnUrl';
+            
+            form.appendChild(returnUrl);
+
+            const antiForgeryToken = document.querySelector('input[name="__RequestVerificationToken"]');
 
             if (antiForgeryToken) {
                 const antiforgery = document.createElement("input");
