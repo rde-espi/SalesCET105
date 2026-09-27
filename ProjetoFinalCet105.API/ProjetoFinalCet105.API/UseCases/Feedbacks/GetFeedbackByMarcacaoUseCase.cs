@@ -8,12 +8,12 @@ namespace ProjetoFinalCet105.API.UseCases.Feedbacks
     {
         private readonly IFeedbackRepository _feedbackRepository;
 
-        public GetFeedbackByMarcacaoUseCase( IFeedbackRepository feedbackRepository)
+        public GetFeedbackByMarcacaoUseCase(IFeedbackRepository feedbackRepository)
         {
             _feedbackRepository = feedbackRepository;
         }
 
-        public async Task<UseCaseResult<FeedbackDTO>> ExecuteAsync( int marcacaoId, string userId, bool isAdmin)
+        public async Task<UseCaseResult<FeedbackDTO>> ExecuteAsync(int marcacaoId, string userId, bool isAdmin)
         {
             var feedback = await _feedbackRepository.GetByMarcacaoIdWithDetailsAsync(marcacaoId);
 
@@ -22,10 +22,10 @@ namespace ProjetoFinalCet105.API.UseCases.Feedbacks
                 return UseCaseResult<FeedbackDTO>.Falha("Feedback não encontrado.", TipoErro.NaoEncontrado);
             }
 
-           
+
             if (!isAdmin && feedback.ClienteId != userId)
             {
-                return UseCaseResult<FeedbackDTO>.Falha( "Não tem permissão para consultar este feedback.", TipoErro.Proibido);
+                return UseCaseResult<FeedbackDTO>.Falha("Não tem permissão para consultar este feedback.", TipoErro.Proibido);
             }
 
             var resposta = new FeedbackDTO

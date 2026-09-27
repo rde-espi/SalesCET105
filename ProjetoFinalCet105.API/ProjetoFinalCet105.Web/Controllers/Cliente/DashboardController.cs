@@ -84,7 +84,7 @@ public class DashboardClienteController : Controller
             {
                 try
                 {
-                    var feedback = await _apiService.GetAuthenticatedAsync<FeedbackViewModel>( $"api/Feedbacks/marcacao/{marcacao.Id}");
+                    var feedback = await _apiService.GetAuthenticatedAsync<FeedbackViewModel>($"api/Feedbacks/marcacao/{marcacao.Id}");
 
                     if (feedback == null)
                     {

@@ -21,30 +21,30 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
             _emailService = emailService;
         }
 
-        public async Task<UseCaseResult<LoginResponseDTO>> ExecuteAsync( LoginDTO dto)
+        public async Task<UseCaseResult<LoginResponseDTO>> ExecuteAsync(LoginDTO dto)
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
 
             if (user == null)
             {
-                return UseCaseResult<LoginResponseDTO>.Falha( "Email ou password inválidos.", TipoErro.NaoAutorizado);
+                return UseCaseResult<LoginResponseDTO>.Falha("Email ou password inválidos.", TipoErro.NaoAutorizado);
             }
 
             var passwordValida = await _userManager.CheckPasswordAsync(user, dto.Password);
 
             if (!passwordValida)
             {
-                return UseCaseResult<LoginResponseDTO>.Falha( "Email ou password inválidos.",TipoErro.NaoAutorizado);
+                return UseCaseResult<LoginResponseDTO>.Falha("Email ou password inválidos.", TipoErro.NaoAutorizado);
             }
 
             if (!user.Ativo)
             {
-                return UseCaseResult<LoginResponseDTO>.Falha( "O utilizador encontra-se desativado.", TipoErro.NaoAutorizado);
+                return UseCaseResult<LoginResponseDTO>.Falha("O utilizador encontra-se desativado.", TipoErro.NaoAutorizado);
             }
 
             if (!user.EmailConfirmed)
             {
-                return UseCaseResult<LoginResponseDTO>.Falha( "Confirme o seu email antes de iniciar sessão.", TipoErro.NaoAutorizado);
+                return UseCaseResult<LoginResponseDTO>.Falha("Confirme o seu email antes de iniciar sessão.", TipoErro.NaoAutorizado);
             }
 
             if (await _userManager.GetTwoFactorEnabledAsync(user))

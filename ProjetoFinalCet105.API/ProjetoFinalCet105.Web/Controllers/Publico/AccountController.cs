@@ -37,35 +37,35 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             using var content = new MultipartFormDataContent();
 
-            content.Add( new StringContent(model.NomeCompleto), "NomeCompleto");
+            content.Add(new StringContent(model.NomeCompleto), "NomeCompleto");
 
-            content.Add( new StringContent(model.Email), "Email");
+            content.Add(new StringContent(model.Email), "Email");
 
-            content.Add( new StringContent(model.Password), "Password");
+            content.Add(new StringContent(model.Password), "Password");
 
             if (!string.IsNullOrWhiteSpace(model.Telefone))
             {
-                content.Add( new StringContent(model.Telefone), "Telefone");
+                content.Add(new StringContent(model.Telefone), "Telefone");
             }
 
             if (!string.IsNullOrWhiteSpace(model.Contribuinte))
             {
-                content.Add( new StringContent(model.Contribuinte), "Contribuinte");
+                content.Add(new StringContent(model.Contribuinte), "Contribuinte");
             }
 
             if (!string.IsNullOrWhiteSpace(model.Morada))
             {
-                content.Add( new StringContent(model.Morada), "Morada");
+                content.Add(new StringContent(model.Morada), "Morada");
             }
 
             if (!string.IsNullOrWhiteSpace(model.CodigoPostal))
             {
-                content.Add( new StringContent(model.CodigoPostal), "CodigoPostal");
+                content.Add(new StringContent(model.CodigoPostal), "CodigoPostal");
             }
 
             if (!string.IsNullOrWhiteSpace(model.Localidade))
             {
-                content.Add( new StringContent(model.Localidade), "Localidade");
+                content.Add(new StringContent(model.Localidade), "Localidade");
             }
 
             if (model.Fotografia != null &&
@@ -73,12 +73,12 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
             {
                 var streamContent = new StreamContent(model.Fotografia.OpenReadStream());
 
-                streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue( model.Fotografia.ContentType);
+                streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(model.Fotografia.ContentType);
 
-                content.Add( streamContent, "Fotografia", model.Fotografia.FileName);
+                content.Add(streamContent, "Fotografia", model.Fotografia.FileName);
             }
 
-            var response = await _apiService.SendAuthenticatedMultipartAsync( HttpMethod.Post, "api/Clientes", content);
+            var response = await _apiService.SendAuthenticatedMultipartAsync(HttpMethod.Post, "api/Clientes", content);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -95,7 +95,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                 return View(model);
             }
 
-            return RedirectToAction( nameof(ConfirmarEmail), new { email = model.Email });
+            return RedirectToAction(nameof(ConfirmarEmail), new { email = model.Email });
         }
 
 
@@ -103,7 +103,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmarEmail(string email, string? token = null)
         {
-            
+
             if (string.IsNullOrWhiteSpace(token))
             {
                 return View(new ConfirmarEmailViewModel
@@ -111,8 +111,8 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                     Email = email
                 });
             }
-                        
-            var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Auth/confirmar-email",
+
+            var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Auth/confirmar-email",
                 new
                 {
                     email,
@@ -142,7 +142,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                 return View(model);
             }
 
-            var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Auth/confirmar-email",
+            var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Auth/confirmar-email",
                 new
                 {
                     email = model.Email,
@@ -151,12 +151,12 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (!response.IsSuccessStatusCode)
             {
-                ModelState.AddModelError( string.Empty, "O código de confirmação é inválido ou expirou.");
+                ModelState.AddModelError(string.Empty, "O código de confirmação é inválido ou expirou.");
 
                 return View(model);
             }
 
-            TempData["SuccessMessage"] =  "Conta confirmada com sucesso. Já pode iniciar sessão.";
+            TempData["SuccessMessage"] = "Conta confirmada com sucesso. Já pode iniciar sessão.";
 
             return RedirectToAction(nameof(Login));
         }
@@ -170,7 +170,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                 return RedirectToAction(nameof(Login));
             }
 
-            var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Auth/reenviar-confirmacao-email",
+            var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Auth/reenviar-confirmacao-email",
                 new
                 {
                     email
@@ -180,7 +180,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
             {
                 TempData["ErrorMessage"] = "Não foi possível reenviar o código de confirmação.";
 
-                return RedirectToAction( nameof(ConfirmarEmail), new { email });
+                return RedirectToAction(nameof(ConfirmarEmail), new { email });
             }
 
             TempData["SuccessMessage"] = "Enviámos um novo código de confirmação para o seu email.";
@@ -296,14 +296,14 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RecuperarPassword( RecuperarPasswordViewModel model)
+        public async Task<IActionResult> RecuperarPassword(RecuperarPasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Auth/recuperar-password",
+            var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Auth/recuperar-password",
                 new
                 {
                     email = model.Email
@@ -311,7 +311,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (!response.IsSuccessStatusCode)
             {
-                ModelState.AddModelError( string.Empty, "Não foi possível processar o pedido. Tente novamente.");
+                ModelState.AddModelError(string.Empty, "Não foi possível processar o pedido. Tente novamente.");
 
                 return View(model);
             }
@@ -323,7 +323,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult ResetPassword( string email, string token)
+        public IActionResult ResetPassword(string email, string token)
         {
             if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token))
             {
@@ -340,14 +340,14 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ResetPassword( ResetPasswordViewModel model)
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Auth/reset-password",
+            var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Auth/reset-password",
                 new
                 {
                     email = model.Email,
@@ -389,21 +389,21 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                 Password = model.Password
             };
 
-            var apiResponse = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Auth/login", request);
+            var apiResponse = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Auth/login", request);
             if (!apiResponse.IsSuccessStatusCode)
             {
                 var erroApi = await apiResponse.Content.ReadAsStringAsync();
 
-                if (erroApi.Contains( "Confirme o seu email", StringComparison.OrdinalIgnoreCase))
+                if (erroApi.Contains("Confirme o seu email", StringComparison.OrdinalIgnoreCase))
                 {
-                    ModelState.AddModelError( string.Empty, "Confirme o seu email antes de iniciar sessão.");
+                    ModelState.AddModelError(string.Empty, "Confirme o seu email antes de iniciar sessão.");
 
                     ViewBag.EmailNaoConfirmado = true;
                     ViewBag.EmailConfirmacao = model.Email;
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty,"Email ou password incorretos.");
+                    ModelState.AddModelError(string.Empty, "Email ou password incorretos.");
                 }
 
                 return View(model);
@@ -413,7 +413,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (response == null)
             {
-                ModelState.AddModelError( string.Empty, "Não foi possível concluir o login.");
+                ModelState.AddModelError(string.Empty, "Não foi possível concluir o login.");
 
                 return View(model);
             }

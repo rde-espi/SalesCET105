@@ -175,7 +175,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 return Unauthorized();
             }
 
-            var resultado = await _updateFeedbackUseCase.ExecuteAsync( id, userId, User.IsInRole("Admin"), dto);
+            var resultado = await _updateFeedbackUseCase.ExecuteAsync(id, userId, User.IsInRole("Admin"), dto);
 
             if (!resultado.Sucesso)
             {
@@ -196,7 +196,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 return Unauthorized();
             }
 
-            var resultado = await _deleteFeedbackUseCase.ExecuteAsync( id, userId, User.IsInRole("Admin"));
+            var resultado = await _deleteFeedbackUseCase.ExecuteAsync(id, userId, User.IsInRole("Admin"));
 
             if (!resultado.Sucesso)
             {
@@ -208,7 +208,7 @@ namespace ProjetoFinalCet105.API.Controllers
 
         [Authorize(Roles = "Cliente,Admin")]
         [HttpGet("marcacao/{marcacaoId:int}")]
-        public async Task<ActionResult<FeedbackDTO>> GetFeedbackByMarcacao( int marcacaoId)
+        public async Task<ActionResult<FeedbackDTO>> GetFeedbackByMarcacao(int marcacaoId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -217,7 +217,7 @@ namespace ProjetoFinalCet105.API.Controllers
                 return Unauthorized();
             }
 
-            var resultado = await _getFeedbackByMarcacaoUseCase.ExecuteAsync( marcacaoId, userId, User.IsInRole("Admin"));
+            var resultado = await _getFeedbackByMarcacaoUseCase.ExecuteAsync(marcacaoId, userId, User.IsInRole("Admin"));
 
             if (!resultado.Sucesso)
             {

@@ -22,14 +22,14 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
             _configuration = configuration;
         }
 
-        public async Task<UseCaseResult<bool>> ExecuteAsync( RecuperarPasswordDTO dto)
+        public async Task<UseCaseResult<bool>> ExecuteAsync(RecuperarPasswordDTO dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Email))
             {
-                return UseCaseResult<bool>.Falha( "O email é obrigatório.");
+                return UseCaseResult<bool>.Falha("O email é obrigatório.");
             }
 
-            var user =   await _userManager.FindByEmailAsync(dto.Email);
+            var user = await _userManager.FindByEmailAsync(dto.Email);
 
             if (user == null)
             {
@@ -48,7 +48,7 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
 
                 if (string.IsNullOrWhiteSpace(webBaseUrl))
                 {
-                    throw new InvalidOperationException( "A configuração WebSettings:BaseUrl não foi definida.");
+                    throw new InvalidOperationException("A configuração WebSettings:BaseUrl não foi definida.");
                 }
 
                 var emailCodificado = Uri.EscapeDataString(user.Email!);

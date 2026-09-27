@@ -26,7 +26,7 @@ public class MarcacoesClienteController : Controller
     {
         try
         {
-            var marcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoClienteViewModel>>("api/Marcacoes")?? new List<MarcacaoClienteViewModel>();
+            var marcacoes = await _apiService.GetAuthenticatedAsync<List<MarcacaoClienteViewModel>>("api/Marcacoes") ?? new List<MarcacaoClienteViewModel>();
 
             marcacoes = marcacoes
                 .OrderByDescending(m => m.DataHoraInicio)
@@ -72,7 +72,7 @@ public class MarcacoesClienteController : Controller
         {
             TempData["ErrorMessage"] = "Não foi possível carregar as suas marcações.";
 
-            return View( new List<MarcacaoClienteViewModel>());
+            return View(new List<MarcacaoClienteViewModel>());
         }
     }
 
@@ -102,7 +102,7 @@ public class MarcacoesClienteController : Controller
 
             try
             {
-                feedback = await _apiService.GetAuthenticatedAsync<FeedbackViewModel>( $"api/Feedbacks/marcacao/{marcacao.Id}");
+                feedback = await _apiService.GetAuthenticatedAsync<FeedbackViewModel>($"api/Feedbacks/marcacao/{marcacao.Id}");
             }
             catch (HttpRequestException ex)
                 when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -488,7 +488,7 @@ public class MarcacoesClienteController : Controller
 
         try
         {
-            using var response = await _apiService.SendAuthenticatedAsync( HttpMethod.Delete, $"api/Marcacoes/{id}");
+            using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Delete, $"api/Marcacoes/{id}");
 
             if (!response.IsSuccessStatusCode)
             {
@@ -505,7 +505,7 @@ public class MarcacoesClienteController : Controller
         {
             TempData["ErrorMessage"] = "Não foi possível cancelar a marcação.";
 
-            return RedirectToAction( nameof(Detalhes), new { id });
+            return RedirectToAction(nameof(Detalhes), new { id });
         }
     }
 
@@ -519,7 +519,7 @@ public class MarcacoesClienteController : Controller
 
         try
         {
-            var marcacao = await _apiService.GetAuthenticatedAsync<MarcacaoClienteViewModel>( $"api/Marcacoes/{id}");
+            var marcacao = await _apiService.GetAuthenticatedAsync<MarcacaoClienteViewModel>($"api/Marcacoes/{id}");
 
             if (marcacao == null)
             {
@@ -560,7 +560,7 @@ public class MarcacoesClienteController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Editar( EditarMarcacaoViewModel model)
+    public async Task<IActionResult> Editar(EditarMarcacaoViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -578,7 +578,7 @@ public class MarcacoesClienteController : Controller
                 model.Observacoes
             };
 
-            using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Put, $"api/Marcacoes/{model.Id}",  dto);
+            using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Put, $"api/Marcacoes/{model.Id}", dto);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -597,11 +597,11 @@ public class MarcacoesClienteController : Controller
 
             TempData["SuccessMessage"] = "Marcação alterada com sucesso.";
 
-            return RedirectToAction( nameof(Detalhes),new { id = model.Id });
+            return RedirectToAction(nameof(Detalhes), new { id = model.Id });
         }
         catch
         {
-            ModelState.AddModelError( string.Empty, "Ocorreu um erro ao alterar a marcação.");
+            ModelState.AddModelError(string.Empty, "Ocorreu um erro ao alterar a marcação.");
 
             await CarregarServicosEdicao(model);
 

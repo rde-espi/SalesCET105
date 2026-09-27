@@ -39,17 +39,17 @@ public class FeedbackClienteController : Controller
                 return NotFound();
             }
 
-            if (!string.Equals( marcacao.EstadoMarcacaoNome, "Concluida", StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(marcacao.EstadoMarcacaoNome, "Concluida", StringComparison.OrdinalIgnoreCase))
             {
                 TempData["ErrorMessage"] = "Apenas marcações concluídas podem ser avaliadas.";
 
-                return RedirectToAction( "Detalhes", "MarcacoesCliente",  new { id = marcacaoId });
+                return RedirectToAction("Detalhes", "MarcacoesCliente", new { id = marcacaoId });
             }
 
             // Verifica se esta marcação já possui feedback.
             try
             {
-                var feedbackExistente = await _apiService.GetAuthenticatedAsync<FeedbackViewModel>( $"api/Feedbacks/marcacao/{marcacaoId}");
+                var feedbackExistente = await _apiService.GetAuthenticatedAsync<FeedbackViewModel>($"api/Feedbacks/marcacao/{marcacaoId}");
 
                 if (feedbackExistente != null)
                 {
@@ -77,14 +77,14 @@ public class FeedbackClienteController : Controller
         {
             TempData["ErrorMessage"] = "Não foi possível preparar a avaliação.";
 
-            return RedirectToAction( "Detalhes", "MarcacoesCliente", new { id = marcacaoId });
+            return RedirectToAction("Detalhes", "MarcacoesCliente", new { id = marcacaoId });
         }
     }
 
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Avaliar( FeedbackClienteViewModel model)
+    public async Task<IActionResult> Avaliar(FeedbackClienteViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -102,13 +102,13 @@ public class FeedbackClienteController : Controller
                 model.Comentario
             };
 
-            using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Post, "api/Feedbacks", request);
+            using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Feedbacks", request);
 
             if (response.IsSuccessStatusCode)
             {
                 TempData["SuccessMessage"] = "A sua avaliação foi enviada com sucesso.";
 
-                return RedirectToAction( "Detalhes", "MarcacoesCliente", new { id = model.MarcacaoId });
+                return RedirectToAction("Detalhes", "MarcacoesCliente", new { id = model.MarcacaoId });
             }
 
             var mensagem = await response.Content.ReadAsStringAsync();
@@ -121,7 +121,7 @@ public class FeedbackClienteController : Controller
         }
         catch
         {
-            ModelState.AddModelError( string.Empty, "Não foi possível enviar a avaliação.");
+            ModelState.AddModelError(string.Empty, "Não foi possível enviar a avaliação.");
         }
 
         await CarregarDadosMarcacao(model);
@@ -144,7 +144,7 @@ public class FeedbackClienteController : Controller
 
         try
         {
-            var feedback = await _apiService.GetAuthenticatedAsync<FeedbackViewModel>( $"api/Feedbacks/{id}");
+            var feedback = await _apiService.GetAuthenticatedAsync<FeedbackViewModel>($"api/Feedbacks/{id}");
 
             if (feedback == null)
             {
@@ -204,7 +204,7 @@ public class FeedbackClienteController : Controller
                 return NotFound();
             }
 
-            var marcacao = await _apiService.GetAuthenticatedAsync<MarcacaoClienteViewModel>( $"api/Marcacoes/{feedback.MarcacaoId}");
+            var marcacao = await _apiService.GetAuthenticatedAsync<MarcacaoClienteViewModel>($"api/Marcacoes/{feedback.MarcacaoId}");
 
             if (marcacao == null)
             {
@@ -231,14 +231,14 @@ public class FeedbackClienteController : Controller
         {
             TempData["ErrorMessage"] = "Não foi possível carregar a avaliação.";
 
-            return RedirectToAction( "Index", "MarcacoesCliente");
+            return RedirectToAction("Index", "MarcacoesCliente");
         }
     }
 
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Editar( int id, FeedbackClienteViewModel model)
+    public async Task<IActionResult> Editar(int id, FeedbackClienteViewModel model)
     {
         if (!model.Id.HasValue || id != model.Id.Value)
         {
@@ -260,13 +260,13 @@ public class FeedbackClienteController : Controller
                 model.Comentario
             };
 
-            using var response = await _apiService.SendAuthenticatedJsonAsync( HttpMethod.Put, $"api/Feedbacks/{id}", request);
+            using var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Put, $"api/Feedbacks/{id}", request);
 
             if (response.IsSuccessStatusCode)
             {
                 TempData["SuccessMessage"] = "A sua avaliação foi atualizada com sucesso.";
 
-                return RedirectToAction( nameof(Detalhes), new { id });
+                return RedirectToAction(nameof(Detalhes), new { id });
             }
 
             var mensagem = await response.Content.ReadAsStringAsync();
@@ -279,7 +279,7 @@ public class FeedbackClienteController : Controller
         }
         catch
         {
-            ModelState.AddModelError( string.Empty, "Não foi possível atualizar a avaliação.");
+            ModelState.AddModelError(string.Empty, "Não foi possível atualizar a avaliação.");
         }
 
         await CarregarDadosMarcacao(model);
@@ -294,7 +294,7 @@ public class FeedbackClienteController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Eliminar( int id, int marcacaoId)
+    public async Task<IActionResult> Eliminar(int id, int marcacaoId)
     {
         if (id <= 0 || marcacaoId <= 0)
         {
@@ -303,13 +303,13 @@ public class FeedbackClienteController : Controller
 
         try
         {
-            using var response = await _apiService.SendAuthenticatedJsonAsync<object>( HttpMethod.Delete, $"api/Feedbacks/{id}", null);
+            using var response = await _apiService.SendAuthenticatedJsonAsync<object>(HttpMethod.Delete, $"api/Feedbacks/{id}", null);
 
             if (response.IsSuccessStatusCode)
             {
                 TempData["SuccessMessage"] = "A sua avaliação foi eliminada.";
 
-                return RedirectToAction( "Detalhes", "MarcacoesCliente", new { id = marcacaoId });
+                return RedirectToAction("Detalhes", "MarcacoesCliente", new { id = marcacaoId });
             }
 
             TempData["ErrorMessage"] = "Não foi possível eliminar a avaliação.";
@@ -319,7 +319,7 @@ public class FeedbackClienteController : Controller
             TempData["ErrorMessage"] = "Não foi possível eliminar a avaliação.";
         }
 
-        return RedirectToAction( nameof(Detalhes), new { id });
+        return RedirectToAction(nameof(Detalhes), new { id });
     }
 
 
@@ -327,11 +327,11 @@ public class FeedbackClienteController : Controller
     // AUXILIAR
     // =========================
 
-    private async Task CarregarDadosMarcacao( FeedbackClienteViewModel model)
+    private async Task CarregarDadosMarcacao(FeedbackClienteViewModel model)
     {
         try
         {
-            var marcacao = await _apiService.GetAuthenticatedAsync<MarcacaoClienteViewModel>( $"api/Marcacoes/{model.MarcacaoId}");
+            var marcacao = await _apiService.GetAuthenticatedAsync<MarcacaoClienteViewModel>($"api/Marcacoes/{model.MarcacaoId}");
 
             if (marcacao == null)
             {
