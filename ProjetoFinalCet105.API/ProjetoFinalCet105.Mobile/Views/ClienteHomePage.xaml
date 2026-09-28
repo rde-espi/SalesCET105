@@ -37,6 +37,48 @@
                 TextColor="#817A70"
                 FontSize="14" />
             <Border
+    Margin="0,20,0,0"
+    Padding="20"
+    BackgroundColor="#191919"
+    Stroke="#191919"
+    StrokeThickness="1"
+    StrokeShape="RoundRectangle 18">
+
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer
+            Tapped="NovaMarcacao_Tapped" />
+                </Border.GestureRecognizers>
+
+                <Grid ColumnDefinitions="*,Auto">
+
+                    <VerticalStackLayout
+            Grid.Column="0"
+            Spacing="5">
+
+                        <Label
+                Text="Nova marcação"
+                TextColor="#FFFFFF"
+                FontSize="17"
+                FontAttributes="Bold" />
+
+                        <Label
+                Text="Agende o seu próximo serviço."
+                TextColor="#D8B071"
+                FontSize="13" />
+
+                    </VerticalStackLayout>
+
+                    <Label
+            Grid.Column="1"
+            Text="+"
+            TextColor="#D8B071"
+            FontSize="28"
+            VerticalOptions="Center" />
+
+                </Grid>
+
+            </Border>
+            <Border
                 Margin="0,20,0,0"
                 Padding="20"
                 BackgroundColor="White"

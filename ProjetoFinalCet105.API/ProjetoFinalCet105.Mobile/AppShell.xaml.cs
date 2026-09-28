@@ -14,5 +14,7 @@ public partial class AppShell : Shell
 
         //Rota Marcações
         Routing.RegisterRoute( nameof(MarcacoesPage), typeof(MarcacoesPage));
+        //Rota NovaMarcação
+        Routing.RegisterRoute( nameof(NovaMarcacaoPage), typeof(NovaMarcacaoPage));
     }
 }

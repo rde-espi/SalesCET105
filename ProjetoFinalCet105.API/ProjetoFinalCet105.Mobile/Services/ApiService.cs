@@ -50,6 +50,18 @@ public class ApiService
         return await response.Content.ReadFromJsonAsync<T>();
     }
 
+    public async Task<TResponse?> PostAsync<TRequest, TResponse>( string endpoint, TRequest dados)
+    {
+        await AdicionarTokenAsync();
+
+        var response = await _httpClient.PostAsJsonAsync( endpoint, dados);
+
+        if (!response.IsSuccessStatusCode)
+            return default;
+
+        return await response.Content.ReadFromJsonAsync<TResponse>();
+    }
+
 
 
 

@@ -12,4 +12,9 @@ public partial class ClienteHomePage : ContentPage
     {
         await Shell.Current.GoToAsync( nameof(MarcacoesPage));
     }
+
+    private async void NovaMarcacao_Tapped( object sender, TappedEventArgs e)
+    {
+        await Shell.Current.GoToAsync( nameof(NovaMarcacaoPage));
+    }
 }
