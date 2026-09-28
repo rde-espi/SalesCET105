@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ProjetoFinalCet105.Mobile.Views.MarcacoesPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:ProjetoFinalCet105.Mobile.Models"
+    BackgroundColor="#F8F5EF"
+    Shell.NavBarIsVisible="False">
+
+    <Grid
+        Padding="24,35,24,25"
+        RowDefinitions="Auto,*">
+
+        <!-- Cabeçalho -->
+        <Grid
+            Grid.Row="0"
+            ColumnDefinitions="Auto,*,Auto"
+            Margin="0,0,0,22">
+
+            <Button
+                Grid.Column="0"
+                Text="‹"
+                FontSize="30"
+                TextColor="#191919"
+                BackgroundColor="Transparent"
+                Padding="0"
+                WidthRequest="40"
+                HeightRequest="40"
+                Clicked="Voltar_Clicked" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Spacing="2"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="AS MINHAS"
+                    TextColor="#BEA256"
+                    FontSize="10"
+                    FontAttributes="Bold"
+                    CharacterSpacing="2" />
+
+                <Label
+                    Text="Marcações"
+                    TextColor="#191919"
+                    FontSize="26"
+                    FontAttributes="Bold" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+        <!-- Conteúdo -->
+        <Grid Grid.Row="1">
+
+            <ScrollView>
+                <VerticalStackLayout Spacing="24">
+
+                    <!-- PRÓXIMAS MARCAÇÕES -->
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label
+                Text="PRÓXIMAS"
+                TextColor="#BEA256"
+                FontSize="11"
+                FontAttributes="Bold"
+                CharacterSpacing="2" />
+
+                        <CollectionView
+                ItemsSource="{Binding ProximasMarcacoes}"
+                SelectionMode="None">
+
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Marcacao">
+
+                                    <Border
+                            Margin="0,0,0,12"
+                            Padding="18"
+                            BackgroundColor="White"
+                            Stroke="#E5DDD1"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 16">
+
+                                        <VerticalStackLayout Spacing="8">
+
+                                            <Label
+                                    Text="{Binding ServicoNome}"
+                                    TextColor="#191919"
+                                    FontSize="18"
+                                    FontAttributes="Bold" />
+
+                                            <Label
+                                    Text="{Binding FuncionarioNome,
+                                    StringFormat='Profissional: {0}'}"
+                                    TextColor="#817A70"
+                                    FontSize="13" />
+
+                                            <Grid ColumnDefinitions="*,Auto">
+
+                                                <Label
+                                        Text="{Binding DataHoraInicio,
+                                        StringFormat='{0:dd/MM/yyyy · HH:mm}'}"
+                                        TextColor="#535333"
+                                        FontSize="13"
+                                        FontAttributes="Bold" />
+
+                                                <Label
+                                        Grid.Column="1"
+                                        Text="{Binding Preco,
+                                        StringFormat='{}{0:F2} €'}"
+                                        TextColor="#BEA256"
+                                        FontSize="14"
+                                        FontAttributes="Bold" />
+
+                                            </Grid>
+
+                                            <Label
+                                    Text="{Binding EstadoMarcacaoNome}"
+                                    TextColor="#817A70"
+                                    FontSize="12" />
+
+                                        </VerticalStackLayout>
+
+                                    </Border>
+
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+
+                        </CollectionView>
+
+                    </VerticalStackLayout>
+
+
+                    <!-- HISTÓRICO -->
+                    <VerticalStackLayout Spacing="12">
+
+                        <Label
+                Text="HISTÓRICO"
+                TextColor="#BEA256"
+                FontSize="11"
+                FontAttributes="Bold"
+                CharacterSpacing="2" />
+
+                        <CollectionView
+                ItemsSource="{Binding HistoricoMarcacoes}"
+                SelectionMode="None">
+
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:Marcacao">
+
+                                    <Border
+                            Margin="0,0,0,12"
+                            Padding="18"
+                            BackgroundColor="White"
+                            Stroke="#E5DDD1"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 16">
+
+                                        <VerticalStackLayout Spacing="8">
+
+                                            <Label
+                                    Text="{Binding ServicoNome}"
+                                    TextColor="#191919"
+                                    FontSize="18"
+                                    FontAttributes="Bold" />
+
+                                            <Label
+                                    Text="{Binding FuncionarioNome,
+                                    StringFormat='Profissional: {0}'}"
+                                    TextColor="#817A70"
+                                    FontSize="13" />
+
+                                            <Grid ColumnDefinitions="*,Auto">
+
+                                                <Label
+                                        Text="{Binding DataHoraInicio,
+                                        StringFormat='{0:dd/MM/yyyy · HH:mm}'}"
+                                        TextColor="#535333"
+                                        FontSize="13"
+                                        FontAttributes="Bold" />
+
+                                                <Label
+                                        Grid.Column="1"
+                                        Text="{Binding Preco,
+                                        StringFormat='{}{0:F2} €'}"
+                                        TextColor="#BEA256"
+                                        FontSize="14"
+                                        FontAttributes="Bold" />
+
+                                            </Grid>
+
+                                            <Label
+                                    Text="{Binding EstadoMarcacaoNome}"
+                                    TextColor="#817A70"
+                                    FontSize="12" />
+
+                                        </VerticalStackLayout>
+
+                                    </Border>
+
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+
+                        </CollectionView>
+
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <!-- Loading -->
+            <ActivityIndicator
+                IsVisible="{Binding IsBusy}"
+                IsRunning="{Binding IsBusy}"
+                Color="#BEA256"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+
+            <!-- Erro -->
+            <VerticalStackLayout
+                IsVisible="{Binding TemErro}"
+                Spacing="12"
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="{Binding MensagemErro}"
+                    TextColor="#817A70"
+                    HorizontalTextAlignment="Center" />
+
+                <Button
+                    Text="Tentar novamente"
+                    Command="{Binding CarregarCommand}"
+                    BackgroundColor="#191919"
+                    TextColor="White"
+                    CornerRadius="12" />
+
+            </VerticalStackLayout>
+
+            <!-- Sem marcações -->
+            <VerticalStackLayout
+                IsVisible="{Binding SemMarcacoes}"
+                Spacing="8"
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
+
+                <Label
+                    Text="Ainda não tem marcações."
+                    TextColor="#191919"
+                    FontSize="17"
+                    FontAttributes="Bold"
+                    HorizontalTextAlignment="Center" />
+
+                <Label
+                    Text="As suas marcações aparecerão aqui."
+                    TextColor="#817A70"
+                    FontSize="13"
+                    HorizontalTextAlignment="Center" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

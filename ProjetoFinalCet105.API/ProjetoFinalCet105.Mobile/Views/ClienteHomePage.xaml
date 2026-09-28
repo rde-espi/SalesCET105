@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="ProjetoFinalCet105.Mobile.Views.ClienteHomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#F8F5EF"
+    Shell.NavBarIsVisible="False">
+
+    <Grid Padding="28,45,28,30">
+
+        <VerticalStackLayout Spacing="20">
+
+            <Image
+                Source="logo.png"
+                WidthRequest="170"
+                HeightRequest="90"
+                Aspect="AspectFit"
+                HorizontalOptions="Center" />
+
+            <Label
+                Text="ÁREA DO CLIENTE"
+                TextColor="#BEA256"
+                FontSize="11"
+                FontAttributes="Bold"
+                CharacterSpacing="2"
+                Margin="0,20,0,0" />
+
+            <Label
+                Text="Bem-vindo ao Infinity Beauty"
+                TextColor="#191919"
+                FontSize="28"
+                FontAttributes="Bold" />
+
+            <Label
+                Text="Gerencie as suas marcações e acompanhe as novidades."
+                TextColor="#817A70"
+                FontSize="14" />
+            <Border
+                Margin="0,20,0,0"
+                Padding="20"
+                BackgroundColor="White"
+                Stroke="#E5DDD1"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 18">
+
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer
+                        Tapped="Marcacoes_Tapped" />
+                </Border.GestureRecognizers>
+                
+                <Grid ColumnDefinitions="*,Auto">
+
+                    <VerticalStackLayout Grid.Column="0" Spacing="5">
+                        
+                        <Label
+                Text="As minhas marcações"
+                TextColor="#191919"
+                FontSize="17"
+                FontAttributes="Bold" />
+
+                        <Label
+                Text="Consulte as suas marcações e histórico."
+                TextColor="#817A70"
+                FontSize="13" />
+
+                    </VerticalStackLayout>
+
+                    <Label
+            Grid.Column="1"
+            Text="›"
+            TextColor="#BEA256"
+            FontSize="30"
+            VerticalOptions="Center" />
+
+                </Grid>
+
+            </Border>
+
+        </VerticalStackLayout>
+
+    </Grid>
+
+</ContentPage>

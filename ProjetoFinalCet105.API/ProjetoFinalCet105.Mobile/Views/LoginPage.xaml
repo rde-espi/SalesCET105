@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="ProjetoFinalCet105.Mobile.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewModels="clr-namespace:ProjetoFinalCet105.Mobile.ViewModels"
+    BackgroundColor="#F8F5EF"
+    Shell.NavBarIsVisible="False">
+
+    <ContentPage.BindingContext>
+        <viewModels:LoginViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <Grid
+            Padding="30,25,30,25"
+            RowDefinitions="Auto,*">
+
+            <!-- IDENTIDADE -->
+            <Image
+                Grid.Row="0"
+                Source="logo.png"
+                WidthRequest="250"
+                HeightRequest="130"
+                Aspect="AspectFit"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+
+            <!-- LOGIN -->
+            <VerticalStackLayout
+                Grid.Row="1"
+                Margin="0,55,0,0"
+                Spacing="22"
+                VerticalOptions="Start">
+
+                <VerticalStackLayout Spacing="7">
+
+                    <Label
+                        Text="BEM-VINDO"
+                        TextColor="#BEA256"
+                        FontSize="11"
+                        FontAttributes="Bold"
+                        CharacterSpacing="2" />
+
+                    <Label
+                        Text="Inicie sessão"
+                        TextColor="#191919"
+                        FontSize="32"
+                        FontAttributes="Bold" />
+
+                    <Label
+                        Text="Aceda às suas marcações e acompanhe os seus serviços."
+                        TextColor="#817A70"
+                        FontSize="14"
+                        LineHeight="1.4" />
+
+                </VerticalStackLayout>
+
+                <!-- ERRO -->
+                <Border
+                    IsVisible="{Binding TemErro}"
+                    BackgroundColor="#FFF3F1"
+                    Stroke="#E4C2BD"
+                    StrokeThickness="1"
+                    Padding="14">
+
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="10" />
+                    </Border.StrokeShape>
+
+                    <Label
+                        Text="{Binding MensagemErro}"
+                        TextColor="#A84B45"
+                        FontSize="13" />
+
+                </Border>
+
+                <!-- EMAIL -->
+                <VerticalStackLayout Spacing="7">
+
+                    <Label
+                        Text="Email"
+                        TextColor="#191919"
+                        FontSize="12"
+                        FontAttributes="Bold" />
+
+                    <Border
+                        BackgroundColor="#FFFFFF"
+                        Stroke="#E5DED2"
+                        StrokeThickness="1"
+                        Padding="4,0">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10" />
+                        </Border.StrokeShape>
+
+                        <Entry
+                            Text="{Binding Email}"
+                            Placeholder="nome@exemplo.pt"
+                            Keyboard="Email"
+                            TextColor="#191919"
+                            PlaceholderColor="#A49D93"
+                            BackgroundColor="Transparent"
+                            HeightRequest="52" />
+
+                    </Border>
+
+                </VerticalStackLayout>
+
+                <!-- PASSWORD -->
+                <VerticalStackLayout Spacing="7">
+
+                    <Label
+                        Text="Palavra-passe"
+                        TextColor="#191919"
+                        FontSize="12"
+                        FontAttributes="Bold" />
+
+                    <Border
+                        BackgroundColor="#FFFFFF"
+                        Stroke="#E5DED2"
+                        StrokeThickness="1"
+                        Padding="4,0">
+
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10" />
+                        </Border.StrokeShape>
+
+                        <Entry
+                            Text="{Binding Password}"
+                            Placeholder="Introduza a sua palavra-passe"
+                            IsPassword="True"
+                            TextColor="#191919"
+                            PlaceholderColor="#A49D93"
+                            BackgroundColor="Transparent"
+                            HeightRequest="52" />
+
+                    </Border>
+
+                </VerticalStackLayout>
+
+                <!-- BOTÃO -->
+                <Button
+                    Text="ENTRAR"
+                    Command="{Binding LoginCommand}"
+                    BackgroundColor="#191919"
+                    TextColor="#FFFFFF"
+                    FontSize="13"
+                    FontAttributes="Bold"
+                    CharacterSpacing="1.5"
+                    CornerRadius="10"
+                    HeightRequest="54"
+                    Margin="0,8,0,0" />
+
+                <ActivityIndicator
+                    IsVisible="{Binding IsBusy}"
+                    IsRunning="{Binding IsBusy}"
+                    Color="#BEA256"
+                    HorizontalOptions="Center" />
+
+                <Label
+                    Text="Aplicação móvel · Área do Cliente"
+                    TextColor="#817A70"
+                    FontSize="11"
+                    HorizontalTextAlignment="Center"
+                    Margin="0,12,0,0" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+    </ScrollView>
+
+</ContentPage>

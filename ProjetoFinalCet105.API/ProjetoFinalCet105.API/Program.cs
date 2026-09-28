@@ -394,7 +394,7 @@ if (app.Environment.IsDevelopment())
             "Projeto Final API"));
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseCors("WebApp");
 
