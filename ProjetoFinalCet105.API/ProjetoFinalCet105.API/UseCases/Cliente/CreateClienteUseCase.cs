@@ -109,7 +109,7 @@ namespace ProjetoFinalCet105.API.UseCases.Cliente
             };
             try
             {
-                await _authService.EnviarConfirmacaoEmailAsync(user);
+                await _authService.EnviarConfirmacaoEmailAsync(user,dto.ReturnUrl);
             }
             catch (Exception ex)
             {

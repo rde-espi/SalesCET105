@@ -49,7 +49,7 @@ namespace ProjetoFinalCet105.API.UseCases.AuthUsecase
 
             try
             {
-                await _authService.EnviarConfirmacaoEmailAsync(user);
+                await _authService.EnviarConfirmacaoEmailAsync(user,dto.ReturnUrl);
 
                 return UseCaseResult<bool>.Ok(true);
             }

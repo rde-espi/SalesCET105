@@ -63,7 +63,7 @@ namespace ProjetoFinalCet105.API.Services.AuthService
             };
         }
 
-        public async Task EnviarConfirmacaoEmailAsync(User user)
+        public async Task EnviarConfirmacaoEmailAsync(User user, string? returnUrl = null)
         {
             if (string.IsNullOrWhiteSpace(user.Email))
             {
@@ -91,6 +91,11 @@ namespace ProjetoFinalCet105.API.Services.AuthService
             var link =
                 $"{webBaseUrl}/Account/ConfirmarEmail" +
                 $"?email={emailCodificado}&token={tokenCodificado}";
+
+            if (!string.IsNullOrWhiteSpace(returnUrl))
+            {
+                link += $"&returnUrl={Uri.EscapeDataString(returnUrl)}";
+            }
 
             var mensagem = $@"
     <h2>Confirme o seu email</h2>

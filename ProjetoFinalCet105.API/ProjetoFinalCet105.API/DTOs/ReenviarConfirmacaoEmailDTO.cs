@@ -8,5 +8,6 @@ namespace ProjetoFinalCet105.API.DTOs
         [EmailAddress(ErrorMessage = "O email indicado não é válido.")]
         [MaxLength(256)]
         public string Email { get; set; } = string.Empty;
+        public string? ReturnUrl { get; set; }
     }
 }

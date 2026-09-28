@@ -122,7 +122,7 @@
                         Ainda não tem conta?
                     </span>
 
-                    <a asp-controller="Account" asp-action="Registar">
+                    <a asp-controller="Account" asp-action="Registar" asp-route-returnUrl="@ViewBag.ReturnUrl">
                         Criar conta
                     </a>
 

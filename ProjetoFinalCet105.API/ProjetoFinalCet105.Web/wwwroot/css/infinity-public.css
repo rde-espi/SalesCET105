@@ -1916,3 +1916,961 @@ main {
         color: #191919;
         text-decoration: underline;
     }
+
+/* =========================================================
+   INFINITY BEAUTY — SERVIÇOS PÚBLICOS
+   ========================================================= */
+
+.ib-services-page {
+    min-height: 700px;
+    padding-bottom: 80px;
+    background: linear-gradient(180deg, #f8f5ef 0%, #f5f1e9 100%);
+}
+
+
+/* HERO */
+
+.ib-services-hero {
+    min-height: 230px;
+    padding: 62px 30px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    background: linear-gradient( 90deg, rgba(15, 14, 12, 0.55) 0%, rgba(18, 16, 13, 0.78) 35%, rgba(18, 16, 13, 0.82) 50%, rgba(18, 16, 13, 0.78) 65%, rgba(15, 14, 12, 0.55) 100% ), url("/images/services-hero.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-bottom: 1px solid rgba(216, 176, 113, 0.18);
+}
+
+    .ib-services-hero .ib-section-eyebrow {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--ib-gold);
+        font-size: 0.62rem;
+        font-weight: 600;
+        letter-spacing: 4px;
+    }
+
+    .ib-services-hero h1 {
+        margin: 0;
+        color: #ffffff;
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(2.8rem, 4vw, 4rem);
+        font-weight: 500;
+        line-height: 1;
+    }
+
+    .ib-services-hero p {
+        max-width: 600px;
+        margin: 16px auto 0;
+        color: rgba(255, 255, 255, 0.65);
+        font-size: 0.78rem;
+        line-height: 1.7;
+    }
+
+
+/* TOOLBAR / PESQUISA */
+
+.ib-services-toolbar {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 34px 50px 18px;
+}
+
+.ib-services-search {
+    width: 100%;
+    max-width: 520px;
+    height: 48px;
+    margin: 0 auto;
+    padding: 0 16px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid #ded6ca;
+    border-radius: 5px;
+    box-shadow: 0 4px 18px rgba(40, 34, 27, 0.035);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .ib-services-search:focus-within {
+        border-color: #c8a35f;
+        box-shadow: 0 0 0 3px rgba(216, 176, 113, 0.10);
+    }
+
+.ib-services-search-icon {
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    fill: none;
+    stroke: #a77b3d;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.ib-services-search input {
+    min-width: 0;
+    flex: 1;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #2b2824;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.75rem;
+}
+
+    .ib-services-search input::placeholder {
+        color: #9c958b;
+    }
+
+.ib-services-search-clear {
+    color: #8b8379;
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+    .ib-services-search-clear:hover {
+        color: var(--ib-gold-dark);
+    }
+
+
+/* CATEGORIAS */
+
+.ib-services-categories {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 8px 50px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+    .ib-services-categories a {
+        min-height: 36px;
+        padding: 0 17px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(92, 78, 59, 0.17);
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.55);
+        color: #665f56;
+        font-size: 0.67rem;
+        font-weight: 500;
+        transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+        .ib-services-categories a:hover {
+            color: #8f672f;
+            border-color: rgba(190, 162, 86, 0.48);
+            background: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .ib-services-categories a.active {
+            color: #191919;
+            border-color: var(--ib-gold);
+            background: linear-gradient(135deg, #edcb7c, #d8b071);
+            font-weight: 600;
+        }
+
+
+/* CONTEÚDO */
+
+.ib-services-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 15px 50px 0;
+}
+
+
+/* CABEÇALHO DE CATEGORIA */
+
+.ib-services-category-section {
+    margin-bottom: 58px;
+}
+
+.ib-services-category-header,
+.ib-services-result-header {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+    .ib-services-category-header .ib-section-eyebrow,
+    .ib-services-result-header .ib-section-eyebrow {
+        display: block;
+        margin-bottom: 6px;
+        color: #a97e42;
+        font-size: 0.58rem;
+        font-weight: 600;
+        letter-spacing: 3.2px;
+    }
+
+    .ib-services-category-header h2,
+    .ib-services-result-header h2 {
+        margin: 0;
+        color: #24211d;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 2.4rem;
+        font-weight: 500;
+        line-height: 1;
+    }
+
+.ib-services-view-category {
+    margin-bottom: 5px;
+    padding-bottom: 3px;
+    color: #936c36;
+    border-bottom: 1px solid rgba(147, 108, 54, 0.30);
+    font-size: 0.65rem;
+    font-weight: 500;
+    transition: color 0.2s ease, padding-right 0.2s ease;
+}
+
+    .ib-services-view-category:hover {
+        color: #c19552;
+        padding-right: 4px;
+    }
+
+.ib-services-result-count {
+    margin-bottom: 5px;
+    color: #8b8379;
+    font-size: 0.65rem;
+}
+
+
+/* GRID */
+
+.ib-services-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+}
+
+
+/* CARD */
+
+.ib-service-card {
+    min-width: 0;
+    overflow: hidden;
+    background: #fffdf9;
+    border: 1px solid rgba(86, 73, 53, 0.13);
+    border-radius: 5px;
+    box-shadow: 0 4px 18px rgba(43, 37, 29, 0.035);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+    .ib-service-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(190, 162, 86, 0.40);
+        box-shadow: 0 14px 32px rgba(43, 37, 29, 0.09);
+    }
+
+
+/* IMAGEM */
+
+.ib-service-card-image {
+    height: 175px;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient( 135deg, #27231e 0%, #3a3127 100% );
+}
+
+    .ib-service-card-image::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient( 180deg, transparent 55%, rgba(20, 18, 15, 0.12) 100% );
+        pointer-events: none;
+    }
+
+
+/* CORPO DO CARD */
+
+.ib-service-card-body {
+    min-height: 120px;
+    padding: 17px 18px 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ib-service-card-category {
+    margin-bottom: 7px;
+    color: #a47a3f;
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+
+.ib-service-card h3 {
+    margin: 0;
+    color: #29251f;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.15;
+}
+
+.ib-service-card-footer {
+    margin-top: auto;
+    padding-top: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    border-top: 1px solid rgba(86, 73, 53, 0.09);
+}
+
+    .ib-service-card-footer span {
+        color: #847d73;
+        font-size: 0.62rem;
+    }
+
+    .ib-service-card-footer strong {
+        color: #9a7138;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+
+/* EMPTY */
+
+.ib-services-content .ib-services-empty {
+    max-width: 650px;
+    margin: 35px auto;
+    padding: 55px 35px;
+    border: 1px solid #e4ddd2;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.75);
+}
+
+    .ib-services-content .ib-services-empty h3 {
+        margin: 0 0 10px;
+        color: #29251f;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+
+    .ib-services-content .ib-services-empty p {
+        margin: 0 0 20px;
+        font-size: 0.72rem;
+        line-height: 1.6;
+    }
+
+    .ib-services-content .ib-services-empty a {
+        color: #9b7138;
+        font-size: 0.68rem;
+        font-weight: 600;
+    }
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+
+    .ib-services-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+
+    .ib-services-hero {
+        padding: 48px 22px 40px;
+    }
+
+    .ib-services-toolbar {
+        padding: 28px 20px 15px;
+    }
+
+    .ib-services-categories {
+        padding: 8px 20px 25px;
+        justify-content: flex-start;
+    }
+
+    .ib-services-content {
+        padding: 10px 20px 0;
+    }
+
+    .ib-services-category-header,
+    .ib-services-result-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+        .ib-services-category-header h2,
+        .ib-services-result-header h2 {
+            font-size: 2rem;
+        }
+
+    .ib-services-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-service-card-image {
+        height: 210px;
+    }
+}
+
+.ib-service-card-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.45s ease;
+}
+
+.ib-service-card:hover .ib-service-card-image img {
+    transform: scale(1.04);
+}
+.ib-service-card-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.45s ease;
+}
+
+.ib-service-card:hover .ib-service-card-image img {
+    transform: scale(1.04);
+}
+
+
+/* Placeholder quando o serviço não possui imagem */
+
+.ib-service-card-placeholder {
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 25px;
+    box-sizing: border-box;
+    background: linear-gradient( 135deg, #24211d 0%, #332b22 55%, #201d19 100% );
+    text-align: center;
+}
+
+    .ib-service-card-placeholder span {
+        position: relative;
+        z-index: 1;
+        color: var(--ib-gold);
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.35rem;
+        font-weight: 500;
+        line-height: 1.2;
+        letter-spacing: 0.5px;
+    }
+
+    .ib-service-card-placeholder::before {
+        content: "";
+        position: absolute;
+        width: 55px;
+        height: 1px;
+        top: 50%;
+        left: 50%;
+        background: rgba(216, 176, 113, 0.25);
+        transform: translate(-50%, -50%) rotate(-45deg);
+    }
+
+/* =========================================================
+   PUBLIC — DETALHES DO SERVIÇO
+   ========================================================= */
+
+.ib-service-detail-page {
+    width: min(1180px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 42px 0 90px;
+}
+
+
+/* Voltar */
+.ib-service-detail-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 30px;
+    color: var(--ib-gray);
+    font-size: 0.88rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+    .ib-service-detail-back svg {
+        width: 17px;
+        height: 17px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .ib-service-detail-back:hover {
+        color: var(--ib-gold-dark);
+        transform: translateX(-3px);
+    }
+
+
+/* Hero */
+.ib-service-detail-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+    gap: 64px;
+    align-items: center;
+}
+
+
+/* Imagem */
+.ib-service-detail-image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 24px;
+    background: #eee9e1;
+    box-shadow: 0 24px 60px rgba(25, 25, 25, 0.10);
+}
+
+    .ib-service-detail-image img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+
+/* Fallback da imagem */
+.ib-service-detail-image-fallback {
+    display: none;
+    position: absolute;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient( 145deg, #eee8de, #ded3c2 );
+}
+
+    .ib-service-detail-image-fallback span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 92px;
+        height: 92px;
+        border-radius: 50%;
+        border: 1px solid rgba(190, 162, 86, 0.45);
+        color: var(--ib-gold-dark);
+        font-size: 2rem;
+        font-weight: 500;
+    }
+
+
+/* Conteúdo */
+.ib-service-detail-content {
+    min-width: 0;
+}
+
+    .ib-service-detail-content .ib-section-eyebrow {
+        display: block;
+        margin-bottom: 14px;
+    }
+
+    .ib-service-detail-content h1 {
+        margin: 0 0 20px;
+        color: var(--ib-black);
+        font-size: clamp(2.2rem, 4vw, 3.6rem);
+        font-weight: 500;
+        line-height: 1.08;
+        letter-spacing: -0.035em;
+    }
+
+.ib-service-detail-description {
+    max-width: 580px;
+    margin: 0;
+    color: var(--ib-gray);
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+
+/* Duração + preço */
+.ib-service-detail-info {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 32px;
+}
+
+.ib-service-detail-info-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 82px;
+    padding: 16px 18px;
+    border: 1px solid var(--ib-border);
+    border-radius: 16px;
+    background: var(--ib-white);
+}
+
+.ib-service-detail-info-icon {
+    flex: 0 0 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(216, 176, 113, 0.11);
+    color: var(--ib-gold-dark);
+}
+
+    .ib-service-detail-info-icon svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+.ib-service-detail-info-item span {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--ib-text-muted);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.ib-service-detail-info-item strong {
+    color: var(--ib-black);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+
+/* Nota */
+.ib-service-detail-note {
+    margin-top: 18px;
+    padding-left: 13px;
+    border-left: 2px solid var(--ib-gold);
+    color: var(--ib-text-muted);
+    font-size: 0.82rem;
+    line-height: 1.6;
+}
+
+
+/* Responsivo */
+@media (max-width: 900px) {
+
+    .ib-service-detail-page {
+        width: min(100% - 32px, 680px);
+        padding-top: 28px;
+    }
+
+    .ib-service-detail-hero {
+        grid-template-columns: 1fr;
+        gap: 34px;
+    }
+
+    .ib-service-detail-image {
+        aspect-ratio: 16 / 11;
+    }
+}
+
+
+@media (max-width: 560px) {
+
+    .ib-service-detail-page {
+        width: calc(100% - 24px);
+        padding-bottom: 60px;
+    }
+
+    .ib-service-detail-content h1 {
+        font-size: 2.15rem;
+    }
+
+    .ib-service-detail-info {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-service-detail-image {
+        border-radius: 18px;
+        aspect-ratio: 4 / 3;
+    }
+}
+
+.ib-service-detail-actions {
+    margin-top: 28px;
+}
+
+.ib-service-detail-book {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 0 24px;
+    border-radius: 8px;
+    background: var(--ib-gold);
+    color: var(--ib-black);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+    .ib-service-detail-book svg {
+        width: 17px;
+        height: 17px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+
+    .ib-service-detail-book:hover {
+        transform: translateY(-2px);
+        background: var(--ib-gold-dark);
+        box-shadow: 0 10px 24px rgba(190, 162, 86, 0.22);
+    }
+
+/* Card de serviço clicável */
+.ib-service-card[role="link"] {
+    cursor: pointer;
+}
+
+    .ib-service-card[role="link"]:focus-visible {
+        outline: 2px solid var(--ib-gold);
+        outline-offset: 4px;
+    }
+
+/* =========================================================
+   PUBLIC — PROFISSIONAIS DO SERVIÇO
+   ========================================================= */
+
+.ib-service-professionals {
+    margin-top: 82px;
+    padding-top: 58px;
+    border-top: 1px solid var(--ib-border);
+}
+
+.ib-service-professionals-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+    .ib-service-professionals-heading h2 {
+        margin: 8px 0 8px;
+        color: var(--ib-black);
+        font-size: clamp(1.8rem, 3vw, 2.5rem);
+        font-weight: 500;
+        line-height: 1.15;
+        letter-spacing: -0.025em;
+    }
+
+    .ib-service-professionals-heading p {
+        margin: 0;
+        color: var(--ib-text-muted);
+        font-size: 0.95rem;
+        line-height: 1.65;
+    }
+
+.ib-service-professionals-count {
+    flex: 0 0 auto;
+    padding: 8px 13px;
+    border: 1px solid var(--ib-border);
+    border-radius: 999px;
+    color: var(--ib-text-muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+
+/* Grid */
+.ib-service-professionals-grid {
+    display: grid;
+    grid-template-columns: repeat( auto-fit, minmax(min(100%, 300px), 1fr) );
+    gap: 18px;
+}
+
+.ib-service-professional-card {
+    max-width: 420px;
+}
+
+
+/* Card */
+.ib-service-professional-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 17px;
+    min-width: 0;
+    padding: 22px;
+    border: 1px solid var(--ib-border);
+    border-radius: 18px;
+    background: var(--ib-white);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+    .ib-service-professional-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(216, 176, 113, 0.5);
+        box-shadow: 0 14px 34px rgba(25, 25, 25, 0.07);
+    }
+
+
+/* Avatar */
+.ib-service-professional-avatar {
+    flex: 0 0 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border: 1px solid rgba(216, 176, 113, 0.38);
+    border-radius: 50%;
+    background: rgba(216, 176, 113, 0.10);
+    color: var(--ib-gold-dark);
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    overflow: hidden;
+}
+
+    .ib-service-professional-avatar img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        border-radius: 50%;
+    }
+
+.ib-service-professional-avatar-fallback {
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+
+/* Conteúdo */
+.ib-service-professional-content {
+    flex: 1;
+    min-width: 0;
+}
+
+    .ib-service-professional-content h3 {
+        margin: 2px 0 7px;
+        color: var(--ib-black);
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+.ib-service-professional-bio {
+    display: -webkit-box;
+    overflow: hidden;
+    margin: 0 0 15px;
+    color: var(--ib-text-muted);
+    font-size: 0.82rem;
+    line-height: 1.55;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+
+/* Escolher */
+.ib-service-professional-book {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 6px;
+    color: var(--ib-gold-dark);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+    .ib-service-professional-book::after {
+        content: "→";
+        margin-left: 7px;
+        transition: transform 0.2s ease;
+    }
+
+    .ib-service-professional-book:hover::after {
+        transform: translateX(4px);
+    }
+
+
+/* Responsivo */
+@media (max-width: 1000px) {
+    .ib-service-professionals-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .ib-service-professionals {
+        margin-top: 58px;
+        padding-top: 42px;
+    }
+
+    .ib-service-professionals-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .ib-service-professionals-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Avaliação do profissional */
+.ib-service-professional-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0 0 10px;
+    color: var(--ib-text-muted);
+    font-size: 0.78rem;
+    line-height: 1;
+}
+
+    .ib-service-professional-rating strong {
+        color: var(--ib-black);
+        font-size: 0.82rem;
+        font-weight: 700;
+    }
+
+.ib-service-professional-star {
+    color: var(--ib-gold-dark);
+    font-size: 0.9rem;
+    line-height: 1;
+}
+
+.ib-service-professional-rating.is-empty {
+    color: var(--ib-text-muted);
+    font-size: 0.76rem;
+    font-style: italic;
+}

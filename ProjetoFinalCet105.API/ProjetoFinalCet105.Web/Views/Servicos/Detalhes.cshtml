@@ -1,0 +1,246 @@
+﻿@model ProjetoFinalCet105.Web.Models.ServicoViewModel
+
+@{
+    ViewData["Title"] = Model.Nome;
+    Layout = "_PublicLayout";
+
+var profissionais = ViewBag.Profissionais as List<FuncionarioMarcacaoClienteViewModel> ?? new List<FuncionarioMarcacaoClienteViewModel>();}
+
+<div class="ib-service-detail-page">
+
+    <!-- VOLTAR -->
+    <a asp-controller="Servicos"
+       asp-action="Index"
+       class="ib-service-detail-back">
+
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 12H5"></path>
+            <path d="M11 6l-6 6 6 6"></path>
+        </svg>
+
+        Voltar aos serviços
+    </a>
+
+
+    <!-- SERVIÇO -->
+    <section class="ib-service-detail-hero">
+
+        <!-- IMAGEM -->
+        <div class="ib-service-detail-image">
+
+            <img src="@Url.Action(
+                          "Imagem",
+                          "Servicos",
+                          new { id = Model.Id })"
+                 alt="@Model.Nome"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+
+            <div class="ib-service-detail-image-fallback">
+                <span>
+                    @(string.IsNullOrWhiteSpace(Model.Nome)
+                        ? "IB"
+                        : Model.Nome.Substring(0, 1).ToUpper())
+                </span>
+            </div>
+
+        </div>
+
+
+        <!-- INFORMAÇÃO -->
+        <div class="ib-service-detail-content">
+
+            <span class="ib-section-eyebrow">
+                @Model.CategoriaNome
+            </span>
+
+            <h1>@Model.Nome</h1>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Descricao))
+            {
+                <p class="ib-service-detail-description">
+                    @Model.Descricao
+                </p>
+            }
+
+
+            <div class="ib-service-detail-info">
+
+                <div class="ib-service-detail-info-item">
+
+                    <div class="ib-service-detail-info-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M12 7v5l3 2"></path>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <span>Duração</span>
+                        <strong>@Model.DuracaoMinutos min</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="ib-service-detail-info-item">
+
+                    <div class="ib-service-detail-info-icon">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <path d="M15 8.5a4 4 0 1 0 0 7"></path>
+                            <path d="M7.5 11h6M7.5 13h5"></path>
+                        </svg>
+                    </div>
+
+                    <div>
+                        <span>Preço base</span>
+                        <strong>@Model.Preco.ToString("N2") €</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="ib-service-detail-note">
+                O preço e a duração podem variar consoante o profissional selecionado.
+            </div>
+
+            <div class="ib-service-detail-actions">
+
+    <a asp-controller="MarcacoesCliente"
+       asp-action="Nova"
+       asp-route-servicoId="@Model.Id"
+       class="ib-service-detail-book">
+
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+            <path d="M16 3v4M8 3v4M3 10h18"></path>
+        </svg>
+
+        Marcar este serviço
+    </a>
+
+</div>
+
+        </div>
+
+    </section>
+
+    @if (profissionais.Count > 0)
+{
+    <section class="ib-service-professionals">
+
+        <header class="ib-service-professionals-heading">
+            <div>
+                <span class="ib-section-eyebrow">A NOSSA EQUIPA</span>
+
+                <h2>Profissionais deste serviço</h2>
+
+                <p>
+                    Conheça os profissionais disponíveis para realizar este serviço.
+                </p>
+            </div>
+
+            <span class="ib-service-professionals-count">
+                @profissionais.Count
+                @(profissionais.Count == 1
+                    ? "profissional"
+                    : "profissionais")
+            </span>
+        </header>
+
+
+        <div class="ib-service-professionals-grid">
+
+            @foreach (var profissional in profissionais)
+            {
+                var partesNome =
+                    (profissional.NomeCompleto ?? "")
+                    .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+                var iniciais =
+                    partesNome.Length == 0
+                        ? "IB"
+                        : partesNome.Length == 1
+                            ? partesNome[0][0].ToString().ToUpper()
+                            : $"{partesNome[0][0]}{partesNome[^1][0]}".ToUpper();
+
+                <article class="ib-service-professional-card">
+
+                    <div class="ib-service-professional-avatar">
+
+    @if (!string.IsNullOrWhiteSpace(profissional.FotografiaUrl))
+    {
+        <img src="@profissional.FotografiaUrl"
+             alt="@profissional.NomeCompleto"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+
+        <span class="ib-service-professional-avatar-fallback"
+              style="display:none;">
+            @iniciais
+        </span>
+    }
+    else
+    {
+        <span class="ib-service-professional-avatar-fallback">
+            @iniciais
+        </span>
+    }
+
+</div>
+
+                    <div class="ib-service-professional-content">
+
+                        <h3>@profissional.NomeCompleto</h3>
+
+                        @if (profissional.TotalAvaliacoes > 0)
+                        {
+                            <div class="ib-service-professional-rating">
+                                <span class="ib-service-professional-star">★</span>
+                                
+                                <strong>
+                                    @profissional.MediaAvaliacao.ToString("0.0")
+                                    </strong>
+
+        <span>
+            · @profissional.TotalAvaliacoes
+            @(profissional.TotalAvaliacoes == 1
+                ? "avaliação"
+                : "avaliações")
+        </span>
+    </div>
+}
+else
+{
+    <div class="ib-service-professional-rating is-empty">
+        Ainda sem avaliações
+    </div>
+}
+
+                        @if (!string.IsNullOrWhiteSpace(profissional.Biografia))
+                        {
+                            <p class="ib-service-professional-bio">
+                                @profissional.Biografia
+                            </p>
+                        }
+
+                        <a asp-controller="MarcacoesCliente"
+                           asp-action="Nova"
+                           asp-route-servicoId="@Model.Id"
+                           asp-route-funcionarioId="@profissional.Id"
+                           class="ib-service-professional-book">
+                            Escolher profissional
+                        </a>
+
+                    </div>
+
+                </article>
+            }
+
+        </div>
+
+    </section>
+}
+
+</div>

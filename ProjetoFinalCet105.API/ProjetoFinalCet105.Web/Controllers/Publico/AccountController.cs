@@ -21,15 +21,18 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Registar()
+        public IActionResult Registar(string? returnUrl = null)
         {
+            ViewBag.ReturnUrl = returnUrl;
             return View(new RegistarClienteViewModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Registar(RegistarClienteViewModel model)
+        public async Task<IActionResult> Registar(RegistarClienteViewModel model, string? returnUrl = null)
         {
+            ViewBag.ReturnUrl = returnUrl;
+
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -42,6 +45,11 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
             content.Add(new StringContent(model.Email), "Email");
 
             content.Add(new StringContent(model.Password), "Password");
+
+            if (!string.IsNullOrWhiteSpace(returnUrl))
+            {
+                content.Add( new StringContent(returnUrl), "ReturnUrl");
+            }
 
             if (!string.IsNullOrWhiteSpace(model.Telefone))
             {
@@ -95,14 +103,15 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                 return View(model);
             }
 
-            return RedirectToAction(nameof(ConfirmarEmail), new { email = model.Email });
+            return RedirectToAction(nameof(ConfirmarEmail), new { email = model.Email, returnUrl = returnUrl });
         }
 
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ConfirmarEmail(string email, string? token = null)
+        public async Task<IActionResult> ConfirmarEmail(string email, string? token = null ,string? returnUrl = null)
         {
+            ViewBag.ReturnUrl = returnUrl;
 
             if (string.IsNullOrWhiteSpace(token))
             {
@@ -130,12 +139,12 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             TempData["SuccessMessage"] = "Conta confirmada com sucesso. Já pode iniciar sessão.";
 
-            return RedirectToAction(nameof(Login));
+            return RedirectToAction(nameof(Login), new { returnUrl = returnUrl });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ConfirmarEmail(ConfirmarEmailViewModel model)
+        public async Task<IActionResult> ConfirmarEmail(ConfirmarEmailViewModel model, string? returnUrl = null)
         {
             if (!ModelState.IsValid)
             {
@@ -158,12 +167,12 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             TempData["SuccessMessage"] = "Conta confirmada com sucesso. Já pode iniciar sessão.";
 
-            return RedirectToAction(nameof(Login));
+            return RedirectToAction(nameof(Login), new { returnUrl = returnUrl });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ReenviarCodigoConfirmacao(string email)
+        public async Task<IActionResult> ReenviarCodigoConfirmacao(string email, string? returnUrl = null)
         {
             if (string.IsNullOrWhiteSpace(email))
             {
@@ -173,19 +182,20 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
             var response = await _apiService.SendAuthenticatedJsonAsync(HttpMethod.Post, "api/Auth/reenviar-confirmacao-email",
                 new
                 {
-                    email
+                    email,
+                    returnUrl
                 });
 
             if (!response.IsSuccessStatusCode)
             {
                 TempData["ErrorMessage"] = "Não foi possível reenviar o código de confirmação.";
 
-                return RedirectToAction(nameof(ConfirmarEmail), new { email });
+                return RedirectToAction(nameof(ConfirmarEmail), new { email,returnUrl });
             }
 
             TempData["SuccessMessage"] = "Enviámos um novo código de confirmação para o seu email.";
 
-            return RedirectToAction(nameof(ConfirmarEmail), new { email });
+            return RedirectToAction(nameof(ConfirmarEmail), new { email,returnUrl });
         }
 
 
@@ -388,6 +398,8 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
+            ViewBag.ReturnUrl = returnUrl;
+
             if (!ModelState.IsValid)
             {
                 return View(model);

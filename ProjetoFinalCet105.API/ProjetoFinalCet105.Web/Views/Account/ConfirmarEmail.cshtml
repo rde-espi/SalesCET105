@@ -44,10 +44,14 @@
           style="display: inline;">
 
         @Html.AntiForgeryToken()
-
+        
         <input type="hidden"
                name="email"
                value="@Model.Email" />
+
+        <input type="hidden"
+       name="returnUrl"
+       value="@ViewBag.ReturnUrl" />
 
         <button type="submit"
                 class="ib-link-button">
@@ -60,8 +64,7 @@ Reenviar email de confirmação
 
                 <div class="ib-login-register">
 
-                    <a asp-controller="Account"
-                       asp-action="Login">
+                    <a asp-controller="Account" asp-action="Login" asp-route-returnUrl="@ViewBag.ReturnUrl">
                         Voltar ao login
                     </a>
 
