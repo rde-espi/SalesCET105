@@ -1,0 +1,133 @@
+﻿@model ProjetoFinalCet105.Web.Models.ContactoViewModel
+
+@{
+    ViewData["Title"] = "Contactos";
+    Layout = "_PublicLayout";
+}
+
+<section class="ib-contact-page">
+
+    <header class="ib-contact-hero">
+        <span class="ib-section-eyebrow">CONTACTOS</span>
+        <h1>Estamos aqui para ajudar.</h1>
+        <p>
+            Tem alguma questão sobre os nossos serviços?
+            Envie-nos uma mensagem através do formulário.
+        </p>
+    </header>
+
+    <div class="ib-contact-layout">
+
+        <aside class="ib-contact-info">
+
+            <span class="ib-section-eyebrow">FALE CONNOSCO</span>
+
+            <h2>Entre em contacto</h2>
+
+            <p class="ib-contact-info-text">
+                Utilize o formulário para nos enviar a sua questão.
+                A nossa equipa responderá através do endereço de email indicado.
+            </p>
+
+            <div class="ib-contact-detail">
+                <span class="ib-contact-detail-label">Email</span>
+                <strong>Infinity Beauty</strong>
+                <p>
+                    O endereço utilizado nesta demonstração pertence
+                    ao ambiente académico do projeto.
+                </p>
+            </div>
+
+            <div class="ib-contact-detail">
+                <span class="ib-contact-detail-label">Atendimento</span>
+                <strong>Segunda a sábado</strong>
+                <p>09:00 — 19:00</p>
+            </div>
+
+            <div class="ib-contact-academic">
+                <span>IB</span>
+                <p>
+                    O Infinity Beauty é um projeto académico.
+                    Os contactos e horários apresentados destinam-se
+                    à demonstração das funcionalidades da aplicação.
+                </p>
+            </div>
+
+        </aside>
+
+        <div class="ib-contact-form-card">
+
+            <span class="ib-section-eyebrow">ENVIE UMA MENSAGEM</span>
+
+            <h2>Como podemos ajudar?</h2>
+
+            @if (TempData["ContactoSuccessMessage"] != null)
+            {
+                <div class="ib-contact-success">
+                    <span>✓</span>
+                    <p>@TempData["ContactoSuccessMessage"]</p>
+                </div>
+            }
+
+            <form asp-controller="Home"
+                  asp-action="Contactos"
+                  method="post"
+                  class="ib-contact-form">
+
+                @Html.AntiForgeryToken()
+
+                <div asp-validation-summary="ModelOnly"
+                     class="ib-contact-validation"></div>
+
+                <div class="ib-contact-field">
+                    <label asp-for="Nome"></label>
+                    <input asp-for="Nome"
+                           placeholder="O seu nome" />
+                    <span asp-validation-for="Nome"></span>
+                </div>
+
+                <div class="ib-contact-field">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email"
+                           placeholder="nome@exemplo.pt" />
+                    <span asp-validation-for="Email"></span>
+                </div>
+
+                <div class="ib-contact-field">
+                    <label asp-for="Assunto"></label>
+                    <input asp-for="Assunto"
+                           placeholder="Como podemos ajudar?" />
+                    <span asp-validation-for="Assunto"></span>
+                </div>
+
+                <div class="ib-contact-field">
+                    <label asp-for="Mensagem"></label>
+                    <textarea asp-for="Mensagem"
+                              rows="6"
+                              placeholder="Escreva aqui a sua mensagem..."></textarea>
+                    <span asp-validation-for="Mensagem"></span>
+                </div>
+
+                <div class="ib-contact-form-footer">
+                    <small>
+                        Ao enviar esta mensagem, os dados introduzidos serão
+                        utilizados apenas para responder ao seu contacto.
+                    </small>
+
+                    <button type="submit" class="ib-contact-submit">
+                        Enviar mensagem
+                        <span>→</span>
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

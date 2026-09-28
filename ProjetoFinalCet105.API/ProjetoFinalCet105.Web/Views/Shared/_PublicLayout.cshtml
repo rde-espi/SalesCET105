@@ -48,16 +48,15 @@
 
 
             <nav class="ib-navigation">
-
-                <a asp-controller="Home"  asp-action="Index"  class="@(currentController == "Home" && currentAction != "Sobre" ? "active" : "")">   Início  </a>
+                <a asp-controller="Home" asp-action="Index" class="@(currentController == "Home" && currentAction == "Index" ? "active" : "")"> Início </a>
 
                 <a asp-controller="Servicos" asp-action="Index" class="@(currentController == "Servicos" ? "active" : "")">  Serviços  </a>
 
                 <a asp-controller="Profissionais" asp-action="Index" class="@(currentController == "Profissionais" ? "active" : "")">   Profissionais   </a>
 
-                <a asp-controller="Home"  asp-action="Sobre"  class="@(currentController == "Home" && currentAction == "Sobre" ? "active" : "")">   Sobre nós   </a>
-
-                <a href="#">   Contactos  </a>
+                <a asp-controller="Home" asp-action="Sobre" class="@(currentController == "Home" && currentAction == "Sobre" ? "active" : "")"> About Us </a>
+                
+                <a asp-controller="Home" asp-action="Contactos" class="@(currentController == "Home" && currentAction == "Contactos" ? "active" : "")"> Fale conosco </a>
 
             </nav>
 
@@ -127,8 +126,7 @@
 
     </a>
 
-    <a href="#" class="ib-book-button">
-
+<a asp-controller="MarcacoesCliente" asp-action="Nova" class="ib-book-button">
         <svg class="ib-calendar-icon"
              viewBox="0 0 24 24"
              aria-hidden="true">
@@ -205,22 +203,18 @@
 
             <div class="ib-footer-links">
 
-                <a href="#">
-                    Profissionais
-                </a>
+                <a asp-controller="Profissionais" asp-action="Index">Profissionais</a>
 
-                <a href="#">
-                    Sobre nós
-                </a>
+
+                <a asp-controller="Home" asp-action="Sobre">Sobre nós</a>
+
 
             </div>
 
 
             <div class="ib-footer-links">
 
-                <a href="#">
-                    Contactos
-                </a>
+                <a asp-controller="Home" asp-action="Contactos">Fale conosco</a>
 
                 <a href="#">
                     FAQs
@@ -292,8 +286,7 @@
                 <span class="ib-footer-separator"></span>
 
 
-                <a href="#"
-                   class="ib-footer-book">
+                <a asp-controller="MarcacoesCliente" asp-action="Nova" class="ib-footer-book">
 
                     <svg viewBox="0 0 24 24"
                          aria-hidden="true">

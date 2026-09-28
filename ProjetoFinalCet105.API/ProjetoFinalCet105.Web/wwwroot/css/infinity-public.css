@@ -3636,3 +3636,424 @@ main {
         height: auto;
         object-fit: contain;
     }
+
+/* =========================================================
+   CONTACTOS
+   ========================================================= */
+
+.ib-contact-page {
+    width: min(1180px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 72px 0 96px;
+}
+
+
+/* HERO
+--------------------------------------------------------- */
+
+.ib-contact-hero {
+    max-width: 720px;
+    margin: 0 auto 58px;
+    text-align: center;
+}
+
+    .ib-contact-hero h1 {
+        margin: 12px 0 16px;
+        color: var(--ib-black);
+        font-size: clamp(2.2rem, 5vw, 4rem);
+        font-weight: 500;
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+    }
+
+    .ib-contact-hero p {
+        max-width: 620px;
+        margin: 0 auto;
+        color: var(--ib-text-muted);
+        font-size: 1.02rem;
+        line-height: 1.8;
+    }
+
+
+/* LAYOUT
+--------------------------------------------------------- */
+
+.ib-contact-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+    gap: 34px;
+    align-items: stretch;
+}
+
+
+/* BLOCO DE INFORMAÇÃO
+--------------------------------------------------------- */
+
+.ib-contact-info {
+    position: relative;
+    overflow: hidden;
+    padding: 46px 42px;
+    border-radius: 24px;
+    background: radial-gradient( circle at 100% 0%, rgba(216, 176, 113, 0.14), transparent 34% ), linear-gradient( 145deg, #101110 0%, #191919 55%, #211b15 100% );
+    color: var(--ib-white);
+}
+
+    .ib-contact-info::after {
+        content: "";
+        position: absolute;
+        right: -85px;
+        bottom: -100px;
+        width: 230px;
+        height: 230px;
+        border: 1px solid rgba(216, 176, 113, 0.12);
+        border-radius: 50%;
+    }
+
+    .ib-contact-info .ib-section-eyebrow {
+        color: var(--ib-gold);
+    }
+
+    .ib-contact-info h2 {
+        position: relative;
+        z-index: 1;
+        margin: 12px 0 18px;
+        color: var(--ib-white);
+        font-size: clamp(1.8rem, 3vw, 2.5rem);
+        font-weight: 500;
+        line-height: 1.15;
+    }
+
+.ib-contact-info-text {
+    position: relative;
+    z-index: 1;
+    max-width: 440px;
+    margin: 0 0 38px;
+    color: rgba(255, 255, 255, 0.68);
+    line-height: 1.75;
+}
+
+
+/* DADOS DE CONTACTO
+--------------------------------------------------------- */
+
+.ib-contact-detail {
+    position: relative;
+    z-index: 1;
+    padding: 23px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+    .ib-contact-detail:last-of-type {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    }
+
+.ib-contact-detail-label {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--ib-gold);
+    font-size: 0.69rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.ib-contact-detail strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--ib-white);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.ib-contact-detail p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.60);
+    font-size: 0.88rem;
+    line-height: 1.65;
+}
+
+
+/* NOTA ACADÉMICA
+--------------------------------------------------------- */
+
+.ib-contact-academic {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    margin-top: 34px;
+    padding: 19px 20px;
+    border: 1px solid rgba(216, 176, 113, 0.20);
+    border-radius: 14px;
+    background: rgba(216, 176, 113, 0.06);
+}
+
+    .ib-contact-academic > span {
+        display: grid;
+        flex: 0 0 39px;
+        width: 39px;
+        height: 39px;
+        place-items: center;
+        border: 1px solid rgba(216, 176, 113, 0.45);
+        border-radius: 50%;
+        color: var(--ib-gold);
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+    }
+
+    .ib-contact-academic p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.58);
+        font-size: 0.78rem;
+        line-height: 1.65;
+    }
+
+
+/* CARD DO FORMULÁRIO
+--------------------------------------------------------- */
+
+.ib-contact-form-card {
+    padding: 46px 48px;
+    border: 1px solid var(--ib-border);
+    border-radius: 24px;
+    background: var(--ib-white);
+    box-shadow: 0 20px 60px rgba(25, 25, 25, 0.06);
+}
+
+    .ib-contact-form-card h2 {
+        margin: 10px 0 30px;
+        color: var(--ib-black);
+        font-size: clamp(1.7rem, 3vw, 2.3rem);
+        font-weight: 500;
+        line-height: 1.2;
+    }
+
+
+/* FORMULÁRIO
+--------------------------------------------------------- */
+
+.ib-contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 21px;
+}
+
+.ib-contact-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+    .ib-contact-field label {
+        color: var(--ib-black-soft);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+    }
+
+    .ib-contact-field input,
+    .ib-contact-field textarea {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1px solid rgba(25, 25, 25, 0.14);
+        border-radius: 10px;
+        outline: none;
+        background: #fbfaf7;
+        color: var(--ib-black);
+        font: inherit;
+        font-size: 0.92rem;
+        transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .ib-contact-field textarea {
+        min-height: 145px;
+        resize: vertical;
+        line-height: 1.65;
+    }
+
+        .ib-contact-field input::placeholder,
+        .ib-contact-field textarea::placeholder {
+            color: #aaa49b;
+        }
+
+        .ib-contact-field input:hover,
+        .ib-contact-field textarea:hover {
+            border-color: rgba(216, 176, 113, 0.55);
+        }
+
+        .ib-contact-field input:focus,
+        .ib-contact-field textarea:focus {
+            border-color: var(--ib-gold);
+            background: var(--ib-white);
+            box-shadow: 0 0 0 3px rgba(216, 176, 113, 0.10);
+        }
+
+
+    /* VALIDAÇÃO
+--------------------------------------------------------- */
+
+    .ib-contact-field span.field-validation-error {
+        color: #a84b45;
+        font-size: 0.76rem;
+    }
+
+.ib-contact-validation {
+    color: #a84b45;
+    font-size: 0.82rem;
+}
+
+    .ib-contact-validation ul {
+        margin: 0;
+        padding-left: 18px;
+    }
+
+.ib-contact-field input.input-validation-error,
+.ib-contact-field textarea.input-validation-error {
+    border-color: rgba(168, 75, 69, 0.55);
+}
+
+
+/* SUCESSO
+--------------------------------------------------------- */
+
+.ib-contact-success {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 25px;
+    padding: 15px 17px;
+    border: 1px solid rgba(92, 132, 94, 0.22);
+    border-radius: 10px;
+    background: rgba(92, 132, 94, 0.07);
+}
+
+    .ib-contact-success > span {
+        display: grid;
+        flex: 0 0 28px;
+        width: 28px;
+        height: 28px;
+        place-items: center;
+        border-radius: 50%;
+        background: rgba(92, 132, 94, 0.13);
+        font-size: 0.82rem;
+    }
+
+    .ib-contact-success p {
+        margin: 0;
+        color: #4d674e;
+        font-size: 0.84rem;
+        line-height: 1.5;
+    }
+
+
+/* RODAPÉ DO FORMULÁRIO
+--------------------------------------------------------- */
+
+.ib-contact-form-footer {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 6px;
+    padding-top: 23px;
+    border-top: 1px solid rgba(25, 25, 25, 0.08);
+}
+
+    .ib-contact-form-footer small {
+        max-width: 310px;
+        color: var(--ib-text-muted);
+        font-size: 0.72rem;
+        line-height: 1.55;
+    }
+
+
+/* BOTÃO
+--------------------------------------------------------- */
+
+.ib-contact-submit {
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 21px;
+    border: 1px solid var(--ib-black);
+    border-radius: 8px;
+    background: var(--ib-black);
+    color: var(--ib-white);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+    .ib-contact-submit span {
+        font-size: 1rem;
+        transition: transform 0.2s ease;
+    }
+
+    .ib-contact-submit:hover {
+        border-color: var(--ib-gold-dark);
+        background: var(--ib-gold-dark);
+        transform: translateY(-1px);
+    }
+
+        .ib-contact-submit:hover span {
+            transform: translateX(3px);
+        }
+
+
+/* RESPONSIVO
+--------------------------------------------------------- */
+
+@media (max-width: 900px) {
+
+    .ib-contact-page {
+        width: min(100% - 32px, 720px);
+        padding: 55px 0 75px;
+    }
+
+    .ib-contact-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .ib-contact-info,
+    .ib-contact-form-card {
+        padding: 38px 34px;
+    }
+}
+
+@media (max-width: 560px) {
+
+    .ib-contact-page {
+        width: min(100% - 24px, 520px);
+        padding: 42px 0 60px;
+    }
+
+    .ib-contact-hero {
+        margin-bottom: 38px;
+    }
+
+    .ib-contact-info,
+    .ib-contact-form-card {
+        padding: 30px 23px;
+        border-radius: 18px;
+    }
+
+    .ib-contact-form-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+        .ib-contact-form-footer small {
+            max-width: none;
+        }
+
+    .ib-contact-submit {
+        width: 100%;
+    }
+}

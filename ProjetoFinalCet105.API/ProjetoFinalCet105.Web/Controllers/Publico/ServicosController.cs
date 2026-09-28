@@ -14,11 +14,11 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
             _apiService = apiService;
         }
 
-        public async Task<IActionResult> Index( int? categoriaId = null, string? pesquisa = null)
+        public async Task<IActionResult> Index(int? categoriaId = null, string? pesquisa = null)
         {
-            var servicos = await _apiService.GetAsync<List<ServicoViewModel>>( "api/Servicos") ?? new List<ServicoViewModel>();
+            var servicos = await _apiService.GetAsync<List<ServicoViewModel>>("api/Servicos") ?? new List<ServicoViewModel>();
 
-            var categorias = await _apiService.GetAsync<List<CategoriaViewModel>>( "api/Categorias") ?? new List<CategoriaViewModel>();
+            var categorias = await _apiService.GetAsync<List<CategoriaViewModel>>("api/Categorias") ?? new List<CategoriaViewModel>();
 
             servicos = servicos
                 .Where(s => s.Disponivel)
@@ -51,20 +51,20 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             try
             {
-                var servico = await _apiService.GetAsync<ServicoViewModel>( $"api/Servicos/{id}");
+                var servico = await _apiService.GetAsync<ServicoViewModel>($"api/Servicos/{id}");
 
                 if (servico == null || !servico.Disponivel)
                 {
                     return NotFound();
                 }
 
-                var funcionarios = await _apiService.GetAsync<List<FuncionarioViewModel>>( $"api/Funcionarios/servico/{id}") ?? new List<FuncionarioViewModel>();
+                var funcionarios = await _apiService.GetAsync<List<FuncionarioViewModel>>($"api/Funcionarios/servico/{id}") ?? new List<FuncionarioViewModel>();
 
                 var profissionais = new List<FuncionarioMarcacaoClienteViewModel>();
 
                 foreach (var funcionario in funcionarios)
                 {
-                    var resumo = await _apiService.GetAsync<FeedbackResumoViewModel>( $"api/Feedbacks/funcionario/{funcionario.Id}/resumo");
+                    var resumo = await _apiService.GetAsync<FeedbackResumoViewModel>($"api/Feedbacks/funcionario/{funcionario.Id}/resumo");
 
                     profissionais.Add(new FuncionarioMarcacaoClienteViewModel
                     {
@@ -75,14 +75,14 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                         MediaAvaliacao = resumo?.Media ?? 0,
                         TotalAvaliacoes = resumo?.TotalAvaliacoes ?? 0,
 
-                        FotografiaUrl = Url.Action( nameof(FotografiaFuncionario), "Servicos", new { id = funcionario.Id })
+                        FotografiaUrl = Url.Action(nameof(FotografiaFuncionario), "Servicos", new { id = funcionario.Id })
                     });
                 }
 
                 ViewBag.Profissionais = profissionais
                     .OrderBy(f => f.NomeCompleto)
                     .ToList();
-                                
+
                 return View(servico);
             }
             catch
@@ -101,7 +101,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                 return NotFound();
             }
 
-            using var response = await _apiService.GetResponseAsync( $"api/Funcionarios/{id}/fotografia");
+            using var response = await _apiService.GetResponseAsync($"api/Funcionarios/{id}/fotografia");
 
             if (response == null || !response.IsSuccessStatusCode)
             {
@@ -128,7 +128,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
                 return NotFound();
             }
 
-            using var response =await _apiService.GetResponseAsync( $"api/Servicos/{id}/imagem");
+            using var response = await _apiService.GetResponseAsync($"api/Servicos/{id}/imagem");
 
             if (response == null || !response.IsSuccessStatusCode)
             {

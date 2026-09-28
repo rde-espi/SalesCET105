@@ -48,7 +48,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (!string.IsNullOrWhiteSpace(returnUrl))
             {
-                content.Add( new StringContent(returnUrl), "ReturnUrl");
+                content.Add(new StringContent(returnUrl), "ReturnUrl");
             }
 
             if (!string.IsNullOrWhiteSpace(model.Telefone))
@@ -109,7 +109,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ConfirmarEmail(string email, string? token = null ,string? returnUrl = null)
+        public async Task<IActionResult> ConfirmarEmail(string email, string? token = null, string? returnUrl = null)
         {
             ViewBag.ReturnUrl = returnUrl;
 
@@ -190,12 +190,12 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
             {
                 TempData["ErrorMessage"] = "Não foi possível reenviar o código de confirmação.";
 
-                return RedirectToAction(nameof(ConfirmarEmail), new { email,returnUrl });
+                return RedirectToAction(nameof(ConfirmarEmail), new { email, returnUrl });
             }
 
             TempData["SuccessMessage"] = "Enviámos um novo código de confirmação para o seu email.";
 
-            return RedirectToAction(nameof(ConfirmarEmail), new { email,returnUrl });
+            return RedirectToAction(nameof(ConfirmarEmail), new { email, returnUrl });
         }
 
 
@@ -448,7 +448,7 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
                 if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
                 {
-                    HttpContext.Session.SetString( "TwoFactorReturnUrl", returnUrl);
+                    HttpContext.Session.SetString("TwoFactorReturnUrl", returnUrl);
                 }
 
                 return RedirectToAction("TwoFactor");
@@ -547,11 +547,11 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             if (response.RequiresTwoFactor)
             {
-                HttpContext.Session.SetString( "TwoFactorUserId", response.UserId);
+                HttpContext.Session.SetString("TwoFactorUserId", response.UserId);
 
                 if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
                 {
-                    HttpContext.Session.SetString( "TwoFactorReturnUrl", returnUrl);
+                    HttpContext.Session.SetString("TwoFactorReturnUrl", returnUrl);
                 }
 
                 return RedirectToAction(nameof(TwoFactor));

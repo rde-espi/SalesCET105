@@ -10,5 +10,5 @@ public class ServicosPublicoViewModel
 
     public string? Pesquisa { get; set; }
 
-    public CategoriaViewModel? CategoriaSelecionada => CategoriaSelecionadaId.HasValue ? Categorias.FirstOrDefault( c => c.Id == CategoriaSelecionadaId.Value) : null;
+    public CategoriaViewModel? CategoriaSelecionada => CategoriaSelecionadaId.HasValue ? Categorias.FirstOrDefault(c => c.Id == CategoriaSelecionadaId.Value) : null;
 }

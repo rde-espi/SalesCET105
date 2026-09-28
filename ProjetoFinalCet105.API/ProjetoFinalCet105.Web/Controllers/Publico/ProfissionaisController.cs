@@ -19,7 +19,7 @@ public class ProfissionaisController : Controller
     {
         try
         {
-            var profissionais = await _apiService.GetAsync<List<FuncionarioViewModel>>( "api/Funcionarios");
+            var profissionais = await _apiService.GetAsync<List<FuncionarioViewModel>>("api/Funcionarios");
 
             profissionais ??= new List<FuncionarioViewModel>();
 
@@ -32,7 +32,7 @@ public class ProfissionaisController : Controller
 
             foreach (var funcionario in profissionais)
             {
-                var resumo = await _apiService.GetAsync<FeedbackResumoViewModel>( $"api/Feedbacks/funcionario/{funcionario.Id}/resumo");
+                var resumo = await _apiService.GetAsync<FeedbackResumoViewModel>($"api/Feedbacks/funcionario/{funcionario.Id}/resumo");
 
                 profissionaisPublicos.Add(new FuncionarioMarcacaoClienteViewModel
                 {
@@ -43,7 +43,7 @@ public class ProfissionaisController : Controller
                     MediaAvaliacao = resumo?.Media ?? 0,
                     TotalAvaliacoes = resumo?.TotalAvaliacoes ?? 0,
 
-                    FotografiaUrl = Url.Action( nameof(Fotografia), "Profissionais", new { id = funcionario.Id })
+                    FotografiaUrl = Url.Action(nameof(Fotografia), "Profissionais", new { id = funcionario.Id })
                 });
             }
 
@@ -67,7 +67,7 @@ public class ProfissionaisController : Controller
 
         try
         {
-            var funcionarios = await _apiService.GetAsync<List<FuncionarioViewModel>>( "api/Funcionarios");
+            var funcionarios = await _apiService.GetAsync<List<FuncionarioViewModel>>("api/Funcionarios");
 
             var funcionario = funcionarios?
                 .FirstOrDefault(f =>
@@ -80,7 +80,7 @@ public class ProfissionaisController : Controller
                 return NotFound();
             }
 
-            var resumo = await _apiService.GetAsync<FeedbackResumoViewModel>( $"api/Feedbacks/funcionario/{funcionario.Id}/resumo");
+            var resumo = await _apiService.GetAsync<FeedbackResumoViewModel>($"api/Feedbacks/funcionario/{funcionario.Id}/resumo");
 
             var profissional = new FuncionarioMarcacaoClienteViewModel
             {
@@ -91,11 +91,11 @@ public class ProfissionaisController : Controller
                 MediaAvaliacao = resumo?.Media ?? 0,
                 TotalAvaliacoes = resumo?.TotalAvaliacoes ?? 0,
 
-                FotografiaUrl = Url.Action( nameof(Fotografia), "Profissionais", new { id = funcionario.Id })
+                FotografiaUrl = Url.Action(nameof(Fotografia), "Profissionais", new { id = funcionario.Id })
             };
 
 
-            var servicos = await _apiService.GetAsync<List<FuncionarioServicoViewModel>>( $"api/FuncionarioServicos/funcionario/{id}");
+            var servicos = await _apiService.GetAsync<List<FuncionarioServicoViewModel>>($"api/FuncionarioServicos/funcionario/{id}");
 
             servicos ??= new List<FuncionarioServicoViewModel>();
 
@@ -125,7 +125,7 @@ public class ProfissionaisController : Controller
             return NotFound();
         }
 
-        using var response = await _apiService.GetResponseAsync( $"api/Funcionarios/{id}/fotografia");
+        using var response = await _apiService.GetResponseAsync($"api/Funcionarios/{id}/fotografia");
 
         if (response == null || !response.IsSuccessStatusCode)
         {
