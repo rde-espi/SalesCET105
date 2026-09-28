@@ -23,6 +23,10 @@
 </head>
 
 <body>
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();    
+}
 
     <header class="ib-header">
 
@@ -45,13 +49,13 @@
 
             <nav class="ib-navigation">
 
-                <a asp-controller="Home"  asp-action="Index"  class="active">   Início  </a>
+                <a asp-controller="Home"  asp-action="Index"  class="@(currentController == "Home" && currentAction != "Sobre" ? "active" : "")">   Início  </a>
 
-                <a asp-controller="Servicos" asp-action="Index">  Serviços  </a>
+                <a asp-controller="Servicos" asp-action="Index" class="@(currentController == "Servicos" ? "active" : "")">  Serviços  </a>
 
-                <a href="#">   Profissionais   </a>
+                <a asp-controller="Profissionais" asp-action="Index" class="@(currentController == "Profissionais" ? "active" : "")">   Profissionais   </a>
 
-                <a href="#">   Sobre nós   </a>
+                <a asp-controller="Home"  asp-action="Sobre"  class="@(currentController == "Home" && currentAction == "Sobre" ? "active" : "")">   Sobre nós   </a>
 
                 <a href="#">   Contactos  </a>
 

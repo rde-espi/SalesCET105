@@ -20,5 +20,11 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
 
             return View(categorias ?? new List<CategoriaViewModel>());
         }
+
+        [HttpGet]
+        public IActionResult Sobre()
+        {
+            return View();
+        }
     }
 }

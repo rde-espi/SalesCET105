@@ -1,0 +1,103 @@
+﻿@model List<ProjetoFinalCet105.Web.Models.FuncionarioMarcacaoClienteViewModel>
+
+@{
+    ViewData["Title"] = "Profissionais";
+    Layout = "_PublicLayout";
+}
+
+<section class="ib-professionals-page">
+
+    <div class="ib-professionals-hero">
+        <span class="ib-section-eyebrow">A NOSSA EQUIPA</span>
+
+        <h1>Conheça os nossos profissionais</h1>
+
+        <p>
+            Conheça a equipa Infinity Beauty e encontre o profissional
+            ideal para cuidar de si.
+        </p>
+    </div>
+
+    <div class="ib-professionals-grid">
+
+        @foreach (var profissional in Model)
+        {
+            var nomes = profissional.NomeCompleto?
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            var iniciais = nomes != null && nomes.Length > 0
+                ? string.Concat(nomes.Take(2).Select(n => n[0])).ToUpper()
+                : "?";
+
+            <article class="ib-professional-card">
+
+                <div class="ib-professional-photo">
+
+                    @if (!string.IsNullOrWhiteSpace(profissional.FotografiaUrl))
+                    {
+                        <img src="@profissional.FotografiaUrl"
+                             alt="@profissional.NomeCompleto"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+
+                        <span class="ib-professional-photo-fallback"
+                              style="display:none;">
+                            @iniciais
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="ib-professional-photo-fallback">
+                            @iniciais
+                        </span>
+                    }
+
+                </div>
+
+                <div class="ib-professional-content">
+
+                    <h2>@profissional.NomeCompleto</h2>
+
+                    @if (profissional.TotalAvaliacoes > 0)
+                    {
+                        <div class="ib-professional-rating">
+                            <span>★</span>
+
+                            <strong>
+                                @profissional.MediaAvaliacao.ToString("0.0")
+                            </strong>
+
+                            <span>
+                                · @profissional.TotalAvaliacoes
+                                @(profissional.TotalAvaliacoes == 1
+                                    ? "avaliação"
+                                    : "avaliações")
+                            </span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="ib-professional-rating is-empty">
+                            Ainda sem avaliações
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(profissional.Biografia))
+                    {
+                        <p>@profissional.Biografia</p>
+                    }
+
+                    <a asp-controller="Profissionais"
+   asp-action="Detalhes"
+   asp-route-id="@profissional.Id"
+   class="ib-professional-services-link">
+    Ver serviços <span>→</span>
+</a>
+
+                </div>
+
+            </article>
+        }
+
+    </div>
+
+</section>

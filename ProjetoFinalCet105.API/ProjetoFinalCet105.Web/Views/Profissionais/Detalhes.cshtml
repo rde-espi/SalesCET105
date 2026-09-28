@@ -1,0 +1,157 @@
+﻿@model ProjetoFinalCet105.Web.Models.FuncionarioMarcacaoClienteViewModel
+
+@{
+    ViewData["Title"] = Model.NomeCompleto;
+    Layout = "_PublicLayout";
+
+    var servicos =
+        ViewBag.Servicos as List<ProjetoFinalCet105.Web.Models.FuncionarioServicoViewModel>
+        ?? new List<ProjetoFinalCet105.Web.Models.FuncionarioServicoViewModel>();
+
+    var nomes = Model.NomeCompleto?
+        .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+    var iniciais = nomes != null && nomes.Length > 0
+        ? string.Concat(nomes.Take(2).Select(n => n[0])).ToUpper()
+        : "?";
+}
+
+<section class="ib-professional-detail">
+
+    <a asp-controller="Profissionais"
+       asp-action="Index"
+       class="ib-professional-detail-back">
+        ← Voltar aos profissionais
+    </a>
+
+    <div class="ib-professional-detail-hero">
+
+        <div class="ib-professional-detail-photo">
+
+            @if (!string.IsNullOrWhiteSpace(Model.FotografiaUrl))
+            {
+                <img src="@Model.FotografiaUrl"
+                     alt="@Model.NomeCompleto"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+
+                <span class="ib-professional-detail-fallback"
+                      style="display:none;">
+                    @iniciais
+                </span>
+            }
+            else
+            {
+                <span class="ib-professional-detail-fallback">
+                    @iniciais
+                </span>
+            }
+
+        </div>
+
+        <div class="ib-professional-detail-info">
+
+            <span class="ib-section-eyebrow">
+                PROFISSIONAL
+            </span>
+
+            <h1>@Model.NomeCompleto</h1>
+
+            @if (Model.TotalAvaliacoes > 0)
+            {
+                <div class="ib-professional-detail-rating">
+                    <span class="ib-professional-detail-star">★</span>
+
+                    <strong>
+                        @Model.MediaAvaliacao.ToString("0.0")
+                    </strong>
+
+                    <span>
+                        · @Model.TotalAvaliacoes
+                        @(Model.TotalAvaliacoes == 1
+                            ? "avaliação"
+                            : "avaliações")
+                    </span>
+                </div>
+            }
+            else
+            {
+                <div class="ib-professional-detail-rating is-empty">
+                    Ainda sem avaliações
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.Biografia))
+            {
+                <p class="ib-professional-detail-bio">
+                    @Model.Biografia
+                </p>
+            }
+
+        </div>
+
+    </div>
+
+
+    <div class="ib-professional-detail-services">
+
+        <div class="ib-professional-detail-services-head">
+
+            <div>
+                <span class="ib-section-eyebrow">
+                    SERVIÇOS
+                </span>
+
+                <h2>Serviços realizados</h2>
+
+                <p>
+                    Escolha o serviço que pretende realizar com
+                    @Model.NomeCompleto.
+                </p>
+            </div>
+
+            <span class="ib-professional-detail-count">
+                @servicos.Count
+                @(servicos.Count == 1 ? "serviço" : "serviços")
+            </span>
+
+        </div>
+
+        @if (servicos.Any())
+        {
+            <div class="ib-professional-detail-services-grid">
+
+                @foreach (var servico in servicos)
+                {
+                    <article class="ib-professional-detail-service">
+
+                        <div class="ib-professional-detail-service-info">
+
+                            <h3>@servico.ServicoNome</h3>                            
+
+                        </div>
+
+                        <a asp-controller="MarcacoesCliente"
+                           asp-action="Nova"
+                           asp-route-servicoId="@servico.ServicoId"
+                           asp-route-funcionarioId="@Model.Id"
+                           class="ib-professional-detail-book">
+                            Marcar
+                            <span>→</span>
+                        </a>
+
+                    </article>
+                }
+
+            </div>
+        }
+        else
+        {
+            <div class="ib-professional-detail-empty">
+                De momento não existem serviços disponíveis
+                para este profissional.
+            </div>
+        }
+
+    </div>
+
+</section>
