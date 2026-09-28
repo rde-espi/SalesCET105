@@ -1,5 +1,7 @@
 <Solution>
   <Project Path="ProjetoFinalCet105.API/ProjetoFinalCet105.API.csproj" />
-  <Project Path="ProjetoFinalCet105.Mobile/ProjetoFinalCet105.Mobile.csproj" Id="49f8db32-44f9-4038-8ce8-9a3a205e844f" />
+  <Project Path="ProjetoFinalCet105.Mobile/ProjetoFinalCet105.Mobile.csproj" Id="49f8db32-44f9-4038-8ce8-9a3a205e844f">
+    <Deploy Solution="Debug|*" />
+  </Project>
   <Project Path="ProjetoFinalCet105.Web/ProjetoFinalCet105.Web.csproj" Id="86aaf6fc-55cf-4b26-9564-f896d0d0d848" />
 </Solution>
