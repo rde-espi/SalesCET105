@@ -168,6 +168,46 @@
 
             </VerticalStackLayout>
 
+
+
+
+            <!-- LOADING OVERLAY -->
+            <Grid
+    IsVisible="{Binding IsBusy}"
+    BackgroundColor="#80000000"
+    InputTransparent="False"
+    ZIndex="100">
+
+                <Border
+        Padding="28,24"
+        BackgroundColor="#191919"
+        Stroke="#D8B071"
+        StrokeThickness="1"
+        StrokeShape="RoundRectangle 18"
+        HorizontalOptions="Center"
+        VerticalOptions="Center">
+
+                    <VerticalStackLayout
+            Spacing="14"
+            HorizontalOptions="Center">
+
+                        <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                Color="#D8B071"
+                WidthRequest="38"
+                HeightRequest="38" />
+
+                        <Label
+                Text="A iniciar sessão..."
+                TextColor="#FFFFFF"
+                FontSize="14"
+                HorizontalTextAlignment="Center" />
+
+                    </VerticalStackLayout>
+
+                </Border>
+
+            </Grid>
         </Grid>
     </ScrollView>
 

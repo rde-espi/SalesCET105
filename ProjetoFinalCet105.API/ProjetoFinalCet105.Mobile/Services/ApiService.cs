@@ -62,7 +62,14 @@ public class ApiService
         return await response.Content.ReadFromJsonAsync<TResponse>();
     }
 
+    public async Task<bool> DeleteAsync(string endpoint)
+    {
+        await AdicionarTokenAsync();
 
+        var response = await _httpClient.DeleteAsync(endpoint);
+
+        return response.IsSuccessStatusCode;
+    }
 
 
 

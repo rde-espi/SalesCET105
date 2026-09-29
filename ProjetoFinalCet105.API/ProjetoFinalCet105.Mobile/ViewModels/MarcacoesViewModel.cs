@@ -142,6 +142,53 @@ public class MarcacoesViewModel : INotifyPropertyChanged
         }
     }
 
+    private bool _aCancelar;
+
+    public bool ACancelar
+    {
+        get => _aCancelar;
+        set
+        {
+            if (_aCancelar == value)
+                return;
+
+            _aCancelar = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public async Task<bool> CancelarMarcacaoAsync(int marcacaoId)
+    {
+        try
+        {
+            ACancelar = true;
+            MensagemErro = string.Empty;
+
+            var sucesso = await _apiService.DeleteAsync( $"api/Marcacoes/{marcacaoId}");
+
+            if (!sucesso)
+            {
+                MensagemErro = "Não foi possível cancelar a marcação.";
+
+                return false;
+            }
+
+            await CarregarAsync();
+
+            return true;
+        }
+        catch
+        {
+            MensagemErro = "Não foi possível cancelar a marcação.";
+
+            return false;
+        }
+        finally
+        {
+            ACancelar = false;
+        }
+    }
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     protected void OnPropertyChanged( [CallerMemberName] string? propertyName = null)

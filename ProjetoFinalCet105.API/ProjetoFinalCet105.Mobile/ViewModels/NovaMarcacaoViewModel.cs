@@ -23,6 +23,8 @@ public class NovaMarcacaoViewModel : INotifyPropertyChanged
     private string _observacoes = string.Empty;
     private bool _aGuardar;
     private string _mensagemSucesso = string.Empty;
+    private bool _marcacaoConcluida;
+
 
     public NovaMarcacaoViewModel()
     {
@@ -32,6 +34,24 @@ public class NovaMarcacaoViewModel : INotifyPropertyChanged
         ConfirmarMarcacaoCommand = new Command( async () => await ConfirmarMarcacaoAsync(), () => PodeConfirmar);
     }
 
+
+
+    public bool MarcacaoConcluida
+    {
+        get => _marcacaoConcluida;
+        private set
+        {
+            if (_marcacaoConcluida == value)
+                return;
+
+            _marcacaoConcluida = value;
+
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(PodeConfirmar));
+
+            ConfirmarMarcacaoCommand.ChangeCanExecute();
+        }
+    }
 
     public string Observacoes
     {
@@ -78,10 +98,11 @@ public class NovaMarcacaoViewModel : INotifyPropertyChanged
     public bool TemSucesso => !string.IsNullOrWhiteSpace(MensagemSucesso);
 
     public bool PodeConfirmar =>
-        ServicoSelecionado != null &&
-        FuncionarioSelecionado != null &&
-        HorarioSelecionado.HasValue &&
-        !AGuardar;
+      ServicoSelecionado != null &&
+      FuncionarioSelecionado != null &&
+      HorarioSelecionado.HasValue &&
+      !AGuardar &&
+      !MarcacaoConcluida;
 
 
     public ObservableCollection<Servico> Servicos { get; }
