@@ -27,7 +27,7 @@ public partial class NovaMarcacaoPage : ContentPage
         await Shell.Current.GoToAsync("..");
     }
 
-    private async void VerMarcacoes_Clicked( object sender, EventArgs e)
+    private async void VerMarcacoes_Clicked(object sender, EventArgs e)
     {
         await Shell.Current.GoToAsync(nameof(MarcacoesPage));
     }

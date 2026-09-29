@@ -12,10 +12,7 @@ namespace ProjetoFinalCet105.API.Services.FirebaseService
             _logger = logger;
         }
 
-        public async Task<string> EnviarPushAsync(
-            string fid,
-            string titulo,
-            string mensagem)
+        public async Task<string> EnviarPushAsync(string fid, string titulo, string mensagem)
         {
             if (FirebaseApp.DefaultInstance == null)
             {

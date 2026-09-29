@@ -91,6 +91,12 @@ public class PerfilController : Controller
                     return NotFound();
                 }
 
+                var fotografiaResponse = await _apiService.SendAuthenticatedAsync(HttpMethod.Get, $"api/Clientes/{userId}/fotografia");
+
+                var temFotografia = fotografiaResponse.IsSuccessStatusCode;
+
+                fotografiaResponse.Dispose();
+
                 var googleCalendar = await _apiService.GetAuthenticatedAsync<GoogleCalendarStatusViewModel>("api/GoogleCalendar/status");
 
                 var model = new PerfilViewModel
@@ -107,7 +113,8 @@ public class PerfilController : Controller
                     GoogleCalendarLigado = googleCalendar?.Ligado ?? false,
                     GoogleEmail = googleCalendar?.GoogleEmail,
 
-                    FotografiaUrl = Url.Action("Fotografia", "Perfil")
+                    TemFotografia = temFotografia,
+                    FotografiaUrl = temFotografia ? Url.Action("Fotografia", "Perfil") : null
                 };
 
                 return View(model);

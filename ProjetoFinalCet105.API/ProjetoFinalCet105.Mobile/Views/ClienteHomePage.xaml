@@ -8,7 +8,8 @@
     Shell.NavBarIsVisible="False">
 
     <Grid Padding="28,45,28,30">
-
+        <ScrollView>
+            
         <VerticalStackLayout Spacing="20">
 
             <Image
@@ -118,8 +119,17 @@
                 </Grid>
 
             </Border>
+            <Button
+                Text="Terminar sessão"
+                Clicked="Logout_Clicked"
+                BackgroundColor="Transparent"
+                TextColor="#817A70"
+                FontSize="14"
+                Margin="0,25,0,0"
+                HorizontalOptions="Center" />
 
         </VerticalStackLayout>
+        </ScrollView>
 
     </Grid>
 

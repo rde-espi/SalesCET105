@@ -342,6 +342,31 @@
             }
 
 
+            <div class="ib-services-pagination"
+     id="paginacaoCategorias"
+     aria-label="Paginação das categorias">
+
+    <button type="button"
+            id="categoriaAnterior"
+            class="ib-services-page-arrow"
+            aria-label="Página anterior">
+        ←
+    </button>
+
+    <div id="numerosPaginas"
+         class="ib-services-page-numbers">
+    </div>
+
+    <button type="button"
+            id="categoriaSeguinte"
+            class="ib-services-page-arrow"
+            aria-label="Página seguinte">
+        →
+    </button>
+
+</div>
+
+
             <!-- SEM RESULTADOS DA PESQUISA -->
             <div class="ib-services-empty"
                  id="semResultadosPesquisa"
@@ -383,6 +408,21 @@
 
             const contador =
                 document.getElementById('contadorServicos');
+               const paginacao =
+    document.getElementById('paginacaoCategorias');
+
+const paginaAnterior =
+    document.getElementById('categoriaAnterior');
+
+const paginaSeguinte =
+    document.getElementById('categoriaSeguinte');
+
+const numerosPaginas =
+    document.getElementById('numerosPaginas');
+
+const categoriasPorPagina = 2;
+
+let paginaAtual = 1;
 
 
             if (!pesquisa || !cards.length) {
@@ -398,6 +438,102 @@
                     .replace(/[\u0300-\u036f]/g, '')
                     .trim();
             }
+
+            function obterSecoesVisiveis() {
+
+    return Array.from(secoesCategorias).filter(secao =>
+        secao.dataset.temResultado !== 'false'
+    );
+}
+
+
+function mostrarPaginaCategorias() {
+
+    if (!secoesCategorias.length) {
+        return;
+    }
+
+    const secoesVisiveis = obterSecoesVisiveis();
+
+    const totalPaginas =
+        Math.ceil(secoesVisiveis.length / categoriasPorPagina);
+
+    if (paginaAtual > totalPaginas) {
+        paginaAtual = Math.max(totalPaginas, 1);
+    }
+
+    secoesCategorias.forEach(secao => {
+        secao.style.display = 'none';
+    });
+
+    const inicio =
+        (paginaAtual - 1) * categoriasPorPagina;
+
+    const fim =
+        inicio + categoriasPorPagina;
+
+    secoesVisiveis
+        .slice(inicio, fim)
+        .forEach(secao => {
+            secao.style.display = '';
+        });
+
+    atualizarPaginacao(totalPaginas);
+}
+
+
+function atualizarPaginacao(totalPaginas) {
+
+    if (!paginacao || !numerosPaginas) {
+        return;
+    }
+
+    paginacao.style.display =
+        totalPaginas > 1 ? 'flex' : 'none';
+
+    numerosPaginas.innerHTML = '';
+
+    for (let i = 1; i <= totalPaginas; i++) {
+
+        const botao =
+            document.createElement('button');
+
+        botao.type = 'button';
+        botao.textContent = i;
+
+        botao.className =
+            'ib-services-page-number';
+
+        if (i === paginaAtual) {
+            botao.classList.add('active');
+        }
+
+        botao.addEventListener('click', function () {
+
+            paginaAtual = i;
+
+            mostrarPaginaCategorias();
+
+            document.querySelector('.ib-services-content')
+                ?.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+        });
+
+        numerosPaginas.appendChild(botao);
+    }
+
+    if (paginaAnterior) {
+        paginaAnterior.disabled =
+            paginaAtual <= 1;
+    }
+
+    if (paginaSeguinte) {
+        paginaSeguinte.disabled =
+            paginaAtual >= totalPaginas;
+    }
+}
 
 
             function filtrarServicos() {
@@ -444,20 +580,21 @@
 
                 secoesCategorias.forEach(secao => {
 
-                    const cardsDaSecao =
-                        secao.querySelectorAll('[data-servico]');
+    const cardsDaSecao =
+        secao.querySelectorAll('[data-servico]');
 
+    const temResultado =
+        Array.from(cardsDaSecao).some(card =>
+            card.style.display !== 'none'
+        );
 
-                    const temResultado =
-                        Array.from(cardsDaSecao).some(card =>
-                            card.style.display !== 'none'
-                        );
+    secao.dataset.temResultado =
+        temResultado ? 'true' : 'false';
+});
 
+paginaAtual = 1;
 
-                    secao.style.display =
-                        temResultado ? '' : 'none';
-
-                });
+mostrarPaginaCategorias();
 
 
                 
@@ -488,6 +625,45 @@
                 'input',
                 filtrarServicos
             );
+            if (paginaAnterior) {
+
+    paginaAnterior.addEventListener('click', function () {
+
+        if (paginaAtual > 1) {
+
+            paginaAtual--;
+
+            mostrarPaginaCategorias();
+        }
+    });
+}
+
+
+if (paginaSeguinte) {
+
+    paginaSeguinte.addEventListener('click', function () {
+
+        const totalPaginas =
+            Math.ceil(
+                obterSecoesVisiveis().length /
+                categoriasPorPagina
+            );
+
+        if (paginaAtual < totalPaginas) {
+
+            paginaAtual++;
+
+            mostrarPaginaCategorias();
+        }
+    });
+}
+
+
+secoesCategorias.forEach(secao => {
+    secao.dataset.temResultado = 'true';
+});
+
+mostrarPaginaCategorias();
 
         });
 

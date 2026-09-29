@@ -236,6 +236,51 @@
                      style="display:none;">
                     Nenhum serviço encontrado.
                 </div>
+                <div class="ib-pagination" id="paginacaoServicosFuncionario">
+
+    <div class="ib-pagination-info">
+        A mostrar
+        <strong id="servicosInicio">0</strong>–<strong id="servicosFim">0</strong>
+        de <strong id="servicosTotal">0</strong> serviços
+    </div>
+
+    <div class="ib-pagination-controls">
+
+        <div class="ib-pagination-size">
+            <span>Por página</span>
+
+            <select id="servicosPorPagina">
+                <option value="5" selected>5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+            </select>
+        </div>
+
+        <div class="ib-pagination-pages">
+
+            <button type="button"
+                    class="ib-pagination-arrow"
+                    id="servicosPaginaAnterior"
+                    aria-label="Página anterior">
+                ‹
+            </button>
+
+            <div class="ib-pagination-numbers"
+                 id="servicosPaginas">
+            </div>
+
+            <button type="button"
+                    class="ib-pagination-arrow"
+                    id="servicosPaginaSeguinte"
+                    aria-label="Página seguinte">
+                ›
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
             </div>
         }
         else
@@ -782,47 +827,307 @@
             });
         }
 
-        // =====================================================
-        // PESQUISA DE SERVIÇOS
-        // =====================================================
+       // =====================================================
+// PESQUISA + PAGINAÇÃO DE SERVIÇOS
+// =====================================================
 
-        const pesquisaServicos =
-            document.getElementById("pesquisaServicosFuncionario");
+const pesquisaServicos =
+    document.getElementById("pesquisaServicosFuncionario");
 
-        if (pesquisaServicos) {
-            const itens =
-                document.querySelectorAll(".ib-employee-service-item");
+const itensServicos =
+    Array.from(document.querySelectorAll(".ib-employee-service-item"));
 
-            pesquisaServicos.addEventListener("input", function () {
-                const termo = this.value.trim().toLowerCase();
-                let encontrados = 0;
+const servicosPorPaginaSelect =
+    document.getElementById("servicosPorPagina");
 
-                itens.forEach(function (item) {
-                    const servico = item.dataset.servico || "";
-                    const categoria = item.dataset.categoria || "";
+const btnPaginaAnterior =
+    document.getElementById("servicosPaginaAnterior");
 
-                    const corresponde =
-                        servico.includes(termo) ||
-                        categoria.includes(termo);
+const btnPaginaSeguinte =
+    document.getElementById("servicosPaginaSeguinte");
 
-                    item.style.display =
-                        corresponde ? "flex" : "none";
+const paginasContainer =
+    document.getElementById("servicosPaginas");
 
-                    if (corresponde) {
-                        encontrados++;
-                    }
-                });
+const servicosInicio =
+    document.getElementById("servicosInicio");
 
-                const semResultados =
-                    document.getElementById("semResultadosServicos");
+const servicosFim =
+    document.getElementById("servicosFim");
 
-                if (semResultados) {
-                    semResultados.style.display =
-                        encontrados === 0 ? "block" : "none";
+const servicosTotal =
+    document.getElementById("servicosTotal");
+
+const semResultados =
+    document.getElementById("semResultadosServicos");
+
+const paginacaoServicos =
+    document.getElementById("paginacaoServicosFuncionario");
+
+let paginaAtualServicos = 1;
+let quantidadePorPaginaServicos = 5;
+
+
+// =====================================================
+// OBTER SERVIÇOS FILTRADOS
+// =====================================================
+
+function obterServicosFiltrados() {
+
+    const termo = pesquisaServicos
+        ? pesquisaServicos.value.trim().toLowerCase()
+        : "";
+
+    return itensServicos.filter(function (item) {
+
+        const servico =
+            item.dataset.servico || "";
+
+        const categoria =
+            item.dataset.categoria || "";
+
+        return servico.includes(termo) ||
+               categoria.includes(termo);
+    });
+}
+
+
+// =====================================================
+// RENDERIZAR PAGINAÇÃO
+// =====================================================
+
+function renderizarServicos() {
+
+    const filtrados =
+        obterServicosFiltrados();
+
+    const total =
+        filtrados.length;
+
+    const totalPaginas =
+        Math.ceil(total / quantidadePorPaginaServicos);
+
+    // Se a página atual deixar de existir
+    if (paginaAtualServicos > totalPaginas) {
+        paginaAtualServicos =
+            totalPaginas > 0 ? totalPaginas : 1;
+    }
+
+    const inicio =
+        (paginaAtualServicos - 1) *
+        quantidadePorPaginaServicos;
+
+    const fim =
+        inicio + quantidadePorPaginaServicos;
+
+    // Esconde todos primeiro
+    itensServicos.forEach(function (item) {
+        item.style.display = "none";
+    });
+
+    // Mostra apenas os da página atual
+    filtrados
+        .slice(inicio, fim)
+        .forEach(function (item) {
+            item.style.display = "flex";
+        });
+
+
+    // =================================================
+    // TEXTO "A MOSTRAR X–Y DE Z"
+    // =================================================
+
+    if (servicosInicio) {
+        servicosInicio.textContent =
+            total === 0 ? 0 : inicio + 1;
+    }
+
+    if (servicosFim) {
+        servicosFim.textContent =
+            Math.min(fim, total);
+    }
+
+    if (servicosTotal) {
+        servicosTotal.textContent =
+            total;
+    }
+
+
+    // =================================================
+    // SEM RESULTADOS
+    // =================================================
+
+    if (semResultados) {
+        semResultados.style.display =
+            total === 0 ? "block" : "none";
+    }
+
+
+    // =================================================
+    // MOSTRAR / ESCONDER PAGINAÇÃO
+    // =================================================
+
+    if (paginacaoServicos) {
+        paginacaoServicos.style.display =
+            total > 0 ? "flex" : "none";
+    }
+
+
+    // =================================================
+    // SETAS
+    // =================================================
+
+    if (btnPaginaAnterior) {
+        btnPaginaAnterior.disabled =
+            paginaAtualServicos <= 1;
+    }
+
+    if (btnPaginaSeguinte) {
+        btnPaginaSeguinte.disabled =
+            paginaAtualServicos >= totalPaginas ||
+            totalPaginas === 0;
+    }
+
+
+    // =================================================
+    // NÚMEROS DAS PÁGINAS
+    // =================================================
+
+    if (paginasContainer) {
+
+        paginasContainer.innerHTML = "";
+
+        for (let pagina = 1;
+             pagina <= totalPaginas;
+             pagina++) {
+
+            const botao =
+                document.createElement("button");
+
+            botao.type = "button";
+
+            botao.className =
+                "ib-pagination-number";
+
+            botao.textContent =
+                pagina;
+
+            if (pagina === paginaAtualServicos) {
+                botao.classList.add("active");
+            }
+
+            botao.addEventListener(
+                "click",
+                function () {
+
+                    paginaAtualServicos =
+                        pagina;
+
+                    renderizarServicos();
                 }
-            });
-        }
+            );
 
+            paginasContainer.appendChild(botao);
+        }
+    }
+}
+
+
+// =====================================================
+// PESQUISA
+// =====================================================
+
+if (pesquisaServicos) {
+
+    pesquisaServicos.addEventListener(
+        "input",
+        function () {
+
+            paginaAtualServicos = 1;
+
+            renderizarServicos();
+        }
+    );
+}
+
+
+// =====================================================
+// ALTERAR QUANTIDADE POR PÁGINA
+// =====================================================
+
+if (servicosPorPaginaSelect) {
+
+    servicosPorPaginaSelect.addEventListener(
+        "change",
+        function () {
+
+            quantidadePorPaginaServicos =
+                parseInt(this.value);
+
+            paginaAtualServicos = 1;
+
+            renderizarServicos();
+        }
+    );
+}
+
+
+// =====================================================
+// PÁGINA ANTERIOR
+// =====================================================
+
+if (btnPaginaAnterior) {
+
+    btnPaginaAnterior.addEventListener(
+        "click",
+        function () {
+
+            if (paginaAtualServicos > 1) {
+
+                paginaAtualServicos--;
+
+                renderizarServicos();
+            }
+        }
+    );
+}
+
+
+// =====================================================
+// PÁGINA SEGUINTE
+// =====================================================
+
+if (btnPaginaSeguinte) {
+
+    btnPaginaSeguinte.addEventListener(
+        "click",
+        function () {
+
+            const total =
+                obterServicosFiltrados().length;
+
+            const totalPaginas =
+                Math.ceil(
+                    total /
+                    quantidadePorPaginaServicos
+                );
+
+            if (paginaAtualServicos < totalPaginas) {
+
+                paginaAtualServicos++;
+
+                renderizarServicos();
+            }
+        }
+    );
+}
+
+
+// =====================================================
+// CARREGAMENTO INICIAL
+// =====================================================
+
+renderizarServicos();
 
         // =====================================================
         // ABRIR / FECHAR FORMULÁRIO DE COMPETÊNCIA

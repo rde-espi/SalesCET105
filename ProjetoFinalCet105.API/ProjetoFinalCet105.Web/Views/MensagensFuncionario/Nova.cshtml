@@ -68,8 +68,14 @@
                          data-pesquisa="@($"{cliente.NomeCompleto} {cliente.Email}".ToLower())">
 
                         <div class="ib-mensagens-nova-avatar">
-                            @inicial
-                        </div>
+                            <img src="@Url.Action( "FotografiaCliente", "MensagensFuncionario", new { id = cliente.Id })"
+                            alt="@cliente.NomeCompleto"
+                            class="ib-mensagens-nova-avatar-foto"
+                            onerror="this.style.display='none';" />                            
+                            <span class="ib-mensagens-nova-avatar-iniciais">
+                                @inicial
+                                </span>
+                                </div>
 
                         <div class="ib-mensagens-nova-info">
                             <strong>@cliente.NomeCompleto</strong>

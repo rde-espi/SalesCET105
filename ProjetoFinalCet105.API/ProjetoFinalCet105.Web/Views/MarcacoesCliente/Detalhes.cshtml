@@ -243,19 +243,15 @@ var iniciaisFuncionario = partesNomeFuncionario.Length switch
         </span>
 
         <div class="ib-cliente-professional-avatar">
-
-    <span class="ib-cliente-professional-initials">
-        @iniciaisFuncionario
-    </span>
-
-    <img src="@Url.Action(
-                    "FotografiaFuncionario",
-                    "MarcacoesCliente",
-                    new { id = Model.FuncionarioId })"
-         alt="@Model.FuncionarioNome"
-         class="ib-cliente-professional-photo"
-         onerror="this.style.display='none';" />
-
+            <img src="@Url.Action(  "FotografiaFuncionario", "MarcacoesCliente", new { id = Model.FuncionarioId })"
+            alt="@Model.FuncionarioNome"
+            class="ib-cliente-avatar-foto"
+            onerror="this.style.display='none';" />
+            <span class="ib-cliente-avatar-iniciais">
+                @(string.IsNullOrWhiteSpace(Model.FuncionarioNome)
+                ? "?"
+                : Model.FuncionarioNome.Substring(0, 1).ToUpper())
+            </span>
 </div>
 
         <h3>@Model.FuncionarioNome</h3>

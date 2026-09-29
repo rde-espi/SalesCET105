@@ -11,7 +11,7 @@ public class AuthService
     private const string NomeKey = "user_nome";
     private const string EmailKey = "user_email";
 
-    public async Task GuardarSessaoAsync( string token, string userId, string nome, string email)
+    public async Task GuardarSessaoAsync(string token, string userId, string nome, string email)
     {
         await SecureStorage.Default.SetAsync(TokenKey, token);
         await SecureStorage.Default.SetAsync(UserIdKey, userId);

@@ -281,4 +281,30 @@ public class MensagensFuncionarioController : Controller
             });
         }
     }
+    [HttpGet]
+    public async Task<IActionResult> FotografiaCliente(string id)
+    {
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            return NotFound();
+        }
+
+        using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Get, $"api/Clientes/{id}/fotografia");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return NotFound();
+        }
+
+        var bytes = await response.Content.ReadAsByteArrayAsync();
+
+        if (bytes.Length == 0)
+        {
+            return NotFound();
+        }
+
+        var contentType = response.Content.Headers.ContentType?.MediaType ?? "image/jpeg";
+
+        return File(bytes, contentType);
+    }
 }

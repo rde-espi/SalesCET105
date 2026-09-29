@@ -519,11 +519,9 @@
 
                 <h2>Agenda de hoje</h2>
 
-                <a asp-controller="Calendario"
-   asp-action="Index"
-   class="ib-panel-link">
-    Ver calendário
-</a>
+                <a asp-controller="Calendario" asp-action="Index" class="ib-panel-link">
+                    Ver calendário
+                    </a>
 
             </div>
 
@@ -564,8 +562,15 @@
                             </div>
 
                             <div class="ib-person-avatar">
+                                <img src="@Url.Action( "Fotografia", "GestaoClientes", new { id = marcacao.ClienteId })"
+                                alt="@marcacao.ClienteNome"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                
+                                <span class="ib-person-avatar-fallback"
+                                style="display:none;">
                                 @iniciaisCliente
-                            </div>
+                                </span>
+                                </div>
 
                             <div class="ib-agenda-info">
 
@@ -648,8 +653,15 @@
                         <div class="ib-client-row">
 
                             <div class="ib-person-avatar">
+                                <img src="@Url.Action("Fotografia", "GestaoClientes", new { id = cliente.Id })"
+                                alt="@cliente.NomeCompleto"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                
+                                <span class="ib-person-avatar-fallback"
+                                style="display:none;">
                                 @iniciais
-                            </div>
+                                </span>
+                                </div>
 
                             <div class="ib-client-info">
 
@@ -721,8 +733,14 @@
                         <div class="ib-team-row">
 
                             <div class="ib-person-avatar">
-                                @iniciais
-                            </div>
+                                <img src="@Url.Action("Fotografia","GestaoFuncionarios",new { id = funcionario.FuncionarioId })"
+                                alt="@funcionario.NomeFuncionario"                                
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                                
+                                <span class="ib-person-avatar-fallback" style="display:none;">
+                                    @iniciais
+                                    </span>
+                                    </div>
 
                             <div class="ib-team-info">
 
@@ -1340,7 +1358,7 @@
                 {
                     <div class="ib-agenda-ranking-list">
 
-                        @foreach (var servico in Model.ServicosMaisMarcados)
+                        @foreach (var servico in Model.ServicosMaisMarcados.Take(3))
                         {
                             <div class="ib-agenda-ranking-row">
 
@@ -1393,7 +1411,7 @@
                 {
                     <div class="ib-agenda-ranking-list">
 
-                        @foreach (var horario in Model.HorariosMaiorProcura)
+                        @foreach (var horario in Model.HorariosMaiorProcura.Take(3))
                         {
                             <div class="ib-agenda-ranking-row">
 
@@ -1446,7 +1464,7 @@
                 {
                     <div class="ib-agenda-ranking-list">
 
-                        @foreach (var dia in Model.DiasMaiorProcura)
+                        @foreach (var dia in Model.DiasMaiorProcura.Take(3))
                         {
                             <div class="ib-agenda-ranking-row">
 

@@ -25,7 +25,7 @@ public class MarcacoesViewModel : INotifyPropertyChanged
 
         Marcacoes = new ObservableCollection<Marcacao>();
 
-        CarregarCommand = new Command( async () => await CarregarAsync(), () => !IsBusy);
+        CarregarCommand = new Command(async () => await CarregarAsync(), () => !IsBusy);
     }
 
     public ObservableCollection<Marcacao> Marcacoes { get; }
@@ -75,7 +75,7 @@ public class MarcacoesViewModel : INotifyPropertyChanged
             IsBusy = true;
             MensagemErro = string.Empty;
 
-            var resultado = await _apiService.GetAsync<List<Marcacao>>( "api/Marcacoes");
+            var resultado = await _apiService.GetAsync<List<Marcacao>>("api/Marcacoes");
 
             Marcacoes.Clear();
             ProximasMarcacoes.Clear();
@@ -89,7 +89,9 @@ public class MarcacoesViewModel : INotifyPropertyChanged
                 {
                     Marcacoes.Add(marcacao);
 
-                    if (marcacao.DataHoraInicio >= agora && !string.Equals( marcacao.EstadoMarcacaoNome, "Cancelada",  StringComparison.OrdinalIgnoreCase))
+                    if (marcacao.DataHoraInicio >= agora &&
+                        !string.Equals(marcacao.EstadoMarcacaoNome, "Cancelada", StringComparison.OrdinalIgnoreCase) &&
+                        !string.Equals(marcacao.EstadoMarcacaoNome, "Concluida", StringComparison.OrdinalIgnoreCase))
                     {
                         ProximasMarcacoes.Add(marcacao);
                     }
@@ -109,7 +111,7 @@ public class MarcacoesViewModel : INotifyPropertyChanged
                 {
                     ProximasMarcacoes.Add(marcacao);
                 }
-                    
+
 
 
                 var historicoOrdenado = HistoricoMarcacoes
@@ -122,7 +124,7 @@ public class MarcacoesViewModel : INotifyPropertyChanged
                 {
                     HistoricoMarcacoes.Add(marcacao);
                 }
-                    
+
             }
 
             OnPropertyChanged(nameof(SemMarcacoes));
@@ -164,7 +166,7 @@ public class MarcacoesViewModel : INotifyPropertyChanged
             ACancelar = true;
             MensagemErro = string.Empty;
 
-            var sucesso = await _apiService.DeleteAsync( $"api/Marcacoes/{marcacaoId}");
+            var sucesso = await _apiService.DeleteAsync($"api/Marcacoes/{marcacaoId}");
 
             if (!sucesso)
             {
@@ -191,8 +193,8 @@ public class MarcacoesViewModel : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected void OnPropertyChanged( [CallerMemberName] string? propertyName = null)
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
-        PropertyChanged?.Invoke( this, new PropertyChangedEventArgs(propertyName));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-}   
+}

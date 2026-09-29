@@ -71,4 +71,27 @@ public class GestaoClientesController : Controller
             return RedirectToAction(nameof(Index));
         }
     }
+
+
+    [HttpGet]
+    public async Task<IActionResult> Fotografia(string id)
+    {
+        using var response = await _apiService.SendAuthenticatedAsync(HttpMethod.Get, $"api/Clientes/{id}/fotografia");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return NotFound();
+        }
+
+        var bytes = await response.Content.ReadAsByteArrayAsync();
+
+        if (bytes.Length == 0)
+        {
+            return NotFound();
+        }
+
+        var contentType = response.Content.Headers.ContentType?.MediaType ?? "image/jpeg";
+
+        return File(bytes, contentType);
+    }
 }

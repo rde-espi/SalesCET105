@@ -614,7 +614,7 @@ function mostrarPaginaServicos() {
 
     if (paginacao) {
         paginacao.style.display =
-            rows.length > 10
+            rowsFiltradas.length > itensPorPagina
                 ? "flex"
                 : "none";
     }
@@ -880,7 +880,44 @@ function filterServices() {
                                                       `;
                                 }
 
-                                if (seletorPagina) {
+                                
+                                updateCounters();
+
+                                showMessage(
+                                    result.mensagem ||
+                                    "Estado do serviço alterado com sucesso.",
+                                    true
+                                );
+
+                            }
+                            catch {
+
+                                showMessage(
+                                    "Ocorreu um erro ao comunicar com o servidor.",
+                                    false
+                                );
+                            }
+                            finally {
+
+                                if (button) {
+                                    button.disabled = false;
+                                }
+                            }
+                        }
+                    );
+                });
+
+
+            if (input) {
+
+                input.addEventListener(
+                    "input",
+                    filterServices
+                );
+
+                filterServices();
+            }
+            if (seletorPagina) {
 
     seletorPagina.addEventListener(
         "change",
@@ -931,42 +968,6 @@ if (paginaSeguinte) {
         }
     );
 }
-                                updateCounters();
-
-                                showMessage(
-                                    result.mensagem ||
-                                    "Estado do serviço alterado com sucesso.",
-                                    true
-                                );
-
-                            }
-                            catch {
-
-                                showMessage(
-                                    "Ocorreu um erro ao comunicar com o servidor.",
-                                    false
-                                );
-                            }
-                            finally {
-
-                                if (button) {
-                                    button.disabled = false;
-                                }
-                            }
-                        }
-                    );
-                });
-
-
-            if (input) {
-
-                input.addEventListener(
-                    "input",
-                    filterServices
-                );
-
-                filterServices();
-            }
 
 
             updateCounters();

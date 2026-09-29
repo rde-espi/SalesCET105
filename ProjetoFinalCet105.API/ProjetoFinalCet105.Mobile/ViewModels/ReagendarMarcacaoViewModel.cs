@@ -151,7 +151,7 @@ namespace ProjetoFinalCet105.Mobile.ViewModels
                 IsBusy = true;
                 MensagemErro = string.Empty;
 
-                Marcacao = await _apiService.GetAsync<Marcacao>( $"api/Marcacoes/{marcacaoId}");
+                Marcacao = await _apiService.GetAsync<Marcacao>($"api/Marcacoes/{marcacaoId}");
 
                 if (Marcacao == null)
                 {
@@ -194,7 +194,7 @@ namespace ProjetoFinalCet105.Mobile.ViewModels
                 const int limiteDias = 30;
                 const int quantidadeDatas = 7;
 
-                for (var i = 0;   i < limiteDias && DatasDisponiveis.Count < quantidadeDatas; i++)
+                for (var i = 0; i < limiteDias && DatasDisponiveis.Count < quantidadeDatas; i++)
                 {
                     var dataConsulta = data.AddDays(i);
 
@@ -311,9 +311,9 @@ namespace ProjetoFinalCet105.Mobile.ViewModels
         public event PropertyChangedEventHandler? PropertyChanged;
         public Command ConfirmarReagendamentoCommand { get; }
 
-        private void OnPropertyChanged( [CallerMemberName] string? propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
-            PropertyChanged?.Invoke( this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private async Task ConfirmarReagendamentoAsync()
@@ -333,7 +333,7 @@ namespace ProjetoFinalCet105.Mobile.ViewModels
                     Observacoes = Marcacao.Observacoes
                 };
 
-                var sucesso = await _apiService.PutAsync( $"api/Marcacoes/{Marcacao.Id}", request);
+                var sucesso = await _apiService.PutAsync($"api/Marcacoes/{Marcacao.Id}", request);
 
                 if (!sucesso)
                 {

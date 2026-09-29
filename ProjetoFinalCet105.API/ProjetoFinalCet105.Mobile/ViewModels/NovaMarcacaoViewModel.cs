@@ -33,7 +33,7 @@ public class NovaMarcacaoViewModel : INotifyPropertyChanged
         _apiService = new ApiService();
 
         Servicos = new ObservableCollection<Servico>();
-        ConfirmarMarcacaoCommand = new Command( async () => await ConfirmarMarcacaoAsync(), () => PodeConfirmar);
+        ConfirmarMarcacaoCommand = new Command(async () => await ConfirmarMarcacaoAsync(), () => PodeConfirmar);
     }
 
 
@@ -200,7 +200,7 @@ public class NovaMarcacaoViewModel : INotifyPropertyChanged
             IsBusy = true;
             MensagemErro = string.Empty;
 
-            var resultado = await _apiService.GetAsync<List<Servico>>( "api/Servicos");
+            var resultado = await _apiService.GetAsync<List<Servico>>("api/Servicos");
 
             Servicos.Clear();
 
@@ -349,19 +349,19 @@ public class NovaMarcacaoViewModel : INotifyPropertyChanged
     public bool TemHorariosDisponiveis => HorariosDisponiveis.Count > 0;
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected void OnPropertyChanged( [CallerMemberName] string? propertyName = null)
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
-        PropertyChanged?.Invoke( this, new PropertyChangedEventArgs(propertyName));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private async Task CarregarFuncionariosAsync( int servicoId)
+    private async Task CarregarFuncionariosAsync(int servicoId)
     {
         try
         {
             ACarregarFuncionarios = true;
             MensagemErro = string.Empty;
 
-            var resultado = await _apiService.GetAsync<List<Funcionario>>( $"api/Funcionarios/servico/{servicoId}");
+            var resultado = await _apiService.GetAsync<List<Funcionario>>($"api/Funcionarios/servico/{servicoId}");
 
             Funcionarios.Clear();
 
@@ -523,7 +523,7 @@ public class NovaMarcacaoViewModel : INotifyPropertyChanged
                 PromoCode = null
             };
 
-            var resultado = await _apiService.PostAsync<NovaMarcacaoRequest, Marcacao>( "api/Marcacoes", request);
+            var resultado = await _apiService.PostAsync<NovaMarcacaoRequest, Marcacao>("api/Marcacoes", request);
 
             if (resultado == null)
             {

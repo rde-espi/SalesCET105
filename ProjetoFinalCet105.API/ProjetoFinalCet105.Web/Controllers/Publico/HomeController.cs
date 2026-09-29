@@ -18,7 +18,12 @@ namespace ProjetoFinalCet105.Web.Controllers.Publico
         {
             var categorias = await _apiService.GetAsync<List<CategoriaViewModel>>("api/Categorias");
 
-            return View(categorias ?? new List<CategoriaViewModel>());
+            var categoriasAleatorias = (categorias ?? new List<CategoriaViewModel>())
+                .OrderBy(c => Guid.NewGuid())
+                .Take(4)
+                .ToList();
+
+            return View(categoriasAleatorias);
         }
 
         [HttpGet]

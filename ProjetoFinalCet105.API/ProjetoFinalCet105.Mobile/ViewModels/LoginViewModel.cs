@@ -25,7 +25,7 @@ public class LoginViewModel : INotifyPropertyChanged
         _apiService = new ApiService();
         _authService = new AuthService();
 
-        LoginCommand = new Command( async () => await LoginAsync(), () => !IsBusy);
+        LoginCommand = new Command(async () => await LoginAsync(), () => !IsBusy);
     }
 
     public string Email
@@ -88,7 +88,7 @@ public class LoginViewModel : INotifyPropertyChanged
         {
             IsBusy = true;
 
-            var resultado = await _apiService.LoginAsync( Email.Trim(), Password);
+            var resultado = await _apiService.LoginAsync(Email.Trim(), Password);
 
             if (resultado == null)
             {
@@ -110,14 +110,14 @@ public class LoginViewModel : INotifyPropertyChanged
 
             if (string.IsNullOrWhiteSpace(resultado.Token))
             {
-                MensagemErro ="Não foi possível iniciar sessão.";
+                MensagemErro = "Não foi possível iniciar sessão.";
                 return;
             }
 
-            await _authService.GuardarSessaoAsync( resultado.Token, resultado.UserId, resultado.NomeCompleto, resultado.Email);
+            await _authService.GuardarSessaoAsync(resultado.Token, resultado.UserId, resultado.NomeCompleto, resultado.Email);
 
 
-            await Shell.Current.GoToAsync( nameof(ClienteHomePage));
+            await Shell.Current.GoToAsync(nameof(ClienteHomePage));
         }
         catch
         {
@@ -133,6 +133,6 @@ public class LoginViewModel : INotifyPropertyChanged
 
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
-        PropertyChanged?.Invoke( this, new PropertyChangedEventArgs(propertyName));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
