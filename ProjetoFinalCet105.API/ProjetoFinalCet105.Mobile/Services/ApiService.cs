@@ -71,6 +71,15 @@ public class ApiService
         return response.IsSuccessStatusCode;
     }
 
+    public async Task<bool> PutAsync<TRequest>( string endpoint, TRequest dados)
+    {
+        await AdicionarTokenAsync();
+
+        var response = await _httpClient.PutAsJsonAsync( endpoint, dados);
+
+        return response.IsSuccessStatusCode;
+    }
+
 
 
     private async Task AdicionarTokenAsync()

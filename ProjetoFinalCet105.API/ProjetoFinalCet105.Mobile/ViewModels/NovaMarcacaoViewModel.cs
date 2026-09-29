@@ -24,6 +24,8 @@ public class NovaMarcacaoViewModel : INotifyPropertyChanged
     private bool _aGuardar;
     private string _mensagemSucesso = string.Empty;
     private bool _marcacaoConcluida;
+    private DataDisponivel? _dataDisponivelSelecionada;
+    private bool _aCarregarDatas;
 
 
     public NovaMarcacaoViewModel()
@@ -223,6 +225,7 @@ public class NovaMarcacaoViewModel : INotifyPropertyChanged
             IsBusy = false;
         }
     }
+    public ObservableCollection<DataDisponivel> DatasDisponiveis { get; } = new ObservableCollection<DataDisponivel>();
 
     public Command ConfirmarMarcacaoCommand { get; }
 
@@ -241,17 +244,21 @@ public class NovaMarcacaoViewModel : INotifyPropertyChanged
 
             _funcionarioSelecionado = value;
 
+            DataDisponivelSelecionada = null;
+            DatasDisponiveis.Clear();
+
             HorarioSelecionado = null;
             HorariosDisponiveis.Clear();
 
             OnPropertyChanged();
             OnPropertyChanged(nameof(TemFuncionarioSelecionado));
+            OnPropertyChanged(nameof(TemDatasDisponiveis));
             OnPropertyChanged(nameof(TemHorariosDisponiveis));
 
             if (_funcionarioSelecionado != null &&
                 ServicoSelecionado != null)
             {
-                _ = CarregarHorariosAsync();
+                _ = CarregarDatasDisponiveisAsync();
             }
         }
     }
@@ -272,6 +279,44 @@ public class NovaMarcacaoViewModel : INotifyPropertyChanged
     }
 
     public ObservableCollection<DateTime> HorariosDisponiveis { get; } = new ObservableCollection<DateTime>();
+
+    public DataDisponivel? DataDisponivelSelecionada
+    {
+        get => _dataDisponivelSelecionada;
+        set
+        {
+            if (_dataDisponivelSelecionada == value)
+                return;
+
+            _dataDisponivelSelecionada = value;
+            OnPropertyChanged();
+
+            HorarioSelecionado = null;
+            HorariosDisponiveis.Clear();
+            OnPropertyChanged(nameof(TemHorariosDisponiveis));
+
+            if (_dataDisponivelSelecionada != null)
+            {
+                DataSelecionada = _dataDisponivelSelecionada.Data;
+            }
+        }
+    }
+
+    public bool ACarregarDatas
+    {
+        get => _aCarregarDatas;
+        private set
+        {
+            if (_aCarregarDatas == value)
+                return;
+
+            _aCarregarDatas = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool TemDatasDisponiveis =>
+        DatasDisponiveis.Count > 0;
 
     public DateTime? HorarioSelecionado
     {
@@ -341,6 +386,70 @@ public class NovaMarcacaoViewModel : INotifyPropertyChanged
         finally
         {
             ACarregarFuncionarios = false;
+        }
+    }
+
+
+    private async Task CarregarDatasDisponiveisAsync()
+    {
+        if (FuncionarioSelecionado == null || ServicoSelecionado == null)
+            return;
+
+        try
+        {
+            ACarregarDatas = true;
+            MensagemErro = string.Empty;
+
+            DatasDisponiveis.Clear();
+            DataDisponivelSelecionada = null;
+
+            HorarioSelecionado = null;
+            HorariosDisponiveis.Clear();
+
+            OnPropertyChanged(nameof(TemDatasDisponiveis));
+            OnPropertyChanged(nameof(TemHorariosDisponiveis));
+
+            var data = DateTime.Today;
+            const int limiteDias = 30;
+            const int quantidadeDatas = 7;
+
+            for (var i = 0;
+                 i < limiteDias && DatasDisponiveis.Count < quantidadeDatas;
+                 i++)
+            {
+                var dataConsulta = data.AddDays(i);
+
+                var endpoint =
+                    $"api/Marcacoes/disponibilidade" +
+                    $"?funcionarioId={FuncionarioSelecionado.Id}" +
+                    $"&servicoId={ServicoSelecionado.Id}" +
+                    $"&data={dataConsulta:yyyy-MM-dd}";
+
+                var horarios = await _apiService.GetAsync<List<DateTime>>(endpoint);
+
+                if (horarios != null && horarios.Count > 0)
+                {
+                    DatasDisponiveis.Add(new DataDisponivel
+                    {
+                        Data = dataConsulta,
+                        QuantidadeHorarios = horarios.Count
+                    });
+                }
+            }
+
+            OnPropertyChanged(nameof(TemDatasDisponiveis));
+        }
+        catch
+        {
+            DatasDisponiveis.Clear();
+
+            MensagemErro = "Não foi possível consultar as datas disponíveis.";
+
+            OnPropertyChanged(nameof(TemDatasDisponiveis));
+        }
+        finally
+        {
+            ACarregarDatas = false;
         }
     }
 

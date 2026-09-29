@@ -1,6 +1,7 @@
 using ProjetoFinalCet105.Mobile.Models;
 using ProjetoFinalCet105.Mobile.ViewModels;
 
+
 namespace ProjetoFinalCet105.Mobile.Views;
 
 public partial class MarcacoesPage : ContentPage
@@ -57,9 +58,6 @@ public partial class MarcacoesPage : ContentPage
         if (sender is not Button button || button.CommandParameter is not Marcacao marcacao)
             return;
 
-        await DisplayAlertAsync(
-            "Reagendar marcação",
-            $"O reagendamento de {marcacao.ServicoNome} será disponibilizado de seguida.",
-            "OK");
+        await Shell.Current.GoToAsync($"{nameof(ReagendarMarcacaoPage)}?marcacaoId={marcacao.Id}");
     }
 }

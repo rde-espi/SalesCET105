@@ -73,9 +73,17 @@
                         ItemDisplayBinding="{Binding Nome}"
                         SelectedItem="{Binding ServicoSelecionado}"
                         TextColor="#191919"
-                        TitleColor="#817A70" />
-
+                        TitleColor="#817A70" />                  
                 </Border>
+
+                <ActivityIndicator
+                    IsVisible="{Binding IsBusy}"
+                    IsRunning="{Binding IsBusy}"
+                    Color="#BEA256"
+                    HorizontalOptions="Center"
+                    Margin="0,6,0,0"
+                    WidthRequest="28"
+                    HeightRequest="28" />
 
                 <!-- Informações do serviço selecionado -->
                 <Border
@@ -158,34 +166,112 @@
         HorizontalOptions="Center" />
 
                 </VerticalStackLayout>
-                <!-- DATA -->
+
+
+                <!-- DATAS DISPONÍVEIS -->
                 <VerticalStackLayout
-    IsVisible="{Binding TemFuncionarioSelecionado}"
     Spacing="10"
-    Margin="0,10,0,0">
+    IsVisible="{Binding TemFuncionarioSelecionado}">
 
                     <Label
-        Text="Escolha a data"
-        TextColor="#191919"
-        FontSize="14"
-        FontAttributes="Bold" />
+        Text="Escolha uma data disponível"
+        FontSize="13"
+        FontAttributes="Bold"
+        TextColor="#535333" />
 
-                    <Border
-        BackgroundColor="White"
-        Stroke="#E5DDD1"
-        StrokeThickness="1"
-        StrokeShape="RoundRectangle 14"
-        Padding="12,4">
+                    <!-- A PROCURAR DATAS -->
+                    <VerticalStackLayout
+        Spacing="8"
+        IsVisible="{Binding ACarregarDatas}">
 
-                        <DatePicker
-            Date="{Binding DataSelecionada}"
-            MinimumDate="{Binding DataMinima}"
-            Format="dd/MM/yyyy"
-            TextColor="#191919" />
+                        <ActivityIndicator
+            IsRunning="{Binding ACarregarDatas}"
+            Color="#BEA256"
+            HorizontalOptions="Center"
+            WidthRequest="28"
+            HeightRequest="28" />
 
-                    </Border>
+                        <Label
+            Text="A procurar datas disponíveis..."
+            FontSize="12"
+            TextColor="#817A70"
+            HorizontalTextAlignment="Center" />
+
+                    </VerticalStackLayout>
+
+                    <!-- DATAS ENCONTRADAS -->
+                    <CollectionView
+                        ItemsSource="{Binding DatasDisponiveis}"
+                        SelectedItem="{Binding DataDisponivelSelecionada}"
+                        SelectionMode="Single"
+                        IsVisible="{Binding TemDatasDisponiveis}"
+                        HeightRequest="105">
+
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout
+                                Orientation="Horizontal"
+                                ItemSpacing="10" />
+                        </CollectionView.ItemsLayout>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+
+                                <Border
+                    Padding="14,10"
+                    MinimumWidthRequest="92"
+                    BackgroundColor="#F8F5EF"
+                    Stroke="#D8B071"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 14">
+
+                                    <VerticalStackLayout
+                        Spacing="2"
+                        HorizontalOptions="Center">
+
+                                        <HorizontalStackLayout
+                            Spacing="4"
+                            HorizontalOptions="Center">
+
+                                            <Label
+                                Text="{Binding Dia}"
+                                FontSize="17"
+                                FontAttributes="Bold"
+                                TextColor="#191919" />
+
+                                            <Label
+                                Text="{Binding Mes}"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                TextColor="#BEA256"
+                                VerticalTextAlignment="Center" />
+
+                                        </HorizontalStackLayout>
+
+                                        <Label
+                            Text="{Binding DiaSemana}"
+                            FontSize="11"
+                            TextColor="#535333"
+                            HorizontalTextAlignment="Center" />
+
+                                        <Label
+                            Text="{Binding TextoHorarios}"
+                            FontSize="10"
+                            TextColor="#817A70"
+                            HorizontalTextAlignment="Center" />
+
+                                    </VerticalStackLayout>
+
+                                </Border>
+
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                    </CollectionView>
 
                 </VerticalStackLayout>
+
+
+
                 <!-- HORÁRIOS -->
                 <VerticalStackLayout
     IsVisible="{Binding TemFuncionarioSelecionado}"
@@ -332,21 +418,8 @@
         HeightRequest="52"
         Command="{Binding ConfirmarMarcacaoCommand}"
         CornerRadius="14" />
-                   
-                    <ActivityIndicator
-        IsVisible="{Binding AGuardar}"
-        IsRunning="{Binding AGuardar}"
-        Color="#BEA256"
-        HorizontalOptions="Center" />
-
-                </VerticalStackLayout>
-
-                <ActivityIndicator
-                    IsVisible="{Binding IsBusy}"
-                    IsRunning="{Binding IsBusy}"
-                    Color="#BEA256"
-                    HorizontalOptions="Center"
-                    Margin="0,15,0,0" />
+                                      
+                </VerticalStackLayout>                
 
                 <Label
                     IsVisible="{Binding TemErro}"

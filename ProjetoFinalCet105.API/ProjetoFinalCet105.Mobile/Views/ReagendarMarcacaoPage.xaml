@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="ProjetoFinalCet105.Mobile.Views.ReagendarMarcacaoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#F8F5EF"
+    Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- CABEÇALHO -->
+        <Grid
+            Grid.Row="0"
+            Padding="22,35,22,18"
+            ColumnDefinitions="Auto,*"
+            BackgroundColor="#191919">
+
+            <Button
+                Grid.Column="0"
+                Text="‹"
+                Clicked="Voltar_Clicked"
+                BackgroundColor="Transparent"
+                TextColor="#D8B071"
+                FontSize="32"
+                WidthRequest="45"
+                HeightRequest="45"
+                Padding="0" />
+
+            <VerticalStackLayout
+                Grid.Column="1"
+                Margin="12,0,0,0"
+                VerticalOptions="Center"
+                Spacing="2">
+
+                <Label
+                    Text="ALTERAR AGENDAMENTO"
+                    TextColor="#D8B071"
+                    FontSize="10"
+                    FontAttributes="Bold"
+                    CharacterSpacing="2" />
+
+                <Label
+                    Text="Reagendar marcação"
+                    TextColor="White"
+                    FontSize="22"
+                    FontAttributes="Bold" />
+
+            </VerticalStackLayout>
+
+        </Grid>
+
+
+        <!-- CONTEÚDO -->
+        <ScrollView Grid.Row="1">
+
+            <VerticalStackLayout
+                Padding="25"
+                Spacing="20">
+
+                <!-- ERRO -->
+                <Label
+                    IsVisible="{Binding TemErro}"
+                    Text="{Binding MensagemErro}"
+                    TextColor="#B3261E"
+                    FontSize="13" />
+
+
+                <!-- MARCAÇÃO ATUAL -->
+                <VerticalStackLayout
+                    IsVisible="{Binding Marcacao}"
+                    Spacing="18">
+
+                    <Label
+                        Text="MARCAÇÃO ATUAL"
+                        TextColor="#BEA256"
+                        FontSize="11"
+                        FontAttributes="Bold"
+                        CharacterSpacing="2" />
+
+                    <Border
+                        Padding="20"
+                        BackgroundColor="White"
+                        Stroke="#D8B071"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 18">
+
+                        <VerticalStackLayout Spacing="8">
+
+                            <Label
+                                Text="{Binding Marcacao.ServicoNome}"
+                                TextColor="#191919"
+                                FontSize="20"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                Text="{Binding Marcacao.FuncionarioNome, StringFormat='Profissional: {0}'}"
+                                TextColor="#817A70"
+                                FontSize="14" />
+
+                            <Label
+                                Text="{Binding Marcacao.DataHoraInicio, StringFormat='Atual: {0:dd/MM/yyyy · HH:mm}'}"
+                                TextColor="#817A70"
+                                FontSize="14" />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+
+                    <!-- DATAS DISPONÍVEIS -->
+                    <VerticalStackLayout Spacing="10">
+
+                        <Label
+        Text="Escolha uma nova data disponível"
+        FontSize="13"
+        FontAttributes="Bold"
+        TextColor="#535333" />
+
+                        <!-- PESQUISA DAS DATAS -->
+                        <VerticalStackLayout
+        Spacing="8"
+        IsVisible="{Binding ACarregarDatas}">
+
+                            <ActivityIndicator
+            IsRunning="{Binding ACarregarDatas}"
+            Color="#BEA256"
+            HorizontalOptions="Center"
+            WidthRequest="28"
+            HeightRequest="28" />
+
+                            <Label
+            Text="A procurar datas disponíveis..."
+            FontSize="12"
+            TextColor="#817A70"
+            HorizontalTextAlignment="Center" />
+
+                        </VerticalStackLayout>
+
+                        <!-- DATAS ENCONTRADAS -->
+                        <CollectionView
+                            ItemsSource="{Binding DatasDisponiveis}"
+                            SelectedItem="{Binding DataDisponivelSelecionada}"
+                            SelectionMode="Single"
+                            IsVisible="{Binding TemDatasDisponiveis}"
+                            HeightRequest="105">
+                            
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout
+                                    Orientation="Horizontal"
+                                    ItemSpacing="10" />
+                            </CollectionView.ItemsLayout>
+
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+
+                                    <Border
+                                        Padding="14,10"
+                                        MinimumWidthRequest="92"
+                                        BackgroundColor="#F8F5EF"
+                                        Stroke="#D8B071"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 14">
+
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup Name="CommonStates">
+
+                                                <VisualState Name="Normal">
+                                                    <VisualState.Setters>
+                                                        <Setter
+                                                            Property="BackgroundColor"
+                                                            Value="#F8F5EF" />
+                                                        <Setter
+                                                            Property="Stroke"
+                                                            Value="#D8B071" />
+                                                        <Setter
+                                                            Property="StrokeThickness"
+                                                            Value="1" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+
+                                                <VisualState Name="Selected">
+                                                    <VisualState.Setters>
+                                                        <Setter
+                                                            Property="BackgroundColor"
+                                                            Value="#E8D0A8" />
+                                                        <Setter
+                                                            Property="Stroke"
+                                                            Value="#BEA256" />
+                                                        <Setter
+                                                            Property="StrokeThickness"
+                                                            Value="2" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+
+                                        <VerticalStackLayout
+                                            Spacing="2"
+                                            HorizontalOptions="Center">
+
+                                            <HorizontalStackLayout
+                                                Spacing="4"
+                                                HorizontalOptions="Center">
+
+                                                <Label
+                                                    Text="{Binding Dia}"
+                                                    FontSize="17"
+                                                    FontAttributes="Bold"
+                                                    TextColor="#191919" />
+                                                
+                                                <Label
+                                                    Text="{Binding Mes}"
+                                                    FontSize="12"
+                                                    FontAttributes="Bold"
+                                                    TextColor="#BEA256"
+                                                    VerticalTextAlignment="Center" />
+
+                                            </HorizontalStackLayout>
+
+                                            <Label
+                                                Text="{Binding DiaSemana}"
+                                                FontSize="11"
+                                                TextColor="#535333"
+                                                HorizontalTextAlignment="Center" />
+                                            
+                                            <Label
+                                                Text="{Binding TextoHorarios}"
+                                                FontSize="10"
+                                                TextColor="#817A70"
+                                                HorizontalTextAlignment="Center" />
+
+                                        </VerticalStackLayout>
+
+                                    </Border>
+
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+
+                        </CollectionView>
+
+                    </VerticalStackLayout>
+
+
+                    <!-- HORÁRIOS -->
+                    <VerticalStackLayout Spacing="10">
+
+                        <Label
+                            Text="HORÁRIO DISPONÍVEL"
+                            TextColor="#191919"
+                            FontSize="12"
+                            FontAttributes="Bold" />
+
+                           <CollectionView
+                            ItemsSource="{Binding HorariosDisponiveis}"
+                            SelectedItem="{Binding HorarioSelecionado}"
+                            SelectionMode="Single"
+                            ItemsLayout="HorizontalList"
+                            HeightRequest="65">
+
+                            <CollectionView.ItemTemplate>
+
+                                <DataTemplate>
+
+                                    <Border
+                                        Margin="3"
+                                        Padding="16,10"
+                                        BackgroundColor="White"
+                                        Stroke="#D8B071"
+                                        StrokeThickness="1"
+                                        StrokeShape="RoundRectangle 12">
+
+                                        <Label
+                                            Text="{Binding ., StringFormat='{0:HH:mm}'}"
+                                            TextColor="#191919"
+                                            FontAttributes="Bold"
+                                            VerticalTextAlignment="Center"
+                                            HorizontalTextAlignment="Center" />
+
+                                    </Border>
+
+                                </DataTemplate>
+
+                            </CollectionView.ItemTemplate>
+
+                        </CollectionView>
+
+                    </VerticalStackLayout>
+
+
+                    <!-- RESUMO DA ALTERAÇÃO -->
+                    <Border
+                        IsVisible="{Binding HorarioSelecionado}"
+                        Padding="20"
+                        BackgroundColor="#191919"
+                        Stroke="#D8B071"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 18">
+
+                        <VerticalStackLayout Spacing="8">
+
+                            <Label
+                                Text="NOVO AGENDAMENTO"
+                                TextColor="#D8B071"
+                                FontSize="10"
+                                FontAttributes="Bold"
+                                CharacterSpacing="2" />
+
+                            <Label
+                                Text="{Binding Marcacao.ServicoNome}"
+                                TextColor="White"
+                                FontSize="17"
+                                FontAttributes="Bold" />
+
+                            <Label
+                                Text="{Binding Marcacao.FuncionarioNome}"
+                                TextColor="#D8B071"
+                                FontSize="13" />
+
+                            <Label
+                                Text="{Binding HorarioSelecionado, StringFormat='{0:dd/MM/yyyy · HH:mm}'}"
+                                TextColor="White"
+                                FontSize="15" />
+
+                            <Button
+                                Text="Confirmar reagendamento"
+                                Margin="0,10,0,0"
+                                BackgroundColor="#D8B071"
+                                TextColor="#191919"
+                                FontAttributes="Bold"
+                                HeightRequest="52"
+                                CornerRadius="14"
+                                Command="{Binding ConfirmarReagendamentoCommand}"
+                                IsEnabled="{Binding PodeConfirmar}"
+                                />
+
+                        </VerticalStackLayout>
+
+                    </Border>
+
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+
+        </ScrollView>
+
+
+        <!-- LOADING INICIAL -->
+        <Grid
+            Grid.RowSpan="2"
+            IsVisible="{Binding IsBusy}"
+            BackgroundColor="#80000000"
+            InputTransparent="False"
+            ZIndex="100">
+
+            <Border
+                Padding="28,24"
+                BackgroundColor="#191919"
+                Stroke="#D8B071"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 18"
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
+
+                <VerticalStackLayout
+                    Spacing="14"
+                    HorizontalOptions="Center">
+
+                    <ActivityIndicator
+                        IsRunning="{Binding IsBusy}"
+                        Color="#D8B071"
+                        WidthRequest="38"
+                        HeightRequest="38" />
+
+                    <Label
+                        Text="A carregar disponibilidade..."
+                        TextColor="White"
+                        FontSize="14"
+                        HorizontalTextAlignment="Center" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+        </Grid>
+
+        <!-- PROCESSAMENTO DO REAGENDAMENTO -->
+        <Grid
+    Grid.RowSpan="2"
+    IsVisible="{Binding AReagendar}"
+    BackgroundColor="#80000000"
+    InputTransparent="False"
+    ZIndex="110">
+
+            <Border
+        Padding="28,24"
+        BackgroundColor="#191919"
+        Stroke="#D8B071"
+        StrokeThickness="1"
+        StrokeShape="RoundRectangle 18"
+        HorizontalOptions="Center"
+        VerticalOptions="Center">
+
+                <VerticalStackLayout
+            Spacing="14"
+            HorizontalOptions="Center">
+
+                    <ActivityIndicator
+                IsRunning="{Binding AReagendar}"
+                Color="#D8B071"
+                WidthRequest="38"
+                HeightRequest="38" />
+
+                    <Label
+                Text="A reagendar marcação..."
+                TextColor="White"
+                FontSize="14"
+                HorizontalTextAlignment="Center" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+        </Grid>
+
+        <!-- SUCESSO DO REAGENDAMENTO -->
+        <Grid
+    Grid.RowSpan="2"
+    IsVisible="{Binding ReagendamentoConcluido}"
+    BackgroundColor="#99000000"
+    InputTransparent="False"
+    ZIndex="120">
+
+            <Border
+        Margin="30"
+        Padding="30"
+        BackgroundColor="#F8F5EF"
+        Stroke="#D8B071"
+        StrokeThickness="1"
+        StrokeShape="RoundRectangle 22"
+        HorizontalOptions="Center"
+        VerticalOptions="Center"
+        MaximumWidthRequest="380">
+
+                <VerticalStackLayout
+            Spacing="16"
+            HorizontalOptions="Fill">
+
+                    <Border
+                WidthRequest="58"
+                HeightRequest="58"
+                BackgroundColor="#191919"
+                Stroke="#D8B071"
+                StrokeThickness="1"
+                StrokeShape="RoundRectangle 29"
+                HorizontalOptions="Center">
+
+                        <Label
+                    Text="✓"
+                    TextColor="#D8B071"
+                    FontSize="30"
+                    FontAttributes="Bold"
+                    HorizontalTextAlignment="Center"
+                    VerticalTextAlignment="Center" />
+
+                    </Border>
+
+                    <Label
+                Text="Marcação reagendada!"
+                TextColor="#191919"
+                FontSize="22"
+                FontAttributes="Bold"
+                HorizontalTextAlignment="Center" />
+
+                    <Label
+                Text="A sua marcação foi reagendada com sucesso."
+                TextColor="#817A70"
+                FontSize="14"
+                HorizontalTextAlignment="Center" />
+
+                    <Button
+                Text="Ver as minhas marcações"
+                BackgroundColor="#191919"
+                TextColor="White"
+                FontAttributes="Bold"
+                HeightRequest="52"
+                CornerRadius="14"
+                Clicked="VerMarcacoes_Clicked" />
+
+                </VerticalStackLayout>
+
+            </Border>
+
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

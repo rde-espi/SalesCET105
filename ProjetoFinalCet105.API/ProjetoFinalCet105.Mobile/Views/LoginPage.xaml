@@ -153,11 +153,6 @@
                     HeightRequest="54"
                     Margin="0,8,0,0" />
 
-                <ActivityIndicator
-                    IsVisible="{Binding IsBusy}"
-                    IsRunning="{Binding IsBusy}"
-                    Color="#BEA256"
-                    HorizontalOptions="Center" />
 
                 <Label
                     Text="Aplicação móvel · Área do Cliente"
